@@ -1,0 +1,7 @@
+author = Rhoenicx
+version = 0.0.0.1
+displayName = Kourindou
+hideCode = true
+hideResources = true
+homepage = https://discord.gg/q6S69rv8Gw
+buildIgnore = _Private/*
