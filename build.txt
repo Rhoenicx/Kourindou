@@ -5,3 +5,4 @@ hideCode = true
 hideResources = true
 homepage = https://discord.gg/q6S69rv8Gw
 buildIgnore = _Development/*
+weakReferences = WingSlot@1.7.3

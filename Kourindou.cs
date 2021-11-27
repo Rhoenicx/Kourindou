@@ -9,15 +9,20 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.UI;
 
 namespace Kourindou
 {
     class Kourindou : Mod
     {
+        public const string PlushieSlotBackTex = "PlushieSlotBackground";
+
         internal static Kourindou Instance;
 
         internal static KourindouConfigClient KourindouConfigClient;
+
+        private static List<Func<bool>> RightClickOverrides;
 
         // Kourindou Mod Instance
         public Kourindou()
@@ -28,7 +33,14 @@ namespace Kourindou
         // Load
         public override void Load()
         {
+            Properties = new ModProperties() {
+                Autoload = true,
+                AutoloadBackgrounds = true,
+                AutoloadGores = true,
+                AutoloadSounds = true
+            };
 
+            RightClickOverrides = new List<Func<bool>>();
         }
 
         // Unload
@@ -36,14 +48,13 @@ namespace Kourindou
         {
             KourindouConfigClient = null;
 
+            if(RightClickOverrides != null) {
+                RightClickOverrides.Clear();
+                RightClickOverrides = null;
+            }
+
             Instance = null;
             base.Unload();
-        }
-
-        // Interface Layers
-        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
-        {
-
         }
 
         // PostSetupContent - Register mods for compatibility
@@ -61,6 +72,11 @@ namespace Kourindou
         public enum KourindouMessageType : byte
         {
             ClientConfig
+        }
+
+        public override void PostDrawInterface(SpriteBatch spriteBatch) {
+            KourindouPlayer player = Main.LocalPlayer.GetModPlayer<KourindouPlayer>();
+            player.Draw(spriteBatch);
         }
 
         // Handle netwrok packets
@@ -99,6 +115,17 @@ namespace Kourindou
                     Logger.Warn("Kourindou: Unknown NetMessage type: " + msg);
                     break;
             }
+        }
+
+        public static bool OverrideRightClick() 
+        {
+            foreach(var func in RightClickOverrides) {
+                if(func()) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

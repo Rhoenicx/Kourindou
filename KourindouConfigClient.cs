@@ -36,8 +36,6 @@ namespace Kourindou
             // When the settings are changed while playing, update the modplayer variable(s)
             if (!Main.gameMenu && Main.playerLoaded)
             {
-                Main.NewText("Local Player ID: " + Main.LocalPlayer.whoAmI);
-
                 Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower = (byte)plushiePower;
 
                 // When the setting is changed during multiplayer, also send a packet
