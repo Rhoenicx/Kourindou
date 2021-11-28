@@ -153,10 +153,14 @@ namespace Kourindou
 
         private bool Slot_Conditions(Item item)
         {
-            // Check whether this item can be placed in the Plushie Slot
-            if (item.modItem.GetType().IsSubclassOf(typeof(Plushie)) && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2)
+            // Prevent Nasty NullReferenceException - Crashes Game 
+            if (item.modItem != null)
             {
-                return true;
+                // Check whether this item can be placed in the Plushie Slot
+                if (item.Clone().modItem.GetType().IsSubclassOf(typeof(Plushie)) && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2)
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -240,6 +244,28 @@ namespace Kourindou
         {
             plushieEquipSlot.Item = new Item();
             plushieEquipSlot.Item.SetDefaults(0, true);
+        }
+
+        public void EquipPlushie(bool isVanity, Item item)
+        {
+            if (player.GetModPlayer<KourindouPlayer>().plushiePower != 2)
+            {
+                return;
+            }
+
+            UIItemSlot slot = plushieEquipSlot;
+            int fromSlot = Array.FindIndex(player.inventory, i => i == item);
+
+            if (fromSlot < 0)
+            {
+                return;
+            }
+
+            item.favorited = false;
+            player.inventory[fromSlot] = slot.Item.Clone();
+            Main.PlaySound(SoundID.Grab);
+            Recipe.FindRecipes();
+            SetPlushie(item);
         }
 
         private void SetPlushie(Item item)

@@ -57,11 +57,6 @@ namespace Kourindou.Items.Plushies
             return false;
         }
 
-        public bool CanRightClick(Item item)
-        {
-            return false;
-        }
-
         public virtual void PlushieEquipEffects(Player player)
         {
 
