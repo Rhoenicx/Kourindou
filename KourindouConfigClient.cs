@@ -26,6 +26,11 @@ namespace Kourindou
         [Tooltip("0 = Regular, 1 = Magical, 2 = Overpowered")]
         public int plushiePower;
 
+        //Old Textures
+        [DefaultValue(false)]
+        [Label("Use old textures")]
+        public bool UseOldTextures;
+
         public override void OnLoaded()
         {
             Kourindou.KourindouConfigClient = this;

@@ -1,12 +1,12 @@
-using System;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
+using Kourindou.Tiles.Plushies.Reimu_Hakurei;
 
 namespace Kourindou.Items.Plushies.Reimu_Hakurei
 {
-    public class ReimuHakurei_Plushie_Item : Plushie
+    public class ReimuHakurei_Plushie_Item : PlushieItem
     {
         public override void SetStaticDefaults()
         {
@@ -26,14 +26,14 @@ namespace Kourindou.Items.Plushies.Reimu_Hakurei
 
             // Usage and Animation
             item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 20;
-            item.useAnimation = 20;
+            item.useTime = 15;
+            item.useAnimation = 15;
             item.autoReuse = true;
             item.useTurn = true;
 
             // Tile placement fields
             item.consumable = true;
-            //item.createTile = TileType<ReimuHakureiPlushieTile>();
+            item.createTile = TileType<ReimuHakurei_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
             item.accessory = true;

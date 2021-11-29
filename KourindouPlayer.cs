@@ -25,7 +25,6 @@ namespace Kourindou
         public byte plushiePower;
 
         // Dedicated Plushie slot
-        private const string plushieTag = "plushie";
         public UIItemSlot plushieEquipSlot;
         
 //--------------------------------------------------------------------------------
@@ -113,13 +112,16 @@ namespace Kourindou
         {
             return new TagCompound 
             {
-                { plushieTag, ItemIO.Save(plushieEquipSlot.Item) }
+                { "plushieEquipSlot", ItemIO.Save(plushieEquipSlot.Item) },
+                { "plushiePowerMode", plushiePower}
             };
         }
 
         public override void Load(TagCompound tag) 
         {
-            SetPlushie(ItemIO.Load(tag.GetCompound(plushieTag)));
+            SetPlushie(ItemIO.Load(tag.GetCompound("plushieEquipSlot")));
+            plushiePower = tag.GetByte("plushiePowerMode");
+            base.Load(tag);
         }
 
         //Draw Plushie slot
@@ -157,11 +159,11 @@ namespace Kourindou
             if (item.modItem != null)
             {
                 // Check whether this item can be placed in the Plushie Slot
-                if (item.Clone().modItem.GetType().IsSubclassOf(typeof(Plushie)) && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2)
+                if (item.Clone().modItem.GetType().IsSubclassOf(typeof(PlushieItem)) && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2)
                 {
                     return true;
                 }
-            }
+            }   
 
             return false;
         }
