@@ -21,17 +21,5 @@ namespace Kourindou.Tiles.Plushies
         {
             return false;
         }
-
-        public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) 
-        {
-            if (Kourindou.KourindouConfigClient.UseOldTextures)
-            {
-                frameXOffset += 36;
-            }
-            else
-            {
-                frameXOffset = 0;
-            }
-		}
     }
 }

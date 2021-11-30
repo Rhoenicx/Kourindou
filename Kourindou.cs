@@ -11,6 +11,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
+using Kourindou.Items.Plushies;
+using Kourindou.Tiles.Plushies;
 
 namespace Kourindou
 {
@@ -41,6 +43,12 @@ namespace Kourindou
             };
 
             RightClickOverrides = new List<Func<bool>>();
+
+            if (!Main.dedServ)
+            {
+
+            }
+
         }
 
         // Unload
@@ -65,6 +73,20 @@ namespace Kourindou
             if (Gensokyo != null && Gensokyo.Version >= new Version(0, 7, 10, 3))
             {
                 CrossModContent.SetupGensokyo(Gensokyo, this);
+            }
+
+            if (!Main.dedServ)
+            {
+                if (Kourindou.KourindouConfigClient.UseOldTextures)
+                {
+                    Main.itemTexture[ModContent.ItemType<ReimuHakurei_Plushie_Item>()] = GetTexture("Items/Plushies/ReimuHakurei_Plushie_Item_Old");
+                    Main.tileTexture[ModContent.TileType<ReimuHakurei_Plushie_Tile>()] = GetTexture("Tiles/Plushies/ReimuHakurei_Plushie_Tile_Old");
+                }
+                else
+                {
+                    Main.itemTexture[ModContent.ItemType<ReimuHakurei_Plushie_Item>()] = GetTexture("Items/Plushies/ReimuHakurei_Plushie_Item");
+                    Main.tileTexture[ModContent.TileType<ReimuHakurei_Plushie_Tile>()] = GetTexture("Tiles/Plushies/ReimuHakurei_Plushie_Tile");
+                }
             }
         }
 

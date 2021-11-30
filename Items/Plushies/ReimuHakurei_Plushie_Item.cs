@@ -2,9 +2,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using Kourindou.Tiles.Plushies.Reimu_Hakurei;
+using Kourindou.Tiles.Plushies;
 
-namespace Kourindou.Items.Plushies.Reimu_Hakurei
+namespace Kourindou.Items.Plushies
 {
     public class ReimuHakurei_Plushie_Item : PlushieItem
     {

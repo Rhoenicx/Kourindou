@@ -70,43 +70,6 @@ namespace Kourindou.Items.Plushies
             return false;
         }
 
-        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-        {
-            Texture2D texture = Main.itemTexture[item.type];
-            Texture2D textureOld = mod.GetTexture((texture.ToString() + "_Old").Replace("Kourindou/", ""));
-
-            spriteBatch.Draw(
-                Kourindou.KourindouConfigClient.UseOldTextures ? textureOld : texture,
-                position,
-                Kourindou.KourindouConfigClient.UseOldTextures ? textureOld.Bounds : texture.Bounds,
-                Color.White,
-                0f,
-                new Vector2(0,0),
-                scale,
-                SpriteEffects.None,
-                0);
-
-            return false;
-        }
-/*
-        public override bool PreDrawInWorld (SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
-        {
-            Texture2D texture = Main.itemTexture[item.type];
-
-            spriteBatch.Draw(
-                texture,
-                item.position,
-                new Rectangle(texture.Width / 2 * (Kourindou.KourindouConfigClient.UseOldTextures ? 1 : 0), 0, texture.Width / 2, texture.Height),
-                Color.White,
-                rotation,
-                new Vector2(0,0),
-                scale,
-                SpriteEffects.None,
-                0);
-
-            return false;
-        }
-*/
         // Execute custom effects when this Plushie is equipped
         public virtual void PlushieEquipEffects(Player player)
         {

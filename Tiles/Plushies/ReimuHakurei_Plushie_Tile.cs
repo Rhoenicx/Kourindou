@@ -7,9 +7,9 @@ using Terraria.Enums;
 using Terraria.DataStructures;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
-using Kourindou.Items.Plushies.Reimu_Hakurei;
+using Kourindou.Items.Plushies;
 
-namespace Kourindou.Tiles.Plushies.Reimu_Hakurei
+namespace Kourindou.Tiles.Plushies
 {
     public class ReimuHakurei_Plushie_Tile : PlushieTile
     {
