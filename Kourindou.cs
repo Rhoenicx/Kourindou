@@ -93,7 +93,8 @@ namespace Kourindou
         // Network packet enum
         public enum KourindouMessageType : byte
         {
-            ClientConfig
+            ClientConfig,
+            PlushieSlot
         }
 
         public override void PostDrawInterface(SpriteBatch spriteBatch) {
@@ -129,6 +130,25 @@ namespace Kourindou
                             packet.Write((byte)plushiePower);
                             packet.Send(-1, whoAmI);
                         }
+                    }
+                    break;
+                }
+
+                case KourindouMessageType.PlushieSlot:
+                {
+                    byte playerID = reader.ReadByte();
+                    
+                    KourindouPlayer player = Main.player[playerID].GetModPlayer<KourindouPlayer>();
+                    
+                    player.plushieEquipSlot.Item = ItemIO.Receive(reader);
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        ModPacket packet = GetPacket();
+                        packet.Write((byte)Kourindou.KourindouMessageType.PlushieSlot);
+                        packet.Write((byte)playerID);
+                        ItemIO.Send(player.plushieEquipSlot.Item, packet);
+                        packet.Send(-1, whoAmI);
                     }
                     break;
                 }

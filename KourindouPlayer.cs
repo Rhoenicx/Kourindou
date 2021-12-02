@@ -40,6 +40,36 @@ namespace Kourindou
             clone.plushieEquipSlot.Item = plushieEquipSlot.Item.Clone();
         }
 
+        public override void SendClientChanges(ModPlayer clientPlayer)
+        {
+            KourindouPlayer oldClone = clientPlayer as KourindouPlayer;
+
+            if (oldClone == null)
+            {
+                return;
+            }
+
+            //Detect changes in plushie equip slot
+            if (oldClone.plushieEquipSlot.Item.IsNotTheSameAs(plushieEquipSlot.Item))
+            {
+                ModPacket packet = mod.GetPacket();
+                packet.Write((byte)Kourindou.KourindouMessageType.PlushieSlot);
+                packet.Write((byte)player.whoAmI);
+                ItemIO.Send(plushieEquipSlot.Item, packet);
+                packet.Send(-1, player.whoAmI);
+            }
+
+        }
+
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            ModPacket packet = mod.GetPacket();
+            packet.Write((byte)Kourindou.KourindouMessageType.PlushieSlot);
+            packet.Write((byte)player.whoAmI);
+            ItemIO.Send(plushieEquipSlot.Item, packet);
+            packet.Send(toWho, fromWho);
+        }
+
         // Init
         public override void Initialize() 
         {
@@ -54,19 +84,18 @@ namespace Kourindou
 
             plushieEquipSlot.BackOpacity = .8f;
 
-            InitializePlushies();
+            plushieEquipSlot.Item = new Item();
+            plushieEquipSlot.Item.SetDefaults(0, true);
         }
 
         // Update player with the equipped plushie
         public override void UpdateEquips(ref bool wallSpeedBuff, ref bool tileSpeedBuff, ref bool tileRangeBuff)
         {
-            Item item = plushieEquipSlot.Item;
-
             // When the plushie power setting is changed to 0 or 1 clear the slot 
             // and place the item on top of the player
             if (Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower != 2)
             {
-                if (item.stack > 0)
+                if (plushieEquipSlot.Item.stack > 0)
                 {
                     plushieEquipSlot.Item = new Item();
                     plushieEquipSlot.Item.SetDefaults(0, true);
@@ -74,19 +103,21 @@ namespace Kourindou
                     Item.NewItem(
                         Main.LocalPlayer.Center,
                         new Vector2(Main.LocalPlayer.width, Main.LocalPlayer.height),
-                        item.type, 
+                        plushieEquipSlot.Item.type, 
                         1
                     );
                 }
             }
 
-            if (item.stack > 0)
+            if (plushieEquipSlot.Item.stack > 0)
             {
-                player.VanillaUpdateAccessory(player.whoAmI, item, !plushieEquipSlot.ItemVisible, ref wallSpeedBuff,
+                player.VanillaUpdateAccessory(player.whoAmI, plushieEquipSlot.Item, !plushieEquipSlot.ItemVisible, ref wallSpeedBuff,
                     ref tileSpeedBuff, ref tileRangeBuff);
 
-                player.VanillaUpdateEquip(item);
+                player.VanillaUpdateEquip(plushieEquipSlot.Item);
             }
+
+
         }
 
         // When a player joins a world
@@ -239,13 +270,6 @@ namespace Kourindou
             }
 
             return false;
-        }
-
-        // Initialize items in the plushie slot
-        private void InitializePlushies()
-        {
-            plushieEquipSlot.Item = new Item();
-            plushieEquipSlot.Item.SetDefaults(0, true);
         }
 
         public void EquipPlushie(bool isVanity, Item item)
