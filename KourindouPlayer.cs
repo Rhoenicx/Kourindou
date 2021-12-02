@@ -53,7 +53,7 @@ namespace Kourindou
             if (oldClone.plushieEquipSlot.Item.IsNotTheSameAs(plushieEquipSlot.Item))
             {
                 ModPacket packet = mod.GetPacket();
-                packet.Write((byte)Kourindou.KourindouMessageType.PlushieSlot);
+                packet.Write((byte)KourindouMessageType.PlushieSlot);
                 packet.Write((byte)player.whoAmI);
                 ItemIO.Send(plushieEquipSlot.Item, packet);
                 packet.Send(-1, player.whoAmI);
@@ -64,7 +64,7 @@ namespace Kourindou
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
             ModPacket packet = mod.GetPacket();
-            packet.Write((byte)Kourindou.KourindouMessageType.PlushieSlot);
+            packet.Write((byte)KourindouMessageType.PlushieSlot);
             packet.Write((byte)player.whoAmI);
             ItemIO.Send(plushieEquipSlot.Item, packet);
             packet.Send(toWho, fromWho);
@@ -116,8 +116,6 @@ namespace Kourindou
 
                 player.VanillaUpdateEquip(plushieEquipSlot.Item);
             }
-
-
         }
 
         // When a player joins a world
@@ -130,7 +128,7 @@ namespace Kourindou
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
                 ModPacket packet = mod.GetPacket();
-                packet.Write((byte)Kourindou.KourindouMessageType.ClientConfig);
+                packet.Write((byte)KourindouMessageType.ClientConfig);
                 packet.Write((byte)player.whoAmI);
                 packet.Write((byte)plushiePower);
                 packet.Send();

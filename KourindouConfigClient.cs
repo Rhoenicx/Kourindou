@@ -47,7 +47,7 @@ namespace Kourindou
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
                     ModPacket packet = mod.GetPacket();
-                    packet.Write((byte)Kourindou.KourindouMessageType.ClientConfig);
+                    packet.Write((byte)KourindouMessageType.ClientConfig);
                     packet.Write((byte)Main.LocalPlayer.whoAmI);
                     packet.Write((byte)plushiePower);
                     packet.Send();
