@@ -17,31 +17,29 @@ namespace Kourindou.Tiles.Plushies
         {
             // Make Frame Important => multiple frames
             Main.tileFrameImportant[Type] = true;
-
             // Make it not able to attach other tiles like torches
             Main.tileNoAttach[Type] = true;
-
             // Kill tile when hit by lava
             Main.tileLavaDeath[Type] = true;
-
             // Kill tile when hit by water
             Main.tileWaterDeath[Type] = true;
-
             // Draw lighting on this tile
             Main.tileLighted[Type] = true;
-
             // Make tile not solid, can walk in front of it
             Main.tileSolid[Type] = false;
-
             // Prevent destroying this tile when hit
             Main.tileCut[Type] = false;
-
-            // TileObjectData
+            // Tile Style
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
-            TileObjectData.newTile.Height = 3;
-            TileObjectData.newTile.CoordinateHeights = new int[]{ 16, 16, 16 };
-            TileObjectData.newTile.Origin = new Point16(0, 2);
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
+            // Tile Height
+            TileObjectData.newTile.Height = 2;
+            // Tile Size
+            TileObjectData.newTile.CoordinateHeights = new int[]{ 16, 16 };
+            // Tile origin on mouse pointer
+            TileObjectData.newTile.Origin = new Point16(0, 1);
+            // Tile Anchors
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile | AnchorType.Table, TileObjectData.newTile.Width, 0);
+            // Add tile
             TileObjectData.addTile(Type);
 
             // Interaction
@@ -57,5 +55,10 @@ namespace Kourindou.Tiles.Plushies
         {
             Item.NewItem(i * 16, j * 16, 16, 48, ItemType<ReimuHakurei_Plushie_Item>());
         }
+
+        public virtual bool CreateDust(int i, int j, ref int type) {
+			//type = dustType;
+			return false;
+		}
     }
 }

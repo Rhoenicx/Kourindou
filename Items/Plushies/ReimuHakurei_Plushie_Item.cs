@@ -20,7 +20,7 @@ namespace Kourindou.Items.Plushies
             item.value = Item.buyPrice(0, 50, 0, 0);
             item.rare = ItemRarityID.Red;
 
-            //Hitbox
+            // Hitbox
             item.width = 32;
             item.height = 34;
 
@@ -39,6 +39,7 @@ namespace Kourindou.Items.Plushies
             item.accessory = true;
         }
 
+        // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
 
