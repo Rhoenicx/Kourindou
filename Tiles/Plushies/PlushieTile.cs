@@ -14,7 +14,11 @@ namespace Kourindou.Tiles.Plushies
     {
         public override void NearbyEffects(int i, int j, bool closer)
         {
-
+            Player player = Main.LocalPlayer;
+            if (player.GetModPlayer<KourindouPlayer>().plushiePower == 1)
+            {
+                //player.AddBuff();
+            }
         }
 
         public override bool Drop(int i, int j)
