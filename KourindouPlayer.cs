@@ -97,15 +97,15 @@ namespace Kourindou
             {
                 if (plushieEquipSlot.Item.stack > 0)
                 {
-                    plushieEquipSlot.Item = new Item();
-                    plushieEquipSlot.Item.SetDefaults(0, true);
-
                     Item.NewItem(
                         Main.LocalPlayer.Center,
                         new Vector2(Main.LocalPlayer.width, Main.LocalPlayer.height),
                         plushieEquipSlot.Item.type, 
                         1
                     );
+
+                    plushieEquipSlot.Item = new Item();
+                    plushieEquipSlot.Item.SetDefaults(0, true);
                 }
             }
 

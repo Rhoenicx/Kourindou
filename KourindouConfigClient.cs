@@ -52,7 +52,9 @@ namespace Kourindou
                     packet.Write((byte)plushiePower);
                     packet.Send();
                 }
-            }
+
+                ModContent.GetInstance<Kourindou>().LoadTextures();
+            } 
         }
     }
 }

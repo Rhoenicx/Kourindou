@@ -6,11 +6,11 @@ using Kourindou.Tiles.Plushies;
 
 namespace Kourindou.Items.Plushies
 {
-    public class ReimuHakurei_Plushie_Item : PlushieItem
+    public class Kourindou_MarisaKirisame_Plushie_Item : PlushieItem
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Reimu Hakurei Fumo");
+            DisplayName.SetDefault("Marisa Kirisame Fumo Kourindou ver.");
             Tooltip.SetDefault("");
         }
 
@@ -33,7 +33,7 @@ namespace Kourindou.Items.Plushies
 
             // Tile placement fields
             item.consumable = true;
-            item.createTile = TileType<ReimuHakurei_Plushie_Tile>();
+            item.createTile = TileType<Kourindou_MarisaKirisame_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
             item.accessory = true;

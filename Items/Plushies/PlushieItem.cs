@@ -44,6 +44,8 @@ namespace Kourindou.Items.Plushies
             {
                 PlushieEquipEffects(player);
             }
+
+            base.UpdateAccessory(player, hideVisual);
         }
 
         // Determine if this accessory can be equipped in the equipment slots
