@@ -10,7 +10,7 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Reimu Hakurei Fumo");
+            DisplayName.SetDefault("Reimu Hakurei Plushie");
             Tooltip.SetDefault("");
         }
 

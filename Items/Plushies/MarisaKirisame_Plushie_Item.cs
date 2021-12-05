@@ -10,7 +10,7 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Marisa Kirisame Fumo");
+            DisplayName.SetDefault("Marisa Kirisame Plushie");
             Tooltip.SetDefault("");
         }
 

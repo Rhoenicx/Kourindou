@@ -47,7 +47,7 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Tenshi Hinanawi Fumo");
+            name.SetDefault("Tenshi Hinanawi Plushie");
             AddMapEntry(new Color(22, 47, 178), name);
         }
 

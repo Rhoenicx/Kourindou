@@ -17,7 +17,7 @@ namespace Kourindou
         // Header Personalization
         [Header("Personalization of the Kourindou mod")]
 
-        // Fumo Power Mode Setting
+        // Plushie Power Mode Setting
         [Range(0, 2)]
         [Increment(1)]
         [DefaultValue(1)]

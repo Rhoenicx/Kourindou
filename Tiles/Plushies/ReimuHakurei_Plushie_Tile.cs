@@ -47,7 +47,7 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Reimu Hakurei Fumo");
+            name.SetDefault("Reimu Hakurei Plushie");
             AddMapEntry(new Color(155, 0, 0), name);
         }
 

@@ -10,7 +10,7 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Tenshi Hinanawi Fumo");
+            DisplayName.SetDefault("Tenshi Hinanawi Plushie");
             Tooltip.SetDefault("");
         }
 

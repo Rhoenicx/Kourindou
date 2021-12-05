@@ -47,7 +47,7 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Marisa Kirisame Fumo Kourindou ver.");
+            name.SetDefault("Marisa Kirisame Plushie Kourindou ver.");
             AddMapEntry(new Color(237, 200, 38), name);
         }
 
