@@ -1,8 +1,11 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Plushies;
+using Kourindou.Projectiles.Plushies;
 
 namespace Kourindou.Items.Plushies
 {
@@ -35,14 +38,43 @@ namespace Kourindou.Items.Plushies
             item.consumable = true;
             item.createTile = TileType<ReimuHakurei_Plushie_Tile>();
 
+            item.shootSpeed = 8f;
+
             // Register as accessory, can only be equipped when plushie power mode setting is 2
             item.accessory = true;
+        }
+
+        public override bool CanUseItem(Player player)
+        {
+            if (player.altFunctionUse == 2)
+            {
+                SetSecondaryStats();
+                SynchronizeSecondary(player);
+            }
+            else
+            {
+                SetNormalStats();
+            }
+            
+            return true;
         }
 
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
 
+        }
+
+        // Change stats for normal use
+        public virtual void SetNormalStats()
+        {
+            item.createTile = TileType<ReimuHakurei_Plushie_Tile>();
+        }
+
+        // Change stats for alt use
+        public virtual void SetSecondaryStats()
+        {
+            item.shoot = ProjectileType<ReimuHakurei_Plushie_Projectile>();
         }
     }
 }

@@ -13,6 +13,7 @@ using Terraria.ModLoader.IO;
 using Terraria.Graphics.Effects;
 using Terraria.UI;
 using TerraUI.Objects;
+using Kourindou.Items;
 using Kourindou.Items.Plushies;
 using static Terraria.ModLoader.ModContent;
 
@@ -27,6 +28,9 @@ namespace Kourindou
         // Dedicated Plushie slot
         public UIItemSlot plushieEquipSlot;
         
+        // Secondary Fire
+        public bool SecondaryFireAnimation;
+
 //--------------------------------------------------------------------------------
         public override void clientClone(ModPlayer clientClone)
         {
@@ -152,6 +156,49 @@ namespace Kourindou
             plushiePower = tag.GetByte("plushiePowerMode");
             base.Load(tag);
         }
+
+        public override bool PreItemCheck()
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != player.whoAmI)
+            {
+                if (SecondaryFireAnimation)
+                {
+                    player.altFunctionUse = 2;
+
+                    if (player.HeldItem.modItem is SecondaryFireItem secondaryFireItem)
+                    {
+                        secondaryFireItem.SetSecondaryStats();
+
+                        Item item = player.HeldItem.modItem.item;
+
+                        if (item.melee)
+                        {
+                            player.itemAnimationMax =
+                                    (int) (item.useAnimation / PlayerHooks.TotalMeleeSpeedMultiplier(player, item));
+                        }
+                        else
+                        {
+                            player.itemAnimationMax =
+                                    (int) (item.useAnimation / PlayerHooks.TotalUseTimeMultiplier(player, item));
+                        }
+                        player.itemAnimation = player.itemAnimationMax;
+
+                        Main.PlaySound(item.UseSound);
+                    }
+                    SecondaryFireAnimation = false;
+                }
+                else if (player.itemAnimation == 1)
+                {
+                    player.altFunctionUse = 0;
+                    if (player.HeldItem.modItem is SecondaryFireItem secondaryFireItem)
+                    {
+                        secondaryFireItem.SetNormalStats();
+                    }
+                }
+            }
+            return true;
+        }
+
 
         //Draw Plushie slot
         private void Slot_DrawBackground(UIObject sender, SpriteBatch spriteBatch)

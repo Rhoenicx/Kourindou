@@ -6,11 +6,13 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
+using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou.Items.Plushies
 {
-    public abstract class PlushieItem : ModItem
+    public abstract class PlushieItem : SecondaryFireItem
     {
+        // Make item right clickable in inventory
         public override bool CanRightClick() 
         { 
             return (!Kourindou.OverrideRightClick() && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2);  
@@ -24,17 +26,6 @@ namespace Kourindou.Items.Plushies
             }
             
             player.GetModPlayer<KourindouPlayer>().EquipPlushie(false, item);
-        }
-
-        // Decides what happens when the player uses this item
-        public override bool CanUseItem(Player player)
-        {
-            if (player.altFunctionUse == 2)
-            {
-                
-            }
-
-            return true;
         }
 
         // Execute custom equip effects
@@ -70,6 +61,12 @@ namespace Kourindou.Items.Plushies
         {
             pre = -3;
             return false;
+        }
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+            position += new Vector2(0f,-16f);
+            return true;
         }
 
         // Execute custom effects when this Plushie is equipped
