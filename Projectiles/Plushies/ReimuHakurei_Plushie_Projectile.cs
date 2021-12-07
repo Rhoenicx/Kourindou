@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -14,12 +13,14 @@ namespace Kourindou.Projectiles.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Reimu Hakurei Plushie");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0; 
         }
 
         public override void SetDefaults()
         {
             // AI
-			projectile.aiStyle = 32;
+			projectile.aiStyle = -1;
 
 			// Entity Interaction
 			projectile.friendly = true;
@@ -41,8 +42,7 @@ namespace Kourindou.Projectiles.Plushies
 		public override void Kill (int timeLeft)
 		{
 			Item.NewItem(
-				projectile.Center,
-				new Vector2(0, 0),
+				projectile.getRect(),
 				ItemType<ReimuHakurei_Plushie_Item>(),
 				1
 			);

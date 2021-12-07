@@ -12,6 +12,25 @@ namespace Kourindou.Items.Plushies
 {
     public abstract class PlushieItem : SecondaryFireItem
     {
+        // Re-center item texture
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
+            Texture2D texture = Main.itemTexture[item.type];
+
+            spriteBatch.Draw(
+                texture,
+                item.Center - Main.screenPosition,
+                texture.Bounds,
+                lightColor,
+                rotation,
+                texture.Size() * 0.5f,
+                scale,
+                SpriteEffects.None,
+                0);
+
+            return false;
+        }
+
         // Make item right clickable in inventory
         public override bool CanRightClick() 
         { 
@@ -65,6 +84,11 @@ namespace Kourindou.Items.Plushies
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
+            Vector2 speed = new Vector2(speedX, speedY);
+
+            speedX = player.velocity.X + speed.X;
+            speedY = player.velocity.Y + speed.Y;
+
             position += new Vector2(0f,-16f);
             return true;
         }
