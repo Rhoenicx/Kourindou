@@ -24,6 +24,7 @@ namespace Kourindou.Projectiles.Plushies
 
 			// Entity Interaction
 			projectile.friendly = true;
+			projectile.hostile = true;
 			projectile.melee = true;
 			projectile.penetrate = 1;
 
