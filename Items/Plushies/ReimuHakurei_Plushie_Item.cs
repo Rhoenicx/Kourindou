@@ -1,8 +1,6 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
@@ -59,12 +57,6 @@ namespace Kourindou.Items.Plushies
             return true;
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieEquipEffects(Player player)
-        {
-
-        }
-
         // Change stats for normal use
         public virtual void SetNormalStats()
         {
@@ -75,6 +67,12 @@ namespace Kourindou.Items.Plushies
         public virtual void SetSecondaryStats()
         {
             item.shoot = ProjectileType<ReimuHakurei_Plushie_Projectile>();
+        }
+
+        // This only executes when plushie power mode is 2
+        public override void PlushieEquipEffects(Player player)
+        {
+
         }
     }
 }
