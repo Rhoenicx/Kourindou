@@ -11,17 +11,18 @@ namespace Kourindou.Projectiles
 {
     public abstract class PlushieProjectile : ModProjectile
     {
-		Vector2 gravity = new Vector2(0f, 10f);
-		float magnitudeX = 0.005f;
-		float magnitudeY = 0.01f;
+		protected Vector2 gravity = new Vector2(0f, 10f);
+		
+		private float magnitudeX = 0.005f;
+		private float magnitudeY = 0.01f;
 
-		public int dropTimer 
+		public int Timer 
 		{
 			get => (int)projectile.ai[0];
 			set => projectile.ai[0] = value;
 		}
 
-		public int Timer
+		public int dropTimer
 		{
 			get => (int)projectile.ai[1];
 			set => projectile.ai[1] = value;
@@ -100,28 +101,63 @@ namespace Kourindou.Projectiles
 				projectile.Kill();
 			}
 
-			if (Timer > 30)
+			if (Timer == 0)
 			{
-				// Check collisions for players
-				for (int i = 0; i < Main.player.Length; i++)
+				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
-					if (Colliding(projectile.Hitbox, Main.player[i].Hitbox) == true)
+					// Check collisions for players
+					for (int i = 0; i < Main.player.Length; i++)
 					{
-						OnHitPlayer(Main.player[i]);
-					}
-				}
+						Player player = Main.player[i];
 
-				// Check collisions for NPC's
-				for (int i = 0; i < Main.npc.Length; i++)
-				{
-					if (Colliding(projectile.Hitbox, Main.npc[i].Hitbox) == true)
+						if (!player.active || player.dead)
+						{
+							continue;
+						}
+
+						//player hitbox
+						if (Colliding(projectile.Hitbox, player.Hitbox) == true)
+						{
+							OnHitPlayer(player);
+						}
+
+						Rectangle hitbox = new Rectangle();
+
+						if (KourindouGlobalItem.meleeHitbox[player.whoAmI].HasValue)
+						{
+							hitbox = KourindouGlobalItem.meleeHitbox[player.whoAmI].Value;
+							hitbox = Main.ReverseGravitySupport(hitbox);
+							KourindouGlobalItem.meleeHitbox[player.whoAmI] = null;
+						}
+
+						if (Colliding(projectile.Hitbox, hitbox) == true)
+						{
+							OnHitPlayerMelee(player);
+						}
+					}
+
+					// Check collisions for NPC's
+					for (int i = 0; i < Main.npc.Length; i++)
 					{
-						OnHitNPC(Main.npc[i]);
+						NPC npc = Main.npc[i];
+
+						if (!npc.active)
+						{
+							continue;
+						}
+
+						if (Colliding(projectile.Hitbox, Main.npc[i].Hitbox) == true)
+						{
+							OnHitNPC(Main.npc[i]);
+						}
 					}
 				}
 			}
 
-			Timer++;
+			if (Timer > 0)
+			{
+				Timer--;
+			}
 		}
 
 		public override bool? CanCutTiles()
@@ -131,15 +167,29 @@ namespace Kourindou.Projectiles
 
 		public void OnHitNPC(NPC target)
 		{
+			Vector2 direction = Vector2.Normalize(projectile.Center - target.Center);
 
+			projectile.velocity = direction * (projectile.velocity.Length() > target.velocity.Length() ? projectile.velocity.Length() / 2f : target.velocity.Length());
+			projectile.netUpdate = true;
+			Timer = 5;
 		}
 
 		public void OnHitPlayer(Player player)
 		{
 			Vector2 direction = Vector2.Normalize(projectile.Center - player.Center);
-			float distance = Vector2.Distance(projectile.Center, player.Center);
 
-			projectile.velocity = direction *(projectile.velocity.Length() > player.velocity.Length() ? projectile.velocity.Length() / 2f : player.velocity.Length());
+			projectile.velocity = direction * (projectile.velocity.Length() > player.velocity.Length() ? projectile.velocity.Length() / 2f : player.velocity.Length());
+			projectile.netUpdate = true;
+			Timer = 5;
+		}
+
+		public void OnHitPlayerMelee(Player player)
+		{
+			Vector2 direction = Vector2.Normalize(projectile.Center - player.Center);
+
+			projectile.velocity = direction * player.HeldItem.knockBack;
+			projectile.netUpdate = true;
+			Timer = 30;
 		}
     }
 }

@@ -138,23 +138,6 @@ namespace Kourindou
                     break;
                 }
 
-                case KourindouMessageType.SecondaryFire:
-                {
-                    byte playerID = reader.ReadByte();
-                    Player player = Main.player[playerID];
-
-                    player.GetModPlayer<KourindouPlayer>().SecondaryFireAnimation = true;
-
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        ModPacket packet = GetPacket();
-                        packet.Write((byte) KourindouMessageType.SecondaryFire);
-                        packet.Write((byte) player.whoAmI);
-                        packet.Send(-1, whoAmI);
-                    }
-                    break;
-                }
-
                 default:
                     Logger.Warn("Kourindou: Unknown NetMessage type: " + msg);
                     break;

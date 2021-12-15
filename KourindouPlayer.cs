@@ -157,49 +157,6 @@ namespace Kourindou
             base.Load(tag);
         }
 
-        public override bool PreItemCheck()
-        {
-            if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != player.whoAmI)
-            {
-                if (SecondaryFireAnimation)
-                {
-                    player.altFunctionUse = 2;
-
-                    if (player.HeldItem.modItem is SecondaryFireItem secondaryFireItem)
-                    {
-                        secondaryFireItem.SetSecondaryStats();
-
-                        Item item = player.HeldItem.modItem.item;
-
-                        if (item.melee)
-                        {
-                            player.itemAnimationMax =
-                                    (int) (item.useAnimation / PlayerHooks.TotalMeleeSpeedMultiplier(player, item));
-                        }
-                        else
-                        {
-                            player.itemAnimationMax =
-                                    (int) (item.useAnimation / PlayerHooks.TotalUseTimeMultiplier(player, item));
-                        }
-                        player.itemAnimation = player.itemAnimationMax;
-
-                        Main.PlaySound(item.UseSound);
-                    }
-                    SecondaryFireAnimation = false;
-                }
-                else if (player.itemAnimation == 1)
-                {
-                    player.altFunctionUse = 0;
-                    if (player.HeldItem.modItem is SecondaryFireItem secondaryFireItem)
-                    {
-                        secondaryFireItem.SetNormalStats();
-                    }
-                }
-            }
-            return true;
-        }
-
-
         //Draw Plushie slot
         private void Slot_DrawBackground(UIObject sender, SpriteBatch spriteBatch)
         {

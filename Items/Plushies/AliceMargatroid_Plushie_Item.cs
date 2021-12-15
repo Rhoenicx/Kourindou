@@ -36,37 +36,16 @@ namespace Kourindou.Items.Plushies
             item.consumable = true;
             item.createTile = TileType<AliceMargatroid_Plushie_Tile>();
 
-            item.shootSpeed = 8f;
-
             // Register as accessory, can only be equipped when plushie power mode setting is 2
-            item.accessory = true;
+            item.accessory = true;           
         }
-
-        public override bool CanUseItem(Player player)
+        
+        public override bool UseItem(Player player)
         {
-            if (player.altFunctionUse == 2)
-            {
-                SetSecondaryStats();
-                SynchronizeSecondary(player);
-            }
-            else
-            {
-                SetNormalStats();
-            }
-            
+            shootSpeed = 8f;
+            shootProjectile = ProjectileType<AliceMargatroid_Plushie_Projectile>();
+            base.UseItem(player);
             return true;
-        }
-
-        // Change stats for normal use
-        public virtual void SetNormalStats()
-        {
-            item.createTile = TileType<AliceMargatroid_Plushie_Tile>();
-        }
-
-        // Change stats for alt use
-        public virtual void SetSecondaryStats()
-        {
-            item.shoot = ProjectileType<AliceMargatroid_Plushie_Projectile>();
         }
 
         // This only executes when plushie power mode is 2

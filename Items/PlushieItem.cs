@@ -10,8 +10,11 @@ using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou.Items.Plushies
 {
-    public abstract class PlushieItem : SecondaryFireItem
+    public abstract class PlushieItem : ModItem
     {
+        public float shootSpeed = 8f;
+        public int shootProjectile = 0;
+
         // Re-center item texture
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
@@ -82,15 +85,36 @@ namespace Kourindou.Items.Plushies
             return false;
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool AltFunctionUse(Player player)
         {
-            Vector2 speed = new Vector2(speedX, speedY);
-
-            speedX = player.velocity.X + speed.X;
-            speedY = player.velocity.Y + speed.Y;
-
-            position += new Vector2(0f,-16f);
             return true;
+        }
+
+        public override bool ConsumeItem(Player player)
+        {
+            return true;
+        }
+
+        public override bool UseItem(Player player)
+        {
+            if (player.whoAmI == Main.myPlayer)
+            {
+                if (player.altFunctionUse == 2)
+                {
+                    Vector2 speed = player.velocity + Vector2.Normalize(Main.MouseWorld - player.Center) * shootSpeed;
+
+                    Projectile.NewProjectile(
+                        new Vector2(player.Center.X, player.Center.Y - 16f),
+                        speed,
+                        shootProjectile,
+                        item.damage,
+                        item.knockBack,
+                        player.whoAmI,
+                        30f,
+                        0f);
+                }
+            }
+            return false;
         }
 
         // Execute custom effects when this Plushie is equipped
