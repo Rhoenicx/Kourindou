@@ -166,6 +166,25 @@ namespace Kourindou
                     break;
                 }
 
+                case KourindouMessageType.MeleeHitbox:
+                {
+                    byte playerID = reader.ReadByte();
+
+                    int X = reader.ReadInt32();
+                    int Y = reader.ReadInt32();
+                    int Width = reader.ReadInt32();
+                    int Height = reader.ReadInt32();
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        Player p = Main.player[playerID];
+
+                        Rectangle meleeHitbox = new Rectangle(X + (int)p.Center.X, Y + (int)p.Center.Y, Width, Height);
+                        KourindouGlobalItem.meleeHitbox[playerID] = meleeHitbox;
+                    }
+                    break;
+                }
+
                 default:
                     Logger.Warn("Kourindou: Unknown NetMessage type: " + msg);
                     break;

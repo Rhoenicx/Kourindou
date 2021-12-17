@@ -4,6 +4,7 @@ namespace Kourindou
     {
         ClientConfig,
         PlushieSlot,
-        ThrowPlushie
+        ThrowPlushie,
+        MeleeHitbox
     }
 }

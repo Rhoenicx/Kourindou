@@ -146,17 +146,20 @@ namespace Kourindou.Projectiles
 
 						Rectangle hitbox = new Rectangle();
 
-						if (KourindouGlobalItem.meleeHitbox[player.whoAmI].HasValue)
+						if (KourindouGlobalItem.meleeHitbox[player.whoAmI].HasValue && player.itemAnimation > 0)
 						{
 							hitbox = KourindouGlobalItem.meleeHitbox[player.whoAmI].Value;
 							hitbox = Main.ReverseGravitySupport(hitbox);
-							KourindouGlobalItem.meleeHitbox[player.whoAmI] = null;
+							
+							if (Colliding(projectile.Hitbox, hitbox) == true)
+							{
+								OnHitPlayerMelee(player);
+								projectile.netUpdate = true;
+							}
 						}
-
-						if (Colliding(projectile.Hitbox, hitbox) == true)
+						else
 						{
-							OnHitPlayerMelee(player);
-							projectile.netUpdate = true;
+							KourindouGlobalItem.meleeHitbox[player.whoAmI] = null;
 						}
 					}
 
