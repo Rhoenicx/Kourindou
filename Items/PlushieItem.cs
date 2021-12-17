@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
 
@@ -13,7 +15,7 @@ namespace Kourindou.Items.Plushies
     public abstract class PlushieItem : ModItem
     {
         public float shootSpeed = 8f;
-        public int shootProjectile = 0;
+        public int projectileType = 0;
 
         // Re-center item texture
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
@@ -90,29 +92,39 @@ namespace Kourindou.Items.Plushies
             return true;
         }
 
-        public override bool ConsumeItem(Player player)
-        {
-            return true;
-        }
-
         public override bool UseItem(Player player)
         {
-            if (player.whoAmI == Main.myPlayer)
+            if (player.altFunctionUse == 2)
             {
-                if (player.altFunctionUse == 2)
-                {
-                    Vector2 speed = player.velocity + Vector2.Normalize(Main.MouseWorld - player.Center) * shootSpeed;
+                Vector2 speed = player.velocity + Vector2.Normalize(Main.MouseWorld - player.Center) * shootSpeed;
 
+                // Singeplayer
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {                    
                     Projectile.NewProjectile(
                         new Vector2(player.Center.X, player.Center.Y - 16f),
                         speed,
-                        shootProjectile,
+                        projectileType,
                         item.damage,
                         item.knockBack,
                         player.whoAmI,
                         30f,
                         0f);
                 }
+                // Multiplayer
+                else
+                {
+                    ModPacket packet = mod.GetPacket();
+                    packet.Write((byte) KourindouMessageType.ThrowPlushie);
+                    packet.Write((byte) player.whoAmI);
+                    packet.WriteVector2(speed);
+                    packet.Write((int) projectileType);
+                    packet.Write((int) item.damage);
+                    packet.Write((float) item.knockBack);
+                    packet.Send();
+                }
+
+                return true;
             }
             return false;
         }

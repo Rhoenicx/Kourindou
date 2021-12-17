@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,10 +12,11 @@ namespace Kourindou.Projectiles
 {
     public abstract class PlushieProjectile : ModProjectile
     {
+		private bool JustSpawned = true;
+
 		protected Vector2 gravity = new Vector2(0f, 10f);
-		
-		private float magnitudeX = 0.005f;
-		private float magnitudeY = 0.01f;
+		protected float defaultMagnitudeX = 0.005f;
+		protected float defaultMagnitudeY = 0.01f;
 
 		public int Timer 
 		{
@@ -27,6 +29,18 @@ namespace Kourindou.Projectiles
 			get => (int)projectile.ai[1];
 			set => projectile.ai[1] = value;
 		} 
+
+		public float magnitudeX
+		{
+			get => projectile.localAI[0];
+			set => projectile.localAI[0] = value;
+		}
+
+		public float magnitudeY
+		{
+			get => projectile.localAI[1];
+			set => projectile.localAI[1] = value;
+		}
 
         public override bool PreDraw (SpriteBatch spriteBatch, Color lightColor)
 		{
@@ -76,6 +90,13 @@ namespace Kourindou.Projectiles
 
 		public override void AI ()
 		{
+			if (JustSpawned)
+			{
+				magnitudeX = defaultMagnitudeX;
+				magnitudeY = defaultMagnitudeY;
+				JustSpawned = false;
+			}
+
 			projectile.damage = 0;
 
 			// Change projectile velocity towards gravity vector based on magnitude and LERP
@@ -92,19 +113,20 @@ namespace Kourindou.Projectiles
 			}
 			else
 			{
-				magnitudeX = 0.005f;
-			}
-
-			// If the projectile is not moving for 15 ticks, kill it
-			if (dropTimer > 15)
-			{
-				projectile.Kill();
+				magnitudeX = defaultMagnitudeX;
 			}
 
 			if (Timer == 0)
 			{
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
+					// If the projectile is not moving for 15 ticks, kill it
+					if (dropTimer > 15)
+					{
+						projectile.netUpdate = true;
+						projectile.Kill();
+					}
+
 					// Check collisions for players
 					for (int i = 0; i < Main.player.Length; i++)
 					{
@@ -119,6 +141,7 @@ namespace Kourindou.Projectiles
 						if (Colliding(projectile.Hitbox, player.Hitbox) == true)
 						{
 							OnHitPlayer(player);
+							projectile.netUpdate = true;
 						}
 
 						Rectangle hitbox = new Rectangle();
@@ -133,6 +156,7 @@ namespace Kourindou.Projectiles
 						if (Colliding(projectile.Hitbox, hitbox) == true)
 						{
 							OnHitPlayerMelee(player);
+							projectile.netUpdate = true;
 						}
 					}
 
@@ -149,6 +173,7 @@ namespace Kourindou.Projectiles
 						if (Colliding(projectile.Hitbox, Main.npc[i].Hitbox) == true)
 						{
 							OnHitNPC(Main.npc[i]);
+							projectile.netUpdate = true;
 						}
 					}
 				}
@@ -165,12 +190,23 @@ namespace Kourindou.Projectiles
 			return false;
 		}
 
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			magnitudeX = reader.ReadSingle();
+			magnitudeY = reader.ReadSingle();
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(magnitudeX);
+			writer.Write(magnitudeY);
+		}
+
 		public void OnHitNPC(NPC target)
 		{
 			Vector2 direction = Vector2.Normalize(projectile.Center - target.Center);
 
 			projectile.velocity = direction * (projectile.velocity.Length() > target.velocity.Length() ? projectile.velocity.Length() / 2f : target.velocity.Length());
-			projectile.netUpdate = true;
 			Timer = 5;
 		}
 
@@ -179,7 +215,6 @@ namespace Kourindou.Projectiles
 			Vector2 direction = Vector2.Normalize(projectile.Center - player.Center);
 
 			projectile.velocity = direction * (projectile.velocity.Length() > player.velocity.Length() ? projectile.velocity.Length() / 2f : player.velocity.Length());
-			projectile.netUpdate = true;
 			Timer = 5;
 		}
 
@@ -188,7 +223,6 @@ namespace Kourindou.Projectiles
 			Vector2 direction = Vector2.Normalize(projectile.Center - player.Center);
 
 			projectile.velocity = direction * player.HeldItem.knockBack;
-			projectile.netUpdate = true;
 			Timer = 30;
 		}
     }

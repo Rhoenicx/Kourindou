@@ -138,6 +138,34 @@ namespace Kourindou
                     break;
                 }
 
+                case KourindouMessageType.ThrowPlushie:
+                {
+                    //position
+                    byte playerID = reader.ReadByte();
+                    //speed
+                    Vector2 speed = reader.ReadVector2();
+                    //type
+                    int type = reader.ReadInt32();
+                    //damage
+                    int damage = reader.ReadInt32();
+                    //knockback
+                    float knockBack = reader.ReadSingle();
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        Projectile.NewProjectile(
+                            Main.player[playerID].Center + new Vector2(0f, -16f),
+                            speed,
+                            type,
+                            damage,
+                            knockBack,
+                            Main.myPlayer,
+                            30f,
+                            0f);
+                    }
+                    break;
+                }
+
                 default:
                     Logger.Warn("Kourindou: Unknown NetMessage type: " + msg);
                     break;

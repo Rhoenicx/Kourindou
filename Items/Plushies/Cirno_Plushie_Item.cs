@@ -42,10 +42,12 @@ namespace Kourindou.Items.Plushies
         
         public override bool UseItem(Player player)
         {
-            shootSpeed = 8f;
-            shootProjectile = ProjectileType<Cirno_Plushie_Projectile>();
-            base.UseItem(player);
-            return true;
+            if (player.altFunctionUse == 2)
+            {
+                shootSpeed = 8f;
+                projectileType = ProjectileType<Cirno_Plushie_Projectile>();
+            }
+            return base.UseItem(player);
         }
 
         // This only executes when plushie power mode is 2

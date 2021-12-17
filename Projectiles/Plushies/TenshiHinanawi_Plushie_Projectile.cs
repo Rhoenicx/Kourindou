@@ -23,8 +23,8 @@ namespace Kourindou.Projectiles.Plushies
 			projectile.aiStyle = -1;
 
 			// Entity Interaction
-			projectile.friendly = true;
-			projectile.hostile = true;
+			projectile.friendly = false;
+			projectile.hostile = false;
 			projectile.melee = true;
 			projectile.penetrate = 1;
 

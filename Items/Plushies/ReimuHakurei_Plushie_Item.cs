@@ -36,18 +36,18 @@ namespace Kourindou.Items.Plushies
             item.consumable = true;
             item.createTile = TileType<ReimuHakurei_Plushie_Tile>();
 
-            item.shootSpeed = 8f;
-
             // Register as accessory, can only be equipped when plushie power mode setting is 2
             item.accessory = true;
         }
 
         public override bool UseItem(Player player)
         {
-            shootSpeed = 8f;
-            shootProjectile = ProjectileType<ReimuHakurei_Plushie_Projectile>();
-            base.UseItem(player);
-            return true;
+            if (player.altFunctionUse == 2)
+            {
+                shootSpeed = 8f;
+                projectileType = ProjectileType<ReimuHakurei_Plushie_Projectile>();
+            }
+            return base.UseItem(player);
         }
 
         // This only executes when plushie power mode is 2
