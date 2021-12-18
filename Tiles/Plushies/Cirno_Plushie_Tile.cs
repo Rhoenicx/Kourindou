@@ -8,6 +8,7 @@ using Terraria.DataStructures;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Items.Plushies;
+using Kourindou.Tiles;
 
 namespace Kourindou.Tiles.Plushies
 {

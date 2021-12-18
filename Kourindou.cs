@@ -290,6 +290,56 @@ namespace Kourindou
                 Main.itemTexture[ModContent.ItemType<Rumia_Plushie_Item>()] = GetTexture("Items/Plushies/Rumia_Plushie_Item_Old");
                 Main.tileTexture[ModContent.TileType<Rumia_Plushie_Tile>()] = GetTexture("Tiles/Plushies/Rumia_Plushie_Tile_Old");
                 Main.projectileTexture[ModContent.ProjectileType<Rumia_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/Rumia_Plushie_Projectile_Old");
+
+                // Aya Plushie
+                Main.itemTexture[ModContent.ItemType<AyaShameimaru_Plushie_Item>()] = GetTexture("Items/Plushies/AyaShameimaru_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<AyaShameimaru_Plushie_Tile>()] = GetTexture("Tiles/Plushies/AyaShameimaru_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<AyaShameimaru_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/AyaShameimaru_Plushie_Projectile_Old");
+
+                // Eirin Plushie
+                Main.itemTexture[ModContent.ItemType<EirinYagokoro_Plushie_Item>()] = GetTexture("Items/Plushies/EirinYagokoro_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<EirinYagokoro_Plushie_Tile>()] = GetTexture("Tiles/Plushies/EirinYagokoro_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<EirinYagokoro_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/EirinYagokoro_Plushie_Projectile_Old");
+
+                // Mokou Plushie
+                Main.itemTexture[ModContent.ItemType<FujiwaraNoMokou_Plushie_Item>()] = GetTexture("Items/Plushies/FujiwaraNoMokou_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<FujiwaraNoMokou_Plushie_Tile>()] = GetTexture("Tiles/Plushies/FujiwaraNoMokou_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<FujiwaraNoMokou_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/FujiwaraNoMokou_Plushie_Projectile_Old");
+
+                // Hina Plushie
+
+                // Kaguya Plushie
+                Main.itemTexture[ModContent.ItemType<KaguyaHouraisan_Plushie_Item>()] = GetTexture("Items/Plushies/KaguyaHouraisan_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<KaguyaHouraisan_Plushie_Tile>()] = GetTexture("Tiles/Plushies/KaguyaHouraisan_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<KaguyaHouraisan_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/KaguyaHouraisan_Plushie_Projectile_Old");
+
+                // Kanako Plushie
+
+                // Keine Plushie
+
+                // Kisume Plushie
+
+                // Momiji Plushie
+
+                // Nitori Plushie
+
+                // Reisen Plushie
+                Main.itemTexture[ModContent.ItemType<ReisenUdongeinInaba_Plushie_Item>()] = GetTexture("Items/Plushies/ReisenUdongeinInaba_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<ReisenUdongeinInaba_Plushie_Tile>()] = GetTexture("Tiles/Plushies/ReisenUdongeinInaba_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<ReisenUdongeinInaba_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/ReisenUdongeinInaba_Plushie_Projectile_Old");
+
+                // Sanea Plushie
+
+                // Suwako Plushie
+                Main.itemTexture[ModContent.ItemType<SuwakoMoriya_Plushie_Item>()] = GetTexture("Items/Plushies/SuwakoMoriya_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<SuwakoMoriya_Plushie_Tile>()] = GetTexture("Tiles/Plushies/SuwakoMoriya_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<SuwakoMoriya_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/SuwakoMoriya_Plushie_Projectile_Old");
+
+                // Tewi Plushie
+                Main.itemTexture[ModContent.ItemType<TewiInaba_Plushie_Item>()] = GetTexture("Items/Plushies/TewiInaba_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<TewiInaba_Plushie_Tile>()] = GetTexture("Tiles/Plushies/TewiInaba_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<TewiInaba_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/TewiInaba_Plushie_Projectile_Old");
+
             }
             else
             {
@@ -374,6 +424,55 @@ namespace Kourindou
                 Main.itemTexture[ModContent.ItemType<Rumia_Plushie_Item>()] = GetTexture("Items/Plushies/Rumia_Plushie_Item");
                 Main.tileTexture[ModContent.TileType<Rumia_Plushie_Tile>()] = GetTexture("Tiles/Plushies/Rumia_Plushie_Tile");
                 Main.projectileTexture[ModContent.ProjectileType<Rumia_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/Rumia_Plushie_Projectile");
+
+                // Aya Plushie
+                Main.itemTexture[ModContent.ItemType<AyaShameimaru_Plushie_Item>()] = GetTexture("Items/Plushies/AyaShameimaru_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<AyaShameimaru_Plushie_Tile>()] = GetTexture("Tiles/Plushies/AyaShameimaru_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<AyaShameimaru_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/AyaShameimaru_Plushie_Projectile");
+
+                // Eirin Plushie
+                Main.itemTexture[ModContent.ItemType<EirinYagokoro_Plushie_Item>()] = GetTexture("Items/Plushies/EirinYagokoro_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<EirinYagokoro_Plushie_Tile>()] = GetTexture("Tiles/Plushies/EirinYagokoro_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<EirinYagokoro_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/EirinYagokoro_Plushie_Projectile");
+
+                // Mokou Plushie
+                Main.itemTexture[ModContent.ItemType<FujiwaraNoMokou_Plushie_Item>()] = GetTexture("Items/Plushies/FujiwaraNoMokou_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<FujiwaraNoMokou_Plushie_Tile>()] = GetTexture("Tiles/Plushies/FujiwaraNoMokou_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<FujiwaraNoMokou_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/FujiwaraNoMokou_Plushie_Projectile");
+
+                // Hina Plushie
+
+                // Kaguya Plushie
+                Main.itemTexture[ModContent.ItemType<KaguyaHouraisan_Plushie_Item>()] = GetTexture("Items/Plushies/KaguyaHouraisan_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<KaguyaHouraisan_Plushie_Tile>()] = GetTexture("Tiles/Plushies/KaguyaHouraisan_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<KaguyaHouraisan_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/KaguyaHouraisan_Plushie_Projectile");
+
+                // Kanako Plushie
+
+                // Keine Plushie
+
+                // Kisume Plushie
+
+                // Momiji Plushie
+
+                // Nitori Plushie
+
+                // Reisen Plushie
+                Main.itemTexture[ModContent.ItemType<ReisenUdongeinInaba_Plushie_Item>()] = GetTexture("Items/Plushies/ReisenUdongeinInaba_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<ReisenUdongeinInaba_Plushie_Tile>()] = GetTexture("Tiles/Plushies/ReisenUdongeinInaba_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<ReisenUdongeinInaba_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/ReisenUdongeinInaba_Plushie_Projectile");
+
+                // Sanea Plushie
+
+                // Suwako Plushie
+                Main.itemTexture[ModContent.ItemType<SuwakoMoriya_Plushie_Item>()] = GetTexture("Items/Plushies/SuwakoMoriya_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<SuwakoMoriya_Plushie_Tile>()] = GetTexture("Tiles/Plushies/SuwakoMoriya_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<SuwakoMoriya_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/SuwakoMoriya_Plushie_Projectile");
+
+                // Tewi Plushie
+                Main.itemTexture[ModContent.ItemType<TewiInaba_Plushie_Item>()] = GetTexture("Items/Plushies/TewiInaba_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<TewiInaba_Plushie_Tile>()] = GetTexture("Tiles/Plushies/TewiInaba_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<TewiInaba_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/TewiInaba_Plushie_Projectile");
             }
         }
     }
