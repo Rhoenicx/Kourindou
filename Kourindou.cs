@@ -78,7 +78,11 @@ namespace Kourindou
 
             if (!Main.dedServ)
             {
-                LoadTextures();
+                LoadPlushieTextures();
+
+                Main.itemTexture[ItemID.BlackThread] = GetTexture("Items/CraftingMaterials/BlackThread");
+                Main.itemTexture[ItemID.GreenThread] = GetTexture("Items/CraftingMaterials/GreenThread");
+                Main.itemTexture[ItemID.PinkThread] = GetTexture("Items/CraftingMaterials/PinkThread");
             }
         }
 
@@ -202,7 +206,7 @@ namespace Kourindou
             return false;
         }
 
-        public void LoadTextures()
+        public void LoadPlushieTextures()
         {
             // COPY HERE
             // Main.itemTexture[ModContent.ItemType<_Plushie_Item>()] = GetTexture("Items/Plushies/_Plushie_Item_Old");
@@ -340,6 +344,10 @@ namespace Kourindou
                 Main.tileTexture[ModContent.TileType<TewiInaba_Plushie_Tile>()] = GetTexture("Tiles/Plushies/TewiInaba_Plushie_Tile_Old");
                 Main.projectileTexture[ModContent.ProjectileType<TewiInaba_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/TewiInaba_Plushie_Projectile_Old");
 
+                // Koishi Plushie
+                Main.itemTexture[ModContent.ItemType<KoishiKomeiji_Plushie_Item>()] = GetTexture("Items/Plushies/KoishiKomeiji_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<KoishiKomeiji_Plushie_Tile>()] = GetTexture("Tiles/Plushies/KoishiKomeiji_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<KoishiKomeiji_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/KoishiKomeiji_Plushie_Projectile_Old");
             }
             else
             {
@@ -473,6 +481,11 @@ namespace Kourindou
                 Main.itemTexture[ModContent.ItemType<TewiInaba_Plushie_Item>()] = GetTexture("Items/Plushies/TewiInaba_Plushie_Item");
                 Main.tileTexture[ModContent.TileType<TewiInaba_Plushie_Tile>()] = GetTexture("Tiles/Plushies/TewiInaba_Plushie_Tile");
                 Main.projectileTexture[ModContent.ProjectileType<TewiInaba_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/TewiInaba_Plushie_Projectile");
+
+                // Koishi Plushie
+                Main.itemTexture[ModContent.ItemType<KoishiKomeiji_Plushie_Item>()] = GetTexture("Items/Plushies/KoishiKomeiji_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<KoishiKomeiji_Plushie_Tile>()] = GetTexture("Tiles/Plushies/KoishiKomeiji_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<KoishiKomeiji_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/KoishiKomeiji_Plushie_Projectile");
             }
         }
     }
