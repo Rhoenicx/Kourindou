@@ -12,6 +12,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
 using Kourindou.Items.Plushies;
+using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Tiles.Plants;
 using Kourindou.Projectiles.Plushies;
@@ -199,9 +200,55 @@ namespace Kourindou
                     {
                         ModContent.GetInstance<Cotton_Tile>().NewRightClick(i, j);
                     }
-
                     break;
                 }
+
+                case KourindouMessageType.PlaySound: 
+				{
+					byte soundType = reader.ReadByte();
+					short soundStyle = reader.ReadInt16();
+					float soundVolume = reader.ReadSingle();
+					float soundVariance = reader.ReadSingle();
+					int soundSourceX = reader.ReadInt32();
+					int soundSourceY = reader.ReadInt32();
+
+					if (Main.netMode == NetmodeID.Server)
+					{
+						ModPacket packet = GetPacket();
+						packet.Write((byte) KourindouMessageType.PlaySound);
+						packet.Write(soundType);
+						packet.Write(soundStyle);
+						packet.Write(soundVolume);
+						packet.Write(soundVariance);
+						packet.Write(soundSourceX);
+						packet.Write(soundSourceY);
+
+						packet.Send(-1, whoAmI);
+						break;
+					}
+					
+					if (soundSourceX == -1 || soundSourceY == -1)
+					{
+						Main.PlaySound(
+							soundType,
+							(int)Main.LocalPlayer.Center.X,
+							(int)Main.LocalPlayer.Center.Y,
+							soundStyle,
+							soundVolume,
+							Main.rand.NextFloat(-soundVariance, soundVariance));
+					}
+					else
+					{
+						Main.PlaySound(
+							soundType,
+							soundSourceX,
+							soundSourceY,
+							soundStyle,
+							soundVolume,
+							Main.rand.NextFloat(-soundVariance, soundVariance));
+					}
+					break;
+				}
 
                 default:
                     Logger.Warn("Kourindou: Unknown NetMessage type: " + msg);

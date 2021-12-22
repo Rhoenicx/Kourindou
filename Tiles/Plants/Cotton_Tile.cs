@@ -55,6 +55,13 @@ namespace Kourindou.Tiles.Plants
 			};
 
             TileObjectData.addTile(Type);
+
+            ModTranslation name = CreateMapEntryName();
+            name.SetDefault("Cotton Plant");
+            AddMapEntry(new Color(155, 155, 155), name);
+
+            soundStyle = 0;
+            soundType = 0;
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -140,6 +147,7 @@ namespace Kourindou.Tiles.Plants
                     Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
 
                     UpdateMultiTile(i, j, -FrameWidth, (int)GetStyle(i, j));
+                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
                 }
 
                 if (stage == PlantStage.Blooming2)
@@ -152,6 +160,7 @@ namespace Kourindou.Tiles.Plants
                     }
 
                     UpdateMultiTile(i, j, -FrameWidth * 2, (int)GetStyle(i, j));
+                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
                 }
 
                 if (stage == PlantStage.Blooming3)
@@ -164,17 +173,33 @@ namespace Kourindou.Tiles.Plants
                     }
 
                     UpdateMultiTile(i, j, -FrameWidth * 3, (int)GetStyle(i, j));
+                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
                 }
             }
             else
             {
                 if (stage >= PlantStage.Blooming1)
                 {
+                    // Send the right click event to the Server so items can be dropped
                     ModPacket packet = mod.GetPacket();
                     packet.Write((byte) KourindouMessageType.CottonRightClick);
                     packet.Write(i);
                     packet.Write(j);
                     packet.Send();
+
+                    // Play the sound clientside
+                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+
+                    // Send sound packet for other clients
+                    ModPacket packet2 = mod.GetPacket();
+                    packet2.Write((byte) KourindouMessageType.PlaySound);
+                    packet2.Write((byte) SoundID.Grass);
+                    packet2.Write((short) 0);
+                    packet2.Write((float) 0.8f);
+                    packet2.Write((float) Main.rand.NextFloat(-.2f, .2f));
+                    packet2.Write((int) i * 16 + 8);
+                    packet2.Write((int) j * 16 + 8);
+                    packet2.Send();
                 }
             }
             return true;
@@ -272,6 +297,17 @@ namespace Kourindou.Tiles.Plants
             }
             return true;
         }
+
+        public override bool CreateDust(int i, int j, ref int type)
+        {
+            type = 7;
+            return true;
+        }
+
+		public override void NumDust(int i, int j, bool fail, ref int num) 
+        {
+			num = 4;
+		}
 
         private PlantStage GetStage(int i, int j)
 		{

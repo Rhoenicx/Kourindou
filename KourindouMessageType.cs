@@ -6,6 +6,8 @@ namespace Kourindou
         PlushieSlot,
         ThrowPlushie,
         MeleeHitbox,
-        CottonRightClick
+        CottonRightClick,
+        BreakFlaxTile,
+        PlaySound
     }
 }

@@ -37,7 +37,6 @@ namespace Kourindou.Tiles.Plants
             TileObjectData.newTile.StyleWrapLimit = 3;
             TileObjectData.newTile.StyleMultiplier = 2;
 
-
             TileObjectData.newTile.AnchorValidTiles = new int[]
 			{
                 TileID.Dirt,
@@ -51,6 +50,13 @@ namespace Kourindou.Tiles.Plants
 			};
 
             TileObjectData.addTile(Type);
+
+            ModTranslation name = CreateMapEntryName();
+            name.SetDefault("Flax Plant");
+            AddMapEntry(new Color(1, 128, 201), name);
+
+            soundStyle = 0;
+            soundType = SoundID.Grass;
         }
 
 		public override void RandomUpdate(int i, int j)
@@ -120,6 +126,37 @@ namespace Kourindou.Tiles.Plants
             }
             return true;
         }
+
+        public override void KillMultiTile (int i, int j, int frameX, int frameY)
+        {
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                //Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
+
+                if (GetStage(i, j) == PlantStage.Grown)
+                {
+                    Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxBundle>());
+
+                    int dropFlaxSeeds = Main.rand.Next(1,4);
+
+                    for (int a = 0; a < dropFlaxSeeds; a++)
+                    {
+                        //Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
+                    }
+                }
+            }
+        }
+
+        public override bool CreateDust(int i, int j, ref int type)
+        {
+            type = 3;
+            return true;
+        }
+
+		public override void NumDust(int i, int j, bool fail, ref int num) 
+        {
+			num = 4;
+		}
 
         private PlantStage GetStage(int i, int j)
 		{
