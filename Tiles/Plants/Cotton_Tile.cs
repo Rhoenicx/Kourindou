@@ -13,40 +13,12 @@ using Kourindou.Items.Seeds;
 
 namespace Kourindou.Tiles.Plants
 {
-    public enum PlantStage : byte
-    {
-        Planted,
-        Growing,
-        Grown,
-        Blooming1,
-        Blooming2,
-        Blooming3
-    }
-
-    public enum PlantStyle : byte
-    {
-        Forest,
-        Jungle,
-        Corruption,
-        Crimson,
-        Mushroom,
-        HallowBlue,
-        HallowDarkBlue,
-        HallowPink,
-        HallowPurple,
-        HallowRed,
-        HallowGreen,
-        HallowYellow
-    }
-
     public class Cotton_Tile : ModTile
     {
         private const int FrameWidth = 36;
         private const int FrameHeight = 18;
 
         private const int PlantFrameHeight = 56;
-
-        private PlantStyle OldStyle;
 
         public override void SetDefaults()
         {
@@ -91,55 +63,6 @@ namespace Kourindou.Tiles.Plants
 
 			Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonSeeds>());
 
-            // Drop Wood
-            if (stage >= PlantStage.Grown)
-            {
-                int woodDrops = (int)Main.rand.Next(1, 4);
-
-                for (int a = 0; a < woodDrops; a++)
-                {
-                    switch (OldStyle)
-                    {
-                        case PlantStyle.Forest:
-                        {
-                            Item.NewItem(i * 16, j * 16, 16, 16, ItemID.Wood);
-                            break;
-                        }
-                        case PlantStyle.Jungle:
-                        {
-                            Item.NewItem(i * 16, j * 16, 16, 16, ItemID.RichMahogany);
-                            break;
-                        }
-                        case PlantStyle.Corruption:
-                        {
-                            Item.NewItem(i * 16, j * 16, 16, 16, ItemID.Ebonwood);
-                            break;
-                        }
-                        case PlantStyle.Crimson:
-                        {
-                            Item.NewItem(i * 16, j * 16, 16, 16, ItemID.Shadewood);
-                            break;
-                        }
-                        case PlantStyle.Mushroom:
-                        {
-                            Item.NewItem(i * 16, j * 16, 16, 16, ItemID.GlowingMushroom);
-                            break;
-                        }
-                        case PlantStyle.HallowBlue:
-                        case PlantStyle.HallowDarkBlue:
-                        case PlantStyle.HallowPink:
-                        case PlantStyle.HallowPurple:
-                        case PlantStyle.HallowRed:
-                        case PlantStyle.HallowGreen:
-                        case PlantStyle.HallowYellow:
-                        {
-                            Item.NewItem(i * 16, j * 16, 16, 16, ItemID.Pearlwood);
-                            break;
-                        }
-                    }
-                }
-            }
-
             // Drop 1 Fibre
             if (stage == PlantStage.Blooming1)
             {
@@ -178,28 +101,31 @@ namespace Kourindou.Tiles.Plants
 
 		public override void RandomUpdate(int i, int j)
 		{
-            if (Main.rand.Next(0, 13) == 0 && Main.dayTime && !Main.eclipse)
+            if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                PlantStage stage = GetStage(i, j);
-
-			    // Only grow to the next stage if there is a next stage. We dont want our tile turning pink!
-			    if (stage != PlantStage.Blooming3)
+                if (Main.rand.Next(0, 13) == 0 && Main.dayTime && !Main.eclipse)
                 {
-                    if (stage == PlantStage.Planted || stage == PlantStage.Growing)
-                    {
-			    	    // Increase the x frame to change the stage
-			    	    UpdateMultiTile(i, j, FrameWidth, (int)GetStyle(i, j));
-                    }
+                    PlantStage stage = GetStage(i, j);
 
-                    if (stage == PlantStage.Grown || stage == PlantStage.Blooming1 || stage == PlantStage.Blooming2)
+			        // Only grow to the next stage if there is a next stage. We dont want our tile turning pink!
+			        if (stage != PlantStage.Blooming3)
                     {
-                        if ((int)Main.rand.Next(0, 2) == 0)
+                        if (stage == PlantStage.Planted || stage == PlantStage.Growing)
                         {
-                            // Increase the x frame to change the stage
-			    	        UpdateMultiTile(i, j, FrameWidth, (int)GetStyle(i, j));
+			        	    // Increase the x frame to change the stage
+			        	    UpdateMultiTile(i, j, FrameWidth, (int)GetStyle(i, j));
                         }
-                    }
-			    }
+
+                        if (stage == PlantStage.Grown || stage == PlantStage.Blooming1 || stage == PlantStage.Blooming2)
+                        {
+                            if ((int)Main.rand.Next(0, 2) == 0)
+                            {
+                                // Increase the x frame to change the stage
+			        	        UpdateMultiTile(i, j, FrameWidth, (int)GetStyle(i, j));
+                            }
+                        }
+			        }
+                }
             }
 		}
 
@@ -207,136 +133,143 @@ namespace Kourindou.Tiles.Plants
         {
             PlantStage stage = GetStage(i, j);
 
-            if (stage == PlantStage.Blooming1)
+            if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
-
-                UpdateMultiTile(i, j, -FrameWidth, (int)GetStyle(i, j));
-            }
-
-            if (stage == PlantStage.Blooming2)
-            {
-                int fibreDrops = Main.rand.Next(1, 2);
-
-                for (int a = 0; a < fibreDrops; a++)
+                if (stage == PlantStage.Blooming1)
                 {
                     Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+
+                    UpdateMultiTile(i, j, -FrameWidth, (int)GetStyle(i, j));
                 }
 
-                UpdateMultiTile(i, j, -FrameWidth * 2, (int)GetStyle(i, j));
-            }
-
-            if (stage == PlantStage.Blooming3)
-            {
-                int fibreDrops = Main.rand.Next(3, 6);
-
-                for (int a = 0; a < fibreDrops; a++)
+                if (stage == PlantStage.Blooming2)
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+                    int fibreDrops = Main.rand.Next(1, 2);
+
+                    for (int a = 0; a < fibreDrops; a++)
+                    {
+                        Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+                    }
+
+                    UpdateMultiTile(i, j, -FrameWidth * 2, (int)GetStyle(i, j));
                 }
 
-                UpdateMultiTile(i, j, -FrameWidth * 3, (int)GetStyle(i, j));
+                if (stage == PlantStage.Blooming3)
+                {
+                    int fibreDrops = Main.rand.Next(3, 6);
+
+                    for (int a = 0; a < fibreDrops; a++)
+                    {
+                        Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+                    }
+
+                    UpdateMultiTile(i, j, -FrameWidth * 3, (int)GetStyle(i, j));
+                }
             }
-
-            return true;
-        }
-
-        public override bool CanKillTile (int i, int j, ref bool blockDamaged)
-        {
-            PlantStyle style = GetStyle(i, j);
-            OldStyle = style;
-
+            else
+            {
+                if (stage >= PlantStage.Blooming1)
+                {
+                    ModPacket packet = mod.GetPacket();
+                    packet.Write((byte) KourindouMessageType.CottonRightClick);
+                    packet.Write(i);
+                    packet.Write(j);
+                    packet.Send();
+                }
+            }
             return true;
         }
 
         public override bool TileFrame (int i, int j, ref bool resetFrame, ref bool noBreak)
         {
-            Tile tileUnder = Framing.GetTileSafely(i, j + 1);
-            PlantStyle style = GetStyle(i, j);
-
-            bool update = false;
-
-            switch (tileUnder.type)
+            if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                case TileID.Dirt:
+                Tile tileUnder = Framing.GetTileSafely(i, j + 1);
+                PlantStyle style = GetStyle(i, j);
+
+                bool update = false;
+
+                switch (tileUnder.type)
                 {
-                    if (style != PlantStyle.Forest)
+                    case TileID.Dirt:
                     {
-                        style = PlantStyle.Forest;
-                        update = true;
+                        if (style != PlantStyle.Forest)
+                        {
+                            style = PlantStyle.Forest;
+                            update = true;
+                        }
+                        break;
                     }
-                    break;
+
+			    	case TileID.Grass:
+                    {
+                        if (style != PlantStyle.Forest)
+                        {
+                            style = PlantStyle.Forest;
+                            update = true;
+                        }
+                        break;
+                    }
+
+                    case TileID.JungleGrass:
+                    {
+                        if (style != PlantStyle.Jungle)
+                        {
+                            style = PlantStyle.Jungle;
+                            update = true;
+                        }
+                        break;
+                    }
+
+                    case TileID.CorruptGrass:
+                    {
+                        if (style != PlantStyle.Corruption)
+                        {
+                            style = PlantStyle.Corruption;
+                            update = true;
+                        }
+                        break;
+                    }
+
+                    case TileID.FleshGrass:
+                    {
+                        if (style != PlantStyle.Crimson)
+                        {
+                            style = PlantStyle.Crimson;
+                            update = true;
+                        }
+                        break;
+                    }
+
+                    case TileID.MushroomGrass:
+                    {
+                        if (style != PlantStyle.Mushroom)
+                        {
+                            style = PlantStyle.Mushroom;
+                            update = true;
+                        }
+                        break;
+                    }
+
+			    	case TileID.HallowedGrass:
+                    {
+                        if (style != PlantStyle.HallowBlue && style != PlantStyle.HallowDarkBlue &&
+                            style != PlantStyle.HallowPink && style != PlantStyle.HallowPurple &&
+                            style != PlantStyle.HallowRed && style != PlantStyle.HallowGreen &&
+                            style != PlantStyle.HallowYellow)
+                        {
+                            style = (PlantStyle)(int)Main.rand.Next((int)PlantStyle.HallowBlue, (int)PlantStyle.HallowYellow + 1);
+                            update = true;
+                        }
+                        break;
+                    }
                 }
 
-				case TileID.Grass:
+                if (update)
                 {
-                    if (style != PlantStyle.Forest)
-                    {
-                        style = PlantStyle.Forest;
-                        update = true;
-                    }
-                    break;
-                }
-
-                case TileID.JungleGrass:
-                {
-                    if (style != PlantStyle.Jungle)
-                    {
-                        style = PlantStyle.Jungle;
-                        update = true;
-                    }
-                    break;
-                }
-
-                case TileID.CorruptGrass:
-                {
-                    if (style != PlantStyle.Corruption)
-                    {
-                        style = PlantStyle.Corruption;
-                        update = true;
-                    }
-                    break;
-                }
-
-                case TileID.FleshGrass:
-                {
-                    if (style != PlantStyle.Crimson)
-                    {
-                        style = PlantStyle.Crimson;
-                        update = true;
-                    }
-                    break;
-                }
-
-                case TileID.MushroomGrass:
-                {
-                    if (style != PlantStyle.Mushroom)
-                    {
-                        style = PlantStyle.Mushroom;
-                        update = true;
-                    }
-                    break;
-                }
-
-				case TileID.HallowedGrass:
-                {
-                    if (style != PlantStyle.HallowBlue && style != PlantStyle.HallowDarkBlue &&
-                        style != PlantStyle.HallowPink && style != PlantStyle.HallowPurple &&
-                        style != PlantStyle.HallowRed && style != PlantStyle.HallowGreen &&
-                        style != PlantStyle.HallowYellow)
-                    {
-                        style = (PlantStyle)(int)Main.rand.Next((int)PlantStyle.HallowBlue, (int)PlantStyle.HallowYellow + 1);
-                        update = true;
-                    }
-                    break;
+                    UpdateMultiTile(i, j, 0, (int)style);
                 }
             }
-
-            if (update)
-            {
-                UpdateMultiTile(i, j, 0, (int)style);
-            }
-
             return true;
         }
 
@@ -380,10 +313,9 @@ namespace Kourindou.Tiles.Plants
                     currentTile.frameY = (short)((style * PlantFrameHeight) + y * 18);
                     currentTile.frameX += (short)width;
 
-                    // If in multiplayer, sync the frame change
-				    if (Main.netMode != NetmodeID.SinglePlayer)
+			        if (Main.netMode == NetmodeID.Server)
                     {
-				    	NetMessage.SendTileSquare(-1, i, j, 1);
+                        NetMessage.SendTileSquare(-1, i + (direction ? 0 : -1) + x, j - tileY + y, 1);
                     }
                 }
             }

@@ -36,7 +36,7 @@ namespace Kourindou.Items.CraftingMaterials
 
             // Tile placement fields
             item.consumable = true;
-            //item.createTile = TileType<Flax_Tile>(); 
+            item.createTile = TileType<Flax_Tile>();
         }
     }
 }

@@ -13,6 +13,7 @@ using Terraria.ModLoader.IO;
 using Terraria.UI;
 using Kourindou.Items.Plushies;
 using Kourindou.Tiles.Plushies;
+using Kourindou.Tiles.Plants;
 using Kourindou.Projectiles.Plushies;
 
 namespace Kourindou
@@ -186,6 +187,19 @@ namespace Kourindou
                         Rectangle meleeHitbox = new Rectangle(X + (int)p.Center.X, Y + (int)p.Center.Y, Width, Height);
                         KourindouGlobalItem.meleeHitbox[playerID] = meleeHitbox;
                     }
+                    break;
+                }
+
+                case KourindouMessageType.CottonRightClick:
+                {
+                    int i = reader.ReadInt32();
+                    int j = reader.ReadInt32();
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        ModContent.GetInstance<Cotton_Tile>().NewRightClick(i, j);
+                    }
+
                     break;
                 }
 

@@ -5,6 +5,7 @@ namespace Kourindou
         ClientConfig,
         PlushieSlot,
         ThrowPlushie,
-        MeleeHitbox
+        MeleeHitbox,
+        CottonRightClick
     }
 }
