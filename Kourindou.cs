@@ -409,6 +409,12 @@ namespace Kourindou
                 Main.itemTexture[ModContent.ItemType<KoishiKomeiji_Plushie_Item>()] = GetTexture("Items/Plushies/KoishiKomeiji_Plushie_Item_Old");
                 Main.tileTexture[ModContent.TileType<KoishiKomeiji_Plushie_Tile>()] = GetTexture("Tiles/Plushies/KoishiKomeiji_Plushie_Tile_Old");
                 Main.projectileTexture[ModContent.ProjectileType<KoishiKomeiji_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/KoishiKomeiji_Plushie_Projectile_Old");
+				
+				// Shion Plushie
+				Main.itemTexture[ModContent.ItemType<ShionYorigami_Plushie_Item>()] = GetTexture("Items/Plushies/ShionYorigami_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<ShionYorigami_Plushie_Tile>()] = GetTexture("Tiles/Plushies/ShionYorigami_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<ShionYorigami_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/ShionYorigami_Plushie_Projectile_Old");
+				
             }
             else
             {
@@ -547,6 +553,11 @@ namespace Kourindou
                 Main.itemTexture[ModContent.ItemType<KoishiKomeiji_Plushie_Item>()] = GetTexture("Items/Plushies/KoishiKomeiji_Plushie_Item");
                 Main.tileTexture[ModContent.TileType<KoishiKomeiji_Plushie_Tile>()] = GetTexture("Tiles/Plushies/KoishiKomeiji_Plushie_Tile");
                 Main.projectileTexture[ModContent.ProjectileType<KoishiKomeiji_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/KoishiKomeiji_Plushie_Projectile");
+				
+				// Shion Plushie
+				Main.itemTexture[ModContent.ItemType<ShionYorigami_Plushie_Item>()] = GetTexture("Items/Plushies/ShionYorigami_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<ShionYorigami_Plushie_Tile>()] = GetTexture("Tiles/Plushies/ShionYorigami_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<ShionYorigami_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/ShionYorigami_Plushie_Projectile");
             }
         }
     }
