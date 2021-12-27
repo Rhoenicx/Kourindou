@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Items.Plushies;
+using Kourindou.Tiles.Plushies;
 
 namespace Kourindou.Projectiles.Plushies
 {
@@ -42,11 +43,16 @@ namespace Kourindou.Projectiles.Plushies
 		
 		public override void Kill (int timeLeft)
 		{
-			Item.NewItem(
-				projectile.getRect(),
-				ItemType<TenshiHinanawi_Plushie_Item>(),
-				1
-			);
+			plushieTile = TileType<TenshiHinanawi_Plushie_Tile>();
+
+			if (!CanPlacePlushie())
+			{
+				Item.NewItem(
+					projectile.getRect(),
+					ItemType<TenshiHinanawi_Plushie_Item>(),
+					1
+				);
+			}
 		}
     }
 }

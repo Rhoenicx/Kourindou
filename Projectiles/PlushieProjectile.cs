@@ -18,6 +18,8 @@ namespace Kourindou.Projectiles
 		protected float defaultMagnitudeX = 0.005f;
 		protected float defaultMagnitudeY = 0.01f;
 
+		public int plushieTile;
+
 		public int Timer 
 		{
 			get => (int)projectile.ai[0];
@@ -227,6 +229,104 @@ namespace Kourindou.Projectiles
 
 			projectile.velocity = direction * player.HeldItem.knockBack;
 			Timer = 30;
+		}
+
+		public bool CanPlacePlushie()
+		{
+			// Raycast downwards until we find a solid block
+			bool foundSolidTile = false;
+			int searchLimit = 0;
+
+			int tileX = (int)(projectile.Center.X / 16);
+			int tileY = (int)(projectile.Center.Y / 16);
+
+			while (!foundSolidTile)
+			{
+				if (searchLimit >= 8)
+				{
+					return false;
+				}
+
+				Tile tile = Framing.GetTileSafely(tileX, tileY + searchLimit);
+
+				if (tile.active())
+				{
+					if (Main.tileSolid[tile.type])
+					{
+						tileY += searchLimit;
+						foundSolidTile = true;
+					}
+				}
+				searchLimit++;
+			}
+
+			// Check middle tiles
+			if (Framing.GetTileSafely(tileX, tileY).slope() == 0
+				&& Framing.GetTileSafely(tileX, tileY).active()
+				&& Main.tileSolid[Framing.GetTileSafely(tileX, tileY).type]
+				&& !Framing.GetTileSafely(tileX, tileY).halfBrick()
+				&& checkTiles(Framing.GetTileSafely(tileX, tileY - 1), Framing.GetTileSafely(tileX, tileY - 2)))
+			{
+				bool leftOK = false;
+				bool rightOK = false;
+
+				// Check left tiles
+				if (Framing.GetTileSafely(tileX - 1, tileY).slope() == 0
+					&& Framing.GetTileSafely(tileX - 1, tileY).active()
+					&& Main.tileSolid[Framing.GetTileSafely(tileX - 1, tileY).type]
+					&& !Framing.GetTileSafely(tileX - 1, tileY).halfBrick()
+					&& checkTiles(Framing.GetTileSafely(tileX - 1, tileY - 1), Framing.GetTileSafely(tileX -1, tileY - 2)))
+				{
+					leftOK = true;
+				}
+
+				// check right tiles
+				if (Framing.GetTileSafely(tileX + 1, tileY).slope() == 0
+					&& Framing.GetTileSafely(tileX + 1, tileY).active()
+					&& Main.tileSolid[Framing.GetTileSafely(tileX + 1, tileY).type]
+					&& !Framing.GetTileSafely(tileX + 1, tileY).halfBrick()
+					&& checkTiles(Framing.GetTileSafely(tileX + 1, tileY - 1), Framing.GetTileSafely(tileX + 1, tileY - 2)))
+				{
+					rightOK = true;
+				}
+
+				// determine direction
+				if (leftOK && rightOK)
+				{
+					tileX += projectile.Center.X - Math.Floor(projectile.Center.X) > 0.5f ? 0 : -1;
+				}
+				else if (!leftOK && rightOK)
+				{
+					// nothing to change
+				}
+				else if (leftOK && !rightOK)
+				{
+					tileX -= 1;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
+			}
+
+			WorldGen.PlaceObject(tileX, tileY - 1, plushieTile);
+
+			return true;
+		}
+
+		public bool checkTiles(Tile tile1, Tile tile2)
+		{
+			if (tile1.active() || tile2.active() ||
+				tile1.type > 0 || tile2.type > 0 ||
+				tile1.liquid > 0 || tile2.liquid > 0)
+			{
+				return false;
+			}
+			return true;
 		}
     }
 }

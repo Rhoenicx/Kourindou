@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Items.Plushies;
+using Kourindou.Tiles.Plushies;
 
 namespace Kourindou.Projectiles.Plushies
 {
@@ -47,6 +48,16 @@ namespace Kourindou.Projectiles.Plushies
 				ItemType<YoumuKonpaku_Plushie_Item>(),
 				1
 			);
+			plushieTile = TileType<YoumuKonpaku_Plushie_Tile>();
+
+			if (!CanPlacePlushie())
+			{
+				Item.NewItem(
+					projectile.getRect(),
+					ItemType<YoumuKonpaku_Plushie_Item>(),
+					1
+				);
+			}
 		}
     }
 }
