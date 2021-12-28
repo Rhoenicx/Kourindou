@@ -40,7 +40,13 @@ namespace Kourindou.Items.Furniture
 
         public override void AddRecipes()
         {
-            
+            ModRecipe recipe = new ModRecipe(mod);
+            // Recipe 1 - Iron
+            recipe.AddRecipeGroup("IronBar", 8);
+            recipe.AddRecipeGroup("Wood", 12);
+            recipe.AddTile(16); //Anvil
+            recipe.SetResult(this);
+            recipe.AddRecipe();
         }
     }
 }
