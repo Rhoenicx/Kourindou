@@ -19,7 +19,7 @@ namespace Kourindou.Items.Plushies
         {
             // Information
             item.value = Item.buyPrice(0, 50, 0, 0);
-            item.rare = ItemRarityID.Red;
+            item.rare = ItemRarityID.White;
 
             // Hitbox
             item.width = 32;
