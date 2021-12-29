@@ -59,6 +59,28 @@ namespace Kourindou.Tiles.Plants
             soundType = SoundID.Grass;
         }
 
+        public override void KillMultiTile (int i, int j, int frameX, int frameY)
+        {
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                //Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
+
+                PlantStage stage = (PlantStage)(int)Math.Floor((double)(frameX / FrameWidth));
+
+                if (stage == PlantStage.Grown)
+                {
+                    Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxBundle>());
+
+                    int dropFlaxSeeds = Main.rand.Next(1,4);
+
+                    for (int a = 0; a < dropFlaxSeeds; a++)
+                    {
+                        //Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
+                    }
+                }
+            }
+        }
+
 		public override void RandomUpdate(int i, int j)
 		{
             if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -125,26 +147,6 @@ namespace Kourindou.Tiles.Plants
                 }
             }
             return true;
-        }
-
-        public override void KillMultiTile (int i, int j, int frameX, int frameY)
-        {
-            if (Main.netMode != NetmodeID.MultiplayerClient)
-            {
-                //Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
-
-                if (GetStage(i, j) == PlantStage.Grown)
-                {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxBundle>());
-
-                    int dropFlaxSeeds = Main.rand.Next(1,4);
-
-                    for (int a = 0; a < dropFlaxSeeds; a++)
-                    {
-                        //Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
-                    }
-                }
-            }
         }
 
         public override bool CreateDust(int i, int j, ref int type)

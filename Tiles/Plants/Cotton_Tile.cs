@@ -66,42 +66,45 @@ namespace Kourindou.Tiles.Plants
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			PlantStage stage = (PlantStage)(int)Math.Floor((double)(frameX / FrameWidth));
-
-			Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonSeeds>());
-
-            // Drop 1 Fibre
-            if (stage == PlantStage.Blooming1)
+            if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
-            }
+			    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonSeeds>());
 
-            if (stage == PlantStage.Blooming2)
-            {
-                int fibreDrops = Main.rand.Next(1, 3);
+                PlantStage stage = (PlantStage)(int)Math.Floor((double)(frameX / FrameWidth));
 
-                for (int a = 0; a < fibreDrops; a++)
-                {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
-                }
-            }
-
-            if (stage == PlantStage.Blooming3)
-            {
-                // Drop Fibre
-                int fibreDrops = Main.rand.Next(3, 7);
-
-                for (int a = 0; a < fibreDrops; a++)
+                // Drop 1 Fibre
+                if (stage == PlantStage.Blooming1)
                 {
                     Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
                 }
 
-                // Drop additional seeds
-                int seedDrops = Main.rand.Next(0, 3);
-
-                for (int a = 0; a < seedDrops; a++)
+                if (stage == PlantStage.Blooming2)
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonSeeds>());
+                    int fibreDrops = Main.rand.Next(1, 3);
+
+                    for (int a = 0; a < fibreDrops; a++)
+                    {
+                        Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+                    }
+                }
+
+                if (stage == PlantStage.Blooming3)
+                {
+                    // Drop Fibre
+                    int fibreDrops = Main.rand.Next(3, 7);
+
+                    for (int a = 0; a < fibreDrops; a++)
+                    {
+                        Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+                    }
+
+                    // Drop additional seeds
+                    int seedDrops = Main.rand.Next(0, 3);
+
+                    for (int a = 0; a < seedDrops; a++)
+                    {
+                        Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonSeeds>());
+                    }
                 }
             }
 		}
