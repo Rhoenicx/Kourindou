@@ -11,6 +11,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
+using Terraria.Localization;
 using Kourindou.Items.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Plushies;
@@ -82,15 +83,67 @@ namespace Kourindou
             {
                 LoadPlushieTextures();
 
+                // Thread
                 Main.itemTexture[ItemID.BlackThread] = GetTexture("Items/CraftingMaterials/BlackThread");
                 Main.itemTexture[ItemID.GreenThread] = GetTexture("Items/CraftingMaterials/GreenThread");
                 Main.itemTexture[ItemID.PinkThread] = GetTexture("Items/CraftingMaterials/PinkThread");
+
+                // Silk
+                Main.itemTexture[ItemID.Silk] = GetTexture("Items/CraftingMaterials/WhiteFabric");
             }
         }
 
         public override void PostDrawInterface(SpriteBatch spriteBatch) {
             KourindouPlayer player = Main.LocalPlayer.GetModPlayer<KourindouPlayer>();
             player.Draw(spriteBatch);
+        }
+
+        // Add Crafting recipe groups
+        public override void AddRecipeGroups()
+        {
+            // Thread
+            RecipeGroup Thread = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Thread", new int[]
+            {
+                ItemID.BlackThread,
+                ModContent.ItemType<BlueThread>(),
+                ModContent.ItemType<BrownThread>(),
+                ModContent.ItemType<CyanThread>(),
+                ItemID.GreenThread,
+                ModContent.ItemType<LimeThread>(),
+                ModContent.ItemType<OrangeThread>(),
+                ItemID.PinkThread,
+                ModContent.ItemType<PurpleThread>(),
+                ModContent.ItemType<RedThread>(),
+                ModContent.ItemType<SilverThread>(),
+                ModContent.ItemType<SkyBlueThread>(),
+                ModContent.ItemType<TealThread>(),
+                ModContent.ItemType<VioletThread>(),
+                ModContent.ItemType<WhiteThread>(),
+                ModContent.ItemType<YellowThread>()
+            });
+            RecipeGroup.RegisterGroup("Kourindou:Thread", Thread);
+
+            // Fabric
+            RecipeGroup Fabric = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Fabric", new int[]
+            {
+                ModContent.ItemType<BlackFabric>(),
+                ModContent.ItemType<BlueFabric>(),
+                ModContent.ItemType<BrownFabric>(),
+                ModContent.ItemType<CyanFabric>(),
+                ModContent.ItemType<GreenFabric>(),
+                ModContent.ItemType<LimeFabric>(),
+                ModContent.ItemType<OrangeFabric>(),
+                ModContent.ItemType<PinkFabric>(),
+                ModContent.ItemType<PurpleFabric>(),
+                ModContent.ItemType<RedFabric>(),
+                ModContent.ItemType<SilverFabric>(),
+                ModContent.ItemType<SkyBlueFabric>(),
+                ModContent.ItemType<TealFabric>(),
+                ModContent.ItemType<VioletFabric>(),
+                ItemID.Silk,
+                ModContent.ItemType<YellowFabric>()
+            });
+            RecipeGroup.RegisterGroup("Kourindou:Fabric", Fabric); 
         }
 
         // Handle netwrok packets

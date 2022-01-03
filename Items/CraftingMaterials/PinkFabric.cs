@@ -7,16 +7,12 @@ namespace Kourindou.Items.CraftingMaterials
 {
     public class PinkFabric : ModItem
     {
-        public override void SetStaticDefaults() 
-        {
-			DisplayName.SetDefault("Pink Fabric");
-		}
-
         public override void SetDefaults()
         {
             item.CloneDefaults(ItemID.Silk);
             item.width = 32;
             item.height = 26;
+            item.SetNameOverride("Pink Fabric");
         }
 
         public override void AddRecipes()

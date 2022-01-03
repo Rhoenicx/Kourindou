@@ -7,16 +7,12 @@ namespace Kourindou.Items.CraftingMaterials
 {
     public class SilverFabric : ModItem
     {
-        public override void SetStaticDefaults() 
-        {
-			DisplayName.SetDefault("Silver Fabric");
-		}
-
         public override void SetDefaults()
         {
             item.CloneDefaults(ItemID.Silk);
             item.width = 32;
             item.height = 26;
+            item.SetNameOverride("Silver Fabric");
         }
 
         public override void AddRecipes()

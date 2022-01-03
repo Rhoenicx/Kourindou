@@ -7,16 +7,12 @@ namespace Kourindou.Items.CraftingMaterials
 {
     public class VioletFabric : ModItem
     {
-        public override void SetStaticDefaults() 
-        {
-			DisplayName.SetDefault("Violet Fabric");
-		}
-
         public override void SetDefaults()
         {
             item.CloneDefaults(ItemID.Silk);
             item.width = 32;
             item.height = 26;
+            item.SetNameOverride("Violet Fabric");
         }
 
         public override void AddRecipes()

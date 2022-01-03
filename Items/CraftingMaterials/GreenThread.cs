@@ -31,14 +31,22 @@ namespace Kourindou.Items.CraftingMaterials
 
         public override void AddRecipes()
         {
+            // Remove Crafting recipes
             RecipeFinder finder = new RecipeFinder();
             finder.SetResult(ItemID.GreenThread);
 
-            foreach (Recipe recipe in finder.SearchRecipes())
+            foreach (Recipe _recipe in finder.SearchRecipes())
             {
-                RecipeEditor editor = new RecipeEditor(recipe);
+                RecipeEditor editor = new RecipeEditor(_recipe);
                 editor.DeleteRecipe();
             }
+
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddRecipeGroup("Kourindou:Thread", 8);
+            recipe.AddIngredient(ItemID.GreenDye);
+            recipe.AddTile(TileID.DyeVat);
+            recipe.SetResult(ItemID.GreenThread, 8);
+            recipe.AddRecipe();
         }
     }
 }

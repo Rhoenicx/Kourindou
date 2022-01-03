@@ -31,7 +31,12 @@ namespace Kourindou.Items.CraftingMaterials
 
         public override void AddRecipes()
         {
-            
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddRecipeGroup("Kourindou:Thread", 8);
+            recipe.AddIngredient(ItemID.BlackDye);
+            recipe.AddTile(TileID.DyeVat);
+            recipe.SetResult(ItemID.BlackThread, 8);
+            recipe.AddRecipe();
         }
     }
 }

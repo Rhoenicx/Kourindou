@@ -34,11 +34,18 @@ namespace Kourindou.Items.CraftingMaterials
             RecipeFinder finder = new RecipeFinder();
             finder.SetResult(ItemID.PinkThread);
 
-            foreach (Recipe recipe in finder.SearchRecipes())
+            foreach (Recipe _recipe in finder.SearchRecipes())
             {
-                RecipeEditor editor = new RecipeEditor(recipe);
+                RecipeEditor editor = new RecipeEditor(_recipe);
                 editor.DeleteRecipe();
             }
+
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddRecipeGroup("Kourindou:Thread", 8);
+            recipe.AddIngredient(ItemID.PinkDye);
+            recipe.AddTile(TileID.DyeVat);
+            recipe.SetResult(ItemID.PinkThread, 8);
+            recipe.AddRecipe();
         }
     }
 }

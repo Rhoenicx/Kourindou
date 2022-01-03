@@ -33,7 +33,33 @@ namespace Kourindou.Items.CraftingMaterials
 
         public override void AddRecipes()
         {
-            
+            // Cobweb
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemID.Cobweb, 4);
+            recipe.AddTile(TileID.Loom);
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+
+            // Cotton
+            recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemType<CottonFibre>(), 2);
+            recipe.AddTile(TileID.Loom);
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+
+            // Flax
+            recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemType<FlaxBundle>(), 2);
+            recipe.AddTile(TileID.Loom);
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+
+            // Remove colors
+            recipe = new ModRecipe(mod);
+            recipe.AddRecipeGroup("Kourindou:Thread", 1);
+            recipe.needWater = true;
+            recipe.SetResult(this);
+            recipe.AddRecipe();
         }
     }
 }
