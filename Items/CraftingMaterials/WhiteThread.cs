@@ -54,10 +54,17 @@ namespace Kourindou.Items.CraftingMaterials
             recipe.SetResult(this);
             recipe.AddRecipe();
 
-            // Remove colors
+            // Remove colors on water
             recipe = new ModRecipe(mod);
             recipe.AddRecipeGroup("Kourindou:Thread", 1);
             recipe.needWater = true;
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+
+            // Remove colors on dye vat
+            recipe = new ModRecipe(mod);
+            recipe.AddRecipeGroup("Kourindou:Thread", 1);
+            recipe.AddTile(TileID.DyeVat);
             recipe.SetResult(this);
             recipe.AddRecipe();
         }

@@ -22,7 +22,20 @@ namespace Kourindou.Items.CraftingMaterials
 
         public override void AddRecipes()
         {
-            
+            // Add recipe
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemType<BlueThread>(), 4);
+            recipe.AddTile(TileID.Loom);
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+
+            // Recolor any fabric to this color 
+            recipe = new ModRecipe(mod);
+            recipe.AddRecipeGroup("Kourindou:Fabric", 2);
+            recipe.AddIngredient(ItemID.BlueDye);
+            recipe.AddTile(TileID.DyeVat);
+            recipe.SetResult(this, 2);
+            recipe.AddRecipe();  
         }
     }
 }
