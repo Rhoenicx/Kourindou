@@ -468,6 +468,8 @@ namespace Kourindou
                 Main.tileTexture[ModContent.TileType<ShionYorigami_Plushie_Tile>()] = GetTexture("Tiles/Plushies/ShionYorigami_Plushie_Tile_Old");
                 Main.projectileTexture[ModContent.ProjectileType<ShionYorigami_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/ShionYorigami_Plushie_Projectile_Old");
 				
+				// Kokoro Plushie
+				
             }
             else
             {
@@ -611,6 +613,8 @@ namespace Kourindou
 				Main.itemTexture[ModContent.ItemType<ShionYorigami_Plushie_Item>()] = GetTexture("Items/Plushies/ShionYorigami_Plushie_Item");
                 Main.tileTexture[ModContent.TileType<ShionYorigami_Plushie_Tile>()] = GetTexture("Tiles/Plushies/ShionYorigami_Plushie_Tile");
                 Main.projectileTexture[ModContent.ProjectileType<ShionYorigami_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/ShionYorigami_Plushie_Projectile");
+				
+				// Kokoro Plushie
             }
         }
     }
