@@ -4,13 +4,13 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Plants;
 
-namespace Kourindou.Items.CraftingMaterials
+namespace Kourindou.Items.Seeds
 {
-    public class FlaxBundle : ModItem
+    public class FlaxSeeds : ModItem
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Flax Bundle");
+            DisplayName.SetDefault("Flax Seeds");
             Tooltip.SetDefault("");
         }
 
@@ -18,11 +18,11 @@ namespace Kourindou.Items.CraftingMaterials
         {
             // Information
             item.value = Item.buyPrice(0, 0, 1, 0);
-            item.rare = ItemRarityID.Blue;
+            item.rare = ItemRarityID.White;
 
             // Hitbox
-            item.width = 24;
-            item.height = 24;
+            item.width = 22;
+            item.height = 18;
 
             // Usage and Animation
             item.useStyle = ItemUseStyleID.SwingThrow;
@@ -33,6 +33,10 @@ namespace Kourindou.Items.CraftingMaterials
 
             // item
             item.maxStack = 999;
+
+            // Tile placement fields
+            item.consumable = true;
+            item.createTile = TileType<Flax_Tile>();   
         }
     }
 }

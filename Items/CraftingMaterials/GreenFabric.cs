@@ -2,6 +2,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using Kourindou.Tiles.Furniture;
 
 namespace Kourindou.Items.CraftingMaterials
 {
@@ -20,7 +21,7 @@ namespace Kourindou.Items.CraftingMaterials
             // Add recipe
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.GreenThread, 4);
-            recipe.AddTile(TileID.Loom);
+            recipe.AddTile(TileType<WeavingLoom_Tile>());
             recipe.SetResult(this);
             recipe.AddRecipe();
 

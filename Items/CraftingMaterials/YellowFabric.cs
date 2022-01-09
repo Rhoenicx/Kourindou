@@ -21,7 +21,7 @@ namespace Kourindou.Items.CraftingMaterials
             // Add recipe
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<YellowThread>(), 4);
-            recipe.AddTile(TileID.Loom);
+            recipe.AddTile(TileType<WeavingLoom_Tile>());
             recipe.SetResult(this);
             recipe.AddRecipe();
 

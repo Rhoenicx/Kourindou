@@ -40,7 +40,6 @@ namespace Kourindou.Tiles.Furniture
             Main.tileCut[Type] = false;
             Main.tileSolid[Type] = false;
             Main.tileLighted[Type] = true;
-            Main.tileWaterDeath[Type] = true;
             Main.tileLavaDeath[Type] = true;
             Main.tileNoAttach[Type] = true;
 

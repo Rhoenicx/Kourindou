@@ -12,7 +12,7 @@ using Kourindou.Items.Furniture;
 
 namespace Kourindou.Tiles.Furniture
 {
-    public class SewingMachine_Tile : ModTile
+    public class WeavingLoom_Tile : ModTile
     {
         public override void SetDefaults()
         {
@@ -25,8 +25,8 @@ namespace Kourindou.Tiles.Furniture
             Main.tileNoAttach[Type] = true;
 
             // Tile Size and direction
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.CoordinateHeights = new int[]{ 16, 18 };
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
+            TileObjectData.newTile.CoordinateHeights = new int[]{ 16, 16, 18 };
             TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
 
             // Tile Style
@@ -35,10 +35,10 @@ namespace Kourindou.Tiles.Furniture
             TileObjectData.newTile.StyleHorizontal = true;
 
             // Cursor Position
-            TileObjectData.newTile.Origin = new Point16(0, 1);
+            TileObjectData.newTile.Origin = new Point16(1, 2);
 
             // Tile Anchors
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile | AnchorType.Table, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
         
             // Other direction
             TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
@@ -49,19 +49,34 @@ namespace Kourindou.Tiles.Furniture
             TileObjectData.addTile(Type);
 
             disableSmartCursor = true;
+            animationFrameHeight = 56;
 
             ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Sewing Machine");
-            AddMapEntry(new Color(57, 51, 46), name);
+            name.SetDefault("Weaving Loom");
+            AddMapEntry(new Color(114, 114, 114), name);
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(i * 16, j * 16, 16, 16, ItemType<SewingMachine>());
+            Item.NewItem(i * 16, j * 16, 16, 16, ItemType<WeavingLoom>());
         }
 
-		public override void NumDust(int i, int j, bool fail, ref int num) {
+		public override void NumDust(int i, int j, bool fail, ref int num) 
+        {
 			num = 0;
 		}
+
+        public override void AnimateTile(ref int frame, ref int frameCounter)
+        {
+            if (++frameCounter >= 6)
+            {
+                frameCounter = 0;
+
+                if (++frame >= 8)
+                {
+                    frame = 0;
+                }
+            }
+        }
     }
 }

@@ -6,11 +6,11 @@ using Kourindou.Tiles.Furniture;
 
 namespace Kourindou.Items.Furniture
 {
-    public class SewingMachine : ModItem
+    public class WeavingLoom : ModItem
     {
         public override void SetStaticDefaults() 
         {
-			DisplayName.SetDefault("Sewing Machine");
+			DisplayName.SetDefault("Weaving Loom");
 		}
 
         public override void SetDefaults()
@@ -20,8 +20,8 @@ namespace Kourindou.Items.Furniture
             item.rare = ItemRarityID.White;
 
             // Hitbox
-            item.width = 32;
-            item.height = 32;
+            item.width = 40;
+            item.height = 44;
 
             // Usage and Animation
             item.useStyle = ItemUseStyleID.SwingThrow;
@@ -35,15 +35,14 @@ namespace Kourindou.Items.Furniture
 
             // Tile placement fields
             item.consumable = true;
-            item.createTile = TileType<SewingMachine_Tile>();
+            item.createTile = TileType<WeavingLoom_Tile>();
         }
 
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddRecipeGroup("IronBar", 8);
-            recipe.AddRecipeGroup("Wood", 12);
-            recipe.AddTile(16); //Anvil
+            recipe.AddRecipeGroup("Wood", 16);
+            recipe.AddTile(TileID.Sawmill);
             recipe.SetResult(this);
             recipe.AddRecipe();
         }

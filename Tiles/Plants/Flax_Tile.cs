@@ -63,7 +63,7 @@ namespace Kourindou.Tiles.Plants
         {
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                //Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
+                Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
 
                 PlantStage stage = (PlantStage)(int)Math.Floor((double)(frameX / FrameWidth));
 
@@ -75,7 +75,7 @@ namespace Kourindou.Tiles.Plants
 
                     for (int a = 0; a < dropFlaxSeeds; a++)
                     {
-                        //Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
+                        Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
                     }
                 }
             }
