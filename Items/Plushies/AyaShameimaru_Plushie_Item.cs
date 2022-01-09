@@ -7,6 +7,7 @@ using Kourindou.Projectiles.Plushies;
 
 namespace Kourindou.Items.Plushies
 {
+    [AutoloadEquip(EquipType.Wings)]
     public class AyaShameimaru_Plushie_Item : PlushieItem
     {
         public override void SetStaticDefaults()
@@ -53,7 +54,22 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            player.wingTimeMax = 200;
+        }
 
+        public override void VerticalWingSpeeds(Player player, ref float ascentWhenFalling, ref float ascentWhenRising, ref float maxCanAscendMultiplier, ref float maxAscentMultiplier, ref float constantAscend)
+        {
+            constantAscend = 0.9f;
+            ascentWhenFalling = 0.9f;
+            ascentWhenRising = 0.25f;
+            maxCanAscendMultiplier = 1f;
+            maxAscentMultiplier = 4f;
+        }
+
+        public override void HorizontalWingSpeeds(Player player, ref float speed, ref float acceleration)
+        {
+            speed = 10f;
+            acceleration *= 3f;
         }
     }
 }

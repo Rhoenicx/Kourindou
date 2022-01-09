@@ -151,6 +151,8 @@ namespace Kourindou
         {
             KourindouMessageType msg = (KourindouMessageType)reader.ReadByte();
 
+            Main.NewText("Packet: " + msg);
+
             switch(msg)
             {
                 // Update other players Config for Multiplayer
@@ -181,7 +183,6 @@ namespace Kourindou
                 case KourindouMessageType.PlushieSlot:
                 {
                     byte playerID = reader.ReadByte();
-                    
                     KourindouPlayer player = Main.player[playerID].GetModPlayer<KourindouPlayer>();
                     
                     player.plushieEquipSlot.Item = ItemIO.Receive(reader);
@@ -193,6 +194,25 @@ namespace Kourindou
                         packet.Write((byte)playerID);
                         ItemIO.Send(player.plushieEquipSlot.Item, packet);
                         packet.Send(-1, whoAmI);
+                    }
+                    break;
+                }
+
+                case KourindouMessageType.ForceUnequipPlushie:
+                {
+                    byte playerID = reader.ReadByte();
+                    Item plushie = ItemIO.Receive(reader);
+
+                    Player player = Main.player[playerID];
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        Item.NewItem(
+                            player.Center,
+                            new Vector2(player.width, player.height),
+                            plushie.type, 
+                            1
+                        );
                     }
                     break;
                 }
@@ -240,6 +260,24 @@ namespace Kourindou
 
                         Rectangle meleeHitbox = new Rectangle(X + (int)p.Center.X, Y + (int)p.Center.Y, Width, Height);
                         KourindouGlobalItem.meleeHitbox[playerID] = meleeHitbox;
+                    }
+                    break;
+                }
+
+                case KourindouMessageType.ReimuPlushieTargets:
+                {
+                    int proj = reader.ReadInt32();
+                    int npc = reader.ReadInt32();
+
+                    KourindouGlobalProjectile.ReimuPlushieHomingTarget[proj] = npc;
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        ModPacket packet = GetPacket();
+                        packet.Write((byte)KourindouMessageType.ReimuPlushieTargets);
+                        packet.Write((int)proj);
+                        packet.Write((int)npc);
+                        packet.Send(-1, whoAmI);
                     }
                     break;
                 }

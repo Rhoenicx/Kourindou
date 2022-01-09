@@ -69,7 +69,7 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Reduce damage by 25 Percent
-            player.allDamage -= 0.25f;
+            player.allDamage *= 0.75f;
 
             // Increase Life regen by +1 
             player.lifeRegen += 1;
@@ -83,7 +83,7 @@ namespace Kourindou.Items.Plushies
                 }
 
                 // if this player is the owner of this active projectile
-                if (proj.owner == player.whoAmI && proj.active)
+                if (proj.owner == Main.myPlayer && proj.owner == player.whoAmI && proj.active)
                 {
                     //  Create list with valid targets
                     List<ReimuTarget> target = new List<ReimuTarget>();
@@ -109,12 +109,32 @@ namespace Kourindou.Items.Plushies
                             }
                         }
 
-                        Main.NewText(proj.damage);
-                        
-                        float distance = Vector2.Distance(proj.Center, Main.npc[nearest.n].Center);
+                        if (KourindouGlobalProjectile.ReimuPlushieHomingTarget[proj.whoAmI] != nearest.n)
+                        {
+                            KourindouGlobalProjectile.ReimuPlushieHomingTarget[proj.whoAmI] = nearest.n;
+
+                            if (Main.netMode == NetmodeID.MultiplayerClient)
+                            {
+                                ModPacket packet = mod.GetPacket();
+                                packet.Write((byte)KourindouMessageType.ReimuPlushieTargets);
+                                packet.Write((int)proj.whoAmI);
+                                packet.Write((int)nearest.n);
+                                packet.Send();
+                            }
+                        }
+                    }
+                }
+
+                if (proj.owner == player.whoAmI && proj.active)
+                {
+                    if (KourindouGlobalProjectile.ReimuPlushieHomingTarget[proj.whoAmI] != null)
+                    {
+                        Vector2 target = Main.npc[(int)KourindouGlobalProjectile.ReimuPlushieHomingTarget[proj.whoAmI]].Center;
+
+                        float distance = Vector2.Distance(proj.Center, target);
                         float magnitude = distance < 500f ? (1f * (1f - distance / 500f)) : 0f;
 
-                        Vector2 direction = Vector2.Normalize(Vector2.Lerp(Vector2.Normalize(proj.velocity), Vector2.Normalize(Main.npc[nearest.n].Center - proj.Center), magnitude));
+                        Vector2 direction = Vector2.Normalize(Vector2.Lerp(Vector2.Normalize(proj.velocity), Vector2.Normalize(target - proj.Center), magnitude));
 
                         proj.velocity = direction * proj.velocity.Length();
                     }

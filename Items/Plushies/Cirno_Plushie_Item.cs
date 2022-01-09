@@ -53,7 +53,21 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase damage by 25 percent OR on the 9th attack 9% chance to deal time 9 dmg
+            if (player.GetModPlayer<KourindouPlayer>().CirnoPlushie_TimesNine)
+            {
+                player.allDamage *= 9f;
+            }
+            else
+            {
+                player.allDamage *= 1.25f;
+            }
 
+            // Increase Life regen by +1 
+            player.lifeRegen += 1;
+
+            //Decrease damage taken by 17%
+            player.endurance += 0.17f;
         }
     }
 }

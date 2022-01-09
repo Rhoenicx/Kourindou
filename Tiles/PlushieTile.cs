@@ -20,7 +20,7 @@ namespace Kourindou.Tiles.Plushies
                 Player player = Main.LocalPlayer;
                 if (player.GetModPlayer<KourindouPlayer>().plushiePower == 1)
                 {
-                    player.AddBuff(BuffType<Buff_PlushieInRange>(), 5);
+                    player.AddBuff(BuffType<Buff_PlushieInRange>(), 20);
                 }
             }
         }

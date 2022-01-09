@@ -4,11 +4,14 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Kourindou.Items.Plushies;
+using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou
 {
-    public class RemoveItemFromNPCShop : GlobalNPC
+    public class KourindouGlobalNPC : GlobalNPC
     {
+        // Remove items from shop
         public override void SetupShop(int type, Chest shop, ref int nextSlot)
         {
             // Here we remove Pink and Black Thread items from the Clothier's shop

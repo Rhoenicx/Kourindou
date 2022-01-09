@@ -53,7 +53,21 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase damage by 25 percent
+            player.allDamage *= 1.25f;
 
+            // Life regen increased by 10 points
+            player.lifeRegen += 10;
+
+            // Arrow Damage increased by 10 percent
+            player.arrowDamage += 0.1f;
+
+            // Max life increased by 50 points
+            player.statLifeMax2 += 50;
+
+            // Reduce potion delay times by 35%
+            player.potionDelayTime = (int)((double)player.potionDelayTime * 0.65);
+            player.restorationDelayTime = (int)((double)player.restorationDelayTime * 0.65);
         }
     }
 }

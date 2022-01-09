@@ -15,6 +15,7 @@ using Terraria.UI;
 using TerraUI.Objects;
 using Kourindou.Items;
 using Kourindou.Items.Plushies;
+using Kourindou.Projectiles.Plushies.PlushieEffects;
 using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou
@@ -28,8 +29,9 @@ namespace Kourindou
         // Dedicated Plushie slot
         public UIItemSlot plushieEquipSlot;
         
-        // Secondary Fire
-        public bool SecondaryFireAnimation;
+        // Cirno Plushie Effect Attack Counter
+        public byte CirnoPlushie_Attack_Counter;
+        public bool CirnoPlushie_TimesNine;
 
 //--------------------------------------------------------------------------------
         public override void clientClone(ModPlayer clientClone)
@@ -65,15 +67,6 @@ namespace Kourindou
 
         }
 
-        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
-        {
-            ModPacket packet = mod.GetPacket();
-            packet.Write((byte)KourindouMessageType.PlushieSlot);
-            packet.Write((byte)player.whoAmI);
-            ItemIO.Send(plushieEquipSlot.Item, packet);
-            packet.Send(toWho, fromWho);
-        }
-
         // Init
         public override void Initialize() 
         {
@@ -92,21 +85,82 @@ namespace Kourindou
             plushieEquipSlot.Item.SetDefaults(0, true);
         }
 
+        public override TagCompound Save() 
+        {
+            return new TagCompound 
+            {
+                { "plushieEquipSlot", ItemIO.Save(plushieEquipSlot.Item) },
+                { "plushiePowerMode", plushiePower},
+                { "cirnoPlushieAttackCounter", CirnoPlushie_Attack_Counter},
+                { "cirnoPlushieTimesNine", CirnoPlushie_TimesNine}
+            };
+        }
+
+        public override void Load(TagCompound tag) 
+        {
+            SetPlushie(ItemIO.Load(tag.GetCompound("plushieEquipSlot")));
+            plushiePower = tag.GetByte("plushiePowerMode");
+            CirnoPlushie_Attack_Counter = tag.GetByte("cirnoPlushieAttackCounter");
+            CirnoPlushie_TimesNine = tag.GetBool("cirnoPlushieTimesNine");
+            base.Load(tag);
+        }
+
+        public override void OnEnterWorld(Player player)
+        {
+            // When player joins a singleplayer world get the PlushiePower Client Config
+            plushiePower = (byte)Kourindou.KourindouConfigClient.plushiePower;
+
+            base.OnEnterWorld(player);
+        }
+
+        public override void PlayerConnect(Player player)
+        {
+            // PlushiePower Client Config
+            plushiePower = (byte)Kourindou.KourindouConfigClient.plushiePower;
+            
+            // Update other clients when joining multiplayer or when another player joins multiplayer
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModPacket packet = mod.GetPacket();
+                packet.Write((byte)KourindouMessageType.ClientConfig);
+                packet.Write((byte)Main.myPlayer);
+                packet.Write((byte)plushiePower);
+                packet.Send();
+
+                packet = mod.GetPacket();
+                packet.Write((byte)KourindouMessageType.PlushieSlot);
+                packet.Write((byte)Main.myPlayer);
+                ItemIO.Send(Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item, packet);
+                packet.Send();
+            }
+        }
+
         // Update player with the equipped plushie
         public override void UpdateEquips(ref bool wallSpeedBuff, ref bool tileSpeedBuff, ref bool tileRangeBuff)
         {
             // When the plushie power setting is changed to 0 or 1 clear the slot 
             // and place the item on top of the player
-            if (Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower != 2)
+            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower != 2 && player.whoAmI == Main.myPlayer)
             {
                 if (plushieEquipSlot.Item.stack > 0)
                 {
-                    Item.NewItem(
-                        Main.LocalPlayer.Center,
-                        new Vector2(Main.LocalPlayer.width, Main.LocalPlayer.height),
-                        plushieEquipSlot.Item.type, 
-                        1
-                    );
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        Item.NewItem(
+                            Main.player[Main.myPlayer].Center,
+                            new Vector2(Main.player[Main.myPlayer].width, Main.player[Main.myPlayer].height),
+                            plushieEquipSlot.Item.type, 
+                            1
+                        );
+                    }
+                    else
+                    {
+                        ModPacket packet = mod.GetPacket();
+                        packet.Write((byte)KourindouMessageType.ForceUnequipPlushie);
+                        packet.Write((byte)Main.myPlayer);
+                        ItemIO.Send(Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item, packet);
+                        packet.Send();
+                    }
 
                     plushieEquipSlot.Item = new Item();
                     plushieEquipSlot.Item.SetDefaults(0, true);
@@ -122,39 +176,186 @@ namespace Kourindou
             }
         }
 
-        // When a player joins a world
-        public override void OnEnterWorld(Player player)
+        public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
-            // PlushiePower Client Config
-            plushiePower = (byte)Kourindou.KourindouConfigClient.plushiePower;
+            // Plushie Power 2
+            if (plushiePower == 2)
+            {   
+                // Cirno Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
+                {
+                    CirnoPlushie_OnHit(null, target, crit);
+                }
 
-            // If joining a server, also send a packet
-            if (Main.netMode == NetmodeID.MultiplayerClient)
+                // FlandreScarlet Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+                {
+                    FlandreScarletPlushie_OnHit(target, null, damage, crit, item.useAnimation);
+                }
+            }
+        }
+
+        public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockBack, bool crit)
+        {
+            // Plushie Power 2
+            if (plushiePower == 2)
             {
-                ModPacket packet = mod.GetPacket();
-                packet.Write((byte)KourindouMessageType.ClientConfig);
-                packet.Write((byte)player.whoAmI);
-                packet.Write((byte)plushiePower);
-                packet.Send();
+                // Cirno Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
+                {
+                    CirnoPlushie_OnHit(null, target, crit);
+                }
+                
+                // FlandreScarlet Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+                {
+                    FlandreScarletPlushie_OnHit(target, null, damage, crit, target.immune[proj.owner]);
+                    if (crit)
+                    {
+                        target.immune[proj.owner] = 0;
+                    }      
+                }
+            }
+        }
+
+        public override void OnHitPvp(Item item, Player target, int damage, bool crit)
+        {
+            // Plushie Power 2
+            if (plushiePower == 2)
+            {
+                // Cirno Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
+                {
+                    CirnoPlushie_OnHit(target, null, crit);
+                }
+
+                // FlandreScarlet Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+                {
+                    FlandreScarletPlushie_OnHit(null, target, damage, crit, item.useAnimation);
+                }
+            }
+        }
+
+        public override void OnHitPvpWithProj (Projectile proj, Player target, int damage, bool crit)
+        {
+            // Plushie Power 2
+            if (plushiePower == 2)
+            { 
+                // Cirno Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
+                {
+                    CirnoPlushie_OnHit(target, null, crit);
+                }
+
+                // FlandreScarlet Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+                {
+                    FlandreScarletPlushie_OnHit(null, target, damage, crit, target.immuneTime);
+                    if (crit)
+                    {
+                        target.immuneTime = 0;
+                    }
+                }
+            }
+        }
+
+        private void CirnoPlushie_OnHit(Player p, NPC n, bool crit)
+        {
+            CirnoPlushie_Attack_Counter++;
+            
+            if (CirnoPlushie_Attack_Counter == 8 && (int)Main.rand.Next(0,10) == 9)
+            {
+                CirnoPlushie_TimesNine = true;
             }
 
-            base.OnEnterWorld(player);
-        }
-
-        public override TagCompound Save() 
-        {
-            return new TagCompound 
+            if (CirnoPlushie_Attack_Counter >= 9)
             {
-                { "plushieEquipSlot", ItemIO.Save(plushieEquipSlot.Item) },
-                { "plushiePowerMode", plushiePower}
-            };
+                CirnoPlushie_Attack_Counter = 0;
+                CirnoPlushie_TimesNine = false;
+            }
+
+            // Add debuffs to players
+            if (p != null)
+            {
+                p.AddBuff(BuffID.Chilled, 600);
+                p.AddBuff(BuffID.Frostburn, 600);
+                p.AddBuff(BuffID.Slow, 600);
+                if (crit)
+                {
+                    p.AddBuff(BuffID.Frozen, 120);
+                }
+            }
+            
+            // Add debuffs to NPCs
+            if (n != null)
+            {
+                n.AddBuff(BuffID.Chilled, 600);
+                n.AddBuff(BuffID.Frostburn, 600);
+                n.AddBuff(BuffID.Slow, 600);
+                if (crit)
+                {
+                    n.AddBuff(BuffID.Frozen, 120);
+                }
+            }
         }
 
-        public override void Load(TagCompound tag) 
+        private void FlandreScarletPlushie_OnHit(NPC n, Player p, int damage, bool crit, int immune)
         {
-            SetPlushie(ItemIO.Load(tag.GetCompound("plushieEquipSlot")));
-            plushiePower = tag.GetByte("plushiePowerMode");
-            base.Load(tag);
+            if (crit)
+            {
+                Vector2 position = new Vector2(0, 0);
+
+                if (n != null)
+                {
+                    position = n.Center;
+
+                    Projectile.NewProjectile(
+                        position,
+                        Vector2.Zero,
+                        ProjectileType<FlandreScarlet_Plushie_Explosion>(),
+                        damage * 2 + 80,
+                        0f,
+                        Main.myPlayer,
+                        n.whoAmI,
+                        immune
+                    );
+                }
+
+                if (p != null)
+                {
+                    position = p.Center;
+
+                    Projectile.NewProjectile(
+                        position,
+                        Vector2.Zero,
+                        ProjectileType<FlandreScarlet_Plushie_Explosion>(),
+                        damage * 2 + 80,
+                        0f,
+                        Main.myPlayer,
+                        p.whoAmI + 10000,
+                        immune
+                    );
+                }
+
+
+
+                Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode.SoundId, (int)position.X, (int)position.Y, SoundID.DD2_ExplosiveTrapExplode.Style, .8f, 1f);
+
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    // Send sound packet for other clients
+                    ModPacket packet2 = mod.GetPacket();
+                    packet2.Write((byte) KourindouMessageType.PlaySound);
+                    packet2.Write((byte) SoundID.DD2_ExplosiveTrapExplode.SoundId);
+                    packet2.Write((short) SoundID.DD2_ExplosiveTrapExplode.Style);
+                    packet2.Write((float) 0.8f);
+                    packet2.Write((float) 1f);
+                    packet2.Write((int)position.X);
+                    packet2.Write((int)position.Y);
+                    packet2.Send();
+                }
+            }
         }
 
         //Draw Plushie slot

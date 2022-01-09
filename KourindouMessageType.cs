@@ -4,10 +4,11 @@ namespace Kourindou
     {
         ClientConfig,
         PlushieSlot,
+        ForceUnequipPlushie,
         ThrowPlushie,
         MeleeHitbox,
+        ReimuPlushieTargets,
         CottonRightClick,
-        BreakFlaxTile,
         PlaySound
     }
 }
