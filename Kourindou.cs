@@ -151,8 +151,6 @@ namespace Kourindou
         {
             KourindouMessageType msg = (KourindouMessageType)reader.ReadByte();
 
-            Main.NewText("Packet: " + msg);
-
             switch(msg)
             {
                 // Update other players Config for Multiplayer
