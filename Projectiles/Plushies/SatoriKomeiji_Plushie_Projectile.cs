@@ -9,11 +9,11 @@ using Kourindou.Tiles.Plushies;
 
 namespace Kourindou.Projectiles.Plushies
 {
-    public class YoumuKonpaku_Plushie_Projectile : PlushieProjectile
+    public class SatoriKomeiji_Plushie_Projectile : PlushieProjectile
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Youmu Konpaku Plushie");
+            DisplayName.SetDefault("Satori Komeiji Plushie");
 			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0; 
         }
@@ -43,13 +43,13 @@ namespace Kourindou.Projectiles.Plushies
 		
 		public override void Kill (int timeLeft)
 		{
-			plushieTile = TileType<YoumuKonpaku_Plushie_Tile>();
+			plushieTile = TileType<SatoriKomeiji_Plushie_Tile>();
 
 			if (!CanPlacePlushie())
 			{
 				Item.NewItem(
 					projectile.getRect(),
-					ItemType<YoumuKonpaku_Plushie_Item>(),
+					ItemType<SatoriKomeiji_Plushie_Item>(),
 					1
 				);
 			}

@@ -505,6 +505,32 @@ namespace Kourindou
                 Main.projectileTexture[ModContent.ProjectileType<ShionYorigami_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/ShionYorigami_Plushie_Projectile_Old");
 				
 				// Kokoro Plushie
+
+                // Byakuren
+
+                // Chimata
+
+                // Inu Sakuya
+				Main.itemTexture[ModContent.ItemType<InuSakuyaIzayoi_Plushie_Item>()] = GetTexture("Items/Plushies/InuSakuyaIzayoi_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<InuSakuyaIzayoi_Plushie_Tile>()] = GetTexture("Tiles/Plushies/InuSakuyaIzayoi_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<InuSakuyaIzayoi_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/InuSakuyaIzayoi_Plushie_Projectile_Old");
+
+                // Satori
+                Main.itemTexture[ModContent.ItemType<SatoriKomeiji_Plushie_Item>()] = GetTexture("Items/Plushies/SatoriKomeiji_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<SatoriKomeiji_Plushie_Tile>()] = GetTexture("Tiles/Plushies/SatoriKomeiji_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<SatoriKomeiji_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/SatoriKomeiji_Plushie_Projectile_Old");
+
+                // Suika
+                Main.itemTexture[ModContent.ItemType<SuikaIbuki_Plushie_Item>()] = GetTexture("Items/Plushies/SuikaIbuki_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<SuikaIbuki_Plushie_Tile>()] = GetTexture("Tiles/Plushies/SuikaIbuki_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<SuikaIbuki_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/SuikaIbuki_Plushie_Projectile_Old");
+
+                // Utsuho
+
+                // Yuuka
+                Main.itemTexture[ModContent.ItemType<YuukaKazami_Plushie_Item>()] = GetTexture("Items/Plushies/YuukaKazami_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<YuukaKazami_Plushie_Tile>()] = GetTexture("Tiles/Plushies/YuukaKazami_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<YuukaKazami_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/YuukaKazami_Plushie_Projectile_Old");
 				
             }
             else
@@ -651,6 +677,32 @@ namespace Kourindou
                 Main.projectileTexture[ModContent.ProjectileType<ShionYorigami_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/ShionYorigami_Plushie_Projectile");
 				
 				// Kokoro Plushie
+
+                // Byakuren
+
+                // Chimata
+
+                // Inu Sakuya
+				Main.itemTexture[ModContent.ItemType<InuSakuyaIzayoi_Plushie_Item>()] = GetTexture("Items/Plushies/InuSakuyaIzayoi_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<InuSakuyaIzayoi_Plushie_Tile>()] = GetTexture("Tiles/Plushies/InuSakuyaIzayoi_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<InuSakuyaIzayoi_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/InuSakuyaIzayoi_Plushie_Projectile");
+
+                // Satori
+                Main.itemTexture[ModContent.ItemType<SatoriKomeiji_Plushie_Item>()] = GetTexture("Items/Plushies/SatoriKomeiji_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<SatoriKomeiji_Plushie_Tile>()] = GetTexture("Tiles/Plushies/SatoriKomeiji_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<SatoriKomeiji_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/SatoriKomeiji_Plushie_Projectile");
+
+                // Suika
+                Main.itemTexture[ModContent.ItemType<SuikaIbuki_Plushie_Item>()] = GetTexture("Items/Plushies/SuikaIbuki_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<SuikaIbuki_Plushie_Tile>()] = GetTexture("Tiles/Plushies/SuikaIbuki_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<SuikaIbuki_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/SuikaIbuki_Plushie_Projectile");
+
+                // Utsuho
+
+                // Yuuka
+                Main.itemTexture[ModContent.ItemType<YuukaKazami_Plushie_Item>()] = GetTexture("Items/Plushies/YuukaKazami_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<YuukaKazami_Plushie_Tile>()] = GetTexture("Tiles/Plushies/YuukaKazami_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<YuukaKazami_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/YuukaKazami_Plushie_Projectile");
             }
         }
     }
