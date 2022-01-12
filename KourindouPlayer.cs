@@ -192,6 +192,12 @@ namespace Kourindou
                 {
                     FlandreScarletPlushie_OnHit(target, null, damage, crit, item.useAnimation);
                 }
+
+                // Marisa Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+                {
+                    MarisaKirisamePlushie_OnHit(target.Center, target.whoAmI, -1 , crit);
+                }
             }
         }
 
@@ -215,6 +221,12 @@ namespace Kourindou
                         target.immune[proj.owner] = 0;
                     }      
                 }
+
+                // Marisa Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+                {
+                    MarisaKirisamePlushie_OnHit(target.Center, target.whoAmI, -1 , crit);
+                }
             }
         }
 
@@ -233,6 +245,12 @@ namespace Kourindou
                 if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
                 {
                     FlandreScarletPlushie_OnHit(null, target, damage, crit, item.useAnimation);
+                }
+
+                // Marisa Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+                {
+                    MarisaKirisamePlushie_OnHit(target.Center, -1, target.whoAmI, crit);
                 }
             }
         }
@@ -256,6 +274,12 @@ namespace Kourindou
                     {
                         target.immuneTime = 0;
                     }
+                }
+
+                // Marisa Plushie Equipped
+                if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+                {
+                    MarisaKirisamePlushie_OnHit(target.Center, -1, target.whoAmI, crit);
                 }
             }
         }
@@ -355,6 +379,26 @@ namespace Kourindou
                     packet2.Write((int)position.Y);
                     packet2.Send();
                 }
+            }
+        }
+
+        private void MarisaKirisamePlushie_OnHit(Vector2 position, int n, int p, bool crit)
+        {
+            if (crit)
+            {
+                /*
+                Projectile.NewProjectile
+                (
+                    position + new Vector2(0f, 1200f),
+                    new Vector2(0f, 16f),
+                    ProjectileType<MarisaKirisame_Plushie_Star>(),
+                    25,
+                    0f,
+                    Main.myPlayer,
+                    n,
+                    p
+                );
+                */
             }
         }
 
