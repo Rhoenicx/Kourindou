@@ -54,10 +54,12 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increase damage by 25 percent
-            player.allDamage *= 1.25f;
+            player.allDamage += 0.25f;
 
             // Increase Life regen by +1 
             player.lifeRegen += 1;
+
+            // Crit hits explode
         }
     }
 }

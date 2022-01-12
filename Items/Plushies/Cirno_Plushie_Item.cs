@@ -60,7 +60,7 @@ namespace Kourindou.Items.Plushies
             }
             else
             {
-                player.allDamage *= 1.25f;
+                player.allDamage += 0.25f;
             }
 
             // Increase Life regen by +1 

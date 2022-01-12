@@ -7,11 +7,11 @@ using Kourindou.Projectiles.Plushies;
 
 namespace Kourindou.Items.Plushies
 {
-    public class SaneaKochiya_Plushie_Item : PlushieItem
+    public class SanaeKochiya_Plushie_Item : PlushieItem
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Sanea Kochiya Plushie");
+            DisplayName.SetDefault("Sanae Kochiya Plushie");
             Tooltip.SetDefault("");
         }
 
@@ -34,7 +34,7 @@ namespace Kourindou.Items.Plushies
 
             // Tile placement fields
             item.consumable = true;
-            item.createTile = TileType<SaneaKochiya_Plushie_Tile>();
+            item.createTile = TileType<SanaeKochiya_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
             item.accessory = true;
@@ -45,7 +45,7 @@ namespace Kourindou.Items.Plushies
             if (player.altFunctionUse == 2)
             {
                 shootSpeed = 8f;
-                projectileType = ProjectileType<SaneaKochiya_Plushie_Projectile>();
+                projectileType = ProjectileType<SanaeKochiya_Plushie_Projectile>();
             }
             return base.UseItem(player);
         }
@@ -53,7 +53,19 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increased damage by 5 percent
+            player.allDamage += 0.05f;
 
+            // Increase Life regen by +1 
+            player.lifeRegen += 1;
+
+            // Increase Critrate by 25 percent
+            player.magicCrit += 25;
+            player.rangedCrit += 25;
+            player.meleeCrit += 25;
+
+            // Immunity to mighty wind debuff
+            player.buffImmune[BuffID.WindPushed] = true;
         }
     }
 }

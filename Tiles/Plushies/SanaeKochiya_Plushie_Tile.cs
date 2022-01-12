@@ -12,7 +12,7 @@ using Kourindou.Tiles;
 
 namespace Kourindou.Tiles.Plushies
 {
-    public class SaneaKochiya_Plushie_Tile : PlushieTile
+    public class SanaeKochiya_Plushie_Tile : PlushieTile
     {
         public override void SetDefaults()
         {
@@ -48,13 +48,13 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Sanea Kochiya Plushie");
+            name.SetDefault("Sanae Kochiya Plushie");
             AddMapEntry(new Color(39, 152, 31), name);
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<SaneaKochiya_Plushie_Item>());
+            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<SanaeKochiya_Plushie_Item>());
         }
     }
 }

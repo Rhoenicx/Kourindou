@@ -57,12 +57,12 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Reduce damage by 25 Percent
-            player.allDamage *= 0.75f;
+            player.allDamage -= 0.25f;
 
             // Increase Life regen by +1 
             player.lifeRegen += 1;
 
-            //Homing Handled in GlobalProjectile => AI();
+            // Homing Handled in GlobalProjectile => AI();
         }
     }
 }

@@ -9,11 +9,11 @@ using Kourindou.Tiles.Plushies;
 
 namespace Kourindou.Projectiles.Plushies
 {
-    public class SaneaKochiya_Plushie_Projectile : PlushieProjectile
+    public class SanaeKochiya_Plushie_Projectile : PlushieProjectile
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Sanea Kochiya Plushie");
+            DisplayName.SetDefault("Sanae Kochiya Plushie");
 			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0; 
         }
@@ -43,13 +43,13 @@ namespace Kourindou.Projectiles.Plushies
 		
 		public override void Kill (int timeLeft)
 		{
-			plushieTile = TileType<SaneaKochiya_Plushie_Tile>();
+			plushieTile = TileType<SanaeKochiya_Plushie_Tile>();
 
 			if (!CanPlacePlushie())
 			{
 				Item.NewItem(
 					projectile.getRect(),
-					ItemType<SaneaKochiya_Plushie_Item>(),
+					ItemType<SanaeKochiya_Plushie_Item>(),
 					1
 				);
 			}
