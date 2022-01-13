@@ -53,7 +53,42 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase damage by 5 percent
+            player.allDamage += 0.05f;
 
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Increase bullet damage by 20 percent
+            player.bulletDamage += 20f;
+
+            // Increase ranged crit by 20 percent
+            player.rangedCrit += 20;
+
+            // During blood moon gain additional stats:
+            if (Main.bloodMoon)
+            {
+                // Increase defense by 10 points
+                player.statDefense += 10;
+
+                // Increase movement speed by 100%
+                player.moveSpeed += 1f;
+
+                // Increase armor penetration by 15 points
+                player.armorPenetration += 15;
+
+                // Increase damage by an additional 15 percent
+                player.allDamage += 0.15f;
+
+                // Increase life regen by 3 points
+                player.lifeRegen += 3;
+
+                // Increase max HP by 25 points
+                player.statLifeMax2 += 25;
+
+                // Permanent NightOwl buff
+                player.AddBuff(BuffID.NightOwl, 60, true);
+            }
         }
     }
 }

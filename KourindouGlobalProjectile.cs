@@ -26,22 +26,38 @@ namespace Kourindou
 	{
         internal static int?[] ReimuPlushieHomingTarget = new int?[1024];
 
-        public override void PostAI(Projectile projectile)
+        public override void AI(Projectile projectile)
         {
-            //if this projectile is owner by my player and active
+            //Marisa Plushie Effect
+            if (projectile.type == ProjectileID.StarWrath)
+            {
+                if (projectile.ai[0] >= 1f)
+                {
+                    if (projectile.ai[1] > 1f)
+                    {
+                        projectile.hide = false;
+                    }
+
+                    projectile.ai[1]++;
+
+                    if (projectile.ai[1] > 300f)
+                    {
+                        projectile.Kill();
+                    }
+                }
+            }
+
+            //Reimu Plushie effect
             if (projectile.owner == Main.myPlayer && projectile.active)
             {
-                //Check if my player has ReimuPlushie equipped
                 if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<ReimuHakurei_Plushie_Item>())
                 {
                     if ((projectile.magic || projectile.melee || projectile.ranged || projectile.thrown)
                         && projectile.type != ProjectileID.IceBlock
                         )
                     {
-                        //  Create list with valid targets
                         List<ReimuPlushieTarget> target = new List<ReimuPlushieTarget>();
 
-                        // search for all the valif targets and save their id and distance
                         foreach (NPC npc in Main.npc)
                         {
                             if (!npc.friendly && npc.active && Collision.CanHit(projectile.Center, 1, 1, npc.position, npc.width, npc.height) && Vector2.Distance(npc.Center, projectile.Center) < 500f)
@@ -50,7 +66,6 @@ namespace Kourindou
                             }
                         }
 
-                        // Find nearest target in the valid target list
                         ReimuPlushieTarget nearest = target.Any() ? target[0] : null;
                         if (nearest != null)
                         {
@@ -80,7 +95,6 @@ namespace Kourindou
                 }
             }
 
-            //Check if this projectile is affected by a Reimu Plushie Homing Effect
             if (KourindouGlobalProjectile.ReimuPlushieHomingTarget[projectile.whoAmI] != null)
             {
                 if (Main.npc[(int)KourindouGlobalProjectile.ReimuPlushieHomingTarget[projectile.whoAmI]].active)
@@ -108,10 +122,6 @@ namespace Kourindou
                         projectile.velocity = direction * projectile.velocity.Length();
                     }            
                 }
-                else
-                {
-                    ReimuPlushieHomingTarget[projectile.whoAmI] = null;
-                }
             }
 
             if (!projectile.active)
@@ -122,7 +132,10 @@ namespace Kourindou
 
         public override void Kill(Projectile projectile, int timeLeft)
         {
-            ReimuPlushieHomingTarget[projectile.whoAmI] = null;
+            if (ReimuPlushieHomingTarget[projectile.whoAmI] != null)
+            {
+                ReimuPlushieHomingTarget[projectile.whoAmI] = null;
+            }
         }
     }
 }

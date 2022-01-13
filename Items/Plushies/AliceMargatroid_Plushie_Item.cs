@@ -53,7 +53,21 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase damage by 5 percent
+            player.allDamage += 0.05f;
 
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Increase max minions by 1 slot
+            player.maxMinions += 1;
+
+            // Increase magic crit by 15 percent
+            player.magicCrit += 15;
+
+            // Increase magic and minion damage by 10 percent
+            player.magicDamage += 10f;
+            player.minionDamage += 10f;
         }
     }
 }

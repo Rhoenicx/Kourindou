@@ -13,6 +13,7 @@ using Terraria.ModLoader.IO;
 using Terraria.Graphics.Effects;
 using Terraria.UI;
 using TerraUI.Objects;
+using Kourindou.Buffs;
 using Kourindou.Items;
 using Kourindou.Items.Plushies;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
@@ -284,6 +285,26 @@ namespace Kourindou
             }
         }
 
+        public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        {
+            // Kaguya or Mokou Plushie Equipped [Mortality]
+            if (plushieEquipSlot.Item.type == ItemType<KaguyaHouraisan_Plushie_Item>()/* || plushieEquipSlot.Item.type == ItemType<Mokou>()*/)
+            {
+                if (player.HasBuff(BuffType<DeBuff_Mortality>()))
+                {
+                    return true;
+                }
+                else
+                {
+                    player.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
+                    player.statLife += player.statLifeMax2;
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private void CirnoPlushie_OnHit(Player p, NPC n, bool crit)
         {
             CirnoPlushie_Attack_Counter++;
@@ -386,19 +407,19 @@ namespace Kourindou
         {
             if (crit)
             {
-                /*
-                Projectile.NewProjectile
+                int star = Projectile.NewProjectile
                 (
-                    position + new Vector2(0f, 1200f),
-                    new Vector2(0f, 16f),
-                    ProjectileType<MarisaKirisame_Plushie_Star>(),
-                    25,
-                    0f,
+                    player.Center,
+                    Vector2.Normalize(Main.MouseWorld - player.Center) * 10f,
+                    ProjectileID.StarWrath,
+                    50,
+                    1f,
                     Main.myPlayer,
-                    n,
-                    p
+                    1f
                 );
-                */
+
+                Main.projectile[star].hide = true;
+                Main.projectile[star].netUpdate = true;
             }
         }
 

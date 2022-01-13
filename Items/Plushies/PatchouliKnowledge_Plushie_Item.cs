@@ -53,7 +53,24 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase Magic damage by 40 percent
+            player.magicDamage += 0.40f;
 
+            // All other damage types deal zero, really into negatives because other mods might increase this
+            player.rangedDamage = -1000f;
+            player.minionDamage = -1000f;
+            player.meleeDamage = -1000f;
+            player.thrownDamage = -1000f;
+
+            // Increase magic crit rate by 30 percent
+            player.magicCrit += 30;
+
+            // Reduce mana consumption by 50 percent
+            player.manaCost -= 0.50f;
+
+            // Reduce movement speed to 18 mph
+            player.accRunSpeed = 4f;
+            player.moveSpeed -= 0.5f;
         }
     }
 }
