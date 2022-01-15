@@ -53,7 +53,27 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase damage by 25 percent
+            player.allDamage += 0.25f;
 
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Increase melee speed by 10 percent
+            player.meleeSpeed += 0.10f;
+
+            // Increase melee critrate by 10 percent
+            player.meleeCrit += 10;
+
+            if (player.velocity.Length() < 0.5f)
+            {
+                // Increase life regen by 20 additional points
+                player.lifeRegen += 20;
+
+                // add debuffs because you're not moving!
+                player.AddBuff(BuffID.Dazed, 60);
+                player.AddBuff(BuffId.Slow, 60);
+            }
         }
     }
 }
