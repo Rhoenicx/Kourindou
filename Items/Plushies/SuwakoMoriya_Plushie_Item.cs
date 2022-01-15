@@ -53,7 +53,14 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
 
+            // Mining speed halved
+            player.pickSpeed /= 2;
+
+            // Increase block placement range by 10 blocks
+            player.blockRange += 10;
         }
     }
 }

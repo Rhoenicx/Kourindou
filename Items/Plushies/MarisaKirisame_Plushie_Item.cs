@@ -62,7 +62,7 @@ namespace Kourindou.Items.Plushies
             // Increase magic crit by 30%
             player.magicCrit += 30;
 
-            // On crit spawns a star projectile that is aimed at the NPC hit; see 
+            // On crit spawns a star projectile that is aimed at the target hit
         }
     }
 }

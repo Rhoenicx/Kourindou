@@ -177,111 +177,173 @@ namespace Kourindou
             }
         }
 
+        public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref bool crit)
+        {
+            // Shion Yorigami random damage increase on NPC hits 0.1% chance
+            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<ShionYorigami_Plushie_Item>())
+            {
+                if ((int)Main.rand.Next(1,1000) == 1)
+                {
+                    damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
+                }
+            }
+
+            // Disable crit for Flandre Scarlet Plushie effect
+            if (projectile.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
+            {
+                crit = false;
+            }
+        }
+
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
-            // Plushie Power 2
-            if (plushiePower == 2)
-            {   
-                // Cirno Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
-                {
-                    CirnoPlushie_OnHit(null, target, crit);
-                }
+            // Cirno Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
+            {
+                CirnoPlushie_OnHit(null, target, crit);
+            }
 
-                // FlandreScarlet Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
-                {
-                    FlandreScarletPlushie_OnHit(target, null, damage, crit, item.useAnimation);
-                }
+            // Flandre Scarlet Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+            {
+                FlandreScarletPlushie_OnHit(target, null, damage, crit, item.useAnimation);
+            }
 
-                // Marisa Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
-                {
-                    MarisaKirisamePlushie_OnHit(target.Center, target.whoAmI, -1 , crit);
-                }
+            // Marisa Kirisame Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+            {
+                MarisaKirisamePlushie_OnHit(target.Center, crit);
+            }
+
+            // Remilia Scarlet Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            {
+                RemiliaScarletPlushie_OnHit(damage);
+            }
+
+            // Satori Komeiji Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            {
+                SatoriKomeijiPlushie_OnHit(target, null);
+            }
+
+            // Tewi Inaba Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<TewiInaba_Plushie_Item>())
+            {
+                TewiInabaPlushie_OnHit(target);
             }
         }
 
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockBack, bool crit)
         {
-            // Plushie Power 2
-            if (plushiePower == 2)
+            // Cirno Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
             {
-                // Cirno Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
-                {
-                    CirnoPlushie_OnHit(null, target, crit);
-                }
-                
-                // FlandreScarlet Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
-                {
-                    FlandreScarletPlushie_OnHit(target, null, damage, crit, target.immune[proj.owner]);
-                    if (crit)
-                    {
-                        target.immune[proj.owner] = 0;
-                    }      
-                }
+                CirnoPlushie_OnHit(null, target, crit);
+            }
 
-                // Marisa Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+            // Flandre Scarlet Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+            {
+                FlandreScarletPlushie_OnHit(target, null, damage, crit, target.immune[proj.owner]);
+                if (crit)
                 {
-                    MarisaKirisamePlushie_OnHit(target.Center, target.whoAmI, -1 , crit);
-                }
+                    target.immune[proj.owner] = 0;
+                }      
+            }
+
+            // Marisa Kirisame Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+            {
+                MarisaKirisamePlushie_OnHit(target.Center, crit);
+            }
+
+            //Remilia Scarlet Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            {
+                RemiliaScarletPlushie_OnHit(damage);
+            }
+
+            // Satori Komeiji Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            {
+                SatoriKomeijiPlushie_OnHit(target, null);
+            }
+
+            // Tewi Inaba Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<TewiInaba_Plushie_Item>())
+            {
+                TewiInabaPlushie_OnHit(target);
             }
         }
 
         public override void OnHitPvp(Item item, Player target, int damage, bool crit)
         {
-            // Plushie Power 2
-            if (plushiePower == 2)
+            // Cirno Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
             {
-                // Cirno Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
-                {
-                    CirnoPlushie_OnHit(target, null, crit);
-                }
+                CirnoPlushie_OnHit(target, null, crit);
+            }
 
-                // FlandreScarlet Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
-                {
-                    FlandreScarletPlushie_OnHit(null, target, damage, crit, item.useAnimation);
-                }
+            // Flandre Scarlet Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+            {
+                FlandreScarletPlushie_OnHit(null, target, damage, crit, item.useAnimation);
+            }
 
-                // Marisa Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
-                {
-                    MarisaKirisamePlushie_OnHit(target.Center, -1, target.whoAmI, crit);
-                }
+            // Marisa Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+            {
+                MarisaKirisamePlushie_OnHit(target.Center, crit);
+            }
+
+            //Remilia Scarlet Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            {
+                RemiliaScarletPlushie_OnHit(damage);
+            }
+
+            // Satori Komeiji Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            {
+                SatoriKomeijiPlushie_OnHit(null, target);
             }
         }
 
         public override void OnHitPvpWithProj (Projectile proj, Player target, int damage, bool crit)
         {
-            // Plushie Power 2
-            if (plushiePower == 2)
-            { 
-                // Cirno Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
-                {
-                    CirnoPlushie_OnHit(target, null, crit);
-                }
+            // Cirno Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
+            {
+                CirnoPlushie_OnHit(target, null, crit);
+            }
 
-                // FlandreScarlet Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+            // Flandre Scarlet Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+            {
+                FlandreScarletPlushie_OnHit(null, target, damage, crit, target.immuneTime);
+                if (crit)
                 {
-                    FlandreScarletPlushie_OnHit(null, target, damage, crit, target.immuneTime);
-                    if (crit)
-                    {
-                        target.immuneTime = 0;
-                    }
+                    target.immuneTime = 0;
                 }
+            }
 
-                // Marisa Plushie Equipped
-                if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
-                {
-                    MarisaKirisamePlushie_OnHit(target.Center, -1, target.whoAmI, crit);
-                }
+            // Marisa Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+            {
+                MarisaKirisamePlushie_OnHit(target.Center, crit);
+            }
+
+            //Remilia Scarlet Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            {
+                RemiliaScarletPlushie_OnHit(damage);
+            }
+
+            // Satori Komeiji Plushie Equipped
+            if (plushieEquipSlot.Item.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            {
+                SatoriKomeijiPlushie_OnHit(null, target);
             }
         }
 
@@ -298,6 +360,7 @@ namespace Kourindou
                 {
                     player.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
                     player.statLife += player.statLifeMax2;
+                    player.HealEffect(player.statLifeMax2, true);
                     return false;
                 }
             }
@@ -403,7 +466,7 @@ namespace Kourindou
             }
         }
 
-        private void MarisaKirisamePlushie_OnHit(Vector2 position, int n, int p, bool crit)
+        private void MarisaKirisamePlushie_OnHit(Vector2 position, bool crit)
         {
             if (crit)
             {
@@ -420,6 +483,41 @@ namespace Kourindou
 
                 Main.projectile[star].hide = true;
                 Main.projectile[star].netUpdate = true;
+            }
+        }
+
+        private void RemiliaScarletPlushie_OnHit(int damage)
+        {
+            if (player.statLife < player.statLifeMax2)
+            {
+                int healAmount = (int)Math.Ceiling((double)((damage * 0.05) < player.statLifeMax2 - player.statLife ? (int)(damage * 0.05) : player.statLifeMax2 - player.statLife));
+                player.statLife += healAmount;
+                player.HealEffect(healAmount, true);
+            }
+        }
+
+        private void SatoriKomeijiPlushie_OnHit(NPC n, Player p)
+        {
+            if (n != null)
+            {
+                n.AddBuff(BuffID.CursedInferno, 600);
+                n.AddBuff(BuffID.Confused, 600);
+                n.AddBuff(BuffID.Ichor, 600);
+            }
+
+            if (p != null)
+            {
+                p.AddBuff(BuffID.CursedInferno, 600);
+                p.AddBuff(BuffID.Confused, 600);
+                p.AddBuff(BuffID.Ichor, 600);
+            }
+        }
+
+        private void TewiInabaPlushie_OnHit(NPC n)
+        {
+            if ((int)Main.rand.Next(0,5) == 0 && n.life <= 0)
+            {
+                n.NPCLoot();
             }
         }
 

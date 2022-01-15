@@ -55,7 +55,19 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Decrease damage by 25 percent
+            player.allDamage -= 0.25f;
 
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Reduce crit chance by 100 percent
+            player.meleeCrit -= 100;
+            player.rangedCrit -= 100;
+            player.magicCrit -= 100;
+            player.thrownCrit -= 100;
+
+            // Random dmg increase is handled in GlobalNPC.
         }
     }
 }

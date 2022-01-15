@@ -60,7 +60,7 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Increase bullet damage by 20 percent
-            player.bulletDamage += 20f;
+            player.bulletDamage += 0.20f;
 
             // Increase ranged crit by 20 percent
             player.rangedCrit += 20;

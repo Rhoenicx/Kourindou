@@ -6,11 +6,61 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Kourindou.Items.Plushies;
 using static Terraria.ModLoader.ModContent;
+using Kourindou.Projectiles.Plushies.PlushieEffects;
 
 namespace Kourindou
 {
     public class KourindouGlobalNPC : GlobalNPC
     {
+        
+        public override void ModifyHitByItem (NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+        {
+            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
+            if (player.GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<PatchouliKnowledge_Plushie_Item>())
+            {
+                if (item.melee || item.ranged || item.thrown)
+                {
+                    damage = 0;
+                }
+            }
+
+            // Shion Yorigami random damage increase on NPC hits 0.1% chance
+            if (player.GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<ShionYorigami_Plushie_Item>())
+            {
+                if ((int)Main.rand.Next(1,1000) == 1)
+                {
+                    damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
+                }
+            }
+        }
+
+        public override void ModifyHitByProjectile (NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
+            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<PatchouliKnowledge_Plushie_Item>())
+            {
+                if (projectile.melee || projectile.ranged || projectile.thrown || projectile.minion)
+                {
+                    damage = 0;
+                }
+            }
+
+            // Shion Yorigami random damage increase on NPC hits 0.1% chance
+            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<ShionYorigami_Plushie_Item>())
+            {
+                if ((int)Main.rand.Next(1,1000) == 1)
+                {
+                    damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
+                }
+            }
+
+            // Disable crit for Flandre Scarlet Plushie effect
+            if (projectile.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
+            {
+                crit = false;
+            }
+        }
+
         // Remove items from shop
         public override void SetupShop(int type, Chest shop, ref int nextSlot)
         {
@@ -38,6 +88,20 @@ namespace Kourindou
                     }
                 }
             }
+        }
+
+        // Block opening the default hair interface of the stylist
+        public override bool PreChatButtonClicked (NPC npc, bool firstButton)
+        {
+            if (npc.type == NPCID.Stylist)
+            {
+                if (!firstButton)
+                {
+                    //return false;
+                }
+            }
+
+            return true;
         }
     }
 }

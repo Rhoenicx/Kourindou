@@ -55,7 +55,13 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase damage by 5 percent
+            player.allDamage += 0.05f;
 
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+            
+            // All Attacks inflict Cursed Flames, Ichor and Confusion
         }
     }
 }

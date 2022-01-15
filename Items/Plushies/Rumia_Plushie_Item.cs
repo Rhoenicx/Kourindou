@@ -53,7 +53,17 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase damage by 25 percent
+            player.allDamage += 0.05f;
 
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+            
+            // Grant infinite flight time, sneaky thing here: just putting the elapsed flight time back to 1
+            player.wingTime = 1;
+            
+            // Permanently afflicted with blackout debuff
+            player.AddBuff(BuffID.Blackout, 60, false);
         }
     }
 }

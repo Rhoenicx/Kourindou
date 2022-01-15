@@ -55,7 +55,37 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase minion knockback by 2
+            player.minionKB += 2;
 
+            // Increase sentry slots by 3
+            player.maxTurrets += 3;
+
+            // Increase minion slots by 3
+            player.maxMinions += 3;
+
+            if (player.HasBuff(BuffID.WellFed))
+            {
+                // Increase attack damage by 25 percent
+                player.allDamage += 0.25f;
+
+                // Increase life regen by 1 point
+                player.lifeRegen += 1;
+
+                // Increase movement speed by 30 percent
+                player.moveSpeed += 0.30f;
+            }
+            else
+            {
+                // Increase attack damage by 25 percent
+                player.allDamage -= 0.25f;
+
+                // Increase life regen by 1 point
+                player.lifeRegen -= 1;
+
+                // Increase movement speed by 30 percent
+                player.moveSpeed -= 0.30f;
+            }
         }
     }
 }

@@ -16,6 +16,11 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
         private int Timer = 0;
 
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Flandre's Explosive Crit");    
+		}
+		
         public override void SetDefaults()
         {
             // AI
@@ -25,6 +30,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			projectile.friendly = true;
             projectile.hostile = false;
 			projectile.penetrate = -1;
+            projectile.magic = true;
             projectile.damage = 1;
 
 			// Hitbox
