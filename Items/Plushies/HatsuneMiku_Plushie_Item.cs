@@ -2,25 +2,25 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using Kourindou;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 
 namespace Kourindou.Items.Plushies
 {
-    public class SuwakoMoriya_Plushie_Item : PlushieItem
+    public class HatsuneMiku_Plushie_Item : PlushieItem
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Suwako Moriya Plushie");
-            Tooltip.SetDefault("");
+            DisplayName.SetDefault("Hatsune Miku Plushie");
+            Tooltip.SetDefault("The voice of the future, in pixel plushie form!\n"
+									+ "Fires leeks from the heavens if powered.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(3, 9, 3, 9);
+            item.rare = ItemRarityID.Cyan;
 
             // Hitbox
             item.width = 32;
@@ -35,10 +35,11 @@ namespace Kourindou.Items.Plushies
 
             // Tile placement fields
             item.consumable = true;
-            item.createTile = TileType<SuwakoMoriya_Plushie_Tile>();
+            item.createTile = TileType<HatsuneMiku_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
             item.accessory = true;
+
         }
 
         public override bool UseItem(Player player)
@@ -46,29 +47,19 @@ namespace Kourindou.Items.Plushies
             if (player.altFunctionUse == 2)
             {
                 shootSpeed = 8f;
-                projectileType = ProjectileType<SuwakoMoriya_Plushie_Projectile>();
+                projectileType = ProjectileType<HatsuneMiku_Plushie_Projectile>();
             }
             return base.UseItem(player);
         }
 
         // This only executes when plushie power mode is 2
-        public override void PlushieEquipEffects(Player player)
+        public override void PlushieEquipEffects(Player player) 
         {
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
+            // Increase damage by 39 percent [placeholder]
+            player.allDamage += 0.39f;
 
-            // Mining speed halved
-            player.pickSpeed /= 2;
-
-            // Increase reach by 10 blocks
-            player.blockRange += 10;
-
-            // Increase tile break range by 10 blocks
-            if (player.whoAmI == Main.myPlayer)
-            {
-                Player.tileRangeX += 10;
-                Player.tileRangeY += 10;
-            }
+            // Increase damage reduction by 39 percent [placeholder]
+            player.endurance += 0.39f;
         }
     }
 }

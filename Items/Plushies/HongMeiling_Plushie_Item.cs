@@ -65,14 +65,14 @@ namespace Kourindou.Items.Plushies
             // Increase melee critrate by 10 percent
             player.meleeCrit += 10;
 
-            if (player.velocity.Length() < 0.5f)
+            if (player.velocity.Length() < 0.1f)
             {
                 // Increase life regen by 20 additional points
                 player.lifeRegen += 20;
 
                 // add debuffs because you're not moving!
                 player.AddBuff(BuffID.Dazed, 60);
-                player.AddBuff(BuffId.Slow, 60);
+                player.AddBuff(BuffID.Slow, 60);
             }
         }
     }

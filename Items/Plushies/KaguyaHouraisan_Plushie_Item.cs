@@ -64,6 +64,8 @@ namespace Kourindou.Items.Plushies
 
             // Increase defense by 15 points
             player.statDefense += 15;
+
+            // When you get damage that should kill you, heal for maxhp and get mortality debuff
         }
     }
 }

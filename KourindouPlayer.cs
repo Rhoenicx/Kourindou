@@ -34,6 +34,9 @@ namespace Kourindou
         public byte CirnoPlushie_Attack_Counter;
         public bool CirnoPlushie_TimesNine;
 
+        // Yukari Yakumo teleport hotkey
+        public bool YukariYakumoTPKeyPressed;
+
 //--------------------------------------------------------------------------------
         public override void clientClone(ModPlayer clientClone)
         {
@@ -135,6 +138,22 @@ namespace Kourindou
                 packet.Send();
             }
         }
+
+        public override void ProcessTriggers(TriggersSet triggersSet)
+        {
+            if (Kourindou.YukariYakumoTPKey.JustPressed)
+            {
+                YukariYakumoTPKeyPressed = true;
+            }
+            
+            base.ProcessTriggers(triggersSet);
+        }
+
+        public override void ResetEffects()
+        {
+            // Suika Ibuki Effect reset scale
+            player.HeldItem.scale = player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale;
+        }   
 
         // Update player with the equipped plushie
         public override void UpdateEquips(ref bool wallSpeedBuff, ref bool tileSpeedBuff, ref bool tileRangeBuff)
@@ -310,7 +329,7 @@ namespace Kourindou
             }
         }
 
-        public override void OnHitPvpWithProj (Projectile proj, Player target, int damage, bool crit)
+        public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
         {
             // Cirno Plushie Equipped
             if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
@@ -347,10 +366,18 @@ namespace Kourindou
             }
         }
 
+        public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+        {
+            if (plushieEquipSlot.Item.type == ItemType<Chen_Plushie_Item>())
+            {
+                player.AddBuff(BuffID.ShadowDodge, 180);
+            }
+        }
+
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
             // Kaguya or Mokou Plushie Equipped [Mortality]
-            if (plushieEquipSlot.Item.type == ItemType<KaguyaHouraisan_Plushie_Item>()/* || plushieEquipSlot.Item.type == ItemType<Mokou>()*/)
+            if (plushieEquipSlot.Item.type == ItemType<KaguyaHouraisan_Plushie_Item>() || plushieEquipSlot.Item.type == ItemType<FujiwaraNoMokou_Plushie_Item>())
             {
                 if (player.HasBuff(BuffType<DeBuff_Mortality>()))
                 {
@@ -363,9 +390,22 @@ namespace Kourindou
                     player.HealEffect(player.statLifeMax2, true);
                     return false;
                 }
+
+                if (plushieEquipSlot.Item.type == ItemType<FujiwaraNoMokou_Plushie_Item>())
+                {
+                    player.AddBuff(BuffID.Wrath, 4140);
+                    player.AddBuff(BuffID.Inferno, 4140);
+                }
             }
 
             return true;
+        }
+
+        public override void PostUpdate()
+        {
+            // On the end of this player update tick put the hotkey to false
+            // to prevent endless tping...
+            YukariYakumoTPKeyPressed = false;
         }
 
         private void CirnoPlushie_OnHit(Player p, NPC n, bool crit)

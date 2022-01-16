@@ -30,6 +30,8 @@ namespace Kourindou
 
         private static List<Func<bool>> RightClickOverrides;
 
+        public static ModHotKey YukariYakumoTPKey;
+
         // Kourindou Mod Instance
         public Kourindou()
         {
@@ -48,6 +50,8 @@ namespace Kourindou
 
             RightClickOverrides = new List<Func<bool>>();
 
+            YukariYakumoTPKey = RegisterHotKey("Yukari Yakumo Teleport Key", "Mouse2");
+
             if (!Main.dedServ)
             {
 
@@ -64,6 +68,8 @@ namespace Kourindou
                 RightClickOverrides.Clear();
                 RightClickOverrides = null;
             }
+
+            YukariYakumoTPKey = null;
 
             Instance = null;
             base.Unload();
@@ -358,10 +364,6 @@ namespace Kourindou
 
         public void LoadPlushieTextures()
         {
-            // COPY HERE
-            // Main.itemTexture[ModContent.ItemType<_Plushie_Item>()] = GetTexture("Items/Plushies/_Plushie_Item_Old");
-            // Main.tileTexture[ModContent.TileType<_Plushie_Tile>()] = GetTexture("Tiles/Plushies/_Plushie_Tile_Old");
-
             if (Kourindou.KourindouConfigClient.UseOldTextures)
             {   //------------------------------------------------------------------------- OLD -------------------------------------------------------------------------------//
                 // Reimu Plushie
@@ -535,6 +537,29 @@ namespace Kourindou
                 Main.tileTexture[ModContent.TileType<YuukaKazami_Plushie_Tile>()] = GetTexture("Tiles/Plushies/YuukaKazami_Plushie_Tile_Old");
                 Main.projectileTexture[ModContent.ProjectileType<YuukaKazami_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/YuukaKazami_Plushie_Projectile_Old");
 				
+                // Murasa
+
+                // Nue
+
+                //Kasen
+                Main.itemTexture[ModContent.ItemType<KasenIbaraki_Plushie_Item>()] = GetTexture("Items/Plushies/KasenIbaraki_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<KasenIbaraki_Plushie_Tile>()] = GetTexture("Tiles/Plushies/KasenIbaraki_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<KasenIbaraki_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/KasenIbaraki_Plushie_Projectile_Old");
+
+                // Miku
+                Main.itemTexture[ModContent.ItemType<HatsuneMiku_Plushie_Item>()] = GetTexture("Items/Plushies/HatsuneMiku_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<HatsuneMiku_Plushie_Tile>()] = GetTexture("Tiles/Plushies/HatsuneMiku_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<HatsuneMiku_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/HatsuneMiku_Plushie_Projectile_Old");
+
+                // Chen
+                Main.itemTexture[ModContent.ItemType<Chen_Plushie_Item>()] = GetTexture("Items/Plushies/Chen_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<Chen_Plushie_Tile>()] = GetTexture("Tiles/Plushies/Chen_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<Chen_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/Chen_Plushie_Projectile_Old");
+
+                // Yukari
+                Main.itemTexture[ModContent.ItemType<YukariYakumo_Plushie_Item>()] = GetTexture("Items/Plushies/YukariYakumo_Plushie_Item_Old");
+                Main.tileTexture[ModContent.TileType<YukariYakumo_Plushie_Tile>()] = GetTexture("Tiles/Plushies/YukariYakumo_Plushie_Tile_Old");
+                Main.projectileTexture[ModContent.ProjectileType<YukariYakumo_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/YukariYakumo_Plushie_Projectile_Old");
             }
             else
             {
@@ -709,6 +734,30 @@ namespace Kourindou
                 Main.itemTexture[ModContent.ItemType<YuukaKazami_Plushie_Item>()] = GetTexture("Items/Plushies/YuukaKazami_Plushie_Item");
                 Main.tileTexture[ModContent.TileType<YuukaKazami_Plushie_Tile>()] = GetTexture("Tiles/Plushies/YuukaKazami_Plushie_Tile");
                 Main.projectileTexture[ModContent.ProjectileType<YuukaKazami_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/YuukaKazami_Plushie_Projectile");
+
+                // Murasa
+
+                // Nue
+
+                // Kasen
+                Main.itemTexture[ModContent.ItemType<KasenIbaraki_Plushie_Item>()] = GetTexture("Items/Plushies/KasenIbaraki_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<KasenIbaraki_Plushie_Tile>()] = GetTexture("Tiles/Plushies/KasenIbaraki_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<KasenIbaraki_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/KasenIbaraki_Plushie_Projectile");
+
+                // Miku
+                Main.itemTexture[ModContent.ItemType<HatsuneMiku_Plushie_Item>()] = GetTexture("Items/Plushies/HatsuneMiku_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<HatsuneMiku_Plushie_Tile>()] = GetTexture("Tiles/Plushies/HatsuneMiku_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<HatsuneMiku_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/HatsuneMiku_Plushie_Projectile");
+
+                // Chen
+                Main.itemTexture[ModContent.ItemType<Chen_Plushie_Item>()] = GetTexture("Items/Plushies/Chen_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<Chen_Plushie_Tile>()] = GetTexture("Tiles/Plushies/Chen_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<Chen_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/Chen_Plushie_Projectile");
+
+                // Yukari
+                Main.itemTexture[ModContent.ItemType<YukariYakumo_Plushie_Item>()] = GetTexture("Items/Plushies/YukariYakumo_Plushie_Item");
+                Main.tileTexture[ModContent.TileType<YukariYakumo_Plushie_Tile>()] = GetTexture("Tiles/Plushies/YukariYakumo_Plushie_Tile");
+                Main.projectileTexture[ModContent.ProjectileType<YukariYakumo_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/YukariYakumo_Plushie_Projectile");
             }
         }
     }

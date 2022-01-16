@@ -63,7 +63,7 @@ namespace Kourindou.Items.Plushies
             player.wingTime = 1;
             
             // Permanently afflicted with blackout debuff
-            player.AddBuff(BuffID.Blackout, 60, false);
+            player.AddBuff(BuffID.Obstructed, 60, false);
         }
     }
 }

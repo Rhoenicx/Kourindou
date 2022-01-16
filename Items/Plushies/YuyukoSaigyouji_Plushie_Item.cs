@@ -73,18 +73,39 @@ namespace Kourindou.Items.Plushies
                 player.lifeRegen += 1;
 
                 // Increase movement speed by 30 percent
-                player.moveSpeed += 0.30f;
+                if (player.accRunSpeed > player.maxRunSpeed)
+                {
+                    player.accRunSpeed *= 1.3f;
+                    player.maxRunSpeed *= 1.3f;
+                }
+                else
+                {
+                    player.maxRunSpeed *= 1.3f;
+                    player.accRunSpeed = player.maxRunSpeed;
+                }
             }
             else
             {
-                // Increase attack damage by 25 percent
+                // Decrease attack damage by 25 percent
                 player.allDamage -= 0.25f;
 
-                // Increase life regen by 1 point
-                player.lifeRegen -= 1;
+                // Decrease life regen by 1 point
+                if (player.lifeRegen > 1)
+                {
+                    player.lifeRegen -= 1;
+                }
 
-                // Increase movement speed by 30 percent
-                player.moveSpeed -= 0.30f;
+                // Decrease movement speed by 30 percent
+                if (player.accRunSpeed > player.maxRunSpeed)
+                {
+                    player.accRunSpeed *= 0.7f;
+                    player.maxRunSpeed *= 0.7f;
+                }
+                else
+                {
+                    player.maxRunSpeed *= 0.7f;
+                    player.accRunSpeed = player.maxRunSpeed;
+                }
             }
         }
     }

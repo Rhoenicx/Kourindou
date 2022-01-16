@@ -52,6 +52,19 @@ namespace Kourindou.Items.Plushies
             player.GetModPlayer<KourindouPlayer>().EquipPlushie(false, item);
         }
 
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            // Remove "Equipable" line if the power mode is not 2
+            if (Kourindou.KourindouConfigClient.plushiePower != 2)
+            {
+                TooltipLine equipmentLine = tooltips.Find(x => x.text.Contains("Equipable"));
+                tooltips.Remove(equipmentLine);
+            }
+
+            // Add Custom line "Can be Thrown using Right mouse button"
+            tooltips.Add(new TooltipLine(mod, "CanBeThrown", "Right Click: Throw plushie"));
+        }
+
         // Execute custom equip effects
         public override void UpdateAccessory(Player player, bool hideVisual)
         {

@@ -13,7 +13,7 @@ namespace Kourindou
     public class KourindouGlobalNPC : GlobalNPC
     {
         
-        public override void ModifyHitByItem (NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+        public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
         {
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
             if (player.GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<PatchouliKnowledge_Plushie_Item>())
@@ -34,7 +34,7 @@ namespace Kourindou
             }
         }
 
-        public override void ModifyHitByProjectile (NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
             if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<PatchouliKnowledge_Plushie_Item>())
@@ -58,6 +58,38 @@ namespace Kourindou
             if (projectile.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
             {
                 crit = false;
+            }
+        }
+
+        public override void OnHitByItem(NPC npc, Player player, Item item, int damage, float knockback, bool crit)
+        {
+            // Chen Plushie Effect
+            if (player.GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<Chen_Plushie_Item>())
+            {
+                if (npc.life <= 0 && !npc.friendly)
+                {
+                    // On kill gain rapid healing, well fed and 25 health
+                    player.AddBuff(BuffID.RapidHealing, 720);
+                    player.AddBuff(BuffID.WellFed, 720);
+                    player.statLife += 25;
+                    player.HealEffect(25, true);
+                }
+            }    
+        }
+
+        public override void OnHitByProjectile(NPC npc, Projectile projectile, int damage, float knockback, bool crit)
+        {
+            // Chen Plushie Effect
+            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<Chen_Plushie_Item>())
+            {
+                if (npc.life <= 0 && !npc.friendly)
+                {
+                    // On kill gain rapid healing, well fed and 25 health
+                    Main.player[projectile.owner].AddBuff(BuffID.RapidHealing, 720);
+                    Main.player[projectile.owner].AddBuff(BuffID.WellFed, 720);
+                    Main.player[projectile.owner].statLife += 25;
+                    Main.player[projectile.owner].HealEffect(25, true);
+                }
             }
         }
 
@@ -91,7 +123,7 @@ namespace Kourindou
         }
 
         // Block opening the default hair interface of the stylist
-        public override bool PreChatButtonClicked (NPC npc, bool firstButton)
+        public override bool PreChatButtonClicked(NPC npc, bool firstButton)
         {
             if (npc.type == NPCID.Stylist)
             {

@@ -72,7 +72,16 @@ namespace Kourindou.Items.Plushies
                 player.statDefense += 10;
 
                 // Increase movement speed by 100%
-                player.moveSpeed += 1f;
+                if (player.accRunSpeed > player.maxRunSpeed)
+                {
+                    player.accRunSpeed *= 2f;
+                    player.maxRunSpeed *= 2f;
+                }
+                else
+                {
+                    player.maxRunSpeed *= 2f;
+                    player.accRunSpeed = player.maxRunSpeed;
+                }
 
                 // Increase armor penetration by 15 points
                 player.armorPenetration += 15;

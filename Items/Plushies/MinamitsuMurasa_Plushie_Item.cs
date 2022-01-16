@@ -2,17 +2,16 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using Kourindou;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 
 namespace Kourindou.Items.Plushies
 {
-    public class SuikaIbuki_Plushie_Item : PlushieItem
+    public class MinamitsuMurasa_Plushie_Item : PlushieItem
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Suika Ibuki Plushie");
+            DisplayName.SetDefault("Minamitsu Murasa Plushie");
             Tooltip.SetDefault("");
         }
 
@@ -35,9 +34,7 @@ namespace Kourindou.Items.Plushies
 
             // Tile placement fields
             item.consumable = true;
-            item.createTile = TileType<SuikaIbuki_Plushie_Tile>();
-
-            item.shootSpeed = 8f;
+            item.createTile = TileType<MinamitsuMurasa_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
             item.accessory = true;
@@ -46,9 +43,9 @@ namespace Kourindou.Items.Plushies
         public override bool UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
-            {
+            {            
                 shootSpeed = 8f;
-                projectileType = ProjectileType<SuikaIbuki_Plushie_Projectile>();
+                projectileType = ProjectileType<MinamitsuMurasa_Plushie_Projectile>();
             }
             return base.UseItem(player);
         }
@@ -56,33 +53,7 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-            // Increase damage by 25 percent
-            player.allDamage += 0.25f;
 
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-
-            // Increase player fall speed
-            player.maxFallSpeed += 100;
-            player.gravity += 0.5f;
-
-            // Held items are twice as big
-            if (player.HeldItem.melee && (player.HeldItem.useStyle == ItemUseStyleID.SwingThrow || player.HeldItem.useStyle == ItemUseStyleID.Stabbing))
-            {   
-                player.HeldItem.scale = player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale * 2f;
-            }
-
-            if (player.HasBuff(BuffID.Tipsy))
-            {
-                // Increase defense by 16 points (also to counter Tipsy)
-                player.statDefense += 16;
-
-                // Increase melee crit by 10 points
-                player.meleeCrit += 10;
-
-                // Decrease incoming damage by 10 percent
-                player.endurance += 0.10f;
-            }
         }
     }
 }

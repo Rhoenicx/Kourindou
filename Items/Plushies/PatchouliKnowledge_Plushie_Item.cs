@@ -68,9 +68,17 @@ namespace Kourindou.Items.Plushies
             // Reduce mana consumption by 50 percent
             player.manaCost -= 0.50f;
 
-            // Reduce movement speed to 18 mph
-            player.accRunSpeed = 4f;
-            player.moveSpeed -= 0.5f;
+            //reduce movespeed
+            if (player.accRunSpeed > player.maxRunSpeed)
+            {
+                player.accRunSpeed *= 0.5f;
+                player.maxRunSpeed *= 0.5f;
+            }
+            else
+            {
+                player.maxRunSpeed *= 0.5f;
+                player.accRunSpeed = player.maxRunSpeed;
+            }
         }
     }
 }

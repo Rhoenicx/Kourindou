@@ -12,7 +12,6 @@ namespace Kourindou
 
 		private static Rectangle syncHitbox = new Rectangle();
 
-		// Is this ok to load in server?
 		public override void UseItemHitbox(Item item, Player player, ref Rectangle hitbox, ref bool noHitbox)
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)
@@ -47,4 +46,24 @@ namespace Kourindou
 			base.PostUpdate(item);
 		}
 	}
+
+    public class KourindouGlobalItemInstance : GlobalItem
+    {
+        public float defaultScale = 1f;
+		public int defaultTileBoost = 0;
+        public override bool InstancePerEntity => true;
+        public override bool CloneNewInstances => true;
+
+        public override void SetDefaults(Item item)
+        {
+            defaultScale = item.scale;
+			defaultTileBoost = item.tileBoost;
+        }
+
+        public override void PostReforge(Item item)
+        {
+            defaultScale = item.scale;
+			defaultTileBoost = item.tileBoost;
+        }
+    }
 }

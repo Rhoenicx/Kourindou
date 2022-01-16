@@ -67,9 +67,6 @@ namespace Kourindou.Items.Plushies
             // Check if player has Happy! buff
             if (player.HasBuff(BuffID.Sunflower))
             {
-                // Double movement speed
-                player.moveSpeed += 1;
-
                 // Increase defense by 7 points
                 player.statDefense += 7;
 
@@ -78,6 +75,18 @@ namespace Kourindou.Items.Plushies
 
                 // Increase armor penetration by 20 points
                 player.armorPenetration += 20;
+
+                // Double movement speed
+                if (player.accRunSpeed > player.maxRunSpeed)
+                {
+                    player.accRunSpeed *= 2f;
+                    player.maxRunSpeed *= 2f;
+                }
+                else
+                {
+                    player.maxRunSpeed *= 2f;
+                    player.accRunSpeed = player.maxRunSpeed;
+                }
             }
         }
     }
