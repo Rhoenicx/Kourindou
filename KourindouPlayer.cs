@@ -644,7 +644,7 @@ namespace Kourindou
             rY = (int)(mapH + 174 + 4 + slotCount * 56 * Main.inventoryScale);
 
             //if Wingslot is also installed move up
-            if (Kourindou.instance.WingSlotLoaded)
+            if (Kourindou.WingSlotLoaded)
             {
                 if (WingSlotNextToAccessories)
                 {
