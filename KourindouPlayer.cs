@@ -644,8 +644,7 @@ namespace Kourindou
             rY = (int)(mapH + 174 + 4 + slotCount * 56 * Main.inventoryScale);
 
             //if Wingslot is also installed move up
-            Mod Wingslot = ModLoader.GetMod("WingSlot");
-            if (Wingslot != null && Wingslot.Version >= new Version(1,7,3))
+            if (Kourindou.instance.WingSlotLoaded)
             {
                 if (WingSlotNextToAccessories)
                 {
