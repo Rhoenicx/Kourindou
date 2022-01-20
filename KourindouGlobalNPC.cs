@@ -121,19 +121,5 @@ namespace Kourindou
                 }
             }
         }
-
-        // Block opening the default hair interface of the stylist
-        public override bool PreChatButtonClicked(NPC npc, bool firstButton)
-        {
-            if (npc.type == NPCID.Stylist)
-            {
-                if (!firstButton)
-                {
-                    //return false;
-                }
-            }
-
-            return true;
-        }
     }
 }

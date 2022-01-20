@@ -12,15 +12,18 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.Graphics.Effects;
 using Terraria.UI;
+using Terraria.ObjectData;
 using TerraUI.Objects;
 using Kourindou.Buffs;
 using Kourindou.Items;
 using Kourindou.Items.Plushies;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
+using Kourindou.UI;
 using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou
 {
+
     public class KourindouPlayer : ModPlayer
     {
 //--------------------------------------------------------------------------------
@@ -114,6 +117,8 @@ namespace Kourindou
             // When player joins a singleplayer world get the PlushiePower Client Config
             plushiePower = (byte)Kourindou.KourindouConfigClient.plushiePower;
 
+            CustomHairMenu.Visible = false;
+
             base.OnEnterWorld(player);
         }
 
@@ -144,6 +149,8 @@ namespace Kourindou
             if (Kourindou.YukariYakumoTPKey.JustPressed)
             {
                 YukariYakumoTPKeyPressed = true;
+
+                CustomHairMenu.Visible = !CustomHairMenu.Visible;
             }
             
             base.ProcessTriggers(triggersSet);
@@ -644,7 +651,8 @@ namespace Kourindou
             rY = (int)(mapH + 174 + 4 + slotCount * 56 * Main.inventoryScale);
 
             //if Wingslot is also installed move up
-            if (Kourindou.WingSlotLoaded)
+            Mod Wingslot = ModLoader.GetMod("WingSlot");
+            if (Wingslot != null && Wingslot.Version >= new Version(1,7,3))
             {
                 if (WingSlotNextToAccessories)
                 {

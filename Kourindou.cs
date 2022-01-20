@@ -32,8 +32,6 @@ namespace Kourindou
 
         public static ModHotKey YukariYakumoTPKey;
 
-	public static bool WingSlotLoaded = false;
-
         // Kourindou Mod Instance
         public Kourindou()
         {
@@ -54,8 +52,7 @@ namespace Kourindou
 
             YukariYakumoTPKey = RegisterHotKey("Yukari Yakumo Teleport Key", "Mouse2");
 
-	    WingSlotLoaded = ModLoader.GetMod("WingSlot") != null;
-
+            //code that has to be run on clients only!
             if (!Main.dedServ)
             {
 
