@@ -565,6 +565,8 @@ namespace Kourindou
                 // Seija
 
                 // Hecatia
+
+                // Shinmyoumaru Sukuna
             }
             else
             {
@@ -767,6 +769,8 @@ namespace Kourindou
                 // Seija
 
                 // Hecatia
+
+                // Shinmyoumaru Sukuna
             }
         }
     }
