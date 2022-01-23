@@ -56,5 +56,11 @@ namespace Kourindou.Tiles.Plushies
         {
             Item.NewItem(i * 16, j * 16, 16, 48, ItemType<PatchouliKnowledge_Plushie_Item>());
         }
+
+        public override void RightClick (int i, int j)
+        {
+            soundName = "PatchouliKnowledge_Music";
+            base.RightClick(i, j);
+        }
     }
 }

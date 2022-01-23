@@ -9,6 +9,7 @@ namespace Kourindou
         MeleeHitbox,
         ReimuPlushieTargets,
         CottonRightClick,
-        PlaySound
+        PlaySound,
+        PlayCustomSound
     }
 }

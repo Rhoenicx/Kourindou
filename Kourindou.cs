@@ -346,6 +346,49 @@ namespace Kourindou
 					break;
 				}
 
+                case KourindouMessageType.PlayCustomSound:
+				{
+					string soundName = reader.ReadString();
+					float soundVolume = reader.ReadSingle();
+					float pitchVariance = reader.ReadSingle();
+					int soundPositionX = reader.ReadInt32();
+					int soundPositionY = reader.ReadInt32();
+
+					if (Main.netMode == NetmodeID.Server)
+					{
+						ModPacket packet = GetPacket();
+						packet.Write((byte) KourindouMessageType.PlayCustomSound);
+						packet.Write(soundName);
+						packet.Write(soundVolume);
+						packet.Write(pitchVariance);
+						packet.Write(soundPositionX);
+						packet.Write(soundPositionY);
+
+						packet.Send(-1, whoAmI);
+						break;
+					}
+
+					if (soundPositionX == -1 || soundPositionY == -1)
+					{
+						Main.PlaySound((int) SoundType.Custom,
+							(int) Main.LocalPlayer.position.X,
+							(int) Main.LocalPlayer.position.Y,
+							GetSoundSlot(SoundType.Custom, "Sounds/Custom/" + soundName),
+							soundVolume,
+							Main.rand.NextFloat(-pitchVariance, pitchVariance));
+					}
+					else
+					{
+						Main.PlaySound((int) SoundType.Custom,
+							soundPositionX,
+							soundPositionY,
+							GetSoundSlot(SoundType.Custom, "Sounds/Custom/" + soundName),
+							soundVolume,
+							Main.rand.NextFloat(-pitchVariance, pitchVariance));
+					}
+					break;
+				}
+
                 default:
                     Logger.Warn("Kourindou: Unknown NetMessage type: " + msg);
                     break;
