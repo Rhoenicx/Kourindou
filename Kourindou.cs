@@ -561,6 +561,10 @@ namespace Kourindou
                 Main.itemTexture[ModContent.ItemType<YukariYakumo_Plushie_Item>()] = GetTexture("Items/Plushies/YukariYakumo_Plushie_Item_Old");
                 Main.tileTexture[ModContent.TileType<YukariYakumo_Plushie_Tile>()] = GetTexture("Tiles/Plushies/YukariYakumo_Plushie_Tile_Old");
                 Main.projectileTexture[ModContent.ProjectileType<YukariYakumo_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/YukariYakumo_Plushie_Projectile_Old");
+
+                // Seija
+
+                // Hecatia
             }
             else
             {
@@ -759,6 +763,10 @@ namespace Kourindou
                 Main.itemTexture[ModContent.ItemType<YukariYakumo_Plushie_Item>()] = GetTexture("Items/Plushies/YukariYakumo_Plushie_Item");
                 Main.tileTexture[ModContent.TileType<YukariYakumo_Plushie_Tile>()] = GetTexture("Tiles/Plushies/YukariYakumo_Plushie_Tile");
                 Main.projectileTexture[ModContent.ProjectileType<YukariYakumo_Plushie_Projectile>()] = GetTexture("Projectiles/Plushies/YukariYakumo_Plushie_Projectile");
+
+                // Seija
+
+                // Hecatia
             }
         }
     }
