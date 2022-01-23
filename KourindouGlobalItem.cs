@@ -50,20 +50,17 @@ namespace Kourindou
     public class KourindouGlobalItemInstance : GlobalItem
     {
         public float defaultScale = 1f;
-		public int defaultTileBoost = 0;
         public override bool InstancePerEntity => true;
         public override bool CloneNewInstances => true;
 
         public override void SetDefaults(Item item)
         {
             defaultScale = item.scale;
-			defaultTileBoost = item.tileBoost;
         }
 
         public override void PostReforge(Item item)
         {
             defaultScale = item.scale;
-			defaultTileBoost = item.tileBoost;
         }
     }
 }

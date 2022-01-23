@@ -18,7 +18,6 @@ using Kourindou.Buffs;
 using Kourindou.Items;
 using Kourindou.Items.Plushies;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
-using Kourindou.UI;
 using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou
@@ -117,8 +116,6 @@ namespace Kourindou
             // When player joins a singleplayer world get the PlushiePower Client Config
             plushiePower = (byte)Kourindou.KourindouConfigClient.plushiePower;
 
-            CustomHairMenu.Visible = false;
-
             base.OnEnterWorld(player);
         }
 
@@ -149,8 +146,6 @@ namespace Kourindou
             if (Kourindou.YukariYakumoTPKey.JustPressed)
             {
                 YukariYakumoTPKeyPressed = true;
-
-                CustomHairMenu.Visible = !CustomHairMenu.Visible;
             }
             
             base.ProcessTriggers(triggersSet);
@@ -159,7 +154,10 @@ namespace Kourindou
         public override void ResetEffects()
         {
             // Suika Ibuki Effect reset scale
-            player.HeldItem.scale = player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale;
+            if (player.HeldItem.stack > 0 && player.HeldItem.melee && (player.HeldItem.useStyle == ItemUseStyleID.SwingThrow || player.HeldItem.useStyle == ItemUseStyleID.Stabbing))
+            {   
+                player.HeldItem.scale = player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale;
+            }
         }   
 
         // Update player with the equipped plushie

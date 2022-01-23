@@ -67,7 +67,8 @@ namespace Kourindou.Items.Plushies
             player.gravity += 0.5f;
 
             // Held items are twice as big
-            if (player.HeldItem.melee && (player.HeldItem.useStyle == ItemUseStyleID.SwingThrow || player.HeldItem.useStyle == ItemUseStyleID.Stabbing))
+            Main.NewText(player.HeldItem);
+            if (player.HeldItem.stack > 0 && player.HeldItem.melee && (player.HeldItem.useStyle == ItemUseStyleID.SwingThrow || player.HeldItem.useStyle == ItemUseStyleID.Stabbing))
             {   
                 player.HeldItem.scale = player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale * 2f;
             }
