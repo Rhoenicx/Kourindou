@@ -41,7 +41,7 @@ namespace Kourindou.Tiles.Plushies
             if (soundName != "")
             {
                 Vector2 soundPosition = new Vector2(i * 16, j * 16);
-                float soundVolume = 0.6f;
+                float soundVolume = 0.3f;
                 float pitchVariance = 0f;
 
                 Main.PlaySound(
