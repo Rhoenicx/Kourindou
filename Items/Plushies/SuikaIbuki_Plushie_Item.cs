@@ -13,14 +13,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Suika Ibuki Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("The alcoholic oni. Her appearance makes you question her age, and whether she should be drinking alcohol.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Orange;
 
             // Hitbox
             item.width = 32;

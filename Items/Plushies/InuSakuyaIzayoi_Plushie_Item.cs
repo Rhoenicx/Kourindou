@@ -12,14 +12,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Inu Sakuya Izayoi Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("Does the real Sakuya like this? Probably. It's adorable, why wouldn't she?");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 9, 7, 5);
+            item.rare = ItemRarityID.Cyan;
 
             // Hitbox
             item.width = 32;

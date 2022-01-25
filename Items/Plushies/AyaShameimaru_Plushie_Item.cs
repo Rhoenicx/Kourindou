@@ -13,14 +13,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Aya Shameimaru Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("A crow tengu. Runs a newspaper that's mostly sensational gossip.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Red;
 
             // Hitbox
             item.width = 32;

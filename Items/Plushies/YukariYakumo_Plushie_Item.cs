@@ -19,14 +19,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Yukari Yakumo Plushie");
-            Tooltip.SetDefault("The mastermind gap youkai");
+            Tooltip.SetDefault("The mastermind gap youkai. Perhaps this doll borrows part of her power.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Purple;
 
             // Hitbox
             item.width = 32;

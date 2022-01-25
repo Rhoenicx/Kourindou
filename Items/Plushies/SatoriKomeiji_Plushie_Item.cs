@@ -12,14 +12,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Satori Komeiji Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("The mistress of the Earth Palace in Former Hell. You can't talk to animals with this, sadly.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Pink;
 
             // Hitbox
             item.width = 32;

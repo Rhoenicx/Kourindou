@@ -12,14 +12,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Shion Yorigami Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("A poverty god. It doesn't seem to take your money, though...");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 0, 0, 1);
+            item.rare = ItemRarityID.Blue;
 
             // Hitbox
             item.width = 32;

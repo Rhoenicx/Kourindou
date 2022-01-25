@@ -12,14 +12,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Hata No Kokoro Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("A menreiki youkai. Her face doesn't show emotions, although the doll probably couldn't if it tried.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Pink;
 
             // Hitbox
             item.width = 32;

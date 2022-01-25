@@ -12,14 +12,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Koishi Komeiji Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("Satori's sister? You can't seem to remember them otherwise..");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Green;
 
             // Hitbox
             item.width = 32;

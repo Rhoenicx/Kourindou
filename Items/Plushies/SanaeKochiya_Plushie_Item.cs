@@ -12,14 +12,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sanae Kochiya Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("The wind god shrine maiden. She doesn't look like Reimu.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Lime;
 
             // Hitbox
             item.width = 32;

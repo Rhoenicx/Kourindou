@@ -12,14 +12,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Rumia Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("The youkai of the dusk.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Gray;
 
             // Hitbox
             item.width = 32;
@@ -64,6 +64,11 @@ namespace Kourindou.Items.Plushies
             
             // Permanently afflicted with blackout debuff
             player.AddBuff(BuffID.Obstructed, 60, false);
+        }
+
+        public override bool CanBurnInLava()
+        {
+            return false;
         }
     }
 }

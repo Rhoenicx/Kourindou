@@ -12,14 +12,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Kaguya Houraisan Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("The exiled princess of the moon.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Pink;
 
             // Hitbox
             item.width = 32;

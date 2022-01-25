@@ -14,13 +14,13 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sakuya Izayoi Plushie Kourindou ver.");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("The maid of the scarlet mansion.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
+            item.value = Item.buyPrice(0, 5, 0, 0);
             item.rare = ItemRarityID.White;
 
             // Hitbox

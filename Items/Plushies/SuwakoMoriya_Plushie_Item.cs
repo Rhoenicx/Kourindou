@@ -13,14 +13,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Suwako Moriya Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("One of the Moriya Shrine's gods. Handles the shrine's divine services.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Lime;
 
             // Hitbox
             item.width = 32;

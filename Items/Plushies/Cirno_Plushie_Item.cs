@@ -12,14 +12,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Cirno Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("The ice fairy. It's stupidly strong, and stupid as well.");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 9, 9, 9);
+            item.rare = ItemRarityID.Cyan;
 
             // Hitbox
             item.width = 32;

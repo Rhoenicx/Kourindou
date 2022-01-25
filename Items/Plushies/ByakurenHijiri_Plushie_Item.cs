@@ -12,14 +12,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Byakuren Hijiri Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("A Buddhist nun and magician. Currently, she's then Myouren Temple's head priest."); 
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Purple;
 
             // Hitbox
             item.width = 32;
