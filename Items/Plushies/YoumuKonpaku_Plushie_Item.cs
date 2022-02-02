@@ -1,9 +1,11 @@
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
+using Kourindou.Projectiles.Plushies.PlushieEffects;
 
 namespace Kourindou.Items.Plushies
 {
@@ -53,7 +55,36 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase damage by 25 percent
+            player.allDamage += 0.25f;
 
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Increase melee speed by 50 percent
+            player.meleeSpeed += 0.5f;
+
+            // Increase melee crit by 15 percent
+            player.meleeCrit += 15;
+
+            // Increase armor penetration by 6 points
+            player.armorPenetration += 6;
+
+            // Half Phantom Minion
+            bool petProjectileNotSpawned = player.ownedProjectileCounts[ProjectileType<YoumuKonpaku_Plushie_HalfPhantom>()] <= 0;
+            if (petProjectileNotSpawned && player.whoAmI == Main.myPlayer) 
+            {
+                Projectile.NewProjectile(
+                    player.Center,
+                    Vector2.Zero,
+                    ProjectileType<YoumuKonpaku_Plushie_HalfPhantom>(),
+                    0,
+                    0f,
+                    Main.myPlayer,
+                    0,  // Type
+					0   // State 
+				);
+            }
         }
     }
 }

@@ -22,7 +22,6 @@ using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou
 {
-
     public class KourindouPlayer : ModPlayer
     {
 //--------------------------------------------------------------------------------
@@ -38,6 +37,9 @@ namespace Kourindou
 
         // Yukari Yakumo teleport hotkey
         public bool YukariYakumoTPKeyPressed;
+
+        // Half Phantom pet active
+        public bool HalfPhantomPet;
 
 //--------------------------------------------------------------------------------
         public override void clientClone(ModPlayer clientClone)
