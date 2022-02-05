@@ -78,8 +78,8 @@ namespace Kourindou.Items.Plushies
                     player.Center,
                     Vector2.Zero,
                     ProjectileType<YoumuKonpaku_Plushie_HalfPhantom>(),
-                    0,
-                    0f,
+                    player.statLifeMax2 / 2,
+                    5f,
                     Main.myPlayer,
                     0,  // Type
 					0   // State 
