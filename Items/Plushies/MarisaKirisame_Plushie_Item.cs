@@ -64,5 +64,20 @@ namespace Kourindou.Items.Plushies
 
             // On crit spawns a star projectile that is aimed at the target hit
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 2 yellow cloth
+            // 2 black coth
+            // 2 white cloth
+            // 2 black thread
+            // 1 yellow thread
+            // 2 white thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

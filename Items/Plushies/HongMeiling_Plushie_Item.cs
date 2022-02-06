@@ -75,5 +75,22 @@ namespace Kourindou.Items.Plushies
                 player.AddBuff(BuffID.Slow, 60);
             }
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 1 gold coin
+            // 2 green cloth
+            // 2 red cloth
+            // 2 white cloth
+            // 1 yellow thread
+            // 2 green thread
+            // 1 red thread
+            // 2 white thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

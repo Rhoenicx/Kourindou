@@ -69,5 +69,20 @@ namespace Kourindou.Items.Plushies
             player.magicDamage += 10f;
             player.minionDamage += 10f;
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // Yellow Cloth 2
+            // White Cloth 2
+            // Blue Cloth 2
+            // White Thread 2
+            // red thread 1
+            // Blue thread 2
+            // Stuffing 5
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

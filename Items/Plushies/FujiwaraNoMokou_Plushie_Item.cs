@@ -70,5 +70,20 @@ namespace Kourindou.Items.Plushies
 
             // When you get damage that should kill you, heal for maxhp and get mortality debuff
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 3 white cloth
+            // 3 red cloth
+            // 2 silver cloth
+            // 2 red thread
+            // 2 white thread
+            // 8 Fire Blossom
+
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

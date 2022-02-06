@@ -55,5 +55,20 @@ namespace Kourindou.Items.Plushies
         {
 
         }
+        
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 10 wood
+            // 2 Rope
+            // 2 green cloth
+            // 3 white cloth
+            // 2 green thread
+            // 2 white thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

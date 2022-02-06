@@ -61,5 +61,21 @@ namespace Kourindou.Items.Plushies
             
             // 25 percent chance for all NPC's to drop double loot
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 2 white cloth
+            // 2 black cloth
+            // 3 pink cloth
+            // 1 red thread
+            // 2 pink thread
+            // 1 black thread
+            // 1 white thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

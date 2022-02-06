@@ -80,5 +80,23 @@ namespace Kourindou.Items.Plushies
                 player.accRunSpeed = player.maxRunSpeed;
             }
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 1 book
+            // 1 purple cloth
+            // 2 violet cloth
+            // 2 pink cloth
+            // 1 white cloth
+            // 1 pink thread
+            // 1 purple thread
+            // 1 violet thread
+            // 2 white thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

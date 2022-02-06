@@ -69,5 +69,20 @@ namespace Kourindou.Items.Plushies
             //Decrease damage taken by 17%
             player.endurance += 0.17f;
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // Blue cloth 2
+            // Sky Blue cloth 2
+            // White Cloth 2
+            // Blue Thread 2
+            // Red Thread 1
+            // White Thread 2
+            // Ice block 9
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

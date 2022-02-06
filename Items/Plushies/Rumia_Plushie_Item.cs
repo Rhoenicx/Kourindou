@@ -66,6 +66,23 @@ namespace Kourindou.Items.Plushies
             player.AddBuff(BuffID.Obstructed, 60, false);
         }
 
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 2 white cloth
+            // 2 black cloth
+            // 2 yellow cloth
+            // 1 red cloth
+            // 1 white thrad
+            // 2 black thread
+            // 1 yellow thrad
+            // 1 red thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
+
         public override bool CanBurnInLava()
         {
             return false;

@@ -61,5 +61,21 @@ namespace Kourindou.Items.Plushies
 
             // Crit hits explode
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 1 gemstone
+            // 1 rainbow dye
+            // 3 white cloth
+            // 2 Red cloth
+            // 2 Yellow Cloth
+            // 2 Red thread
+            // 2 White thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

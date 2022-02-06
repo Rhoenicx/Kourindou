@@ -67,5 +67,24 @@ namespace Kourindou.Items.Plushies
             // reduce player aggro
             player.aggro -= 1500;
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 1 lens
+            // 2 black clothe
+            // 2 green cloth
+            // 2 yellow cloth
+            // 1 white cloth
+            // 2 yellow thread
+            // 2 green thread
+            // 1 blue thread
+            // 1 black thread
+            // 1 white thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

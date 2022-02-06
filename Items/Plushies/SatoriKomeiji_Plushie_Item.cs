@@ -63,5 +63,24 @@ namespace Kourindou.Items.Plushies
             
             // All Attacks inflict Cursed Flames, Ichor and Confusion
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 1 lens
+            // 1 heart crystal
+            // 3 pink cloth
+            // 2 white cloth
+            // 2 sky blue cloth
+            // 1 black thread
+            // 1 yellow thread
+            // 2 pink thread
+            // 1 sky blue thread
+            // 1 white thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

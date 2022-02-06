@@ -64,5 +64,21 @@ namespace Kourindou.Items.Plushies
 
             // Homing Handled in GlobalProjectile => AI();
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 2 brown cloth
+            // 2 red cloth
+            // 3 white cloth
+            // 1 yellow thread
+            // 2 red thread
+            // 2 white thread
+            // 1 brown thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

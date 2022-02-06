@@ -70,5 +70,22 @@ namespace Kourindou.Items.Plushies
             player.buffImmune[BuffID.Bleeding] = true;
             player.buffImmune[BuffID.Burning] = true;
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 1 green cloth
+            // 1 red cloth
+            // 2 pink cloth
+            // 2 white cloth
+            // 2 pink thread
+            // 1 red thread
+            // 2 white thread
+            // 1 green thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

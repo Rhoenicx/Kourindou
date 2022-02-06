@@ -78,6 +78,8 @@ namespace Kourindou.Items.Plushies
             recipe.AddIngredient(ItemType<RedFabric>(), 2);
             recipe.AddIngredient(ItemType<BrownFabric>(), 2);
             recipe.AddIngredient(ItemType<RedThread>(), 2); 
+            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
+            // Stuffing 5
             recipe.AddTile(TileType<SewingMachine_Tile>());
             recipe.SetResult(this);
             recipe.AddRecipe();

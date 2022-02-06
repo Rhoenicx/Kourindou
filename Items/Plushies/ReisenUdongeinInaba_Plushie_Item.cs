@@ -99,5 +99,21 @@ namespace Kourindou.Items.Plushies
                 player.AddBuff(BuffID.NightOwl, 60, true);
             }
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 2 purple cloth
+            // 2 white cloth
+            // 1 black cloth
+            // 1 pink cloth
+            // 2 purple thread
+            // 2 white thread
+            // 1 black thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

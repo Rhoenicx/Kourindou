@@ -69,5 +69,20 @@ namespace Kourindou.Items.Plushies
             player.potionDelayTime = (int)((double)player.potionDelayTime * 0.65);
             player.restorationDelayTime = (int)((double)player.restorationDelayTime * 0.65);
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 2 silver cloth
+            // 2 red cloth
+            // 2 blue cloth
+            // 1 red thread
+            // 1 blue thread
+            // 1 silver thread
+            // 5 Stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

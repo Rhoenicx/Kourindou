@@ -85,5 +85,21 @@ namespace Kourindou.Items.Plushies
                 player.endurance += 0.10f;
             }
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 1 brown cloth
+            // 2 orange cloth
+            // 1 blue cloth
+            // 2 white cloth
+            // 2 orange thread
+            // 1 blue thread
+            // 2 white thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

@@ -69,5 +69,21 @@ namespace Kourindou.Items.Plushies
 
             // Random dmg increase is handled in GlobalNPC.
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 1 copper coin
+            // 2 silver cloth
+            // 3 blue cloth
+            // 2 white cloth
+            // 1 silver thread
+            // 2 blue thread
+            // 1 white thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

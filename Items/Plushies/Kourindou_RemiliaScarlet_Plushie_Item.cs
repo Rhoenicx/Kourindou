@@ -61,5 +61,22 @@ namespace Kourindou.Items.Plushies
 
             // All damage heals for 5% 
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 2 red cloth
+            // 3 white cloth
+            // 1 black cloth
+            // 1 sky blue cloth
+            // 2 white thread
+            // 2 red thread
+            // 1 black thread
+            // 1 sky blue thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

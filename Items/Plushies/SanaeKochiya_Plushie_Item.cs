@@ -67,5 +67,21 @@ namespace Kourindou.Items.Plushies
             // Immunity to mighty wind debuff
             player.buffImmune[BuffID.WindPushed] = true;
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 2 green cloth
+            // 2 blue cloth
+            // 2 white cloth
+            // 1 red thread
+            // 2 green thread
+            // 1 blue thread
+            // 1 white thread
+            // 5 stuffing 
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

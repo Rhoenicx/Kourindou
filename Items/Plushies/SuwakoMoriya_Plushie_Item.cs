@@ -70,5 +70,22 @@ namespace Kourindou.Items.Plushies
                 Player.tileRangeY += 10;
             }
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 1 frog
+            // 3 yellow cloth
+            // 2 blue cloth
+            // 2 white cloth
+            // 1 green thread
+            // 2 yellow thread
+            // 2 blue thread
+            // 2 white thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 }

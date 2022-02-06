@@ -55,7 +55,23 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-  
+            
+        }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 2 black cloth
+            // 2 red cloth
+            // 1 blue cloth
+            // 1 white cloth
+            // 2 Red thread
+            // 1 White thread
+            // 2 black thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
         }
     }
 }

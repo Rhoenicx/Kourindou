@@ -57,6 +57,21 @@ namespace Kourindou.Items.Plushies
             player.wingTimeMax = 200;
         }
 
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // White cloth 2
+            // black cloth 2
+            // red cloth 1
+            // White Thread 2
+            // Black Thread 2
+            // Red thread 1
+            // Stuffing 5
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
+
         public override void VerticalWingSpeeds(Player player, ref float ascentWhenFalling, ref float ascentWhenRising, ref float maxCanAscendMultiplier, ref float maxAscentMultiplier, ref float constantAscend)
         {
             constantAscend = 0.9f;

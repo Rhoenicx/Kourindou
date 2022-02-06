@@ -81,10 +81,26 @@ namespace Kourindou.Items.Plushies
                     player.statLifeMax2 / 2,
                     5f,
                     Main.myPlayer,
-                    0,  // Type
-					0   // State 
+                    0,
+					0
 				);
             }
+        }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            // 3 green cloth
+            // 2 silver cloth
+            // 1 white cloth
+            // 1 black cloth
+            // 2 silver thread
+            // 2 green thread
+            // 1 white thread
+            // 5 stuffing
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
         }
     }
 }
