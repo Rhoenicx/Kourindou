@@ -68,7 +68,7 @@ namespace Kourindou.Items.Plushies
             recipe.AddIngredient(ItemType<PinkFabric>(), 2);
             recipe.AddIngredient(ItemID.Silk, 2);
             recipe.AddIngredient(ItemType<OrangeThread>(), 1);
-            recipe.AddIngredient(ItemType<PinkThread>(), 1);
+            recipe.AddIngredient(ItemID.PinkThread, 1);
             recipe.AddIngredient(ItemType<RedThread>(), 1);
             recipe.AddIngredient(ItemType<WhiteThread>(), 1);
             recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
