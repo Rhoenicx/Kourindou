@@ -39,6 +39,10 @@ namespace Kourindou
             Instance = this;
         }
 
+        // Gensokyo Mod Instance
+        static readonly Mod Gensokyo = ModLoader.GetMod("Gensokyo");
+        static readonly bool GensokyoLoaded = Gensokyo != null  && Gensokyo.Version >= new Version(0, 7, 10, 3) ? true : false;
+
         // Load
         public override void Load()
         {
@@ -81,8 +85,7 @@ namespace Kourindou
         public override void PostSetupContent()
         {
             // Support for Gensokyo Mod
-            Mod Gensokyo = ModLoader.GetMod("Gensokyo");
-            if (Gensokyo != null && Gensokyo.Version >= new Version(0, 7, 10, 3))
+            if (GensokyoLoaded)
             {
                 CrossModContent.SetupGensokyo(Gensokyo, this);
             }
@@ -98,6 +101,13 @@ namespace Kourindou
 
                 // Silk
                 Main.itemTexture[ItemID.Silk] = GetTexture("Items/CraftingMaterials/WhiteFabric");
+                Main.itemTexture[ItemID.SilkRope] = GetTexture("Items/Blocks/WhiteFabric_Item_Rope");
+                Main.itemTexture[ItemID.SilkRopeCoil] = GetTexture("Items/Consumables/WhiteFabric_Item_RopeCoil");
+                Main.tileTexture[TileID.SilkRope] = GetTexture("Tiles/Blocks/WhiteFabric_Tile");
+                Main.projectileTexture[ProjectileID.SilkRopeCoil] = GetTexture("Projectiles/Fabric/WhiteFabric_Projectile");
+                Main.chainsTexture[4] = GetTexture("Projectiles/Fabric/WhiteFabric_Projectile_Chain1");
+                Main.chainsTexture[5] = GetTexture("Projectiles/Fabric/WhiteFabric_Projectile_Chain2");
+                
             }
         }
 
@@ -161,6 +171,7 @@ namespace Kourindou
                 ItemID.Hay,
                 ModContent.ItemType<CottonFibre>()
             });
+            RecipeGroup.RegisterGroup("Kourindou:Stuffing", Stuffing);
 
             // Gemstone
             RecipeGroup Gemstone = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Gemstone", new int[]
@@ -173,6 +184,7 @@ namespace Kourindou
                 ItemID.Topaz,
                 ItemID.Amethyst
             });
+            RecipeGroup.RegisterGroup("Kourindou:Gemstone", Gemstone);
 
             // Lens
             RecipeGroup Lens = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Lens", new int[]
@@ -180,6 +192,19 @@ namespace Kourindou
                 ItemID.Lens,
                 ItemID.BlackLens
             });
+            RecipeGroup.RegisterGroup("Kourindou:Lens", Lens);
+
+            RecipeGroup Watch = new RecipeGroup(() => Language.GetTextValue("LegacyMics.37") + " Watch", new int[]
+            {
+                ItemID.CopperWatch,
+                ItemID.TinWatch,
+                ItemID.SilverWatch,
+                ItemID.TungstenWatch,
+                ItemID.GoldWatch,
+                ItemID.PlatinumWatch,
+                ItemID.Stopwatch
+            });
+            RecipeGroup.RegisterGroup("Kourindou:Watch", Watch);
         }
 
         // Handle netwrok packets

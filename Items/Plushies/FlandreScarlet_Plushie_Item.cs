@@ -4,6 +4,8 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
+using Kourindou.Items.CraftingMaterials;
+using Kourindou.Tiles.Furniture;
 
 namespace Kourindou.Items.Plushies
 {
@@ -65,14 +67,14 @@ namespace Kourindou.Items.Plushies
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            // 1 gemstone
-            // 1 rainbow dye
-            // 3 white cloth
-            // 2 Red cloth
-            // 2 Yellow Cloth
-            // 2 Red thread
-            // 2 White thread
-            // 5 stuffing
+            recipe.AddRecipeGroup("Kourindou:Gemstone", 1);
+            recipe.AddIngredient(ItemType<RainbowFabric>(), 1);
+            recipe.AddIngredient(ItemType<RedFabric>(), 2);
+            recipe.AddIngredient(ItemType<YellowFabric>(), 2);
+            recipe.AddIngredient(ItemID.Silk, 3);
+            recipe.AddIngredient(ItemType<RedThread>(), 2);
+            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
+            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
             recipe.AddTile(TileType<SewingMachine_Tile>());
             recipe.SetResult(this);
             recipe.AddRecipe();

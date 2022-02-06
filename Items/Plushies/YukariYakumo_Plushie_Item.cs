@@ -135,12 +135,12 @@ namespace Kourindou.Items.Plushies
             recipe.AddIngredient(ItemType<SilverFabric>(), 2);
             recipe.AddIngredient(ItemType<YellowFabric>(), 2);
             recipe.AddIngredient(ItemType<PurpleFabric>(), 1);
-            recipe.AddIngredient(ItemType<WhiteFabric>(), 2)
+            recipe.AddIngredient(ItemID.Silk, 2);
             recipe.AddIngredient(ItemType<RedThread>(), 1);
             recipe.AddIngredient(ItemType<PurpleThread>(), 1);
             recipe.AddIngredient(ItemType<SilverThread>(), 2);
             recipe.AddIngredient(ItemType<WhiteThread>(), 2);
-            // 5 stuffing
+            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
             recipe.AddTile(TileType<SewingMachine_Tile>());
             recipe.SetResult(this);
             recipe.AddRecipe();

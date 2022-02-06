@@ -4,6 +4,8 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
+using Kourindou.Items.CraftingMaterials;
+using Kourindou.Tiles.Furniture;
 
 namespace Kourindou.Items.Plushies
 {
@@ -73,13 +75,13 @@ namespace Kourindou.Items.Plushies
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            // Blue cloth 2
-            // Sky Blue cloth 2
-            // White Cloth 2
-            // Blue Thread 2
-            // Red Thread 1
-            // White Thread 2
-            // Ice block 9
+            recipe.AddIngredient(ItemType<BlueFabric>(), 2);
+            recipe.AddIngredient(ItemType<SkyBlueFabric>(), 2);
+            recipe.AddIngredient(ItemID.Silk, 2);
+            recipe.AddIngredient(ItemType<BlueThread>(), 2);
+            recipe.AddIngredient(ItemType<RedThread>(), 1);
+            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
+            recipe.AddIngredient(ItemID.IceBlock, 9);
             recipe.AddTile(TileType<SewingMachine_Tile>());
             recipe.SetResult(this);
             recipe.AddRecipe();

@@ -12,7 +12,20 @@ namespace Kourindou
 
 		private static Rectangle syncHitbox = new Rectangle();
 
-		public override void UseItemHitbox(Item item, Player player, ref Rectangle hitbox, ref bool noHitbox)
+        public override void SetDefaults(Item item)
+        {
+			if (item.type == ItemID.SilkRope)
+			{
+				item.SetNameOverride("White Fabric Rope");
+			}
+
+			if (item.type == ItemID.SilkRopeCoil)
+			{
+				item.SetNameOverride("White Fabric Rope Coil");
+			}
+        }
+
+        public override void UseItemHitbox(Item item, Player player, ref Rectangle hitbox, ref bool noHitbox)
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{

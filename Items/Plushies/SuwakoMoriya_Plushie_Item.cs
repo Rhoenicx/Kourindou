@@ -5,6 +5,8 @@ using static Terraria.ModLoader.ModContent;
 using Kourindou;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
+using Kourindou.Items.CraftingMaterials;
+using Kourindou.Tiles.Furniture;
 
 namespace Kourindou.Items.Plushies
 {
@@ -74,15 +76,15 @@ namespace Kourindou.Items.Plushies
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            // 1 frog
-            // 3 yellow cloth
-            // 2 blue cloth
-            // 2 white cloth
-            // 1 green thread
-            // 2 yellow thread
-            // 2 blue thread
-            // 2 white thread
-            // 5 stuffing
+            recipe.AddIngredient(ItemID.Frog, 1);
+            recipe.AddIngredient(ItemType<BlueFabric>(), 2);
+            recipe.AddIngredient(ItemType<YellowFabric>(), 3);
+            recipe.AddIngredient(ItemID.Silk, 2);
+            recipe.AddIngredient(ItemType<BlueThread>(), 2);
+            recipe.AddIngredient(ItemID.GreenThread, 2);
+            recipe.AddIngredient(ItemType<YellowThread>(), 2);
+            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
+            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
             recipe.AddTile(TileType<SewingMachine_Tile>());
             recipe.SetResult(this);
             recipe.AddRecipe();
