@@ -214,10 +214,13 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			if (_owner.HasMinionAttackTargetNPC)
 			{
 				NPC npc = Main.npc[_owner.MinionAttackTargetNPC];
-				if (Collision.CanHitLine(projectile.position, projectile.width, projectile.height, npc.position, npc.width, npc.height))
-		        {
-			        Target = npc.whoAmI;
-		        }
+				//if (Collision.CanHitLine(projectile.position, projectile.width, projectile.height, npc.position, npc.width, npc.height))
+		        //{
+					if (npc.active)
+					{
+			        	Target = npc.whoAmI;
+					}
+		        //}
 			}
 			else
 			{
@@ -228,13 +231,22 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			        {
 				        float distance = Vector2.Distance(potentialTarget.Center, projectile.Center);
 				        if ((distance < targetDist || !HasTarget) 
-				            && Collision.CanHitLine(
+				            && (Collision.CanHitLine(
 					            projectile.position, 
 					            projectile.width, 
 					            projectile.height, 
 					            potentialTarget.position, 
 					            potentialTarget.width, 
+					            potentialTarget.height)
+								||
+								Collision.CanHitLine(
+					            _owner.position, 
+					            _owner.width, 
+					            _owner.height, 
+					            potentialTarget.position, 
+					            potentialTarget.width, 
 					            potentialTarget.height))
+							)
 				        {
 					        Target = potentialTarget.whoAmI;
 					        targetDist = distance;
@@ -392,7 +404,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			}
 
 			//tail animations
-			if (projectile.velocity.Length() < 1f)
+			if (projectile.velocity.Length() < 0.5f)
 			{
 				if (animDirection)
 				{
@@ -441,21 +453,20 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 				{
 					Vector2 calcAngle = Vector2.Normalize(projectile.oldPos[changeTail] - projectile.oldPos[changeTail + 1]).RotatedBy(-(float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X));
 					float angle = MathHelper.ToDegrees((float)Math.Atan2(calcAngle.Y, calcAngle.X));
-					//Main.NewText(angle.ToString(),155,155,155);
 
-					if (angle > 10f)
+					if (angle > 12f)
 					{
 						frame = 0;
 					}
-					else if (angle > 3f)
+					else if (angle > 4f)
 					{
 						frame = 1;
 					}
-					else if (angle < -10f)
+					else if (angle < -12f)
 					{
 						frame = 4;
 					}
-					else if (angle < -3f)
+					else if (angle < -4f)
 					{
 						frame = 3;
 					}
