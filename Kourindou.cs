@@ -127,6 +127,7 @@ namespace Kourindou
                 ModContent.ItemType<VioletThread>(),
                 ModContent.ItemType<WhiteThread>(),
                 ModContent.ItemType<YellowThread>()
+                ModContent.ItemType<RainbowThread>()
             });
             RecipeGroup.RegisterGroup("Kourindou:Thread", Thread);
 
@@ -148,7 +149,8 @@ namespace Kourindou
                 ModContent.ItemType<TealFabric>(),
                 ModContent.ItemType<VioletFabric>(),
                 ItemID.Silk,
-                ModContent.ItemType<YellowFabric>()
+                ModContent.ItemType<YellowFabric>(),
+                ModContent.ItemType<RainbowFabric>()
             });
             RecipeGroup.RegisterGroup("Kourindou:Fabric", Fabric); 
         }

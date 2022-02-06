@@ -29,7 +29,8 @@ namespace Kourindou.Tiles.Furniture
         Lime,
         Yellow,
         Orange,
-        Brown
+        Brown,
+		Rainbow
     }
 
     public class Thread_Tile : ModTile
@@ -51,8 +52,8 @@ namespace Kourindou.Tiles.Furniture
 
             TileObjectData.newTile.Origin = new Point16(0, 0);
 
-            TileObjectData.newTile.StyleWrapLimit = 16;
-            TileObjectData.newTile.StyleMultiplier = 16;
+            TileObjectData.newTile.StyleWrapLimit = 17;
+            TileObjectData.newTile.StyleMultiplier = 17;
 
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile | AnchorType.Table, TileObjectData.newTile.Width, 0);
         
