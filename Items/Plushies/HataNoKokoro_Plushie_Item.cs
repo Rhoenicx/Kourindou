@@ -63,14 +63,14 @@ namespace Kourindou.Items.Plushies
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            // 2 pink cloth
-            // 1 orange cloth
-            // 1 blue cloth
-            // 2 white cloth
-            // 1 red thread
-            // 1 orange thread
-            // 1 pink thread
-            // 1 white thread
+            recipe.AddIngredient(ItemType<BlueFabric>(), 1);
+            recipe.AddIngredient(ItemType<OrangeFabric>(), 1);
+            recipe.AddIngredient(ItemType<PinkFabric>(), 2);
+            recipe.AddIngredient(ItemID.Silk, 2);
+            recipe.AddIngredient(ItemType<OrangeThread>(), 1);
+            recipe.AddIngredient(ItemType<PinkThread>(), 1);
+            recipe.AddIngredient(ItemType<RedThread>(), 1);
+            recipe.AddIngredient(ItemType<WhiteThread>(), 1);
             recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
             recipe.AddTile(TileType<SewingMachine_Tile>());
             recipe.SetResult(this);
