@@ -9,19 +9,19 @@ using Kourindou.Tiles.Furniture;
 
 namespace Kourindou.Items.Plushies
 {
-    public class Gensokyo_Flower_Fairy_Plushie_Item : PlushieItem
+    public class SeigaKaku_Plushie_Item : PlushieItem
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Flower Fairy Plushie");
+            DisplayName.SetDefault("Seiga Kaku Plushie");
             Tooltip.SetDefault("");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Blue;
 
             // Hitbox
             item.width = 32;
@@ -36,9 +36,7 @@ namespace Kourindou.Items.Plushies
 
             // Tile placement fields
             item.consumable = true;
-            item.createTile = TileType<Gensokyo_Flower_Fairy_Plushie_Tile>();
-
-            item.shootSpeed = 8f;
+            item.createTile = TileType<SeigaKaku_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
             item.accessory = true;
@@ -47,9 +45,9 @@ namespace Kourindou.Items.Plushies
         public override bool UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
-            {
+            {            
                 shootSpeed = 8f;
-                projectileType = ProjectileType<Gensokyo_Flower_Fairy_Plushie_Projectile>();
+                projectileType = ProjectileType<SeigaKaku_Plushie_Projectile>();
             }
             return base.UseItem(player);
         }
@@ -62,21 +60,17 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            if (Kourindou.GensokyoLoaded)
-            {
-                ModRecipe recipe = new ModRecipe(mod);
-                recipe.AddIngredient(ItemType<BlueFabric>(), 2);
-                recipe.AddIngredient(ItemType<SilverFabric>(), 1);
-                recipe.AddIngredient(ItemType<YellowFabric>(), 2);
-                recipe.AddIngredient(ItemID.Silk, 2);
-                recipe.AddIngredient(ItemType<BlueThread>(), 2);
-                recipe.AddIngredient(ItemType<YellowThread>(), 2);
-                recipe.AddIngredient(ItemType<SilverThread>(), 1);
-                recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
-                recipe.AddTile(TileType<SewingMachine_Tile>());
-                recipe.SetResult(this);
-                recipe.AddRecipe();
-            }   
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemType<BlueFabric>(), 2);
+            recipe.AddIngredient(ItemType<SkyBlueFabric>(), 2);
+            recipe.AddIngredient(ItemID.Silk, 2);
+            recipe.AddIngredient(ItemType<BlueThread>(), 2);
+            recipe.AddIngredient(ItemType<SkyBlueThread>(), 2);
+            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
+            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
         }
     }
 }
