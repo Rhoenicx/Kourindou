@@ -40,8 +40,8 @@ namespace Kourindou
         }
 
         // Gensokyo Mod Instance
-        static readonly Mod Gensokyo = ModLoader.GetMod("Gensokyo");
-        static readonly bool GensokyoLoaded = Gensokyo != null  && Gensokyo.Version >= new Version(0, 7, 10, 3) ? true : false;
+        public static readonly Mod Gensokyo = ModLoader.GetMod("Gensokyo");
+        public static readonly bool GensokyoLoaded = Gensokyo != null  && Gensokyo.Version >= new Version(0, 7, 10, 3) ? true : false;
 
         // Load
         public override void Load()
