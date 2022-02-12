@@ -72,7 +72,6 @@ namespace Kourindou
                 ItemIO.Send(plushieEquipSlot.Item, packet);
                 packet.Send(-1, player.whoAmI);
             }
-
         }
 
         // Init
