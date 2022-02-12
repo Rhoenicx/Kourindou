@@ -65,6 +65,7 @@ namespace Kourindou.Items.Plushies
             if (Kourindou.GensokyoLoaded)
             {
                 ModRecipe recipe = new ModRecipe(mod);
+                recipe.AddIngredient(ItemID.IceBlock, 6);
                 recipe.AddIngredient(ItemType<BlueFabric>(), 2);
 			    recipe.AddIngredient(ItemType<SkyBlueFabric>(), 2);
                 recipe.AddIngredient(ItemID.Silk, 2);

@@ -65,6 +65,7 @@ namespace Kourindou.Items.Plushies
             if (Kourindou.GensokyoLoaded)
             {
                 ModRecipe recipe = new ModRecipe(mod);
+                recipe.AddIngredient(ItemID.StoneBlock, 12);
 			    recipe.AddIngredient(ItemType<BlackFabric>(), 2);
                 recipe.AddIngredient(ItemType<SilverFabric>(), 1);
                 recipe.AddIngredient(ItemType<YellowFabric>(), 2);
