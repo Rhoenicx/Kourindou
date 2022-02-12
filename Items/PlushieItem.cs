@@ -10,12 +10,34 @@ using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
 
-namespace Kourindou.Items.Plushies
+namespace Kourindou.Items
 {
     public abstract class PlushieItem : ModItem
     {
+        public short plushieDirtWater
+        {
+            get { return (short)((DirtAmount << 8) + WaterAmount); }
+            set { DirtAmount = (byte)(value >> 8); WaterAmount = (byte)(value & 255); }
+        }
+
+        public byte DirtAmount = 0;
+        public byte WaterAmount = 0;
+
         public float shootSpeed = 8f;
         public int projectileType = 0;
+
+        public override TagCompound Save()
+        {
+            return new TagCompound
+            {
+                { "plushieDirtWater", plushieDirtWater}
+            };
+        }
+
+        public override void Load(TagCompound tag)
+        {
+            plushieDirtWater = tag.GetShort("plushieDirtWater");
+        }
 
         // Re-center item texture
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
@@ -122,7 +144,7 @@ namespace Kourindou.Items.Plushies
                         item.knockBack,
                         player.whoAmI,
                         30f,
-                        0f);
+                        plushieDirtWater);
                 }
                 // Multiplayer
                 else
@@ -142,10 +164,21 @@ namespace Kourindou.Items.Plushies
             return false;
         }
 
+        public override void NetSend(BinaryWriter writer)
+        {
+            writer.Write(plushieDirtWater);
+        }
+
+        public override void NetRecieve(BinaryReader reader)
+        {
+            plushieDirtWater = reader.ReadInt16();
+        }
+
         // Execute custom effects when this Plushie is equipped
         public virtual void PlushieEquipEffects(Player player)
         {
 
         }
     }
+
 }

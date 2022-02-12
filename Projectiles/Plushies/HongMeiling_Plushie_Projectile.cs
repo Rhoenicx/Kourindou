@@ -39,20 +39,10 @@ namespace Kourindou.Projectiles.Plushies
 			
 			// Visual
 			projectile.scale = 1f;
-        }
-		
-		public override void Kill (int timeLeft)
-		{
-			plushieTile = TileType<HongMeiling_Plushie_Tile>();
 
-			if (!CanPlacePlushie())
-			{
-				Item.NewItem(
-					projectile.getRect(),
-					ItemType<HongMeiling_Plushie_Item>(),
-					1
-				);
-			}
-		}
+			// Tile & item type
+			plushieTile = TileType<HongMeiling_Plushie_Tile>();
+			plushieItem = ItemType<HongMeiling_Plushie_Item>();
+        }
     }
 }

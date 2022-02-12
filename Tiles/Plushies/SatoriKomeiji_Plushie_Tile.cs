@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Satori Komeiji Plushie");
             AddMapEntry(new Color(193, 109, 160), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<SatoriKomeiji_Plushie_Item>());
+            plushieItem = ItemType<SatoriKomeiji_Plushie_Item>();
         }
     }
 }

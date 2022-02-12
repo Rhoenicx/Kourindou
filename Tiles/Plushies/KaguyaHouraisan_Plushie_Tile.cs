@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Kaguya Houraisan Plushie");
             AddMapEntry(new Color(227, 179, 215), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<KaguyaHouraisan_Plushie_Item>());
+            plushieItem = ItemType<KaguyaHouraisan_Plushie_Item>();
         }
     }
 }

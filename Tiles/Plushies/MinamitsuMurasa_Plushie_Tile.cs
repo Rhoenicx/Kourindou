@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Minamitsu Murasa Plushie");
             AddMapEntry(new Color(4, 69, 56), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<MinamitsuMurasa_Plushie_Item>());
+            plushieItem = ItemType<MinamitsuMurasa_Plushie_Item>();
         }
     }
 }

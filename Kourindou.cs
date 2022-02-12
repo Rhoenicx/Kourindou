@@ -13,6 +13,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
 using Terraria.Localization;
+using Kourindou.Items;
 using Kourindou.Items.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Plushies;
@@ -442,6 +443,50 @@ namespace Kourindou
 					}
 					break;
 				}
+
+                case KourindouMessageType.PlushieItemNetUpdate:
+                {
+                    int itemSlot = reader.ReadInt32();
+                    short plushieDirtWater = reader.ReadInt16();
+
+                    Item item = Main.item[itemSlot];
+
+                    if (Main.netMode != NetmodeID.Server)
+                    {   
+                        if (item.modItem is PlushieItem plushie)
+                        {
+                            plushie.plushieDirtWater = plushieDirtWater;
+                        }
+                    }
+                    break;
+                }
+
+                case KourindouMessageType.PlacePlushieTile:
+                {
+                    int plushiePlaceTileX = reader.ReadInt32();
+                    int plushiePlaceTileY = reader.ReadInt32();
+                    int plushieTile = reader.ReadInt32();
+
+                    if (Main.netMode != NetmodeID.Server)
+                    {
+                        WorldGen.PlaceObject(plushiePlaceTileX, plushiePlaceTileY, plushieTile);
+                    }
+                    break;
+                }
+
+                case KourindouMessageType.SetPlushieDirtWater:
+                {
+                    int i = reader.ReadInt32();
+                    int j = reader.ReadInt32();
+                    short plushieDirtWater = reader.ReadInt16();
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        KourindouWorld.SetPlushieDirtWater(i, j, plushieDirtWater);
+                    }
+                    break;
+                }
+
 
                 default:
                     Logger.Warn("Kourindou: Unknown NetMessage type: " + msg);

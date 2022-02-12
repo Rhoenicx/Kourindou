@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Fujiwara No Mokou Plushie");
             AddMapEntry(new Color(231, 231, 231), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<FujiwaraNoMokou_Plushie_Item>());
+            plushieItem = ItemType<FujiwaraNoMokou_Plushie_Item>();
         }
     }
 }

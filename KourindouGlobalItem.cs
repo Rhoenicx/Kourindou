@@ -62,7 +62,7 @@ namespace Kourindou
 
     public class KourindouGlobalItemInstance : GlobalItem
     {
-        public float defaultScale = 1f;
+		public float defaultScale = 1f;
         public override bool InstancePerEntity => true;
         public override bool CloneNewInstances => true;
 

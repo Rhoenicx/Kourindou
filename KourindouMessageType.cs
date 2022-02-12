@@ -10,6 +10,9 @@ namespace Kourindou
         ReimuPlushieTargets,
         CottonRightClick,
         PlaySound,
-        PlayCustomSound
+        PlayCustomSound,
+        PlushieItemNetUpdate,
+        PlacePlushieTile,
+        SetPlushieDirtWater
     }
 }

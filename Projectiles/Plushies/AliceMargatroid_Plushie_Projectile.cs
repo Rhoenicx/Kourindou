@@ -39,20 +39,10 @@ namespace Kourindou.Projectiles.Plushies
 			
 			// Visual
 			projectile.scale = 1f;
-        }
-		
-		public override void Kill (int timeLeft)
-		{
+			
+			// Tile & item type
 			plushieTile = TileType<AliceMargatroid_Plushie_Tile>();
-
-			if (!CanPlacePlushie())
-			{
-				Item.NewItem(
-					projectile.getRect(),
-					ItemType<AliceMargatroid_Plushie_Item>(),
-					1
-				);
-			}
+			plushieItem = ItemType<AliceMargatroid_Plushie_Item>();
 		}
     }
 }

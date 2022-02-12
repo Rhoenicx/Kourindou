@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Flower Fairy Plushie");
             AddMapEntry(new Color(24, 33, 66), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<Gensokyo_Flower_Fairy_Plushie_Item>());
+            plushieItem = ItemType<Gensokyo_Flower_Fairy_Plushie_Item>();
         }
     }
 }

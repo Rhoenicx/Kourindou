@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Hecatia Lapislazuli Plushie");
             AddMapEntry(new Color(30, 30, 30), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<HecatiaLapislazuli_Plushie_Item>());
+            plushieItem = ItemType<HecatiaLapislazuli_Plushie_Item>();
         }
     }
 }

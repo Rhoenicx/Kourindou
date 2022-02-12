@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Seiga Kaku Plushie");
             AddMapEntry(new Color(21, 46, 96), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<SeigaKaku_Plushie_Item>());
+            plushieItem = ItemType<SeigaKaku_Plushie_Item>();
         }
     }
 }

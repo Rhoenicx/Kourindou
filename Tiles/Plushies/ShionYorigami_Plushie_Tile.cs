@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Shion Yorigami Plushie");
             AddMapEntry(new Color(21, 34, 49), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<ShionYorigami_Plushie_Item>());
+            plushieItem = ItemType<ShionYorigami_Plushie_Item>();
         }
     }
 }

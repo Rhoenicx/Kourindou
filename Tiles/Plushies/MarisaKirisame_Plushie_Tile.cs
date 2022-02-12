@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Marisa Kirisame Plushie");
             AddMapEntry(new Color(237, 200, 38), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<MarisaKirisame_Plushie_Item>());
+            plushieItem = ItemType<MarisaKirisame_Plushie_Item>();
         }
 
         public override void RightClick (int i, int j)

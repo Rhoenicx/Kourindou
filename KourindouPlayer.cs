@@ -701,6 +701,10 @@ namespace Kourindou
 
             item.favorited = false;
             player.inventory[fromSlot] = slot.Item.Clone();
+            if (player.inventory[fromSlot].modItem is PlushieItem p1 && slot.Item.modItem is PlushieItem p2)
+            {
+                p1.plushieDirtWater = p2.plushieDirtWater;
+            }
             Main.PlaySound(SoundID.Grab);
             Recipe.FindRecipes();
             SetPlushie(item);
@@ -709,6 +713,10 @@ namespace Kourindou
         private void SetPlushie(Item item)
         {
             plushieEquipSlot.Item = item.Clone();
+            if (plushieEquipSlot.Item.modItem is PlushieItem p1 && item.modItem is PlushieItem p2)
+            {
+                p1.plushieDirtWater = p2.plushieDirtWater;
+            }
         }
 
         public void ClearPlushie()

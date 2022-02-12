@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Patchouli Knowledge Plushie");
             AddMapEntry(new Color(242, 132, 255), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<PatchouliKnowledge_Plushie_Item>());
+            plushieItem = ItemType<PatchouliKnowledge_Plushie_Item>();
         }
 
         public override void RightClick (int i, int j)

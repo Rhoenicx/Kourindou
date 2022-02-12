@@ -15,6 +15,9 @@ namespace Kourindou
 {
     public class KourindouWorld : ModWorld
     {
+        // Plushie Dirt and wet mechanic saving
+        public static Dictionary<long, short> plushieTiles = new Dictionary<long, short>();
+
         // Cotton Plants
         public int CottonPlants = 0;
 
@@ -28,6 +31,42 @@ namespace Kourindou
         private const int Small_FlaxMax = 50;
         private const int Medium_FlaxMax = 75;
         private const int Large_FlaxMax = 100;
+
+        public override TagCompound Save()
+        {
+            List<string> plushieTileList = new List<string>();
+            foreach (KeyValuePair<long, short> pt in plushieTiles)
+            {
+                plushieTileList.Add(pt.Key.ToString() + "/" + pt.Value.ToString());
+            }
+
+            return new TagCompound
+            {
+                { "plushieTiles", plushieTileList }
+            };
+        }
+
+        public override void Load(TagCompound tag)
+        {
+            var plushieTileList = tag.GetList<string>("plushieTiles");
+            plushieTiles.Clear();
+
+            for (int i = 0; i < plushieTileList.Count; i++)
+            {
+                string[] plushieTile = plushieTileList[i].Split('/');
+
+                long value1 = -1;
+                short value2 = -1;
+
+                if (long.TryParse(plushieTile[0], out long v1)) value1 = v1;
+                if (short.TryParse(plushieTile[1], out short v2)) value2 = v2;
+
+                if (value1 != -1 && value2 != -1)
+                {
+                    plushieTiles.Add(value1, value2);
+                }
+            }
+        }
 
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
@@ -44,6 +83,43 @@ namespace Kourindou
         public void PlacingFlaxPlants(GenerationProgress progress = null)
         {
 
+        }
+
+        public static void SetPlushieDirtWater(int i, int j, short value)
+        {
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                long key = (long)(i * 4294967296) + (long)j;
+
+                if (plushieTiles.ContainsKey(key))
+                {
+                    plushieTiles[key] = value;
+                }
+                else
+                {
+                    plushieTiles.Add(key, value);
+                }
+            }
+        }
+
+        public static short GetPlushieDirtWater(int i, int j, bool breakTile)
+        {
+            short value = 0;
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                long key = (long)(i * 4294967296) + (long)j;
+
+                if (plushieTiles.ContainsKey(key))
+                {
+                    value = plushieTiles[key];
+
+                    if (breakTile)
+                    {
+                        plushieTiles.Remove(key);
+                    }
+                }
+            }
+            return value;
         }
     }
 }

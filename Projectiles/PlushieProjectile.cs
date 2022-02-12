@@ -7,28 +7,51 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using Kourindou.Items;
 
 namespace Kourindou.Projectiles
 {
     public abstract class PlushieProjectile : ModProjectile
-    {
-		private bool JustSpawned = true;
-
+    {	
+		// Constants
 		protected Vector2 gravity = new Vector2(0f, 10f);
-		protected float defaultMagnitudeX = 0.005f;
-		protected float defaultMagnitudeY = 0.01f;
+		protected const float defaultMagnitudeX = 0.005f;
+		protected const float defaultMagnitudeY = 0.01f;
 
+		// Initialization
+		private bool JustSpawned = true;
 		public int plushieTile;
+		public int plushieItem;
 
+		// Owner sided Timer
+		public int dropTimer = 0;
+
+		// Tile placement location
+		private int plushiePlaceTileX = 0;
+		private int	plushiePlaceTileY = 0;
+
+		// Dirt and Water mechanic
+		public byte DirtAmount
+		{
+			get { return (byte)(plushieDirtWater >> 8); }
+			set { plushieDirtWater = (short)((value * 256) + (byte)(plushieDirtWater >> 8)); }
+		}
+		public byte WaterAmount
+		{
+			get { return (byte)(plushieDirtWater); }
+			set { plushieDirtWater = (short)(value + (plushieDirtWater >> 8) * 256); }
+		}
+
+		// AI & LocalAI
 		public int Timer 
 		{
 			get => (int)projectile.ai[0];
 			set => projectile.ai[0] = value;
 		}
 
-		public int dropTimer
+		public short plushieDirtWater
 		{
-			get => (int)projectile.ai[1];
+			get => (short)projectile.ai[1];
 			set => projectile.ai[1] = value;
 		} 
 
@@ -44,7 +67,7 @@ namespace Kourindou.Projectiles
 			set => projectile.localAI[1] = value;
 		}
 
-        public override bool PreDraw (SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw (SpriteBatch spriteBatch, Color lightColor)
 		{
 			Texture2D texture = Main.projectileTexture[projectile.type];
 		    
@@ -61,7 +84,9 @@ namespace Kourindou.Projectiles
 			return false;
 		}
 
-        public override bool OnTileCollide (Vector2 oldVelocity)
+		public override bool? CanCutTiles() => false;
+
+		public override bool OnTileCollide (Vector2 oldVelocity)
         {
 			if (projectile.velocity.X != oldVelocity.X)
             {
@@ -123,10 +148,13 @@ namespace Kourindou.Projectiles
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
 					// If the projectile is not moving for 15 ticks, kill it
-					if (dropTimer > 15)
+					if (projectile.owner == Main.myPlayer)
 					{
-						projectile.netUpdate = true;
-						projectile.Kill();
+						if (dropTimer > 15)
+						{
+							projectile.netUpdate = true;
+							projectile.Kill();
+						}
 					}
 
 					// Check collisions for players
@@ -190,9 +218,47 @@ namespace Kourindou.Projectiles
 			}
 		}
 
-		public override bool? CanCutTiles()
+		public override void Kill(int timeLeft)
 		{
-			return false;
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				if (CanPlacePlushie() && !WorldGen.PlaceObject(plushiePlaceTileX, plushiePlaceTileY, plushieTile))
+				{
+					KourindouWorld.SetPlushieDirtWater(plushiePlaceTileX, plushiePlaceTileY - 1, plushieDirtWater);
+
+					if (Main.netMode == NetmodeID.Server)
+					{
+						ModPacket packet = mod.GetPacket();
+						packet.Write((byte) KourindouMessageType.PlacePlushieTile);
+						packet.Write((int) plushiePlaceTileX);
+						packet.Write((int) plushiePlaceTileY);
+						packet.Write((int) plushieTile);
+						packet.Send(-1, Main.myPlayer);
+					}
+				}
+				else
+				{
+					int itemSlot = Item.NewItem(
+						projectile.getRect(),
+						plushieItem,
+						1
+					);
+
+					if (Main.item[itemSlot].modItem is PlushieItem plushie)
+					{
+						plushie.plushieDirtWater = plushieDirtWater;
+					}
+
+					if (Main.netMode == NetmodeID.Server)
+					{
+						ModPacket packet = mod.GetPacket();
+						packet.Write((byte) KourindouMessageType.PlushieItemNetUpdate);
+						packet.Write((int) itemSlot);
+						packet.Write((short) plushieDirtWater);
+						packet.Send(-1, Main.myPlayer);
+					}
+				}
+			}
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
@@ -313,7 +379,8 @@ namespace Kourindou.Projectiles
 				return false;
 			}
 
-			WorldGen.PlaceObject(tileX, tileY - 1, plushieTile);
+			plushiePlaceTileX = tileX;
+			plushiePlaceTileY = tileY - 1;
 
 			return true;
 		}

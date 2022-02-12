@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Yoshika Miyako Plushie");
             AddMapEntry(new Color(46, 47, 62), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<YoshikaMiyako_Plushie_Item>());
+            plushieItem = ItemType<YoshikaMiyako_Plushie_Item>();
         }
     }
 }

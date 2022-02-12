@@ -61,11 +61,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Seija Kijin Plushie");
             AddMapEntry(new Color(0, 0, 0), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<SeijaKijin_Plushie_Item>());
+            plushieItem = ItemType<SeijaKijin_Plushie_Item>();
         }
 
         public override void RightClick (int i, int j)

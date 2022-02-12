@@ -50,11 +50,8 @@ namespace Kourindou.Tiles.Plushies
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Rumia Plushie");
             AddMapEntry(new Color(11, 11, 11), name);
-        }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 16, 48, ItemType<Rumia_Plushie_Item>());
+            plushieItem = ItemType<Rumia_Plushie_Item>();
         }
     }
 }

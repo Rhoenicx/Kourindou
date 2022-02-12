@@ -39,20 +39,10 @@ namespace Kourindou.Projectiles.Plushies
 			
 			// Visual
 			projectile.scale = 1f;
-        }
-		
-		public override void Kill (int timeLeft)
-		{
-			plushieTile = TileType<Gensokyo_Stone_Fairy_Plushie_Tile>();
 
-			if (!CanPlacePlushie())
-			{
-				Item.NewItem(
-					projectile.getRect(),
-					ItemType<Gensokyo_Stone_Fairy_Plushie_Item>(),
-					1
-				);
-			}
-		}
+			// Tile & item type
+			plushieTile = TileType<Gensokyo_Stone_Fairy_Plushie_Tile>();
+			plushieItem = ItemType<Gensokyo_Stone_Fairy_Plushie_Item>();
+        }
     }
 }
