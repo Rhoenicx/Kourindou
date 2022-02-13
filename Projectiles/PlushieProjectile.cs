@@ -233,6 +233,7 @@ namespace Kourindou.Projectiles
 						packet.Write((int) plushiePlaceTileX);
 						packet.Write((int) plushiePlaceTileY);
 						packet.Write((int) plushieTile);
+						packet.Write((short) plushieDirtWater);
 						packet.Send(-1, Main.myPlayer);
 					}
 				}

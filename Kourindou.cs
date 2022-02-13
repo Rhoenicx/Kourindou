@@ -466,11 +466,10 @@ namespace Kourindou
                     int plushiePlaceTileX = reader.ReadInt32();
                     int plushiePlaceTileY = reader.ReadInt32();
                     int plushieTile = reader.ReadInt32();
+                    short plushieDirtWater = reader.ReadInt16();
 
-                    if (Main.netMode != NetmodeID.Server)
-                    {
-                        WorldGen.PlaceObject(plushiePlaceTileX, plushiePlaceTileY, plushieTile);
-                    }
+                    WorldGen.PlaceObject(plushiePlaceTileX, plushiePlaceTileY, plushieTile);
+                    KourindouWorld.SetPlushieDirtWater(plushiePlaceTileX, plushiePlaceTileY - 1, plushieDirtWater);
                     break;
                 }
 
@@ -480,9 +479,16 @@ namespace Kourindou
                     int j = reader.ReadInt32();
                     short plushieDirtWater = reader.ReadInt16();
 
+                    KourindouWorld.SetPlushieDirtWater(i, j, plushieDirtWater);
+
                     if (Main.netMode == NetmodeID.Server)
                     {
-                        KourindouWorld.SetPlushieDirtWater(i, j, plushieDirtWater);
+                        ModPacket packet = GetPacket();
+                        packet.Write((byte) KourindouMessageType.SetPlushieDirtWater);
+                        packet.Write((int) i);
+                        packet.Write((int) j);
+                        packet.Write((int) plushieDirtWater);
+                        packet.Send(-1, whoAmI);
                     }
                     break;
                 }

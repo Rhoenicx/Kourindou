@@ -68,6 +68,31 @@ namespace Kourindou
             }
         }
 
+        public override void NetSend(BinaryWriter writer)
+        {
+            // PlushieTiles
+            writer.Write((int)plushieTiles.Count);
+            foreach (KeyValuePair<long, short> plushieTile in plushieTiles)
+            {
+                writer.Write((long)plushieTile.Key);
+                writer.Write((short)plushieTile.Value);
+            }
+        }
+
+        public override void NetReceive(BinaryReader reader)
+        {
+            // PlushieTiles
+            plushieTiles.Clear();
+
+            int plushieTileCount = reader.ReadInt32();
+            for (int i = 0; i < plushieTileCount; i++)
+            {
+                long key = reader.ReadInt64();
+                short value = reader.ReadInt16();
+                plushieTiles.Add(key, value);
+            }
+        }
+
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
             int index = tasks.FindIndex(genpass => genpass.Name.Equals("Micro Biomes"));
