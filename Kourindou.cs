@@ -206,6 +206,14 @@ namespace Kourindou
                 ItemID.Stopwatch
             });
             RecipeGroup.RegisterGroup("Kourindou:Watch", Watch);
+
+            RecipeGroup CopperBar = new RecipeGroup(() => "Copper or tin bar", new int[]
+            {
+                ItemID.CopperBar,
+                ItemID.TinBar
+            });
+            RecipeGroup.RegisterGroup("Kourindou:CopperBar", CopperBar);
+
         }
 
         // Handle netwrok packets
