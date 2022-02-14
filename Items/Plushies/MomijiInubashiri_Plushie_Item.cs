@@ -55,7 +55,21 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase damage by 10 percent
+            player.allDamage += 0.10f;
 
+            // Increase melee damage by 25 percent
+            player.meleeDamage += 0.25f;
+
+            // Increase melee crit by 10 points
+            player.meleeCrit += 10;
+
+            // Sniper scope effect
+            player.scope = true;
+
+            // Permanent dangersense and hunter effects
+            player.dangerSense = true;
+            player.detectCreature = true;
         }
 
         public override void AddRecipes()

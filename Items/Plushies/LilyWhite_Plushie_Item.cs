@@ -55,7 +55,21 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-
+            if (!player.ZoneBeach
+                && !player.ZoneCorrupt
+                && !player.ZoneCrimson
+                && !player.ZoneDesert
+                && !player.ZoneDungeon
+                && !player.ZoneGlowshroom
+                && !player.ZoneHoly
+                && !player.ZoneJungle
+                && !player.ZoneMeteor
+                && !player.ZoneSnow
+                && (player.ZoneSkyHeight || player.ZoneOverworldHeight))
+            {
+                player.AddBuff(BuffID.Sunflower, 20);
+                Main.buffNoTimeDisplay[146] = true;
+            }
         }
 
         public override void AddRecipes()

@@ -55,7 +55,39 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase damage by 10 percent
+            player.allDamage += 0.10f;
 
+            // Increase Life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Increase breathmax by 200 points (double)
+            player.breathMax += 200;
+
+            // Act like flipper accessory
+            player.accFlipper = true;
+
+            // Makes Fishron mount speed permanent
+            if (player.mount.Type == MountID.CuteFishron && player.mount.Active)
+            {
+                player.MountFishronSpecialCounter = 300;
+            }
+
+            // Boosted stats in water
+            if ((player.wet || player.honeyWet) && !player.lavaWet)
+            {
+                // Additional 10 percent damage
+                player.allDamage += 0.10f;
+
+                // Increase all crit by 5 points
+                player.meleeCrit += 5;
+                player.magicCrit += 5;
+                player.thrownCrit += 5;
+                player.rangedCrit += 5;
+
+                //Increase life regen by 5 points
+                player.lifeRegen += 5;
+            }
         }
 
         public override void AddRecipes()

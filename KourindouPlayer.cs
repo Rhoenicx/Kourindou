@@ -159,6 +159,12 @@ namespace Kourindou
             {   
                 player.HeldItem.scale = player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale;
             }
+
+            // Murasa Effect reset breathMax
+            player.breathMax = 200;
+
+            // Reset buff timer visibility
+            Main.buffNoTimeDisplay[146] = false;
         }   
 
         // Update player with the equipped plushie
