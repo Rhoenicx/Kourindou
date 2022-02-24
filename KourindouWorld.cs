@@ -10,6 +10,8 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.World.Generation;
+using static Terraria.ModLoader.ModContent;
+using Kourindou.Tiles.Plants;
 
 namespace Kourindou
 {
@@ -19,18 +21,12 @@ namespace Kourindou
         public static Dictionary<long, short> plushieTiles = new Dictionary<long, short>();
 
         // Cotton Plants
-        public int CottonPlants = 0;
-
-        private const int Small_CottonMax = 50;
-        private const int Medium_CottonMax = 75;
-        private const int Large_CottonMax = 100;
+        public static int CottonPlants = 0;
+        public static int MaxCottonPlants = 0;
 
         // Flax Plants
-        public int FlaxPlants = 0;
-
-        private const int Small_FlaxMax = 50;
-        private const int Medium_FlaxMax = 75;
-        private const int Large_FlaxMax = 100;
+        public static int FlaxPlants = 0;
+        public static int MaxFlaxPlants = 0;
 
         public override TagCompound Save()
         {
@@ -95,19 +91,132 @@ namespace Kourindou
 
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
-            int index = tasks.FindIndex(genpass => genpass.Name.Equals("Micro Biomes"));
-            tasks.Insert(index + 1, new PassLegacy("[Kourindou] Placing Cotton", PlacingCottonPlants));
-            tasks.Insert(index + 1, new PassLegacy("[Kourindou] Placing Flax", PlacingFlaxPlants));
+            int index = tasks.FindIndex(genpass => genpass.Name.Equals("Dye Plants"));
+            if (index != -1)
+            {
+                tasks.Insert(index + 1, new PassLegacy("[Kourindou] Placing Cotton", PlacingCottonPlants));
+                tasks.Insert(index + 1, new PassLegacy("[Kourindou] Placing Flax", PlacingFlaxPlants));
+            }
         }
 
-        public void PlacingCottonPlants(GenerationProgress progress = null)
+        private static void PlacingCottonPlants(GenerationProgress progress = null)
         {
+            MaxCottonPlants = GetCottonPlantAmount();
 
+            for (int plant = 0; plant < MaxCottonPlants; plant++)
+            {
+                float currentProgress = plant / (float)MaxCottonPlants;
+                progress.Set(currentProgress);
+
+                for (int attempt = 0; attempt < 1000; attempt++)
+                {
+                    // Get a random X coordinate
+                    int tileX = WorldGen.genRand.Next(0, Main.maxTilesX);
+
+                    // Get the tile Y of the space layer
+                    int tileY = (int)(Main.worldSurface * 0.35);
+
+                    // Scan downwards until we've hit a block
+                    while (!Main.tile[tileX, tileY].active())
+                    {
+                        tileY++;
+                    }
+
+                    // Check if the hit Tile is valid for the plant
+                    int hitTile = Main.tile[tileX, tileY].type;
+
+                    if (hitTile == TileID.Dirt || hitTile == TileID.Grass || hitTile == TileID.JungleGrass || hitTile == TileID.CorruptGrass
+                        || hitTile == TileID.FleshGrass || hitTile == TileID.MushroomGrass || hitTile == TileID.HallowedGrass)
+                    {
+                        int tileRight = Main.tile[tileX + 1, tileY].type;
+                        int tileLeft = Main.tile[tileX - 1, tileY].type;
+
+                        if (tileRight == TileID.Dirt || tileRight == TileID.Grass || tileRight == TileID.JungleGrass || tileRight == TileID.CorruptGrass
+                            || tileRight == TileID.FleshGrass || tileRight == TileID.MushroomGrass || tileRight == TileID.HallowedGrass)
+                        {
+                            WorldGen.PlaceObject(tileX, tileY - 1, TileType<Cotton_Tile>());
+                            if (Framing.GetTileSafely(tileX, tileY - 1).type == TileType<Cotton_Tile>())
+                            {
+                                CottonPlants++;
+                                break;
+                            }
+                        }
+                        else if (tileLeft == TileID.Dirt || tileLeft == TileID.Grass || tileLeft == TileID.JungleGrass || tileLeft == TileID.CorruptGrass
+                            || tileLeft == TileID.FleshGrass || tileLeft == TileID.MushroomGrass || tileLeft == TileID.HallowedGrass)
+                        {
+                            WorldGen.PlaceObject(tileX - 1, tileY - 1, TileType<Cotton_Tile>());
+                            if (Framing.GetTileSafely(tileX - 1, tileY - 1).type == TileType<Cotton_Tile>())
+                            {
+                                CottonPlants++;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        public void PlacingFlaxPlants(GenerationProgress progress = null)
+        private static int GetCottonPlantAmount()
         {
+            return (int)((float)Main.maxTilesX / 4200f * 32f); //Small=32, Medium=48, Large=64
+        }
 
+        private static void PlacingFlaxPlants(GenerationProgress progress = null)
+        {
+            MaxFlaxPlants = GetFlaxPlantAmount();
+
+            for (int plant = 0; plant < MaxFlaxPlants; plant++)
+            {
+                float currentProgress = plant / (float)MaxFlaxPlants;
+                progress.Set(currentProgress);
+
+                for (int attempt = 0; attempt < 1000; attempt++)
+                {
+                    // Get a random X coordinate
+                    int tileX = WorldGen.genRand.Next(0, Main.maxTilesX);
+
+                    // Get the tile Y of the space layer
+                    int tileY = (int)(Main.worldSurface * 0.35);
+
+                    // Scan downwards until we've hit a block
+                    while (!Main.tile[tileX, tileY].active())
+                    {
+                        tileY++;
+                    }
+
+                    // Check if the hit Tile is valid for the plant
+                    int hitTile = Main.tile[tileX, tileY].type;
+
+                    if (hitTile == TileID.Dirt || hitTile == TileID.Grass || hitTile == TileID.JungleGrass)
+                    {
+                        int tileRight = Main.tile[tileX + 1, tileY].type;
+                        int tileLeft  = Main.tile[tileX - 1, tileY].type;
+
+                        if (tileRight == TileID.Dirt || tileRight == TileID.Grass || tileRight == TileID.JungleGrass)
+                        {
+                            WorldGen.PlaceObject(tileX, tileY - 1, TileType<Flax_Tile>());
+                            if (Framing.GetTileSafely(tileX, tileY - 1).type == TileType<Flax_Tile>())
+                            {
+                                FlaxPlants++;
+                                break;
+                            }
+                        }
+                        else if (tileLeft == TileID.Dirt || tileLeft == TileID.Grass || tileLeft == TileID.JungleGrass)
+                        {
+                            WorldGen.PlaceObject(tileX - 1, tileY - 1, TileType<Flax_Tile>());
+                            if (Framing.GetTileSafely(tileX - 1, tileY -1).type == TileType<Flax_Tile>())
+                            {
+                                FlaxPlants++;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private static int GetFlaxPlantAmount()
+        {
+            return (int)((float)Main.maxTilesX / 4200f * 32f); //Small=32, Medium=48, Large=64
         }
 
         public static void SetPlushieDirtWater(int i, int j, short value)
