@@ -64,6 +64,37 @@ namespace Kourindou.Tiles.Plants
             soundType = 0;
         }
 
+        public override void PlaceInWorld(int i, int j, Item item) //Runs only on SinglePlayer and MultiplayerClient!
+        {
+            if (item.type == ItemType<CottonSeeds>())
+            {
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    ModPacket packet = mod.GetPacket();
+                    packet.Write((byte) KourindouMessageType.PlayerPlacePlantTile);
+                    packet.Write((int) TileType<Cotton_Tile>());
+                    packet.Send(-1, Main.myPlayer);
+                }
+                else if (Main.netMode == NetmodeID.SinglePlayer)
+                {
+                    KourindouWorld.CottonPlants++;
+                }
+            }
+        }
+
+        public override void MouseOver(int i, int j)
+        {
+            PlantStage stage = GetStage(i, j);
+
+            if (stage >= PlantStage.Blooming1)
+            {
+                Player player = Main.LocalPlayer;
+                player.noThrow = 2;
+                player.showItemIcon = true;
+                player.showItemIcon2 = ItemType<CottonFibre>();
+            }
+        }
+
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
             if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -106,6 +137,8 @@ namespace Kourindou.Tiles.Plants
                         Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonSeeds>());
                     }
                 }
+
+                KourindouWorld.CottonPlants--;
             }
 		}
 

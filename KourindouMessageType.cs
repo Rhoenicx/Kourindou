@@ -13,6 +13,8 @@ namespace Kourindou
         PlayCustomSound,
         PlushieItemNetUpdate,
         PlacePlushieTile,
-        SetPlushieDirtWater
+        SetPlushieDirtWater,
+        RandomPlacePlantTile,
+        PlayerPlacePlantTile
     }
 }

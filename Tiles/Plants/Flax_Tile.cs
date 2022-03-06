@@ -59,6 +59,24 @@ namespace Kourindou.Tiles.Plants
             soundType = SoundID.Grass;
         }
 
+        public override void PlaceInWorld(int i, int j, Item item) //Runs only on SinglePlayer and MultiplayerClient!
+        {
+            if (item.type == ItemType<FlaxSeeds>())
+            {
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    ModPacket packet = mod.GetPacket();
+                    packet.Write((byte)KourindouMessageType.PlayerPlacePlantTile);
+                    packet.Write((int)TileType<Flax_Tile>());
+                    packet.Send(-1, Main.myPlayer);
+                }
+                else if (Main.netMode == NetmodeID.SinglePlayer)
+                {
+                    KourindouWorld.FlaxPlants++;
+                }
+            }
+        }
+
         public override void KillMultiTile (int i, int j, int frameX, int frameY)
         {
             if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -78,6 +96,8 @@ namespace Kourindou.Tiles.Plants
                         Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
                     }
                 }
+
+                KourindouWorld.FlaxPlants--;
             }
         }
 

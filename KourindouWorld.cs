@@ -38,7 +38,11 @@ namespace Kourindou
 
             return new TagCompound
             {
-                { "plushieTiles", plushieTileList }
+                { "plushieTiles", plushieTileList },
+                { "maxCottonPlants", MaxCottonPlants },
+                { "placedCottonPlants", CottonPlants },
+                { "maxFlaxPlants", MaxFlaxPlants },
+                { "placedFlaxPlants", FlaxPlants }
             };
         }
 
@@ -61,6 +65,18 @@ namespace Kourindou
                 {
                     plushieTiles.Add(value1, value2);
                 }
+            }
+
+            MaxCottonPlants = tag.GetInt("maxCottonPlants");
+            CottonPlants = tag.GetInt("placedCottonPlants");
+            MaxFlaxPlants = tag.GetInt("maxFlaxPlants");
+            FlaxPlants = tag.GetInt("placedFlaxPlants");
+
+            // If this world is not generated with this mod active.
+            if (MaxFlaxPlants == 0 || MaxCottonPlants == 0)
+            {
+                MaxCottonPlants = GetCottonPlantAmount();
+                MaxFlaxPlants = GetFlaxPlantAmount();
             }
         }
 

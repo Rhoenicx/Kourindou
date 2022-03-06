@@ -19,6 +19,7 @@ using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Tiles.Plants;
 using Kourindou.Projectiles.Plushies;
+using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou
 {
@@ -497,6 +498,37 @@ namespace Kourindou
                         packet.Write((int) j);
                         packet.Write((int) plushieDirtWater);
                         packet.Send(-1, whoAmI);
+                    }
+                    break;
+                }
+
+                // Server => Client
+                case KourindouMessageType.RandomPlacePlantTile:
+                {
+                    int i = reader.ReadInt32();
+                    int j = reader.ReadInt32();
+                    int tile = reader.ReadInt32();
+
+                    WorldGen.PlaceObject(i, j, tile);
+
+                    break;
+                }
+
+                case KourindouMessageType.PlayerPlacePlantTile:
+                {
+                    int tile = reader.ReadInt32();
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        if (tile == ModContent.TileType<Cotton_Tile>())
+                        { 
+                            KourindouWorld.CottonPlants++;
+                        }
+
+                        if (tile == ModContent.TileType<Flax_Tile>())
+                        {
+                            KourindouWorld.FlaxPlants++;
+                        }
                     }
                     break;
                 }
