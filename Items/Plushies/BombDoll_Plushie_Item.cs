@@ -9,11 +9,11 @@ using Kourindou.Tiles.Furniture;
 
 namespace Kourindou.Items.Plushies
 {
-    public class Gensokyo_Flower_Fairy_Plushie_Item : PlushieItem
+    public class BombDoll_Plushie_Item : PlushieItem
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Flower Fairy Plushie");
+            DisplayName.SetDefault("Bomb Doll Plushie");
             Tooltip.SetDefault("");
         }
 
@@ -21,7 +21,7 @@ namespace Kourindou.Items.Plushies
         {
             // Information
             item.value = Item.buyPrice(0, 5, 0, 0);
-            item.rare = ItemRarityID.Yellow;
+            item.rare = ItemRarityID.Gray; 
 
             // Hitbox
             item.width = 32;
@@ -34,49 +34,53 @@ namespace Kourindou.Items.Plushies
             item.autoReuse = true;
             item.useTurn = true;
 
+            item.melee = true;
+
             // Tile placement fields
             item.consumable = true;
-            item.createTile = TileType<Gensokyo_Flower_Fairy_Plushie_Tile>();
-
-            item.shootSpeed = 8f;
+            item.createTile = TileType<BombDoll_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
             item.accessory = true;
-        }
 
+        }
         public override bool UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
                 shootSpeed = 8f;
-                projectileType = ProjectileType<Gensokyo_Flower_Fairy_Plushie_Projectile>();
+                projectileType = ProjectileType<BombDoll_Plushie_Projectile>();
             }
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-
+            // Gravity Globe effect. Hehe.
+            // Oh, maybe also a chance to reflect projectiles at low HP?
         }
 
         public override void AddRecipes()
         {
-            if (Kourindou.GensokyoLoaded)
-            {
-                ModRecipe recipe = new ModRecipe(mod);
-                recipe.AddIngredient(ItemType<BlueFabric>(), 2);
-                recipe.AddIngredient(ItemType<SilverFabric>(), 1);
-                recipe.AddIngredient(ItemType<YellowFabric>(), 2);
-                recipe.AddIngredient(ItemID.Silk, 2);
-                recipe.AddIngredient(ItemType<BlueThread>(), 2);
-                recipe.AddIngredient(ItemType<YellowThread>(), 2);
-                recipe.AddIngredient(ItemType<SilverThread>(), 1);
-                recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
-                recipe.AddTile(TileType<SewingMachine_Tile>());
-                recipe.SetResult(this);
-                recipe.AddRecipe();
-            }   
+            ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Dynamite, 1);
+            recipe.AddIngredient(ItemType<BlackFabric>(), 2);
+            recipe.AddIngredient(ItemType<RedFabric>(), 1);
+			recipe.AddIngredient(ItemType<YellowFabric>(), 1);
+            recipe.AddIngredient(ItemID.Silk, 2);
+            recipe.AddIngredient(ItemID.BlackThread, 2);
+            recipe.AddIngredient(ItemType<RedThread>(), 1);
+			recipe.AddIngredient(ItemType<YellowThread>(), 1);
+            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
+            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
+            recipe.AddTile(TileType<SewingMachine_Tile>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
         }
+		
+		public override bool CanBurnInLava()
+		{
+			return false;
+		}
     }
-}
+} 
