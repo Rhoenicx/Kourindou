@@ -1,10 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nE/10dpwCd52rM7OG1AxtFe+2Lm+CpkmQ5beQloxthvRJ/5esEY1YK/WOIZ4l43lWfp2UpZbVFuZ6RxmCYCxYA==",
+  "dgSpecHash": "E5BtPBY/n2wVShZ0lLEzBTfqJ5vGFD4ep+GjbcNhoVNAkjXjboAytXDaK4bu/Y9/Um/Rj5+Coym4If/GSRUxDQ==",
   "success": true,
   "projectFilePath": "G:\\Dropbox\\personal\\Terraria\\Mods\\Kourindou\\Kourindou.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\chris\\.nuget\\packages\\tmodloader.codeassist\\0.1.3\\tmodloader.codeassist.0.1.3.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }

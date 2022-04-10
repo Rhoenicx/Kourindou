@@ -19,7 +19,7 @@ namespace Kourindou.Tiles.Plushies
 
         public override void PlaceInWorld(int i, int j, Item item) //Runs only on SinglePlayer and MultiplayerClient!
         {
-            if (item.modItem is PlushieItem plushieItem)
+            if (item.ModItem is PlushieItem plushieItem)
             {
                 // Add entry to PlushieTiles locally
                 KourindouWorld.SetPlushieDirtWater(i, j - 1, plushieItem.plushieDirtWater);
@@ -27,7 +27,7 @@ namespace Kourindou.Tiles.Plushies
                 // If playing in multiplayer, also inform other parties of the placement
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte) KourindouMessageType.SetPlushieDirtWater);
                     packet.Write((int) i);
                     packet.Write((int) j - 1);
@@ -58,7 +58,7 @@ namespace Kourindou.Tiles.Plushies
             num = 0;
 		}
 
-        public override void RightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             if (soundName != "")
             {
@@ -76,7 +76,7 @@ namespace Kourindou.Tiles.Plushies
 
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                         packet.Write((byte) KourindouMessageType.PlayCustomSound);
                         packet.Write(soundName);
                         packet.Write(soundVolume);
@@ -86,6 +86,7 @@ namespace Kourindou.Tiles.Plushies
                         packet.Send();
                 }
             }
+            return true;
         }
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
@@ -101,7 +102,7 @@ namespace Kourindou.Tiles.Plushies
                 short plushieDirtWater = 0;
 
                 // Update the variable in the newly created item
-                if (Main.item[itemSlot].modItem is PlushieItem plushie)
+                if (Main.item[itemSlot].ModItem is PlushieItem plushie)
                 {
                     plushieDirtWater = KourindouWorld.GetPlushieDirtWater(i, j, true);
                     plushie.plushieDirtWater = plushieDirtWater;
@@ -110,7 +111,7 @@ namespace Kourindou.Tiles.Plushies
                 // If the tile is broken on the server also send a message to other parties
                 if (Main.netMode == NetmodeID.Server)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte)KourindouMessageType.PlushieItemNetUpdate);
                     packet.Write((int)itemSlot);
                     packet.Write((short)plushieDirtWater);

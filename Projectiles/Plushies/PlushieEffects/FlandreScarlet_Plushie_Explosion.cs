@@ -45,7 +45,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			projectile.scale = 1.5f;
         }
 
-        public override bool PreDraw (SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
 		{
             Texture2D texture = Main.projectileTexture[projectile.type];
 

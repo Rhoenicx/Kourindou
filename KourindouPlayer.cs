@@ -27,10 +27,10 @@ namespace Kourindou
 //--------------------------------------------------------------------------------
         // Determines the power mode of all the plushies
         public byte plushiePower;
-
-        // Dedicated Plushie slot
-        public UIItemSlot plushieEquipSlot;
         
+        // Plushie slot
+        private const string PlushieTag = "plushie";
+
         // Cirno Plushie Effect Attack Counter
         public byte CirnoPlushie_Attack_Counter;
         public bool CirnoPlushie_TimesNine;
@@ -42,74 +42,20 @@ namespace Kourindou
         public bool HalfPhantomPet;
 
 //--------------------------------------------------------------------------------
-        public override void clientClone(ModPlayer clientClone)
+        public override void SaveData(TagCompound tag) 
         {
-            KourindouPlayer clone = clientClone as KourindouPlayer;
-
-            if (clone == null)
-            {
-                return;
-            }
-
-            clone.plushieEquipSlot.Item = plushieEquipSlot.Item.Clone();
+            tag.Add("plushiePowerMode", plushiePower);
+            tag.Add("cirnoPlushieAttackCounter", CirnoPlushie_Attack_Counter);
+            tag.Add("cirnoPlushieTimesNine", CirnoPlushie_TimesNine);
         }
 
-        public override void SendClientChanges(ModPlayer clientPlayer)
+        public override void LoadData(TagCompound tag) 
         {
-            KourindouPlayer oldClone = clientPlayer as KourindouPlayer;
-
-            if (oldClone == null)
-            {
-                return;
-            }
-
-            //Detect changes in plushie equip slot
-            if (oldClone.plushieEquipSlot.Item.IsNotTheSameAs(plushieEquipSlot.Item))
-            {
-                ModPacket packet = mod.GetPacket();
-                packet.Write((byte)KourindouMessageType.PlushieSlot);
-                packet.Write((byte)player.whoAmI);
-                ItemIO.Send(plushieEquipSlot.Item, packet);
-                packet.Send(-1, player.whoAmI);
-            }
-        }
-
-        // Init
-        public override void Initialize() 
-        {
-            plushieEquipSlot = new UIItemSlot(
-                Vector2.Zero,
-                context: ItemSlot.Context.EquipAccessory,
-                hoverText: "Plushie",
-                conditions: Slot_Conditions,
-                drawBackground: Slot_DrawBackground,
-                scaleToInventory: true
-                );
-
-            plushieEquipSlot.BackOpacity = .8f;
-
-            plushieEquipSlot.Item = new Item();
-            plushieEquipSlot.Item.SetDefaults(0, true);
-        }
-
-        public override TagCompound Save() 
-        {
-            return new TagCompound 
-            {
-                { "plushieEquipSlot", ItemIO.Save(plushieEquipSlot.Item) },
-                { "plushiePowerMode", plushiePower},
-                { "cirnoPlushieAttackCounter", CirnoPlushie_Attack_Counter},
-                { "cirnoPlushieTimesNine", CirnoPlushie_TimesNine}
-            };
-        }
-
-        public override void Load(TagCompound tag) 
-        {
-            SetPlushie(ItemIO.Load(tag.GetCompound("plushieEquipSlot")));
             plushiePower = tag.GetByte("plushiePowerMode");
             CirnoPlushie_Attack_Counter = tag.GetByte("cirnoPlushieAttackCounter");
             CirnoPlushie_TimesNine = tag.GetBool("cirnoPlushieTimesNine");
-            base.Load(tag);
+
+            ContentInstance<PlushieEquipSlot>.Instance.FunctionalItem = ItemIO.Load(tag.GetCompound(PlushieTag));
         }
 
         public override void OnEnterWorld(Player player)
@@ -128,16 +74,10 @@ namespace Kourindou
             // Update other clients when joining multiplayer or when another player joins multiplayer
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
-                ModPacket packet = mod.GetPacket();
+                ModPacket packet = Mod.GetPacket();
                 packet.Write((byte)KourindouMessageType.ClientConfig);
                 packet.Write((byte)Main.myPlayer);
                 packet.Write((byte)plushiePower);
-                packet.Send();
-
-                packet = mod.GetPacket();
-                packet.Write((byte)KourindouMessageType.PlushieSlot);
-                packet.Write((byte)Main.myPlayer);
-                ItemIO.Send(Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item, packet);
                 packet.Send();
             }
         }
@@ -155,57 +95,23 @@ namespace Kourindou
         public override void ResetEffects()
         {
             // Suika Ibuki Effect reset scale
-            if (player.HeldItem.stack > 0 && player.HeldItem.melee && (player.HeldItem.useStyle == ItemUseStyleID.SwingThrow || player.HeldItem.useStyle == ItemUseStyleID.Stabbing))
+            if (Player.HeldItem.stack > 0 && Player.HeldItem.CountsAsClass(DamageClass.Melee) && (Player.HeldItem.useStyle == ItemUseStyleID.Swing || Player.HeldItem.useStyle == ItemUseStyleID.Thrust))
             {   
-                player.HeldItem.scale = player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale;
+                Player.HeldItem.scale = Player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale;
             }
 
             // Murasa Effect reset breathMax
-            player.breathMax = 200;
+            Player.breathMax = 200;
 
             // Reset buff timer visibility
             Main.buffNoTimeDisplay[146] = false;
         }   
 
         // Update player with the equipped plushie
-        public override void UpdateEquips(ref bool wallSpeedBuff, ref bool tileSpeedBuff, ref bool tileRangeBuff)
+        public override void PreUpdate()
         {
             // When the plushie power setting is changed to 0 or 1 clear the slot 
             // and place the item on top of the player
-            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower != 2 && player.whoAmI == Main.myPlayer)
-            {
-                if (plushieEquipSlot.Item.stack > 0)
-                {
-                    if (Main.netMode != NetmodeID.MultiplayerClient)
-                    {
-                        Item.NewItem(
-                            Main.player[Main.myPlayer].Center,
-                            new Vector2(Main.player[Main.myPlayer].width, Main.player[Main.myPlayer].height),
-                            plushieEquipSlot.Item.type, 
-                            1
-                        );
-                    }
-                    else
-                    {
-                        ModPacket packet = mod.GetPacket();
-                        packet.Write((byte)KourindouMessageType.ForceUnequipPlushie);
-                        packet.Write((byte)Main.myPlayer);
-                        ItemIO.Send(Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item, packet);
-                        packet.Send();
-                    }
-
-                    plushieEquipSlot.Item = new Item();
-                    plushieEquipSlot.Item.SetDefaults(0, true);
-                }
-            }
-
-            if (plushieEquipSlot.Item.stack > 0)
-            {
-                player.VanillaUpdateAccessory(player.whoAmI, plushieEquipSlot.Item, !plushieEquipSlot.ItemVisible, ref wallSpeedBuff,
-                    ref tileSpeedBuff, ref tileRangeBuff);
-
-                player.VanillaUpdateEquip(plushieEquipSlot.Item);
-            }
         }
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref bool crit)
@@ -505,7 +411,7 @@ namespace Kourindou
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
                     // Send sound packet for other clients
-                    ModPacket packet2 = mod.GetPacket();
+                    ModPacket packet2 = Mod.GetPacket();
                     packet2.Write((byte) KourindouMessageType.PlaySound);
                     packet2.Write((byte) SoundID.DD2_ExplosiveTrapExplode.SoundId);
                     packet2.Write((short) SoundID.DD2_ExplosiveTrapExplode.Style);
@@ -573,50 +479,6 @@ namespace Kourindou
             }
         }
 
-        //Draw Plushie slot
-        private void Slot_DrawBackground(UIObject sender, SpriteBatch spriteBatch)
-        {
-            UIItemSlot slot = (UIItemSlot)sender;
-
-            if (ShouldDrawSlots())
-            {
-                slot.OnDrawBackground(spriteBatch);
-
-                if(slot.Item.stack == 0)
-                {
-                    Texture2D tex = mod.GetTexture(Kourindou.PlushieSlotBackTex);
-                    Vector2 origin = tex.Size() / 2f * Main.inventoryScale;
-                    Vector2 position = slot.Rectangle.TopLeft();
-
-                    spriteBatch.Draw(
-                        tex,
-                        position + (slot.Rectangle.Size() / 2f) - (origin / 2f),
-                        null,
-                        Color.White * 0.35f,
-                        0f,
-                        origin,
-                        Main.inventoryScale,
-                        SpriteEffects.None,
-                        0f); // layer depth 0 = front
-                }
-            }
-        }
-
-        private bool Slot_Conditions(Item item)
-        {
-            // Prevent Nasty NullReferenceException - Crashes Game 
-            if (item.modItem != null)
-            {
-                // Check whether this item can be placed in the Plushie Slot
-                if (item.Clone().modItem.GetType().IsSubclassOf(typeof(PlushieItem)) && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2)
-                {
-                    return true;
-                }
-            }   
-
-            return false;
-        }
-
         public void Draw(SpriteBatch spriteBatch)
         {
             //Draw the custom inventory slot
@@ -633,11 +495,7 @@ namespace Kourindou
 
             Main.inventoryScale = 0.85f;
 
-            if(Main.mapEnabled) {
-                if(!Main.mapFullscreen && Main.mapStyle == 1) {
-                    mapH = 256;
-                }
-            }
+
 
             if(Main.mapEnabled) {
                 int adjustY = 600;
@@ -656,7 +514,7 @@ namespace Kourindou
             rY = (int)(mapH + 174 + 4 + slotCount * 56 * Main.inventoryScale);
 
             //if Wingslot is also installed move up
-            Mod Wingslot = ModLoader.GetMod("WingSlot");
+            Mod Wingslot = ModLoader.GetMod("WingSlotExtra");
             if (Wingslot != null && Wingslot.Version >= new Version(1,7,3))
             {
                 if (WingSlotNextToAccessories)
@@ -678,11 +536,67 @@ namespace Kourindou
         {
             get { return WingSlot.WingSlot.SlotsNextToAccessories; }
         }
+    }
 
-        // Determine if the slot should be drawn
-        public static bool ShouldDrawSlots()
+
+    internal class PlushieEquipSlotUpdateUI : ModSystem
+    {
+        internal static int posX;
+        internal static int posY;
+        public override void UpdateUI(GameTime gameTime)
         {
-            if (Main.playerInventory == true && Main.EquipPage == 0 && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2)
+            if (!Main.gameMenu)
+            {
+                int mapH = 0;
+                Main.inventoryScale = 0.85f;
+
+                if(Main.mapEnabled && !Main.mapFullscreen && Main.mapStyle == 1) 
+                {
+                    mapH = 256;
+                }
+
+                if (Main.mapEnabled)
+                {
+                    int adjustY = 600;
+
+                    if (Main.player[Main.myPlayer].extraAccessory)
+                        adjustY = 610 + PlayerInput.UsingGamepad.ToInt() * 30;
+
+                    if ((mapH + adjustY) > Main.screenHeight)
+                        mapH = Main.screenHeight - adjustY;
+                }
+
+                int slotCount = 7 + Main.player[Main.myPlayer].GetAmountOfExtraAccessorySlotsToShow();
+
+                if ((Main.screenHeight < 900) && (slotCount >= 8))
+                    slotCount = 7;
+
+                posX = Main.screenWidth - 82 - 14 - (47 * 3) - (int)(TextureAssets.InventoryBack.Width() * Main.inventoryScale);
+                posY = (int)(mapH + 174 + 4 + slotCount * 56 * Main.inventoryScale);
+            }
+        }
+    }
+
+    public class PlushieEquipSlot : ModAccessorySlot
+    {
+        public override string Name => "Plushie Slot";
+
+        public override bool IsHidden()
+        {
+            return Main.playerInventory == true && Main.EquipPage == 0 && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2;
+        }
+
+        public override Vector2? CustomLocation => new Vector2(PlushieEquipSlotUpdateUI.posX, PlushieEquipSlotUpdateUI.posY);
+
+        public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
+        {
+            // cannot place an item in the slot if the power mode is not 2
+            if (Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower != 2)
+            {
+                return false;
+            }
+
+            if (checkItem.modItem is PlushieItem plushie)
             {
                 return true;
             }
@@ -690,45 +604,36 @@ namespace Kourindou
             return false;
         }
 
-        public void EquipPlushie(bool isVanity, Item item)
+        public override bool ModifyDefaultSwapSlot(Item item, int accSlotToSwapTo)
         {
-            if (player.GetModPlayer<KourindouPlayer>().plushiePower != 2)
+            if (Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower != 2)
             {
-                return;
+                return false;
             }
 
-            UIItemSlot slot = plushieEquipSlot;
-            int fromSlot = Array.FindIndex(player.inventory, i => i == item);
-
-            if (fromSlot < 0)
+            if (item.modItem is PlushieItem plushie)
             {
-                return;
+                return true;
             }
 
-            item.favorited = false;
-            player.inventory[fromSlot] = slot.Item.Clone();
-            if (player.inventory[fromSlot].modItem is PlushieItem p1 && slot.Item.modItem is PlushieItem p2)
-            {
-                p1.plushieDirtWater = p2.plushieDirtWater;
-            }
-            Main.PlaySound(SoundID.Grab);
-            Recipe.FindRecipes();
-            SetPlushie(item);
+            return false;
         }
 
-        private void SetPlushie(Item item)
+        public override bool IsVisibleWhenNotEnabled()
         {
-            plushieEquipSlot.Item = item.Clone();
-            if (plushieEquipSlot.Item.modItem is PlushieItem p1 && item.modItem is PlushieItem p2)
-            {
-                p1.plushieDirtWater = p2.plushieDirtWater;
-            }
+            return false;
         }
 
-        public void ClearPlushie()
+        public override string FunctionalTexture => "Terraria/Images/Item_" + ItemID.CreativeWings;
+
+        public override void OnMouseHover(AccessorySlotType context)
         {
-            plushieEquipSlot.Item = new Item();
-            plushieEquipSlot.Item.SetDefaults();
+            switch (context)
+            {
+                case AccessorySlotType.FunctionalSlot:
+                    Main.hoverItemName = "Plushie Slot";
+                    break;
+            }
         }
     }
 }

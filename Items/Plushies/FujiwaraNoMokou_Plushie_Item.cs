@@ -20,29 +20,29 @@ namespace Kourindou.Items.Plushies
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 5, 0, 0);
-            item.rare = ItemRarityID.Orange;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.Orange;
 
             // Hitbox
-            item.width = 32;
-            item.height = 32;
+            Item.width = 32;
+            Item.height = 32;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
             // Tile placement fields
-            item.consumable = true;
-            item.createTile = TileType<FujiwaraNoMokou_Plushie_Tile>();
+            Item.consumable = true;
+            Item.createTile = TileType<FujiwaraNoMokou_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
-            item.accessory = true;
+            Item.accessory = true;
         }
         
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
@@ -56,7 +56,7 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increase damage by 25 percent
-            player.allDamage += 0.25f;
+            player.GetDamage(DamageClass.Generic) += 0.25f;
 
             // Increase life regen by 1 point
             player.lifeRegen += 1;
@@ -75,16 +75,16 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.Fireblossom, 8);
-            recipe.AddIngredient(ItemType<RedFabric>(), 3);
-            recipe.AddIngredient(ItemType<SilverFabric>(), 2);
-            recipe.AddIngredient(ItemID.Silk, 3);
-            recipe.AddIngredient(ItemType<RedThread>(), 3);
-            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
-            recipe.AddTile(TileType<SewingMachine_Tile>());
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe()
+                .AddIngredient(ItemID.Fireblossom, 8)
+                .AddIngredient(ItemType<RedFabric>(), 3)
+                .AddIngredient(ItemType<SilverFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 3)
+                .AddIngredient(ItemType<RedThread>(), 3)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .SetResult(this)
+                .Register();
         }
     }
 }

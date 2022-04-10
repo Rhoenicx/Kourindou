@@ -39,14 +39,14 @@ namespace Kourindou
         public override void OnChanged()
         {
             // When the settings are changed while playing, update the modplayer variable(s)
-            if (!Main.gameMenu && Main.playerLoaded)
+            if (!Main.gameMenu)
             {
                 Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower = (byte)plushiePower;
 
                 // When the setting is changed during multiplayer, also send a packet
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte)KourindouMessageType.ClientConfig);
                     packet.Write((byte)Main.LocalPlayer.whoAmI);
                     packet.Write((byte)plushiePower);

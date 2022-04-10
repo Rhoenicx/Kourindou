@@ -1,11 +1,12 @@
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Kourindou.Buffs
 {
     public class Buff_PlushieInRange : ModBuff
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Plushie Magic");
             Description.SetDefault("Slight increase to life and mana regeneration");
@@ -13,8 +14,8 @@ namespace Kourindou.Buffs
             Main.pvpBuff[Type] = true;
             Main.buffNoSave[Type] = true;
             Main.buffNoTimeDisplay[Type] = true;
-            longerExpertDebuff = false;
-            canBeCleared = false;
+            BuffID.Sets.LongerExpertDebuff[Type] = false;
+            BuffID.Sets.NurseCannotRemoveDebuff[Type] = false;
         }
 
         public override void Update(Player player, ref int buffIndex)

@@ -18,7 +18,7 @@ namespace Kourindou
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
             if (player.GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<PatchouliKnowledge_Plushie_Item>())
             {
-                if (item.melee || item.ranged || item.thrown)
+                if (item.CountsAsClass(DamageClass.Melee) || item.CountsAsClass(DamageClass.Ranged) || item.CountsAsClass(DamageClass.Throwing))
                 {
                     damage = 0;
                 }
@@ -39,7 +39,7 @@ namespace Kourindou
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
             if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<PatchouliKnowledge_Plushie_Item>())
             {
-                if (projectile.melee || projectile.ranged || projectile.thrown || projectile.minion)
+                if (projectile.CountsAsClass(DamageClass.Melee) || projectile.CountsAsClass(DamageClass.Ranged) || projectile.CountsAsClass(DamageClass.Throwing) || projectile.minion)
                 {
                     damage = 0;
                 }

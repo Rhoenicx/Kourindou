@@ -31,25 +31,25 @@ namespace Kourindou.Items.CraftingMaterials
             }
 
             // Add recipe
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<WhiteThread>(), 4);
-            recipe.AddTile(TileType<WeavingLoom_Tile>());
-            recipe.SetResult(ItemID.Silk);
-            recipe.AddRecipe();
+            CreateRecipe()
+                .AddIngredient(ItemType<WhiteThread>(), 4)
+                .AddTile(TileType<WeavingLoom_Tile>())
+                .SetResult(ItemID.Silk)
+                .Register();
 
             // Remove colors on water
-            recipe = new ModRecipe(mod);
-            recipe.AddRecipeGroup("Kourindou:Fabric", 1);
-            recipe.needWater = true;
-            recipe.SetResult(ItemID.Silk);
-            recipe.AddRecipe();
+            CreateRecipe()
+                .AddRecipeGroup("Kourindou:Fabric", 1)
+                .needWater = true
+                .SetResult(ItemID.Silk)
+                .Register();
 
             // Remove colors on dye vat
-            recipe = new ModRecipe(mod);
-            recipe.AddRecipeGroup("Kourindou:Fabric", 1);
-            recipe.AddTile(TileID.DyeVat);
-            recipe.SetResult(ItemID.Silk);
-            recipe.AddRecipe();
+            CreateRecipe()
+                .AddRecipeGroup("Kourindou:Fabric", 1)
+                .AddTile(TileID.DyeVat)
+                .SetResult(ItemID.Silk)
+                .Register();
 
         }
     }

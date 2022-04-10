@@ -14,31 +14,31 @@ namespace Kourindou.Projectiles.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Hata No Kokoro Plushie");
-			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
-			ProjectileID.Sets.TrailingMode[projectile.type] = 0; 
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
+			ProjectileID.Sets.TrailingMode[Projectile.type] = 0; 
         }
 
         public override void SetDefaults()
         {
             // AI
-			projectile.aiStyle = -1;
+			Projectile.aiStyle = -1;
 
 			// Entity Interaction
-			projectile.friendly = false;
-			projectile.hostile = false;
-			projectile.melee = true;
-			projectile.penetrate = 1;
+			Projectile.friendly = false;
+			Projectile.hostile = false;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.penetrate = 1;
 
 			// Hitbox
-			projectile.width = 32;
-			projectile.height = 32;
+			Projectile.width = 32;
+			Projectile.height = 32;
 
 			// Movement
-			projectile.timeLeft = 6000;
-			projectile.tileCollide = true;
+			Projectile.timeLeft = 6000;
+			Projectile.tileCollide = true;
 			
 			// Visual
-			projectile.scale = 1f;
+			Projectile.scale = 1f;
 
 			// Tile & item type
 			plushieTile = TileType<HataNoKokoro_Plushie_Tile>();

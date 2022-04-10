@@ -35,7 +35,7 @@ namespace Kourindou.Tiles.Furniture
 
     public class Thread_Tile : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileFrameImportant[Type] = true;
             Main.tileCut[Type] = false;
@@ -59,7 +59,7 @@ namespace Kourindou.Tiles.Furniture
         
             TileObjectData.addTile(Type);
 
-            disableSmartCursor = true;
+            TileID.Sets.DisableSmartCursor[Type];
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Thread");
@@ -78,97 +78,97 @@ namespace Kourindou.Tiles.Furniture
             {
                 case ThreadStyle.White:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<WhiteThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<WhiteThread>());
                     break;
                 }
 
                 case ThreadStyle.Silver:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<SilverThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<SilverThread>());
                     break;
                 }
 
                 case ThreadStyle.Black:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemID.BlackThread);
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.BlackThread);
                     break;
                 }
 
                 case ThreadStyle.Red:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<RedThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<RedThread>());
                     break;
                 }
 
                 case ThreadStyle.Pink:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemID.PinkThread);
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.PinkThread);
                     break;
                 }
 
                 case ThreadStyle.Violet:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<VioletThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<VioletThread>());
                     break;
                 }
 
                 case ThreadStyle.Purple:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<PurpleThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<PurpleThread>());
                     break;
                 }
 
                 case ThreadStyle.Blue:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<BlueThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<BlueThread>());
                     break;
                 }
 
                 case ThreadStyle.SkyBlue:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<SkyBlueThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<SkyBlueThread>());
                     break;
                 }
 
                 case ThreadStyle.Cyan:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CyanThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CyanThread>());
                     break;
                 }
 
                 case ThreadStyle.Teal:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<TealThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<TealThread>());
                     break;
                 }
 
                 case ThreadStyle.Green:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemID.GreenThread);
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.GreenThread);
                     break;
                 }
 
                 case ThreadStyle.Lime:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<LimeThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<LimeThread>());
                     break;
                 }
 
                 case ThreadStyle.Yellow:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<YellowThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<YellowThread>());
                     break;
                 }
 
                 case ThreadStyle.Orange:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<OrangeThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<OrangeThread>());
                     break;
                 }
 
                 case ThreadStyle.Brown:
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<BrownThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<BrownThread>());
                     break;
                 }
             }
@@ -177,7 +177,7 @@ namespace Kourindou.Tiles.Furniture
         private ThreadStyle GetStyle(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            return (ThreadStyle)(int)Math.Floor((double)tile.frameX / 34);
+            return (ThreadStyle)(int)Math.Floor((double)tile.TileFrameX / 34);
         }
     }
 }

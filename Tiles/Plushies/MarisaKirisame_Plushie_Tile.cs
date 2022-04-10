@@ -14,7 +14,7 @@ namespace Kourindou.Tiles.Plushies
 {
     public class MarisaKirisame_Plushie_Tile : PlushieTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             // Make Frame Important => multiple frames
             Main.tileFrameImportant[Type] = true;
@@ -44,7 +44,7 @@ namespace Kourindou.Tiles.Plushies
             TileObjectData.addTile(Type);
 
             // Interaction
-            disableSmartCursor = true;
+            TileID.Sets.DisableSmartCursor[Type];
 
             // Map Entry
             ModTranslation name = CreateMapEntryName();
@@ -54,10 +54,10 @@ namespace Kourindou.Tiles.Plushies
             plushieItem = ItemType<MarisaKirisame_Plushie_Item>();
         }
 
-        public override void RightClick (int i, int j)
+        public override bool RightClick (int i, int j)
         {
             soundName = "MarisaKirisame_Music";
-            base.RightClick(i, j);
+            return base.RightClick(i, j);
         }
     }
 }

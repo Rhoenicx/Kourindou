@@ -14,7 +14,7 @@ namespace Kourindou.Tiles.Plushies
 {
     public class Kisume_Plushie_Tile : PlushieTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             // Make Frame Important => multiple frames
             Main.tileFrameImportant[Type] = true;
@@ -63,7 +63,7 @@ namespace Kourindou.Tiles.Plushies
             TileObjectData.addTile(Type);
 
             // Interaction
-            disableSmartCursor = true;
+            TileID.Sets.DisableSmartCursor[Type];
 
             // Map Entry
             ModTranslation name = CreateMapEntryName();

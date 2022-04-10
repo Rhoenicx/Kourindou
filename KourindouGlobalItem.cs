@@ -42,7 +42,7 @@ namespace Kourindou
 					syncHitbox.X -= (int)player.Center.X;
 					syncHitbox.Y -= (int)player.Center.Y;
 					
-					ModPacket packet = mod.GetPacket();
+					ModPacket packet = Mod.GetPacket();
 					packet.Write((byte) KourindouMessageType.MeleeHitbox);
 					packet.Write((byte) player.whoAmI);
 					packet.Write((int) syncHitbox.X);
@@ -64,7 +64,7 @@ namespace Kourindou
     {
 		public float defaultScale = 1f;
         public override bool InstancePerEntity => true;
-        public override bool CloneNewInstances => true;
+        //public override bool CloneNewInstances => true;
 
         public override void SetDefaults(Item item)
         {

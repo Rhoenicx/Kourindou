@@ -5,6 +5,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -33,7 +34,7 @@ namespace Kourindou
 
         private static List<Func<bool>> RightClickOverrides;
 
-        public static ModHotKey YukariYakumoTPKey;
+        public static ModKeybind YukariYakumoTPKey;
 
         // Kourindou Mod Instance
         public Kourindou()
@@ -48,23 +49,15 @@ namespace Kourindou
         // Load
         public override void Load()
         {
-            Properties = new ModProperties() {
-                Autoload = true,
-                AutoloadBackgrounds = true,
-                AutoloadGores = true,
-                AutoloadSounds = true
-            };
-
             RightClickOverrides = new List<Func<bool>>();
 
-            YukariYakumoTPKey = RegisterHotKey("Yukari Yakumo Teleport Key", "Mouse2");
+            YukariYakumoTPKey = KeybindLoader.RegisterKeybind(this, "Yukari Yakumo Teleport Key", "Mouse2");
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
             {
 
             }
-
         }
 
         // Unload
@@ -97,25 +90,20 @@ namespace Kourindou
                 LoadPlushieTextures();
 
                 // Thread
-                Main.itemTexture[ItemID.BlackThread] = GetTexture("Items/CraftingMaterials/BlackThread");
-                Main.itemTexture[ItemID.GreenThread] = GetTexture("Items/CraftingMaterials/GreenThread");
-                Main.itemTexture[ItemID.PinkThread] = GetTexture("Items/CraftingMaterials/PinkThread");
+                Terraria.GameContent.TextureAssets.Item[ItemID.BlackThread]= Assets.Request<Texture2D>("Items/CraftingMaterials/BlackThread");
+                Terraria.GameContent.TextureAssets.Item[ItemID.GreenThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/GreenThread");
+                Terraria.GameContent.TextureAssets.Item[ItemID.PinkThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/PinkThread");
 
                 // Silk
-                Main.itemTexture[ItemID.Silk] = GetTexture("Items/CraftingMaterials/WhiteFabric");
-                Main.itemTexture[ItemID.SilkRope] = GetTexture("Items/Blocks/WhiteFabric_Item_Rope");
-                Main.itemTexture[ItemID.SilkRopeCoil] = GetTexture("Items/Consumables/WhiteFabric_Item_RopeCoil");
-                Main.tileTexture[TileID.SilkRope] = GetTexture("Tiles/Blocks/WhiteFabric_Tile");
-                Main.projectileTexture[ProjectileID.SilkRopeCoil] = GetTexture("Projectiles/Fabric/WhiteFabric_Projectile");
-                Main.chainsTexture[4] = GetTexture("Projectiles/Fabric/WhiteFabric_Projectile_Chain1");
-                Main.chainsTexture[5] = GetTexture("Projectiles/Fabric/WhiteFabric_Projectile_Chain2");
-                
-            }
-        }
+                Terraria.GameContent.TextureAssets.Item[ItemID.Silk] = Assets.Request<Texture2D>("Items/CraftingMaterials/WhiteFabric");
+                Terraria.GameContent.TextureAssets.Item[ItemID.SilkRope] = Assets.Request<Texture2D>("Items/Blocks/WhiteFabric_Item_Rope");
+                Terraria.GameContent.TextureAssets.Item[ItemID.SilkRopeCoil] = Assets.Request<Texture2D>("Items/Consumables/WhiteFabric_Item_RopeCoil");
 
-        public override void PostDrawInterface(SpriteBatch spriteBatch) {
-            KourindouPlayer player = Main.LocalPlayer.GetModPlayer<KourindouPlayer>();
-            player.Draw(spriteBatch);
+                Terraria.GameContent.TextureAssets.Tile[TileID.SilkRope] = Assets.Request<Texture2D>("Tiles/Blocks/WhiteFabric_Tile");
+                Terraria.GameContent.TextureAssets.Projectile[ProjectileID.SilkRopeCoil] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile");
+                Terraria.GameContent.TextureAssets.Chains[4] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain1");
+                Terraria.GameContent.TextureAssets.Chains[5] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain2");                
+            }
         }
 
         // Add Crafting recipe groups
@@ -590,9 +578,9 @@ namespace Kourindou
 
         public void SetPlushieTextures(int item, int tile, int projectile, string itemName)
         {
-            Main.itemTexture[item] = GetTexture("Items/Plushies/" + itemName + "_Plushie_Item" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
-            Main.tileTexture[tile] = GetTexture("Tiles/Plushies/" + itemName + "_Plushie_Tile" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
-            Main.projectileTexture[projectile] = GetTexture("Projectiles/Plushies/" + itemName + "_Plushie_Projectile" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
+            Terraria.GameContent.TextureAssets.Item[item] = Assets.Request<Texture2D>("Items/Plushies/" + itemName + "_Plushie_Item" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
+            Terraria.GameContent.TextureAssets.Tile[tile] = Assets.Request<Texture2D>("Tiles/Plushies/" + itemName + "_Plushie_Tile" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
+            Terraria.GameContent.TextureAssets.Projectile[projectile] = Assets.Request<Texture2D>("Projectiles/Plushies/" + itemName + "_Plushie_Projectile" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
         }
     }
 }

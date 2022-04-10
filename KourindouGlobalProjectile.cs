@@ -52,7 +52,7 @@ namespace Kourindou
             {
                 if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<ReimuHakurei_Plushie_Item>())
                 {
-                    if ((projectile.magic || projectile.melee || projectile.ranged || projectile.thrown)
+                    if ((projectile.CountsAsClass(DamageClass.Magic) || projectile.CountsAsClass(DamageClass.Melee) || projectile.CountsAsClass(DamageClass.Ranged) || projectile.CountsAsClass(DamageClass.Throwing))
                         && projectile.type != ProjectileID.IceBlock
                         )
                     {
@@ -83,7 +83,7 @@ namespace Kourindou
 
                                 if (Main.netMode == NetmodeID.MultiplayerClient)
                                 {
-                                    ModPacket packet = mod.GetPacket();
+                                    ModPacket packet = Mod.GetPacket();
                                     packet.Write((byte)KourindouMessageType.ReimuPlushieTargets);
                                     packet.Write((int)projectile.whoAmI);
                                     packet.Write((int)nearest.n);

@@ -26,15 +26,12 @@ namespace Kourindou.Items
         public float shootSpeed = 8f;
         public int projectileType = 0;
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tag)
         {
-            return new TagCompound
-            {
-                { "plushieDirtWater", plushieDirtWater}
-            };
+            tag.Add("plushieDirtWater", plushieDirtWater);
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             plushieDirtWater = tag.GetShort("plushieDirtWater");
         }
@@ -42,7 +39,7 @@ namespace Kourindou.Items
         // Re-center item texture
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            Texture2D texture = Main.itemTexture[item.type];
+            Texture2D texture = GameContent.TextureAssets.Item[item.type].Value;
 
             spriteBatch.Draw(
                 texture,
@@ -68,7 +65,7 @@ namespace Kourindou.Items
         {
             if (!CanRightClick())
             {
-                return;
+                return false;
             }
             
             player.GetModPlayer<KourindouPlayer>().EquipPlushie(false, item);
@@ -100,7 +97,7 @@ namespace Kourindou.Items
 
         // Determine if this accessory can be equipped in the equipment slots
         // Cannot be placed in normal equipment slots, only the plushie slot
-        public override bool CanEquipAccessory(Player player, int slot)
+        public override bool CanEquipAccessory(Player player, int slot, bool modded)
         {
             if (slot > 0)
             {
@@ -127,7 +124,7 @@ namespace Kourindou.Items
             return true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
@@ -169,7 +166,7 @@ namespace Kourindou.Items
             writer.Write(plushieDirtWater);
         }
 
-        public override void NetRecieve(BinaryReader reader)
+        public override void NetReceive(BinaryReader reader)
         {
             plushieDirtWater = reader.ReadInt16();
         }

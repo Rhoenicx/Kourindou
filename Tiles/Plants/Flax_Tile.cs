@@ -20,7 +20,7 @@ namespace Kourindou.Tiles.Plants
 
         private const int PlantFrameHeight = 38;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileFrameImportant[Type] = true;
             Main.tileCut[Type] = false;
@@ -55,8 +55,8 @@ namespace Kourindou.Tiles.Plants
             name.SetDefault("Flax Plant");
             AddMapEntry(new Color(1, 128, 201), name);
 
-            soundStyle = 0;
-            soundType = SoundID.Grass;
+            SoundStyle = 0;
+            SoundType = SoundID.Grass;
         }
 
         public override void PlaceInWorld(int i, int j, Item item) //Runs only on SinglePlayer and MultiplayerClient!
@@ -65,7 +65,7 @@ namespace Kourindou.Tiles.Plants
             {
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte)KourindouMessageType.PlayerPlacePlantTile);
                     packet.Write((int)TileType<Flax_Tile>());
                     packet.Send(-1, Main.myPlayer);
@@ -81,19 +81,19 @@ namespace Kourindou.Tiles.Plants
         {
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
+                Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
 
                 PlantStage stage = (PlantStage)(int)Math.Floor((double)(frameX / FrameWidth));
 
                 if (stage == PlantStage.Grown)
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxBundle>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxBundle>());
 
                     int dropFlaxSeeds = Main.rand.Next(1,4);
 
                     for (int a = 0; a < dropFlaxSeeds; a++)
                     {
-                        Item.NewItem(i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
+                        Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxSeeds>());
                     }
                 }
 
@@ -128,7 +128,7 @@ namespace Kourindou.Tiles.Plants
 
                 bool update = false;
 
-                switch (tileUnder.type)
+                switch (tileUnder.TileType)
                 {
                     case TileID.Dirt:
                     {
@@ -183,21 +183,21 @@ namespace Kourindou.Tiles.Plants
         private PlantStage GetStage(int i, int j)
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
-            return (PlantStage)(int)Math.Floor((double)(tile.frameX / FrameWidth));
+            return (PlantStage)(int)Math.Floor((double)(tile.TileFrameX / FrameWidth));
 		}
 
         private PlantStyle GetStyle(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            return (PlantStyle)(int)Math.Floor((double)(tile.frameY / PlantFrameHeight));
+            return (PlantStyle)(int)Math.Floor((double)(tile.TileFrameY / PlantFrameHeight));
         }
 
         private void UpdateMultiTile(int i, int j, int width, int style)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            int tileX = (int)Math.Floor((double)(tile.frameX / (FrameWidth / 2)));
-            int tileY = (int)Math.Floor((double)(((tile.frameY - ((int)GetStyle(i, j) * PlantFrameHeight))) / FrameHeight));
+            int tileX = (int)Math.Floor((double)(tile.TileFrameX / (FrameWidth / 2)));
+            int tileY = (int)Math.Floor((double)(((tile.TileFrameY - ((int)GetStyle(i, j) * PlantFrameHeight))) / FrameHeight));
 
             bool direction = false;
 
@@ -217,8 +217,8 @@ namespace Kourindou.Tiles.Plants
                 {
                     Tile currentTile = Framing.GetTileSafely(i + (direction ? 0 : -1) + x, j - tileY + y);
 
-                    currentTile.frameY = (short)((style * PlantFrameHeight) + y * 18);
-                    currentTile.frameX += (short)width;
+                    currentTile.TileFrameY = (short)((style * PlantFrameHeight) + y * 18);
+                    currentTile.TileFrameX += (short)width;
 
 			        if (Main.netMode == NetmodeID.Server)
                     {
