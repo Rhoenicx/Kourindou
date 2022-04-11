@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -39,7 +40,6 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 		}
 
 		// Attack
-		private bool Attacking;
 		private float ViewDist = 800f;
 		private bool HasTarget => Target >= 0;
 
@@ -55,7 +55,6 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 		private int frame = 0;
 		private int timer = 0;
 		private bool animDirection = true;
-		private int Rotation;
 
 		// Initialization
 		private bool _justSpawned = true;
@@ -103,7 +102,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D texture = Main.ProjectileTexture[Projectile.type];
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 			int frameWidth = texture.Width / 5;
 			int frameHeight = texture.Height / 3;
 			
@@ -112,7 +111,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			
 			
 			//Draw each part manually to stack opacity
-            spriteBatch.Draw(
+            Main.EntitySpriteDraw(
                 texture, 
                 Projectile.Center - Main.screenPosition, 
                 new Rectangle(frameWidth * frame, 0, frameWidth, frameHeight), 
@@ -123,7 +122,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
                 SpriteEffects.None, 
                 0);
 			
-			spriteBatch.Draw(
+			Main.EntitySpriteDraw(
                 texture, 
                 Projectile.Center - Main.screenPosition, 
                 new Rectangle(frameWidth * frame, frameHeight * 1, frameWidth, frameHeight), 
@@ -134,7 +133,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
                 SpriteEffects.None, 
                 0);
 				
-			spriteBatch.Draw(
+			Main.EntitySpriteDraw(
                 texture, 
                 Projectile.Center - Main.screenPosition, 
                 new Rectangle(frameWidth * frame, frameHeight * 2, frameWidth, frameHeight), 
@@ -195,7 +194,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 		private void CheckIfOwnerActive()
 		{
-			if (_owner.GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<YoumuKonpaku_Plushie_Item>())
+			if (GetInstance<PlushieEquipSlot>().Type == ItemType<YoumuKonpaku_Plushie_Item>())
 			{
 				Projectile.timeLeft = 2;
 			}

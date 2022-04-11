@@ -59,7 +59,7 @@ namespace Kourindou.Tiles.Furniture
         
             TileObjectData.addTile(Type);
 
-            TileID.Sets.DisableSmartCursor[Type];
+            TileID.Sets.DisableSmartCursor[Type] = true;
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Thread");
@@ -132,7 +132,7 @@ namespace Kourindou.Tiles.Furniture
 
                 case ThreadStyle.Cyan:
                 {
-                    Item.NewItem(new EntitySource_TileBreak(i, j), new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CyanThread>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CyanThread>());
                     break;
                 }
 

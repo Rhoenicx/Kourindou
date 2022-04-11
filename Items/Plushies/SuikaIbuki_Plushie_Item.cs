@@ -67,7 +67,7 @@ namespace Kourindou.Items.Plushies
             player.gravity += 0.5f;
 
             // Held Items are twice as big
-            if (player.HeldItem.stack > 0 && player.HeldItem.melee && (player.HeldItem.useStyle == ItemUseStyleID.Swing || player.HeldItem.useStyle == ItemUseStyleID.Thrust))
+            if (player.HeldItem.stack > 0 && player.HeldItem.DamageType == DamageClass.Melee && (player.HeldItem.useStyle == ItemUseStyleID.Swing || player.HeldItem.useStyle == ItemUseStyleID.Thrust))
             {   
                 player.HeldItem.scale = player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale * 2f;
             }
@@ -78,7 +78,7 @@ namespace Kourindou.Items.Plushies
                 player.statDefense += 16;
 
                 // Increase melee crit by 10 points
-                player.meleeCrit += 10;
+                player.GetCritChance(DamageClass.Melee) += 10;
 
                 // Decrease incoming damage by 10 percent
                 player.endurance += 0.10f;
@@ -87,7 +87,7 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemID.Ale, 1)
                 .AddIngredient(ItemType<BlueFabric>(), 1)
                 .AddIngredient(ItemType<BrownFabric>(), 1)
@@ -98,7 +98,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 2)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

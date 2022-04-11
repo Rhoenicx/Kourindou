@@ -28,16 +28,15 @@ namespace Kourindou.Items.CraftingMaterials
 
             // Tile placement fields
             Item.createTile = TileType<Thread_Tile>();
-            item.placeStyle = 13;
+            Item.placeStyle = 13;
         }
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(8)
                 .AddRecipeGroup("Kourindou:Thread", 8)
                 .AddIngredient(ItemID.YellowDye)
                 .AddTile(TileID.DyeVat)
-                .SetResult(this, 8)
                 .Register();
         }
     }

@@ -80,10 +80,10 @@ namespace Kourindou.Items.Plushies
                 player.GetDamage(DamageClass.Generic) += 0.10f;
 
                 // Increase all crit by 5 points
-                player.meleeCrit += 5;
-                player.magicCrit += 5;
-                player.thrownCrit += 5;
-                player.rangedCrit += 5;
+                player.GetCritChance(DamageClass.Melee) += 5;
+                player.GetCritChance(DamageClass.Magic) += 5;
+                player.GetCritChance(DamageClass.Throwing) += 5;
+                player.GetCritChance(DamageClass.Ranged) += 5;
 
                 //Increase life regen by 5 points
                 player.lifeRegen += 5;
@@ -92,7 +92,7 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemType<BlackFabric>(), 2)
                 .AddIngredient(ItemType<BlueFabric>(), 2)
                 .AddIngredient(ItemType<YellowFabric>(), 1)
@@ -103,7 +103,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 2)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

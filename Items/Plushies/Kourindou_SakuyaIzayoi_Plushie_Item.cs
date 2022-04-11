@@ -57,7 +57,7 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-            if (player.whoAmI == Main.myPlayer && player.ItemAnimationMax -1 == player.ItemAnimation)
+            if (player.whoAmI == Main.myPlayer && player.itemAnimationMax -1 == player.itemAnimation)
             {
                 // Increase damage by 5 percent
                 player.GetDamage(DamageClass.Generic) += 0.05f;
@@ -66,12 +66,13 @@ namespace Kourindou.Items.Plushies
                 player.lifeRegen += 1;
 
                 // Increase Throwing damage by 40 percent
-                player.thrownDamage += 0.40f;
+                player.GetDamage(DamageClass.Throwing) += 0.40f;
 
                 // Spawn 4 knifes on regular attack animations
 			    for (int i = 0; i < 4; i++)
 			    {
 			    	Projectile.NewProjectile(
+                        player.GetProjectileSource_Item(this.Item),
 			    		player.Center,
 			    		Vector2.Normalize(Main.MouseWorld - player.Center).RotatedBy(MathHelper.ToRadians(i >= 2 ? 5 * (i - 1) : -5 * (i + 1))) * (player.HeldItem.shootSpeed > 0f ? player.HeldItem.shootSpeed : 8f),
 			    		ProjectileType<SakuyaIzayoi_Plushie_Knife>(),
@@ -85,7 +86,7 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddRecipeGroup("Kourindou:Watch",1)
                 .AddIngredient(ItemType<BlueFabric>(), 1)
                 .AddIngredient(ItemType<SilverFabric>(), 2)
@@ -95,7 +96,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 2)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

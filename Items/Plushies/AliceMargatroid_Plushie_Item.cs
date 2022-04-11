@@ -65,16 +65,16 @@ namespace Kourindou.Items.Plushies
             player.maxMinions += 1;
 
             // Increase magic crit by 15 percent
-            player.magicCrit += 15;
+            player.GetCritChance(DamageClass.Magic) += 15;
 
             // Increase magic and minion damage by 10 percent
-            player.magicDamage += 10f;
-            player.minionDamage += 10f;
+            player.GetDamage(DamageClass.Magic) += 0.10f;
+            player.GetDamage(DamageClass.Summon) += 0.10f;
         }
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemType<BlueFabric>(), 2)
                 .AddIngredient(ItemType<YellowFabric>(), 2)
                 .AddIngredient(ItemID.Silk, 2)
@@ -83,7 +83,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 2)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

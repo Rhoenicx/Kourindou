@@ -62,17 +62,17 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Reduce crit chance by 100 percent
-            player.meleeCrit -= 100;
-            player.rangedCrit -= 100;
-            player.magicCrit -= 100;
-            player.thrownCrit -= 100;
+            player.GetCritChance(DamageClass.Melee) -= 100;
+            player.GetCritChance(DamageClass.Magic) -= 100;
+            player.GetCritChance(DamageClass.Throwing) -= 100;
+            player.GetCritChance(DamageClass.Ranged) -= 100;
 
             // Random dmg increase is handled in GlobalNPC.
         }
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemID.CopperCoin, 1)
                 .AddIngredient(ItemType<BlueFabric>(), 3)
                 .AddIngredient(ItemType<SilverFabric>(), 2)
@@ -82,7 +82,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 1)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

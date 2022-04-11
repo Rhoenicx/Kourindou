@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Items;
@@ -69,9 +70,9 @@ namespace Kourindou.Projectiles
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D texture = GameContent.TextureAssets.Projectile[projectile.type].Value;
-		    
-			spriteBatch.Draw(
+			Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+
+			Main.EntitySpriteDraw(
 				texture, 
 				Projectile.Center - Main.screenPosition, 
 				texture.Bounds, 
@@ -228,7 +229,7 @@ namespace Kourindou.Projectiles
 
 					if (Main.netMode == NetmodeID.Server)
 					{
-						ModPacket packet = mod.GetPacket();
+						ModPacket packet = Mod.GetPacket();
 						packet.Write((byte) KourindouMessageType.PlacePlushieTile);
 						packet.Write((int) plushiePlaceTileX);
 						packet.Write((int) plushiePlaceTileY);
@@ -240,19 +241,20 @@ namespace Kourindou.Projectiles
 				else
 				{
 					int itemSlot = Item.NewItem(
+						Projectile.GetItemSource_DropAsItem(),
 						Projectile.getRect(),
 						plushieItem,
 						1
 					);
 
-					if (Main.item[itemSlot].modItem is PlushieItem plushie)
+					if (Main.item[itemSlot].ModItem is PlushieItem plushie)
 					{
 						plushie.plushieDirtWater = plushieDirtWater;
 					}
 
 					if (Main.netMode == NetmodeID.Server)
 					{
-						ModPacket packet = mod.GetPacket();
+						ModPacket packet = Mod.GetPacket();
 						packet.Write((byte) KourindouMessageType.PlushieItemNetUpdate);
 						packet.Write((int) itemSlot);
 						packet.Write((short) plushieDirtWater);
@@ -316,9 +318,9 @@ namespace Kourindou.Projectiles
 
 				Tile tile = Framing.GetTileSafely(tileX, tileY + searchLimit);
 
-				if (tile.active())
+				if (tile.HasTile)
 				{
-					if (Main.tileSolid[tile.type])
+					if (Main.tileSolid[tile.TileType])
 					{
 						tileY += searchLimit;
 						foundSolidTile = true;
@@ -329,9 +331,9 @@ namespace Kourindou.Projectiles
 
 			// Check middle tiles
 			if (Framing.GetTileSafely(tileX, tileY).Slope == 0
-				&& Framing.GetTileSafely(tileX, tileY).active()
-				&& Main.tileSolid[Framing.GetTileSafely(tileX, tileY).type]
-				&& !Framing.GetTileSafely(tileX, tileY).halfBrick()
+				&& Framing.GetTileSafely(tileX, tileY).HasTile
+				&& Main.tileSolid[Framing.GetTileSafely(tileX, tileY).TileType]
+				&& !Framing.GetTileSafely(tileX, tileY).IsHalfBlock
 				&& checkTiles(Framing.GetTileSafely(tileX, tileY - 1), Framing.GetTileSafely(tileX, tileY - 2)))
 			{
 				bool leftOK = false;
@@ -339,9 +341,9 @@ namespace Kourindou.Projectiles
 
 				// Check left tiles
 				if (Framing.GetTileSafely(tileX - 1, tileY).Slope == 0
-					&& Framing.GetTileSafely(tileX - 1, tileY).active()
-					&& Main.tileSolid[Framing.GetTileSafely(tileX - 1, tileY).type]
-					&& !Framing.GetTileSafely(tileX - 1, tileY).halfBrick()
+					&& Framing.GetTileSafely(tileX - 1, tileY).HasTile
+					&& Main.tileSolid[Framing.GetTileSafely(tileX - 1, tileY).TileType]
+					&& !Framing.GetTileSafely(tileX - 1, tileY).IsHalfBlock
 					&& checkTiles(Framing.GetTileSafely(tileX - 1, tileY - 1), Framing.GetTileSafely(tileX -1, tileY - 2)))
 				{
 					leftOK = true;
@@ -349,9 +351,9 @@ namespace Kourindou.Projectiles
 
 				// check right tiles
 				if (Framing.GetTileSafely(tileX + 1, tileY).Slope == 0
-					&& Framing.GetTileSafely(tileX + 1, tileY).active()
-					&& Main.tileSolid[Framing.GetTileSafely(tileX + 1, tileY).type]
-					&& !Framing.GetTileSafely(tileX + 1, tileY).halfBrick()
+					&& Framing.GetTileSafely(tileX + 1, tileY).HasTile
+					&& Main.tileSolid[Framing.GetTileSafely(tileX + 1, tileY).TileType]
+					&& !Framing.GetTileSafely(tileX + 1, tileY).IsHalfBlock
 					&& checkTiles(Framing.GetTileSafely(tileX + 1, tileY - 1), Framing.GetTileSafely(tileX + 1, tileY - 2)))
 				{
 					rightOK = true;
@@ -388,9 +390,9 @@ namespace Kourindou.Projectiles
 
 		public bool checkTiles(Tile tile1, Tile tile2)
 		{
-			if (tile1.active() || tile2.active() ||
-				tile1.type > 0 || tile2.type > 0 ||
-				tile1.liquid > 0 || tile2.liquid > 0)
+			if (tile1.HasTile || tile2.HasTile ||
+				tile1.TileType > 0 || tile2.TileType > 0 ||
+				tile1.LiquidType > 0 || tile2.LiquidType > 0)
 			{
 				return false;
 			}

@@ -56,16 +56,16 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increase Magic damage by 40 percent
-            player.magicDamage += 0.40f;
+            player.GetDamage(DamageClass.Magic) += 0.40f;
 
             // All other damage types deal zero, really into negatives because other mods might increase this
-            player.rangedDamage = -1000f;
-            player.minionDamage = -1000f;
-            player.meleeDamage = -1000f;
-            player.thrownDamage = -1000f;
+            player.GetDamage(DamageClass.Ranged) -= -1000f;
+            player.GetDamage(DamageClass.Summon) -= -1000f;
+            player.GetDamage(DamageClass.Melee) -= -1000f;
+            player.GetDamage(DamageClass.Throwing) -= 1000f;
 
             // Increase magic crit rate by 30 percent
-            player.magicCrit += 30;
+            player.GetCritChance(DamageClass.Magic) += 30;
 
             // Reduce mana consumption by 50 percent
             player.manaCost -= 0.50f;
@@ -85,7 +85,7 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemID.Book, 1)
                 .AddIngredient(ItemType<PinkFabric>(), 2)
                 .AddIngredient(ItemType<PurpleFabric>(), 1)
@@ -97,7 +97,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 2)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

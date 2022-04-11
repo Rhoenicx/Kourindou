@@ -62,14 +62,14 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Increase magic crit by 30%
-            player.magicCrit += 30;
+            player.GetCritChance(DamageClass.Magic) += 30;
 
             // On crit spawns a star projectile that is aimed at the target hit
         }
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemType<BlackFabric>(), 2)
                 .AddIngredient(ItemType<YellowFabric>(), 2)
                 .AddIngredient(ItemID.Silk, 2)
@@ -78,7 +78,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 2)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

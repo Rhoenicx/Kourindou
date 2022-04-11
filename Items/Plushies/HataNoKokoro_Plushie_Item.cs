@@ -62,7 +62,7 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemType<BlueFabric>(), 1)
                 .AddIngredient(ItemType<OrangeFabric>(), 1)
                 .AddIngredient(ItemType<PinkFabric>(), 2)
@@ -73,7 +73,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 1)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

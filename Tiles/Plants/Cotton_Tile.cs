@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Enums;
@@ -60,8 +61,9 @@ namespace Kourindou.Tiles.Plants
             name.SetDefault("Cotton Plant");
             AddMapEntry(new Color(155, 155, 155), name);
 
-            soundStyle = 0;
-            soundType = 0;
+            
+            SoundStyle = 0;
+            SoundType = 0;
         }
 
         public override void PlaceInWorld(int i, int j, Item item) //Runs only on SinglePlayer and MultiplayerClient!
@@ -70,7 +72,7 @@ namespace Kourindou.Tiles.Plants
             {
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte) KourindouMessageType.PlayerPlacePlantTile);
                     packet.Write((int) TileType<Cotton_Tile>());
                     packet.Send(-1, Main.myPlayer);
@@ -90,8 +92,8 @@ namespace Kourindou.Tiles.Plants
             {
                 Player player = Main.LocalPlayer;
                 player.noThrow = 2;
-                player.showItemIcon = true;
-                player.showItemIcon2 = ItemType<CottonFibre>();
+                player.cursorItemIconEnabled = true;
+                player.cursorItemIconID = ItemType<CottonFibre>();
             }
         }
 
@@ -183,7 +185,7 @@ namespace Kourindou.Tiles.Plants
                     Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
 
                     UpdateMultiTile(i, j, -FrameWidth, (int)GetStyle(i, j));
-                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
                 }
 
                 if (stage == PlantStage.Blooming2)
@@ -196,7 +198,7 @@ namespace Kourindou.Tiles.Plants
                     }
 
                     UpdateMultiTile(i, j, -FrameWidth * 2, (int)GetStyle(i, j));
-                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
                 }
 
                 if (stage == PlantStage.Blooming3)
@@ -209,7 +211,7 @@ namespace Kourindou.Tiles.Plants
                     }
 
                     UpdateMultiTile(i, j, -FrameWidth * 3, (int)GetStyle(i, j));
-                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
                 }
             }
             else
@@ -217,17 +219,17 @@ namespace Kourindou.Tiles.Plants
                 if (stage >= PlantStage.Blooming1)
                 {
                     // Send the right click event to the Server so items can be dropped
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte) KourindouMessageType.CottonRightClick);
                     packet.Write(i);
                     packet.Write(j);
                     packet.Send();
 
                     // Play the sound clientside
-                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
 
                     // Send sound packet for other clients
-                    ModPacket packet2 = mod.GetPacket();
+                    ModPacket packet2 = Mod.GetPacket();
                     packet2.Write((byte) KourindouMessageType.PlaySound);
                     packet2.Write((byte) SoundID.Grass);
                     packet2.Write((short) 0);
@@ -250,7 +252,7 @@ namespace Kourindou.Tiles.Plants
 
                 bool update = false;
 
-                switch (tileUnder.type)
+                switch (tileUnder.TileType)
                 {
                     case TileID.Dirt:
                     {

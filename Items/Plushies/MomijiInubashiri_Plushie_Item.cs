@@ -59,10 +59,10 @@ namespace Kourindou.Items.Plushies
             player.GetDamage(DamageClass.Generic) += 0.10f;
 
             // Increase melee damage by 25 percent
-            player.meleeDamage += 0.25f;
+            player.GetDamage(DamageClass.Melee) += 0.25f;
 
             // Increase melee crit by 10 points
-            player.meleeCrit += 10;
+            player.GetCritChance(DamageClass.Melee) += 10;
 
             // Sniper scope effect
             player.scope = true;
@@ -74,7 +74,7 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemType<BlackFabric>(), 2)
                 .AddIngredient(ItemType<RedFabric>(), 2)
                 .AddIngredient(ItemID.Silk, 3)
@@ -83,7 +83,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 2)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

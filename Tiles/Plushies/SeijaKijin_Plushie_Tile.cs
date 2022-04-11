@@ -55,7 +55,7 @@ namespace Kourindou.Tiles.Plushies
             TileObjectData.addTile(Type);
 
             // Interaction
-            TileID.Sets.DisableSmartCursor[Type];
+            TileID.Sets.DisableSmartCursor[Type] = true;
 
             // Map Entry
             ModTranslation name = CreateMapEntryName();

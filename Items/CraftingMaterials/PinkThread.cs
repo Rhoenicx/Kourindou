@@ -31,21 +31,19 @@ namespace Kourindou.Items.CraftingMaterials
 
         public override void AddRecipes()
         {
-            RecipeFinder finder = new RecipeFinder();
-            finder.SetResult(ItemID.PinkThread);
-
-            foreach (Recipe _recipe in finder.SearchRecipes())
+            foreach (Recipe recipe in Main.recipe)
             {
-                RecipeEditor editor = new RecipeEditor(_recipe);
-                editor.DeleteRecipe();
+                if (recipe.HasResult(ItemID.PinkThread))
+                {
+                    recipe.RemoveRecipe();
+                }
             }
 
-            CreateRecipe()
+            Main.recipe[ItemID.PinkThread]
                 .AddRecipeGroup("Kourindou:Thread", 8)
                 .AddIngredient(ItemID.PinkDye)
                 .AddTile(TileID.DyeVat)
-                .SetResult(ItemID.PinkThread, 8)
-                .Register();
+                .ReplaceResult(ItemID.PinkThread, 8);
         }
     }
 }

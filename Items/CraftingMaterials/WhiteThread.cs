@@ -34,38 +34,33 @@ namespace Kourindou.Items.CraftingMaterials
         public override void AddRecipes()
         {
             // Cobweb
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemID.Cobweb, 4)
                 .AddTile(TileID.Loom)
-                .SetResult(this)
                 .Register();
 
             // Cotton
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemType<CottonFibre>(), 2)
                 .AddTile(TileID.Loom)
-                .SetResult(this)
                 .Register();
 
             // Flax
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemType<FlaxBundle>(), 2)
                 .AddTile(TileID.Loom)
-                .SetResult(this)
                 .Register();
 
             // Remove colors on water
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddRecipeGroup("Kourindou:Thread", 1)
-                .needWater = true
-                .SetResult(this)
+                .AddCondition(Recipe.Condition.NearWater)
                 .Register();
 
             // Remove colors on dye vat
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddRecipeGroup("Kourindou:Thread", 1)
                 .AddTile(TileID.DyeVat)
-                .SetResult(this)
                 .Register();
         }
     }

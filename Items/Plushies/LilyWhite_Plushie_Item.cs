@@ -61,7 +61,7 @@ namespace Kourindou.Items.Plushies
                 && !player.ZoneDesert
                 && !player.ZoneDungeon
                 && !player.ZoneGlowshroom
-                && !player.ZoneHoly
+                && !player.ZoneHallow
                 && !player.ZoneJungle
                 && !player.ZoneMeteor
                 && !player.ZoneSnow
@@ -74,7 +74,7 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemType<PinkFabric>(), 3)
                 .AddIngredient(ItemType<YellowFabric>(), 2)
                 .AddIngredient(ItemID.Silk, 2)
@@ -84,7 +84,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 2)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

@@ -68,14 +68,14 @@ namespace Kourindou.Items.Plushies
             player.meleeSpeed += 0.25f;
 
             // Increase melee critrate by 10 percent
-            player.meleeCrit += 10;
+            player.GetCritChance(DamageClass.Melee) += 10;
 
             // When you get damage that should kill you, heal for maxhp and get mortality debuff
         }
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemID.Fireblossom, 8)
                 .AddIngredient(ItemType<RedFabric>(), 3)
                 .AddIngredient(ItemType<SilverFabric>(), 2)
@@ -83,7 +83,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<RedThread>(), 3)
                 .AddIngredient(ItemType<WhiteThread>(), 2)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

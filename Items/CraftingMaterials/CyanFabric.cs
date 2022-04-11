@@ -19,18 +19,16 @@ namespace Kourindou.Items.CraftingMaterials
         public override void AddRecipes()
         {
             // Add recipe
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemType<CyanThread>(), 4)
                 .AddTile(TileType<WeavingLoom_Tile>())
-                .SetResult(this)
                 .Register();
 
             // Recolor any fabric to this color 
-            CreateRecipe()
+            CreateRecipe(2)
                 .AddRecipeGroup("Kourindou:Fabric", 2)
                 .AddIngredient(ItemID.CyanDye)
                 .AddTile(TileID.DyeVat)
-                .SetResult(this, 2)
                 .Register();  
         }
     }

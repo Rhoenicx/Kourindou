@@ -62,7 +62,7 @@ namespace Kourindou.Items.Plushies
         {
             if (Kourindou.GensokyoLoaded)
             {
-                CreateRecipe()
+                CreateRecipe(1)
 				    .AddIngredient(ItemID.Deathweed, 4)
 			        .AddIngredient(ItemType<BlackFabric>(), 2)
                     .AddIngredient(ItemType<SilverFabric>(), 2)
@@ -72,7 +72,6 @@ namespace Kourindou.Items.Plushies
 				    .AddIngredient(ItemType<PurpleThread>(), 2)
                     .AddRecipeGroup("Kourindou:Stuffing", 5)
                     .AddTile(TileType<SewingMachine_Tile>())
-                    .SetResult(this)
                     .Register();
             }
         }

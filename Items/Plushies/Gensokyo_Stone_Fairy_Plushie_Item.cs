@@ -62,7 +62,7 @@ namespace Kourindou.Items.Plushies
         {
             if (Kourindou.GensokyoLoaded)
             {
-                CreateRecipe()
+                CreateRecipe(1)
                     .AddIngredient(ItemID.StoneBlock, 12)
 			        .AddIngredient(ItemType<BlackFabric>(), 2)
                     .AddIngredient(ItemType<SilverFabric>(), 1)
@@ -74,7 +74,6 @@ namespace Kourindou.Items.Plushies
 			        .AddIngredient(ItemType<WhiteThread>(), 1)
                     .AddRecipeGroup("Kourindou:Stuffing", 5)
                     .AddTile(TileType<SewingMachine_Tile>())
-                    .SetResult(this)
                     .Register();
             }
         }

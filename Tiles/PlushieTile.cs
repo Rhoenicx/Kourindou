@@ -1,8 +1,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.Enums;
 using Terraria.ID;
+using Terraria.DataStructures;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -66,13 +68,14 @@ namespace Kourindou.Tiles.Plushies
                 float soundVolume = 0.3f;
                 float pitchVariance = 0f;
 
-                Main.PlaySound(
-                    (int)SoundType.Custom,
-                    (int) soundPosition.X,
-                    (int) soundPosition.Y,
-                    mod.GetSoundSlot(SoundType.Custom, "Sounds/Custom/" + soundName),
-                    soundVolume,
-                    pitchVariance);
+                SoundEngine.PlaySound(
+                    SoundLoader.GetLegacySoundSlot(Kourindou.Instance, "Sounds/Custom/" + soundName),
+                    (int)soundPosition.X,
+                    (int)soundPosition.Y
+                    );
+                    //1,
+                    //soundVolume,
+                    //pitchVariance);
 
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
@@ -97,7 +100,7 @@ namespace Kourindou.Tiles.Plushies
             }
             else
             {
-                int itemSlot = Item.NewItem(i * 16, j * 16, 16, 48, plushieItem);
+                int itemSlot = Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 48, plushieItem);
 
                 short plushieDirtWater = 0;
 

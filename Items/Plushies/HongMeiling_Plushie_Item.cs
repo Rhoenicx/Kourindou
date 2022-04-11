@@ -65,7 +65,7 @@ namespace Kourindou.Items.Plushies
             player.meleeSpeed += 0.10f;
 
             // Increase melee critrate by 10 percent
-            player.meleeCrit += 10;
+            player.GetCritChance(DamageClass.Melee) += 10;
 
             if (player.velocity.Length() < 0.1f)
             {
@@ -80,7 +80,7 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemID.GoldCoin, 1)
                 .AddIngredient(ItemType<GreenFabric>(), 2)
                 .AddIngredient(ItemType<RedFabric>(), 2)
@@ -91,7 +91,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 2)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

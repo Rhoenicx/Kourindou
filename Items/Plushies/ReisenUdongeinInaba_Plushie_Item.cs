@@ -65,7 +65,7 @@ namespace Kourindou.Items.Plushies
             player.bulletDamage += 0.20f;
 
             // Increase ranged crit by 20 percent
-            player.rangedCrit += 20;
+            player.GetCritChance(DamageClass.Ranged) += 20;
 
             // During blood moon gain additional stats:
             if (Main.bloodMoon)
@@ -104,7 +104,7 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemType<BlackFabric>(), 1)
                 .AddIngredient(ItemType<PinkFabric>(), 1)
                 .AddIngredient(ItemType<PurpleFabric>(), 2)
@@ -114,7 +114,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 2)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

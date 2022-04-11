@@ -40,10 +40,9 @@ namespace Kourindou.Items.Furniture
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddRecipeGroup("Wood", 16)
                 .AddTile(TileID.Sawmill)
-                .SetResult(this)
                 .Register();
         }
     }

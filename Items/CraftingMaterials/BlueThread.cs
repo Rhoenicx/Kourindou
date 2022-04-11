@@ -33,11 +33,10 @@ namespace Kourindou.Items.CraftingMaterials
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(8)
                 .AddRecipeGroup("Kourindou:Thread", 8)
                 .AddIngredient(ItemID.BlueDye)
                 .AddTile(TileID.DyeVat)
-                .SetResult(this, 8)
                 .Register();
         }
     }

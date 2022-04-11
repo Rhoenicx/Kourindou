@@ -48,7 +48,7 @@ namespace Kourindou.Tiles.Furniture
             // Add TileData
             TileObjectData.addTile(Type);
 
-            TileID.Sets.DisableSmartCursor[Type];
+            TileID.Sets.DisableSmartCursor[Type] = true;
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Sewing Machine");

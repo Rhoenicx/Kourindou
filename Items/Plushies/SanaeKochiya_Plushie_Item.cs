@@ -62,9 +62,11 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Increase Critrate by 25 percent
-            player.magicCrit += 25;
-            player.rangedCrit += 25;
-            player.meleeCrit += 25;
+            player.GetCritChance(DamageClass.Magic) += 25;
+            player.GetCritChance(DamageClass.Ranged) += 25;
+            player.GetCritChance(DamageClass.Melee) += 25;
+            player.GetCritChance(DamageClass.Throwing) += 25;
+            player.GetCritChance(DamageClass.Summon) += 25;
 
             // Immunity to mighty wind debuff
             player.buffImmune[BuffID.WindPushed] = true;
@@ -72,7 +74,7 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemType<BlueFabric>(), 2)
                 .AddIngredient(ItemType<GreenFabric>(), 2)
                 .AddIngredient(ItemID.Silk, 2)
@@ -82,7 +84,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 1)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -39,11 +40,11 @@ namespace Kourindou.Items
         // Re-center item texture
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            Texture2D texture = GameContent.TextureAssets.Item[item.type].Value;
+            Texture2D texture = TextureAssets.Item[Item.type].Value;
 
             spriteBatch.Draw(
                 texture,
-                item.Center - Main.screenPosition,
+                Item.Center - Main.screenPosition,
                 texture.Bounds,
                 lightColor,
                 rotation,
@@ -53,22 +54,6 @@ namespace Kourindou.Items
                 0);
 
             return false;
-        }
-
-        // Make item right clickable in inventory
-        public override bool CanRightClick() 
-        { 
-            return (!Kourindou.OverrideRightClick() && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2);  
-        }
-
-        public override void RightClick(Player player) 
-        {
-            if (!CanRightClick())
-            {
-                return false;
-            }
-            
-            player.GetModPlayer<KourindouPlayer>().EquipPlushie(false, item);
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -81,7 +66,7 @@ namespace Kourindou.Items
             }
 
             // Add Custom line "Can be Thrown using Right mouse button"
-            tooltips.Add(new TooltipLine(mod, "CanBeThrown", "Right Click: Throw plushie"));
+            tooltips.Add(new TooltipLine(Mod, "CanBeThrown", "Right Click: Throw plushie"));
         }
 
         // Execute custom equip effects
@@ -132,27 +117,28 @@ namespace Kourindou.Items
 
                 // Singeplayer
                 if (Main.netMode != NetmodeID.MultiplayerClient)
-                {                    
+                {
                     Projectile.NewProjectile(
+                        player.GetProjectileSource_Item(this.Item),
                         new Vector2(player.Center.X, player.Center.Y - 16f),
                         speed,
                         projectileType,
-                        item.damage,
-                        item.knockBack,
+                        Item.damage,
+                        Item.knockBack,
                         player.whoAmI,
                         30f,
-                        plushieDirtWater);
+                        plushieDirtWater); ;
                 }
                 // Multiplayer
                 else
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte) KourindouMessageType.ThrowPlushie);
                     packet.Write((byte) player.whoAmI);
                     packet.WriteVector2(speed);
                     packet.Write((int) projectileType);
-                    packet.Write((int) item.damage);
-                    packet.Write((float) item.knockBack);
+                    packet.Write((int) Item.damage);
+                    packet.Write((float) Item.knockBack);
                     packet.Send();
                 }
 

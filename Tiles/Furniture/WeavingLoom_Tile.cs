@@ -48,8 +48,8 @@ namespace Kourindou.Tiles.Furniture
             // Add TileData
             TileObjectData.addTile(Type);
 
-            TileID.Sets.DisableSmartCursor[Type];
-            animationFrameHeight = 56;
+            TileID.Sets.DisableSmartCursor[Type] = true;
+            AnimationFrameHeight = 56;
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Weaving Loom");

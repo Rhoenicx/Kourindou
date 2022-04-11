@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -146,8 +145,8 @@ namespace Kourindou
                     if (hitTile == TileID.Dirt || hitTile == TileID.Grass || hitTile == TileID.JungleGrass || hitTile == TileID.CorruptGrass
                         || hitTile == TileID.CrimsonGrass || hitTile == TileID.MushroomGrass || hitTile == TileID.HallowedGrass)
                     {
-                        int tileRight = Main.tile[tileX + 1, tileY].type;
-                        int tileLeft = Main.tile[tileX - 1, tileY].type;
+                        int tileRight = Main.tile[tileX + 1, tileY].TileType;
+                        int tileLeft = Main.tile[tileX - 1, tileY].TileType;
 
                         if (tileRight == TileID.Dirt || tileRight == TileID.Grass || tileRight == TileID.JungleGrass || tileRight == TileID.CorruptGrass
                             || tileRight == TileID.CrimsonGrass || tileRight == TileID.MushroomGrass || tileRight == TileID.HallowedGrass)
@@ -197,7 +196,7 @@ namespace Kourindou
                     int tileY = (int)(Main.worldSurface * 0.35);
 
                     // Scan downwards until we've hit a block
-                    while (!Main.tile[tileX, tileY].active())
+                    while (!Main.tile[tileX, tileY].HasTile)
                     {
                         tileY++;
                     }

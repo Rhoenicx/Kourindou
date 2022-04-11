@@ -16,7 +16,7 @@ namespace Kourindou.Items.Furniture
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
+            Item.value = Item.buyPrice(0, 1, 0, 0);
             Item.rare = ItemRarityID.White;
 
             // Hitbox
@@ -40,11 +40,10 @@ namespace Kourindou.Items.Furniture
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddRecipeGroup("IronBar", 8)
                 .AddRecipeGroup("Wood", 12)
                 .AddTile(16) //Anvil
-                .SetResult(this)
                 .Register();
         }
     }

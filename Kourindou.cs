@@ -5,11 +5,13 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
@@ -43,8 +45,8 @@ namespace Kourindou
         }
 
         // Gensokyo Mod Instance
-        public static readonly Mod Gensokyo = ModLoader.GetMod("Gensokyo");
-        public static readonly bool GensokyoLoaded = Gensokyo != null  && Gensokyo.Version >= new Version(0, 7, 10, 3) ? true : false;
+        public static Mod Gensokyo;
+        public static bool GensokyoLoaded;
 
         // Load
         public override void Load()
@@ -79,8 +81,10 @@ namespace Kourindou
         // PostSetupContent - Register mods for compatibility
         public override void PostSetupContent()
         {
+            GensokyoLoaded = ModLoader.TryGetMod("Gensokyo", out Gensokyo);
+
             // Support for Gensokyo Mod
-            if (GensokyoLoaded)
+            if (Gensokyo != null)
             {
                 CrossModContent.SetupGensokyo(Gensokyo, this);
             }
@@ -237,43 +241,6 @@ namespace Kourindou
                     break;
                 }
 
-                case KourindouMessageType.PlushieSlot:
-                {
-                    byte playerID = reader.ReadByte();
-                    KourindouPlayer player = Main.player[playerID].GetModPlayer<KourindouPlayer>();
-                    
-                    player.plushieEquipSlot.Item = ItemIO.Receive(reader);
-
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        ModPacket packet = GetPacket();
-                        packet.Write((byte)KourindouMessageType.PlushieSlot);
-                        packet.Write((byte)playerID);
-                        ItemIO.Send(player.plushieEquipSlot.Item, packet);
-                        packet.Send(-1, whoAmI);
-                    }
-                    break;
-                }
-
-                case KourindouMessageType.ForceUnequipPlushie:
-                {
-                    byte playerID = reader.ReadByte();
-                    Item plushie = ItemIO.Receive(reader);
-
-                    Player player = Main.player[playerID];
-
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        Item.NewItem(
-                            player.Center,
-                            new Vector2(player.width, player.height),
-                            plushie.type, 
-                            1
-                        );
-                    }
-                    break;
-                }
-
                 case KourindouMessageType.ThrowPlushie:
                 {
                     //position
@@ -290,6 +257,7 @@ namespace Kourindou
                     if (Main.netMode == NetmodeID.Server)
                     {
                         Projectile.NewProjectile(
+                            null,
                             Main.player[playerID].Center + new Vector2(0f, -16f),
                             speed,
                             type,
@@ -346,7 +314,7 @@ namespace Kourindou
 
                     if (Main.netMode == NetmodeID.Server)
                     {
-                        ModContent.GetInstance<Cotton_Tile>().NewRightClick(i, j);
+                        ModContent.GetInstance<Cotton_Tile>().RightClick(i, j);
                     }
                     break;
                 }
@@ -377,7 +345,7 @@ namespace Kourindou
 					
 					if (soundSourceX == -1 || soundSourceY == -1)
 					{
-						Main.PlaySound(
+                        SoundEngine.PlaySound(
 							soundType,
 							(int)Main.LocalPlayer.Center.X,
 							(int)Main.LocalPlayer.Center.Y,
@@ -387,7 +355,7 @@ namespace Kourindou
 					}
 					else
 					{
-						Main.PlaySound(
+                        SoundEngine.PlaySound(
 							soundType,
 							soundSourceX,
 							soundSourceY,
@@ -422,21 +390,25 @@ namespace Kourindou
 
 					if (soundPositionX == -1 || soundPositionY == -1)
 					{
-						Main.PlaySound((int) SoundType.Custom,
-							(int) Main.LocalPlayer.position.X,
-							(int) Main.LocalPlayer.position.Y,
-							GetSoundSlot(SoundType.Custom, "Sounds/Custom/" + soundName),
-							soundVolume,
-							Main.rand.NextFloat(-pitchVariance, pitchVariance));
+                        SoundLoader.GetLegacySoundSlot(Kourindou.Instance, "Sounds/Custom/" + soundName);
+
+                            SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Kourindou.Instance, "Sounds/Custom/" + soundName),
+                                (int)Main.LocalPlayer.position.X,
+                                (int)Main.LocalPlayer.position.Y
+                            );
+                            //1,
+                            //soundVolume,
+                            //Main.rand.NextFloat(-pitchVariance, pitchVariance));
 					}
 					else
 					{
-						Main.PlaySound((int) SoundType.Custom,
-							soundPositionX,
-							soundPositionY,
-							GetSoundSlot(SoundType.Custom, "Sounds/Custom/" + soundName),
-							soundVolume,
-							Main.rand.NextFloat(-pitchVariance, pitchVariance));
+                            SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Kourindou.Instance, "Sounds/Custom/" + soundName),
+                                soundPositionX,
+                                soundPositionY
+                            );
+                            //1
+							//soundVolume,
+							//Main.rand.NextFloat(-pitchVariance, pitchVariance));
 					}
 					break;
 				}
@@ -450,7 +422,7 @@ namespace Kourindou
 
                     if (Main.netMode != NetmodeID.Server)
                     {   
-                        if (item.modItem is PlushieItem plushie)
+                        if (item.ModItem is PlushieItem plushie)
                         {
                             plushie.plushieDirtWater = plushieDirtWater;
                         }

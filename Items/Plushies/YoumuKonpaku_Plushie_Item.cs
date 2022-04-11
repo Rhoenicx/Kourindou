@@ -67,7 +67,7 @@ namespace Kourindou.Items.Plushies
             player.meleeSpeed += 0.5f;
 
             // Increase melee crit by 15 percent
-            player.meleeCrit += 15;
+            player.GetCritChance(DamageClass.Melee) += 15;
 
             // Increase armor penetration by 6 points
             player.armorPenetration += 6;
@@ -77,6 +77,7 @@ namespace Kourindou.Items.Plushies
             if (petProjectileNotSpawned && player.whoAmI == Main.myPlayer) 
             {
                 Projectile.NewProjectile(
+                    player.GetProjectileSource_Accessory(this.Item),
                     player.Center,
                     Vector2.Zero,
                     ProjectileType<YoumuKonpaku_Plushie_HalfPhantom>(),
@@ -91,7 +92,7 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemID.BlackThread, 1)
                 .AddIngredient(ItemType<GreenFabric>(), 3)
                 .AddIngredient(ItemType<SilverFabric>(), 2)
@@ -101,7 +102,6 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemType<WhiteThread>(), 1)
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
-                .SetResult(this)
                 .Register();
         }
     }

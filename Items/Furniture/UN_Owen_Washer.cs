@@ -40,13 +40,12 @@ namespace Kourindou.Items.Furniture
 
         public override void AddRecipes()
         {
-            CreateRecipe()
+            CreateRecipe(1)
                 .AddIngredient(ItemID.Wire, 12)
                 .AddIngredient(ItemID.Glass, 4)
                 .AddRecipeGroup("IronBar", 16)
                 .AddRecipeGroup("Kourindou:CopperBar", 4)
                 .AddTile(TileID.Anvils)
-                .SetResult(this)
                 .Register();
         }
     }

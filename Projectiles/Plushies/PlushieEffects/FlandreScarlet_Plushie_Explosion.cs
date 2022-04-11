@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -24,39 +25,39 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
         public override void SetDefaults()
         {
             // AI
-			projectile.aiStyle = -1;
+			Projectile.aiStyle = -1;
 
             // Entity Interaction
-			projectile.friendly = true;
-            projectile.hostile = false;
-			projectile.penetrate = -1;
-            projectile.magic = true;
-            projectile.damage = 1;
+			Projectile.friendly = true;
+            Projectile.hostile = false;
+			Projectile.penetrate = -1;
+            Projectile.DamageType = DamageClass.Magic;
+            Projectile.damage = 1;
 
 			// Hitbox
-			projectile.width = 98;
-			projectile.height = 98;
+			Projectile.width = 98;
+			Projectile.height = 98;
 
 			// Movement
-			projectile.timeLeft = TimeAlive;
-			projectile.tileCollide = false;
+			Projectile.timeLeft = TimeAlive;
+			Projectile.tileCollide = false;
 			
 			// Visual
-			projectile.scale = 1.5f;
+			Projectile.scale = 1.5f;
         }
 
         public override bool PreDraw(ref Color lightColor)
 		{
-            Texture2D texture = Main.projectileTexture[projectile.type];
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 
-            spriteBatch.Draw(
+            Main.EntitySpriteDraw(
                 texture,
-                projectile.Center - Main.screenPosition,
+                Projectile.Center - Main.screenPosition,
                 new Rectangle(0, 0 + (texture.Height / Frames * Frame), texture.Width, texture.Height / Frames),
                 lightColor,
-                projectile.rotation,
+                Projectile.rotation,
                 new Vector2(texture.Width, texture.Height / Frames) * 0.5f,
-                projectile.scale,
+                Projectile.scale,
                 SpriteEffects.None,
                 0);
 
@@ -67,15 +68,15 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
         {
             if (JustSpawned)
             {
-                if ((int)projectile.ai[0] < 10000)
+                if ((int)Projectile.ai[0] < 10000)
                 {
-                    Main.npc[(int)projectile.ai[0]].immune[projectile.owner] = 0;
+                    Main.npc[(int)Projectile.ai[0]].immune[Projectile.owner] = 0;
                 }
                 else
                 {
-                    projectile.ai[0] -= 10000f;
+                    Projectile.ai[0] -= 10000f;
 
-                    Main.player[(int)projectile.ai[0]].immuneTime = 0;
+                    Main.player[(int)Projectile.ai[0]].immuneTime = 0;
                 }
 
                 JustSpawned = false;
@@ -108,12 +109,12 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-	        target.immune[projectile.owner] = (int)projectile.ai[1];
+	        target.immune[Projectile.owner] = (int)Projectile.ai[1];
         }
 
         public override void OnHitPvp(Player target, int damage, bool crit)
         {
-	        target.immuneTime = (int)projectile.ai[1];
+	        target.immuneTime = (int)Projectile.ai[1];
         }
     }
 }
