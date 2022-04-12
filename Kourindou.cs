@@ -28,8 +28,6 @@ namespace Kourindou
 {
     class Kourindou : Mod
     {
-        public const string PlushieSlotBackTex = "PlushieSlotBackground";
-
         internal static Kourindou Instance;
 
         internal static KourindouConfigClient KourindouConfigClient;
@@ -81,6 +79,7 @@ namespace Kourindou
         // PostSetupContent - Register mods for compatibility
         public override void PostSetupContent()
         {
+            // Check if Gensokyo mod is also loaded
             GensokyoLoaded = ModLoader.TryGetMod("Gensokyo", out Gensokyo);
 
             // Support for Gensokyo Mod

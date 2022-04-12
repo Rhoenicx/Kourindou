@@ -194,14 +194,19 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 		private void CheckIfOwnerActive()
 		{
-			if (GetInstance<PlushieEquipSlot>().Type == ItemType<YoumuKonpaku_Plushie_Item>())
-			{
-				Projectile.timeLeft = 2;
-			}
+			Projectile.timeLeft = 2;
 
 			if (!_owner.active || _owner.dead) 
 			{
 				Projectile.Kill();
+			}
+
+			if (_owner.whoAmI == Main.myPlayer)
+			{
+				if (GetInstance<PlushieEquipSlot>().FunctionalItem.type != ItemType<YoumuKonpaku_Plushie_Item>() || _owner.GetModPlayer<KourindouPlayer>().plushiePower != 2)
+				{
+					Projectile.Kill();
+				}
 			}
 		}
 
