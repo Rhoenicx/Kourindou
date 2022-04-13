@@ -21,6 +21,9 @@ namespace Kourindou
         // Determines the power mode of all the plushies
         public byte plushiePower;
 
+        // Item ID of the plushie slot item
+        public int PlushieSlotItemID;
+
         // Cirno Plushie Effect Attack Counter
         public byte CirnoPlushie_Attack_Counter;
         public bool CirnoPlushie_TimesNine;
@@ -82,6 +85,9 @@ namespace Kourindou
 
         public override void ResetEffects()
         {
+            // Reset the plushie item slot ID
+            PlushieSlotItemID = 0;
+
             // Suika Ibuki Effect reset scale
             if (Player.HeldItem.stack > 0 && Player.HeldItem.CountsAsClass(DamageClass.Melee) && (Player.HeldItem.useStyle == ItemUseStyleID.Swing || Player.HeldItem.useStyle == ItemUseStyleID.Thrust))
             {   
@@ -105,7 +111,7 @@ namespace Kourindou
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref bool crit)
         {
             // Shion Yorigami random damage increase on NPC hits 0.1% chance
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<ShionYorigami_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<ShionYorigami_Plushie_Item>())
             {
                 if ((int)Main.rand.Next(1,1000) == 1)
                 {
@@ -123,37 +129,37 @@ namespace Kourindou
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
             // Cirno Plushie Equipped
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<Cirno_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<Cirno_Plushie_Item>())
             {
                 CirnoPlushie_OnHit(null, target, crit);
             }
 
             // Flandre Scarlet Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<FlandreScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<FlandreScarlet_Plushie_Item>())
             {
                 FlandreScarletPlushie_OnHit(target, null, damage, crit, item.useAnimation);
             }
 
             // Marisa Kirisame Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<MarisaKirisame_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<MarisaKirisame_Plushie_Item>())
             {
                 MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             // Remilia Scarlet Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<SatoriKomeiji_Plushie_Item>())
             {
                 SatoriKomeijiPlushie_OnHit(target, null);
             }
 
             // Tewi Inaba Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<TewiInaba_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<TewiInaba_Plushie_Item>())
             {
                 TewiInabaPlushie_OnHit(target);
             }
@@ -162,13 +168,13 @@ namespace Kourindou
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockBack, bool crit)
         {
             // Cirno Plushie Equipped
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<Cirno_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<Cirno_Plushie_Item>())
             {
                 CirnoPlushie_OnHit(null, target, crit);
             }
 
             // Flandre Scarlet Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<FlandreScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<FlandreScarlet_Plushie_Item>())
             {
                 FlandreScarletPlushie_OnHit(target, null, damage, crit, target.immune[proj.owner]);
                 if (crit)
@@ -178,25 +184,25 @@ namespace Kourindou
             }
 
             // Marisa Kirisame Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<MarisaKirisame_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<MarisaKirisame_Plushie_Item>())
             {
                 MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             //Remilia Scarlet Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<SatoriKomeiji_Plushie_Item>())
             {
                 SatoriKomeijiPlushie_OnHit(target, null);
             }
 
             // Tewi Inaba Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<TewiInaba_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<TewiInaba_Plushie_Item>())
             {
                 TewiInabaPlushie_OnHit(target);
             }
@@ -205,31 +211,31 @@ namespace Kourindou
         public override void OnHitPvp(Item item, Player target, int damage, bool crit)
         {
             // Cirno Plushie Equipped
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<Cirno_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<Cirno_Plushie_Item>())
             {
                 CirnoPlushie_OnHit(target, null, crit);
             }
 
             // Flandre Scarlet Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<FlandreScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<FlandreScarlet_Plushie_Item>())
             {
                 FlandreScarletPlushie_OnHit(null, target, damage, crit, item.useAnimation);
             }
 
             // Marisa Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<MarisaKirisame_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<MarisaKirisame_Plushie_Item>())
             {
                 MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             //Remilia Scarlet Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<SatoriKomeiji_Plushie_Item>())
             {
                 SatoriKomeijiPlushie_OnHit(null, target);
             }
@@ -238,13 +244,13 @@ namespace Kourindou
         public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
         {
             // Cirno Plushie Equipped
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<Cirno_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<Cirno_Plushie_Item>())
             {
                 CirnoPlushie_OnHit(target, null, crit);
             }
 
             // Flandre Scarlet Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<FlandreScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<FlandreScarlet_Plushie_Item>())
             {
                 FlandreScarletPlushie_OnHit(null, target, damage, crit, target.immuneTime);
                 if (crit)
@@ -254,19 +260,19 @@ namespace Kourindou
             }
 
             // Marisa Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<MarisaKirisame_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<MarisaKirisame_Plushie_Item>())
             {
                 MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             //Remilia Scarlet Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            else if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<SatoriKomeiji_Plushie_Item>())
             {
                 SatoriKomeijiPlushie_OnHit(null, target);
             }
@@ -274,7 +280,7 @@ namespace Kourindou
 
         public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
         {
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<Chen_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<Chen_Plushie_Item>())
             {
                 Player.AddBuff(BuffID.ShadowDodge, 180);
             }
@@ -283,7 +289,7 @@ namespace Kourindou
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
             // Kaguya or Mokou Plushie Equipped [Mortality]
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<KaguyaHouraisan_Plushie_Item>() || GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<FujiwaraNoMokou_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<KaguyaHouraisan_Plushie_Item>() || PlushieSlotItemID == ItemType<FujiwaraNoMokou_Plushie_Item>())
             {
                 if (Player.HasBuff(BuffType<DeBuff_Mortality>()))
                 {
@@ -294,13 +300,14 @@ namespace Kourindou
                     Player.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
                     Player.statLife += Player.statLifeMax2;
                     Player.HealEffect(Player.statLifeMax2, true);
-                    return false;
-                }
 
-                if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<FujiwaraNoMokou_Plushie_Item>())
-                {
-                    Player.AddBuff(BuffID.Wrath, 4140);
-                    Player.AddBuff(BuffID.Inferno, 4140);
+                    if (PlushieSlotItemID == ItemType<FujiwaraNoMokou_Plushie_Item>())
+                    {
+                        Player.AddBuff(BuffID.Wrath, 4140);
+                        Player.AddBuff(BuffID.Inferno, 4140);
+                    }
+
+                    return false;
                 }
             }
 

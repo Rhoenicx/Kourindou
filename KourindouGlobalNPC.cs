@@ -16,7 +16,7 @@ namespace Kourindou
         public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
         {
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<PatchouliKnowledge_Plushie_Item>())
+            if (player.GetModPlayer<KourindouPlayer>().PlushieSlotItemID == ItemType<PatchouliKnowledge_Plushie_Item>())
             {
                 if (item.CountsAsClass(DamageClass.Melee) || item.CountsAsClass(DamageClass.Ranged) || item.CountsAsClass(DamageClass.Throwing))
                 {
@@ -25,7 +25,7 @@ namespace Kourindou
             }
 
             // Shion Yorigami random damage increase on NPC hits 0.1% chance
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<ShionYorigami_Plushie_Item>())
+            if (player.GetModPlayer<KourindouPlayer>().PlushieSlotItemID == ItemType<ShionYorigami_Plushie_Item>())
             {
                 if ((int)Main.rand.Next(1,1000) == 1)
                 {
@@ -37,7 +37,7 @@ namespace Kourindou
         public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<PatchouliKnowledge_Plushie_Item>())
+            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().PlushieSlotItemID == ItemType<PatchouliKnowledge_Plushie_Item>())
             {
                 if (projectile.CountsAsClass(DamageClass.Melee) || projectile.CountsAsClass(DamageClass.Ranged) || projectile.CountsAsClass(DamageClass.Throwing) || projectile.minion)
                 {
@@ -46,7 +46,7 @@ namespace Kourindou
             }
 
             // Shion Yorigami random damage increase on NPC hits 0.1% chance
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<ShionYorigami_Plushie_Item>())
+            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().PlushieSlotItemID == ItemType<ShionYorigami_Plushie_Item>())
             {
                 if ((int)Main.rand.Next(1,1000) == 1)
                 {
@@ -64,7 +64,7 @@ namespace Kourindou
         public override void OnHitByItem(NPC npc, Player player, Item item, int damage, float knockback, bool crit)
         {
             // Chen Plushie Effect
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<Chen_Plushie_Item>())
+            if (player.GetModPlayer<KourindouPlayer>().PlushieSlotItemID == ItemType<Chen_Plushie_Item>())
             {
                 if (npc.life <= 0 && !npc.friendly)
                 {
@@ -80,7 +80,7 @@ namespace Kourindou
         public override void OnHitByProjectile(NPC npc, Projectile projectile, int damage, float knockback, bool crit)
         {
             // Chen Plushie Effect
-            if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<Chen_Plushie_Item>())
+            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().PlushieSlotItemID == ItemType<Chen_Plushie_Item>())
             {
                 if (npc.life <= 0 && !npc.friendly)
                 {

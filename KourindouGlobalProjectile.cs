@@ -50,7 +50,7 @@ namespace Kourindou
             //Reimu Plushie effect
             if (projectile.owner == Main.myPlayer && projectile.active)
             {
-                if (GetInstance<PlushieEquipSlot>().FunctionalItem.type == ItemType<ReimuHakurei_Plushie_Item>())
+                if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().PlushieSlotItemID == ItemType<ReimuHakurei_Plushie_Item>())
                 {
                     if ((projectile.CountsAsClass(DamageClass.Magic) || projectile.CountsAsClass(DamageClass.Melee) || projectile.CountsAsClass(DamageClass.Ranged) || projectile.CountsAsClass(DamageClass.Throwing))
                         && projectile.type != ProjectileID.IceBlock

@@ -20,8 +20,8 @@ namespace Kourindou.Items.Plushies
         public override void SetDefaults()
         {
             // Information
-            Item.value = Item.buyPrice(0, 1, 0, 0);
-            Item.rare = ItemRarityID.White;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.Blue;
 
             // Hitbox
             Item.width = 32;

@@ -74,6 +74,7 @@ namespace Kourindou.Items
         {
             if (player.GetModPlayer<KourindouPlayer>().plushiePower == 2)
             {
+                player.GetModPlayer<KourindouPlayer>().PlushieSlotItemID = Item.type;
                 PlushieEquipEffects(player);
             }
 

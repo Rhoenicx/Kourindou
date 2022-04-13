@@ -21,7 +21,7 @@ namespace Kourindou.Items.Plushies
         {
             // Information
             Item.value = Item.buyPrice(0, 21, 21, 21);
-            Item.rare = ItemRarityID.White;
+            Item.rare = ItemRarityID.Gray;
 
             // Hitbox
             Item.width = 32;
@@ -73,5 +73,10 @@ namespace Kourindou.Items.Plushies
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
         }
+
+        public override bool? CanBurnInLava()
+		{
+			return false;
+		}
     }
 }
