@@ -83,7 +83,6 @@ namespace Kourindou
             if (!Main.dedServ)
             {
                 LoadPlushieTextures();
-                SwitchPlushieTextures();
             }
         }
 
@@ -126,7 +125,7 @@ namespace Kourindou
 
             if (!Main.dedServ)
             {
-                LoadPlushieTextures();
+                SwitchPlushieTextures();
 
                 // Thread
                 TextureAssets.Item[ItemID.BlackThread]= Assets.Request<Texture2D>("Items/CraftingMaterials/BlackThread");
