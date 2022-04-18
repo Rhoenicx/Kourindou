@@ -8,6 +8,7 @@ using Terraria.DataStructures;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Terraria.GameContent;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Buffs;
 using Kourindou.Items;
@@ -120,6 +121,15 @@ namespace Kourindou.Tiles.Plushies
                     packet.Write((short)plushieDirtWater);
                     packet.Send(-1, Main.myPlayer);
                 }
+            }
+        }
+
+        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
+        {
+            if (Kourindou.PlushieTileTextures.ContainsKey(Type))
+            {
+                drawData.drawTexture = Kourindou.KourindouConfigClient.UseOldTextures ?
+                    Kourindou.PlushieTileTextures[Type].oldTileTexture.Value : Kourindou.PlushieTileTextures[Type].TileTexture.Value;
             }
         }
     }

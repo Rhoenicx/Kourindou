@@ -22,12 +22,35 @@ using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Tiles.Plants;
 using Kourindou.Projectiles.Plushies;
+using ReLogic.Content;
 using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou
 {
+    public class PlushieTileTexture
+    {
+        public Asset<Texture2D> TileTexture { get; set; }
+        public Asset<Texture2D> oldTileTexture { get; set; }
+    }
+
+    public class PlushieItemTexture
+    {
+        public Asset<Texture2D> ItemTexture { get; set; }
+        public Asset<Texture2D> oldItemTexture { get; set; }
+    }
+
+    public class PlushieProjectileTexture
+    {
+        public Asset<Texture2D> ProjectileTexture { get; set; }
+        public Asset<Texture2D> oldProjectileTexture { get; set; }
+    }
+
     class Kourindou : Mod
     {
+        public static Dictionary<int, PlushieTileTexture> PlushieTileTextures;
+        public static Dictionary<int, PlushieItemTexture> PlushieItemTextures;
+        public static Dictionary<int, PlushieProjectileTexture> PlushieProjectileTextures;
+
         internal static Kourindou Instance;
 
         internal static KourindouConfigClient KourindouConfigClient;
@@ -46,6 +69,9 @@ namespace Kourindou
         public static Mod Gensokyo;
         public static bool GensokyoLoaded;
 
+        // Plushie Textures
+
+
         // Load
         public override void Load()
         {
@@ -56,7 +82,8 @@ namespace Kourindou
             //code that has to be run on clients only!
             if (!Main.dedServ)
             {
-
+                LoadPlushieTextures();
+                SwitchPlushieTextures();
             }
         }
 
@@ -73,6 +100,15 @@ namespace Kourindou
             YukariYakumoTPKey = null;
 
             Instance = null;
+
+            //code that has to be run on clients only!
+            if (!Main.dedServ)
+            {
+                PlushieTileTextures = null;
+                PlushieItemTextures = null;
+                PlushieProjectileTextures = null;
+            }
+
             base.Unload();
         }
 
@@ -509,9 +545,24 @@ namespace Kourindou
 
             return false;
         }
-
+ 
         public void LoadPlushieTextures()
         {
+            if (PlushieTileTextures == null)
+            {
+                PlushieTileTextures = new Dictionary<int, PlushieTileTexture>();
+            }
+
+            if (PlushieItemTextures == null)
+            {
+                PlushieItemTextures = new Dictionary<int, PlushieItemTexture>();
+            }
+
+            if (PlushieProjectileTextures == null)
+            {
+                PlushieProjectileTextures = new Dictionary<int, PlushieProjectileTexture>();
+            }
+
             SetPlushieTextures(ModContent.ItemType<ReimuHakurei_Plushie_Item>(), ModContent.TileType<ReimuHakurei_Plushie_Tile>(), ModContent.ProjectileType<ReimuHakurei_Plushie_Projectile>(), "ReimuHakurei");
             SetPlushieTextures(ModContent.ItemType<TenshiHinanawi_Plushie_Item>(), ModContent.TileType<TenshiHinanawi_Plushie_Tile>(), ModContent.ProjectileType<TenshiHinanawi_Plushie_Projectile>(), "TenshiHinanawi");
             SetPlushieTextures(ModContent.ItemType<MarisaKirisame_Plushie_Item>(), ModContent.TileType<MarisaKirisame_Plushie_Tile>(), ModContent.ProjectileType<MarisaKirisame_Plushie_Projectile>(), "MarisaKirisame");
@@ -547,11 +598,47 @@ namespace Kourindou
             SetPlushieTextures(ModContent.ItemType<YukariYakumo_Plushie_Item>(), ModContent.TileType<YukariYakumo_Plushie_Tile>(), ModContent.ProjectileType<YukariYakumo_Plushie_Projectile>(), "YukariYakumo");
         }
 
-        public void SetPlushieTextures(int item, int tile, int projectile, string itemName)
+        public void SetPlushieTextures(int item, int tile ,int projectile, string itemName)
         {
-            Terraria.GameContent.TextureAssets.Item[item] = Assets.Request<Texture2D>("Items/Plushies/" + itemName + "_Plushie_Item" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
-            Terraria.GameContent.TextureAssets.Tile[tile] = Assets.Request<Texture2D>("Tiles/Plushies/" + itemName + "_Plushie_Tile" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
-            Terraria.GameContent.TextureAssets.Projectile[projectile] = Assets.Request<Texture2D>("Projectiles/Plushies/" + itemName + "_Plushie_Projectile" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
+            if (!PlushieTileTextures.ContainsKey(tile))
+            {
+                PlushieTileTextures.Add(tile, new PlushieTileTexture 
+                {
+                    TileTexture = Assets.Request<Texture2D>("Tiles/Plushies/" + itemName + "_Plushie_Tile"),
+                    oldTileTexture = Assets.Request<Texture2D>("Tiles/Plushies/" + itemName + "_Plushie_Tile_Old") 
+                });
+            }
+
+            if (!PlushieItemTextures.ContainsKey(item))
+            {
+                PlushieItemTextures.Add(item, new PlushieItemTexture 
+                { 
+                    ItemTexture = Assets.Request<Texture2D>("Items/Plushies/" + itemName + "_Plushie_Item"), 
+                    oldItemTexture = Assets.Request<Texture2D>("Items/Plushies/" + itemName + "_Plushie_Item_Old") 
+                });
+            }
+
+            if (!PlushieProjectileTextures.ContainsKey(projectile))
+            {
+                PlushieProjectileTextures.Add(projectile, new PlushieProjectileTexture
+                {
+                    ProjectileTexture = Assets.Request<Texture2D>("Projectiles/Plushies/" + itemName + "_Plushie_Projectile"),
+                    oldProjectileTexture = Assets.Request<Texture2D>("Projectiles/Plushies/" + itemName + "_Plushie_Projectile_Old")
+                });
+            }
+        }
+
+        public void SwitchPlushieTextures()
+        {
+            foreach (KeyValuePair<int, PlushieItemTexture> entry in PlushieItemTextures)
+            {
+                TextureAssets.Item[entry.Key] = KourindouConfigClient.UseOldTextures ? entry.Value.oldItemTexture : entry.Value.ItemTexture;
+            }
+
+            foreach (KeyValuePair<int, PlushieProjectileTexture> entry in PlushieProjectileTextures)
+            { 
+                TextureAssets.Projectile[entry.Key] = KourindouConfigClient.UseOldTextures ? entry.Value.oldProjectileTexture : entry.Value.ProjectileTexture;
+            }
         }
     }
 }

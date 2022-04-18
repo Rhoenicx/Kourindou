@@ -51,7 +51,7 @@ namespace Kourindou
                     packet.Send();
                 }
 
-                ModContent.GetInstance<Kourindou>().LoadPlushieTextures();
+                Kourindou.Instance.SwitchPlushieTextures();
             } 
         }
     }
