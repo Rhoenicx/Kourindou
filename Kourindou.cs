@@ -129,19 +129,19 @@ namespace Kourindou
                 LoadPlushieTextures();
 
                 // Thread
-                Terraria.GameContent.TextureAssets.Item[ItemID.BlackThread]= Assets.Request<Texture2D>("Items/CraftingMaterials/BlackThread");
-                Terraria.GameContent.TextureAssets.Item[ItemID.GreenThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/GreenThread");
-                Terraria.GameContent.TextureAssets.Item[ItemID.PinkThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/PinkThread");
+                TextureAssets.Item[ItemID.BlackThread]= Assets.Request<Texture2D>("Items/CraftingMaterials/BlackThread");
+                TextureAssets.Item[ItemID.GreenThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/GreenThread");
+                TextureAssets.Item[ItemID.PinkThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/PinkThread");
 
                 // Silk
-                Terraria.GameContent.TextureAssets.Item[ItemID.Silk] = Assets.Request<Texture2D>("Items/CraftingMaterials/WhiteFabric");
-                Terraria.GameContent.TextureAssets.Item[ItemID.SilkRope] = Assets.Request<Texture2D>("Items/Blocks/WhiteFabric_Item_Rope");
-                Terraria.GameContent.TextureAssets.Item[ItemID.SilkRopeCoil] = Assets.Request<Texture2D>("Items/Consumables/WhiteFabric_Item_RopeCoil");
+                TextureAssets.Item[ItemID.Silk] = Assets.Request<Texture2D>("Items/CraftingMaterials/WhiteFabric");
+                TextureAssets.Item[ItemID.SilkRope] = Assets.Request<Texture2D>("Items/Blocks/WhiteFabric_Item_Rope");
+                TextureAssets.Item[ItemID.SilkRopeCoil] = Assets.Request<Texture2D>("Items/Consumables/WhiteFabric_Item_RopeCoil");
 
-                Terraria.GameContent.TextureAssets.Tile[TileID.SilkRope] = Assets.Request<Texture2D>("Tiles/Blocks/WhiteFabric_Tile");
-                Terraria.GameContent.TextureAssets.Projectile[ProjectileID.SilkRopeCoil] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile");
-                Terraria.GameContent.TextureAssets.Chains[4] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain1");
-                Terraria.GameContent.TextureAssets.Chains[5] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain2");                
+                TextureAssets.Tile[TileID.SilkRope] = Assets.Request<Texture2D>("Tiles/Blocks/WhiteFabric_Tile");
+                TextureAssets.Projectile[ProjectileID.SilkRopeCoil] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile");
+                TextureAssets.Chains[4] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain1");
+                TextureAssets.Chains[5] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain2");                
             }
         }
 
@@ -152,45 +152,45 @@ namespace Kourindou
             RecipeGroup Thread = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Thread", new int[]
             {
                 ItemID.BlackThread,
-                ModContent.ItemType<BlueThread>(),
-                ModContent.ItemType<BrownThread>(),
-                ModContent.ItemType<CyanThread>(),
+                ItemType<BlueThread>(),
+                ItemType<BrownThread>(),
+                ItemType<CyanThread>(),
                 ItemID.GreenThread,
-                ModContent.ItemType<LimeThread>(),
-                ModContent.ItemType<OrangeThread>(),
+                ItemType<LimeThread>(),
+                ItemType<OrangeThread>(),
                 ItemID.PinkThread,
-                ModContent.ItemType<PurpleThread>(),
-                ModContent.ItemType<RedThread>(),
-                ModContent.ItemType<SilverThread>(),
-                ModContent.ItemType<SkyBlueThread>(),
-                ModContent.ItemType<TealThread>(),
-                ModContent.ItemType<VioletThread>(),
-                ModContent.ItemType<WhiteThread>(),
-                ModContent.ItemType<YellowThread>(),
-                ModContent.ItemType<RainbowThread>()
+                ItemType<PurpleThread>(),
+                ItemType<RedThread>(),
+                ItemType<SilverThread>(),
+                ItemType<SkyBlueThread>(),
+                ItemType<TealThread>(),
+                ItemType<VioletThread>(),
+                ItemType<WhiteThread>(),
+                ItemType<YellowThread>(),
+                ItemType<RainbowThread>()
             });
             RecipeGroup.RegisterGroup("Kourindou:Thread", Thread);
 
             // Fabric
             RecipeGroup Fabric = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Fabric", new int[]
             {
-                ModContent.ItemType<BlackFabric>(),
-                ModContent.ItemType<BlueFabric>(),
-                ModContent.ItemType<BrownFabric>(),
-                ModContent.ItemType<CyanFabric>(),
-                ModContent.ItemType<GreenFabric>(),
-                ModContent.ItemType<LimeFabric>(),
-                ModContent.ItemType<OrangeFabric>(),
-                ModContent.ItemType<PinkFabric>(),
-                ModContent.ItemType<PurpleFabric>(),
-                ModContent.ItemType<RedFabric>(),
-                ModContent.ItemType<SilverFabric>(),
-                ModContent.ItemType<SkyBlueFabric>(),
-                ModContent.ItemType<TealFabric>(),
-                ModContent.ItemType<VioletFabric>(),
+                ItemType<BlackFabric>(),
+                ItemType<BlueFabric>(),
+                ItemType<BrownFabric>(),
+                ItemType<CyanFabric>(),
+                ItemType<GreenFabric>(),
+                ItemType<LimeFabric>(),
+                ItemType<OrangeFabric>(),
+                ItemType<PinkFabric>(),
+                ItemType<PurpleFabric>(),
+                ItemType<RedFabric>(),
+                ItemType<SilverFabric>(),
+                ItemType<SkyBlueFabric>(),
+                ItemType<TealFabric>(),
+                ItemType<VioletFabric>(),
                 ItemID.Silk,
-                ModContent.ItemType<YellowFabric>(),
-                ModContent.ItemType<RainbowFabric>()
+                ItemType<YellowFabric>(),
+                ItemType<RainbowFabric>()
             });
             RecipeGroup.RegisterGroup("Kourindou:Fabric", Fabric);
 
@@ -425,25 +425,20 @@ namespace Kourindou
 
 					if (soundPositionX == -1 || soundPositionY == -1)
 					{
-                        SoundLoader.GetLegacySoundSlot(Kourindou.Instance, "Sounds/Custom/" + soundName);
-
-                            SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Kourindou.Instance, "Sounds/Custom/" + soundName),
-                                (int)Main.LocalPlayer.position.X,
-                                (int)Main.LocalPlayer.position.Y
-                            );
-                            //1,
-                            //soundVolume,
-                            //Main.rand.NextFloat(-pitchVariance, pitchVariance));
+                        SoundEngine.PlaySound(
+                            SoundLoader.GetLegacySoundSlot(Instance, "Sounds/Custom/" + soundName)
+                                .WithVolume(soundVolume)
+                                .WithPitchVariance(Main.rand.NextFloat(-pitchVariance, pitchVariance)),
+                            Main.LocalPlayer.Center);
 					}
 					else
 					{
-                            SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Kourindou.Instance, "Sounds/Custom/" + soundName),
-                                soundPositionX,
-                                soundPositionY
-                            );
-                            //1
-							//soundVolume,
-							//Main.rand.NextFloat(-pitchVariance, pitchVariance));
+                        SoundEngine.PlaySound(
+                            SoundLoader.GetLegacySoundSlot(Instance, "Sounds/Custom/" + soundName)
+                                .WithVolume(soundVolume)
+                                .WithPitchVariance(Main.rand.NextFloat(-pitchVariance, pitchVariance)),
+                            soundPositionX,
+                            soundPositionY);
 					}
 					break;
 				}

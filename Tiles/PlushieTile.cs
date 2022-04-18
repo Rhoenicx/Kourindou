@@ -70,13 +70,12 @@ namespace Kourindou.Tiles.Plushies
                 float pitchVariance = 0f;
 
                 SoundEngine.PlaySound(
-                    SoundLoader.GetLegacySoundSlot(Kourindou.Instance, "Sounds/Custom/" + soundName),
+                    SoundLoader.GetLegacySoundSlot(Kourindou.Instance, "Sounds/Custom/" + soundName)
+                        .WithVolume(soundVolume)
+                        .WithPitchVariance(Main.rand.NextFloat(-pitchVariance, pitchVariance)),
                     (int)soundPosition.X,
-                    (int)soundPosition.Y
-                    );
-                    //1,
-                    //soundVolume,
-                    //pitchVariance);
+                    (int)soundPosition.Y);
+
 
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
