@@ -14,14 +14,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Hina Kagiyama Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("A misfortune god that gathers misfortune. We do not have a spinning animation for it yet. Sorry");
         }
 
         public override void SetDefaults()
         {
             // Information
-            Item.value = Item.buyPrice(0, 1, 0, 0);
-            Item.rare = ItemRarityID.White;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.Green;
 
             // Hitbox
             Item.width = 32;

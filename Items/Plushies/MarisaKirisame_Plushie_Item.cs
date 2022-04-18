@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Marisa Kirisame Plushie");
-            Tooltip.SetDefault("The ordinary human who uses magic.");
+            Tooltip.SetDefault("The ordinary human who uses magic");
         }
 
         public override void SetDefaults()

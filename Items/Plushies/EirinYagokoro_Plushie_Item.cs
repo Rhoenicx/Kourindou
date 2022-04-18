@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Eirin Yagokoro Plushie");
-            Tooltip.SetDefault("The genius of the Moon.");
+            Tooltip.SetDefault("The genius of the Moon");
         }
 
         public override void SetDefaults()

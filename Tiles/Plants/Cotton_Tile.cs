@@ -43,6 +43,7 @@ namespace Kourindou.Tiles.Plants
 			{
                 TileID.Dirt,
 				TileID.Grass,
+                TileID.GolfGrass,
                 TileID.JungleGrass,
                 TileID.CorruptGrass,
                 TileID.CrimsonGrass,
@@ -264,7 +265,8 @@ namespace Kourindou.Tiles.Plants
                         break;
                     }
 
-			    	case TileID.Grass:
+                    case TileID.Grass:
+                    case TileID.GolfGrass:
                     {
                         if (style != PlantStyle.Forest)
                         {

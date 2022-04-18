@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Yuyuko Saigyouji Plushie");
-            Tooltip.SetDefault("The princess of the Netherworld.");
+            Tooltip.SetDefault("The princess of the Netherworld");
         }
 
         public override void SetDefaults()

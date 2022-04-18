@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using Terraria.Enums;
 using Terraria.DataStructures;
 using Terraria.ObjectData;
+using Terraria.GameContent.Drawing;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Items.Seeds;
@@ -32,22 +33,23 @@ namespace Kourindou.Tiles.Plants
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
             TileObjectData.newTile.Height = 2;
-            TileObjectData.newTile.CoordinateHeights = new int[]{ 16, 18 };
+            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 18 };
             TileObjectData.newTile.Origin = new Point16(0, 1);
             TileObjectData.newTile.StyleWrapLimit = 3;
             TileObjectData.newTile.StyleMultiplier = 2;
 
             TileObjectData.newTile.AnchorValidTiles = new int[]
-			{
+            {
                 TileID.Dirt,
-				TileID.Grass,
+                TileID.Grass,
+                TileID.GolfGrass,
                 TileID.JungleGrass
-			};
+            };
 
-			TileObjectData.newTile.AnchorAlternateTiles = new int[]
-			{
-				TileID.PlanterBox
-			};
+            TileObjectData.newTile.AnchorAlternateTiles = new int[]
+            {
+                TileID.PlanterBox
+            };
 
             TileObjectData.addTile(Type);
 
@@ -77,7 +79,7 @@ namespace Kourindou.Tiles.Plants
             }
         }
 
-        public override void KillMultiTile (int i, int j, int frameX, int frameY)
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
@@ -89,7 +91,7 @@ namespace Kourindou.Tiles.Plants
                 {
                     Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ModContent.ItemType<FlaxBundle>());
 
-                    int dropFlaxSeeds = Main.rand.Next(1,4);
+                    int dropFlaxSeeds = Main.rand.Next(1, 4);
 
                     for (int a = 0; a < dropFlaxSeeds; a++)
                     {
@@ -101,25 +103,25 @@ namespace Kourindou.Tiles.Plants
             }
         }
 
-		public override void RandomUpdate(int i, int j)
-		{
+        public override void RandomUpdate(int i, int j)
+        {
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
                 if (Main.rand.Next(0, 9) == 0 && Main.dayTime && !Main.eclipse)
                 {
                     PlantStage stage = GetStage(i, j);
 
-			        // Only grow to the next stage if there is a next stage. We dont want our tile turning pink!
-			        if (stage != PlantStage.Grown)
+                    // Only grow to the next stage if there is a next stage. We dont want our tile turning pink!
+                    if (stage != PlantStage.Grown)
                     {
-			        	// Increase the x frame to change the stage
-			        	UpdateMultiTile(i, j, FrameWidth, (int)GetStyle(i, j));
-			        }
+                        // Increase the x frame to change the stage
+                        UpdateMultiTile(i, j, FrameWidth, (int)GetStyle(i, j));
+                    }
                 }
             }
-		}
+        }
 
-        public override bool TileFrame (int i, int j, ref bool resetFrame, ref bool noBreak)
+        public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
@@ -131,34 +133,35 @@ namespace Kourindou.Tiles.Plants
                 switch (tileUnder.TileType)
                 {
                     case TileID.Dirt:
-                    {
-                        if (style != PlantStyle.Forest)
                         {
-                            style = PlantStyle.Forest;
-                            update = true;
+                            if (style != PlantStyle.Forest)
+                            {
+                                style = PlantStyle.Forest;
+                                update = true;
+                            }
+                            break;
                         }
-                        break;
-                    }
 
-			    	case TileID.Grass:
-                    {
-                        if (style != PlantStyle.Forest)
+                    case TileID.Grass:
+                    case TileID.GolfGrass:
                         {
-                            style = PlantStyle.Forest;
-                            update = true;
+                            if (style != PlantStyle.Forest)
+                            {
+                                style = PlantStyle.Forest;
+                                update = true;
+                            }
+                            break;
                         }
-                        break;
-                    }
 
                     case TileID.JungleGrass:
-                    {
-                        if (style != PlantStyle.Jungle)
                         {
-                            style = PlantStyle.Jungle;
-                            update = true;
+                            if (style != PlantStyle.Jungle)
+                            {
+                                style = PlantStyle.Jungle;
+                                update = true;
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
 
                 if (update)
@@ -175,16 +178,16 @@ namespace Kourindou.Tiles.Plants
             return true;
         }
 
-		public override void NumDust(int i, int j, bool fail, ref int num) 
+        public override void NumDust(int i, int j, bool fail, ref int num)
         {
-			num = 4;
-		}
+            num = 4;
+        }
 
         private PlantStage GetStage(int i, int j)
-		{
-			Tile tile = Framing.GetTileSafely(i, j);
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
             return (PlantStage)(int)Math.Floor((double)(tile.TileFrameX / FrameWidth));
-		}
+        }
 
         private PlantStyle GetStyle(int i, int j)
         {
@@ -220,7 +223,7 @@ namespace Kourindou.Tiles.Plants
                     currentTile.TileFrameY = (short)((style * PlantFrameHeight) + y * 18);
                     currentTile.TileFrameX += (short)width;
 
-			        if (Main.netMode == NetmodeID.Server)
+                    if (Main.netMode == NetmodeID.Server)
                     {
                         NetMessage.SendTileSquare(-1, i + (direction ? 0 : -1) + x, j - tileY + y, 1);
                     }

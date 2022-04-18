@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Minamitsu Murasa Plushie");
-            Tooltip.SetDefault("A phantom, and the Palanquin Ship's captain.");
+            Tooltip.SetDefault("A phantom, and the Palanquin Ship's captain");
         }
 
         public override void SetDefaults()

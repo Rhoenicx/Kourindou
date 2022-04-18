@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Tenshi Hinanawi Plushie");
-            Tooltip.SetDefault("The unruly celestial. She's bored of Heaven, it seems.");
+            Tooltip.SetDefault("The unruly celestial. She's bored of Heaven, it seems");
         }
 
         public override void SetDefaults()

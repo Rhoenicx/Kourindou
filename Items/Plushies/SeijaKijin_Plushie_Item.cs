@@ -15,7 +15,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Seija Kijin Plushie");
-            Tooltip.SetDefault("\"The mischief-causing amanojaku. It goes on the ceiling, too!\"");
+            Tooltip.SetDefault("The mischief-causing amanojaku. It goes on the ceiling, too!");
         }
 
         public override void SetDefaults()

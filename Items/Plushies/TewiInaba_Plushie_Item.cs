@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Tewi Inaba Plushie");
-            Tooltip.SetDefault("A very old rabbit youkai. Despite this, she's childish.");
+            Tooltip.SetDefault("A very old rabbit youkai. Despite this, she's childish");
         }
 
         public override void SetDefaults()

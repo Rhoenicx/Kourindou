@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Momiji Inubashiri Plushie");
-            Tooltip.SetDefault("The Youkai Mountain's guard dog. Calling her that might get you killed.");
+            Tooltip.SetDefault("The Youkai Mountain's guard dog. Calling her that might get you killed");
         }
 
         public override void SetDefaults()

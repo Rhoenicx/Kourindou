@@ -14,14 +14,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Hatate Himekaidou Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("The reporter for the Kakashi Spirit News. Uses thoughtography to obtain material for her newspaper");
         }
 
         public override void SetDefaults()
         {
             // Information
             Item.value = Item.buyPrice(0, 5, 0, 0);
-            Item.rare = ItemRarityID.Purple;
+            Item.rare = ItemRarityID.LightPurple;
 
             // Hitbox
             Item.width = 32;

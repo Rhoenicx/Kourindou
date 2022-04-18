@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Yuuka Kazami Plushie");
-            Tooltip.SetDefault("The flower youkai. She's not actually a flower youkai, but she really likes flowers.");
+            Tooltip.SetDefault("The flower youkai. She's not actually a flower youkai, but she really likes flowers");
         }
 
         public override void SetDefaults()

@@ -14,14 +14,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Seiga Kaku Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("Doki, doki, waku, waku...");
         }
 
         public override void SetDefaults()
         {
             // Information
             Item.value = Item.buyPrice(0, 5, 0, 0);
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ItemRarityID.Cyan;
 
             // Hitbox
             Item.width = 32;

@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Hong Meiling Plushie");
-            Tooltip.SetDefault("The scarlet mansion's gatekeeper.");
+            Tooltip.SetDefault("The scarlet mansion's gatekeeper");
         }
 
         public override void SetDefaults()

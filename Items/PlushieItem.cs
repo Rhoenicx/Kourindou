@@ -120,7 +120,7 @@ namespace Kourindou.Items
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
                     Projectile.NewProjectile(
-                        player.GetProjectileSource_Item(this.Item),
+                        player.GetProjectileSource_Item(Item),
                         new Vector2(player.Center.X, player.Center.Y - 16f),
                         speed,
                         projectileType,
@@ -128,7 +128,7 @@ namespace Kourindou.Items
                         Item.knockBack,
                         player.whoAmI,
                         30f,
-                        plushieDirtWater); ;
+                        plushieDirtWater);
                 }
                 // Multiplayer
                 else
@@ -142,10 +142,10 @@ namespace Kourindou.Items
                     packet.Write((float) Item.knockBack);
                     packet.Send();
                 }
-
                 return true;
             }
-            return false;
+
+            return null;
         }
 
         public override void NetSend(BinaryWriter writer)

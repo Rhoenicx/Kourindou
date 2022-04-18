@@ -14,14 +14,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Medicine Melancholy Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("A young doll youkai that lives on the Nameless Hill. She can harness the poison of anything");
         }
 
         public override void SetDefaults()
         {
             // Information
             Item.value = Item.buyPrice(0, 5, 0, 0);
-            Item.rare = ItemRarityID.Yellow;
+            Item.rare = ItemRarityID.LightPurple;
 
             // Hitbox
             Item.width = 32;

@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Remilia Scarlet Plushie Kourindou ver.");
-            Tooltip.SetDefault("The Scarlet Devil herself. The new outfit suits her.");
+            Tooltip.SetDefault("The Scarlet Devil herself. The new outfit suits her");
         }
 
         public override void SetDefaults()

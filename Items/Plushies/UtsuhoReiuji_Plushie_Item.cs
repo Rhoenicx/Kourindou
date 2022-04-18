@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Utsuho Reiuji Plushie");
-            Tooltip.SetDefault("The holder of Yatagarasu's power. She keeps the Hell of Blazing Fires in check.");
+            Tooltip.SetDefault("The nuclear crow tengu. She watches over the flames of hell");
         }
 
         public override void SetDefaults()

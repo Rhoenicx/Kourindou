@@ -14,14 +14,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Reimu Hakurei Plushie Kourindou ver.");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("The Hakurei shrine maiden, in a slightly different outfit");
         }
 
         public override void SetDefaults()
         {
             // Information
-            Item.value = Item.buyPrice(0, 1, 0, 0);
-            Item.rare = ItemRarityID.White;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.LightRed;
 
             // Hitbox
             Item.width = 32;

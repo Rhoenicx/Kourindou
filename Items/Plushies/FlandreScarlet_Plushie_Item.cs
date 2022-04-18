@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Flandre Scarlet Plushie");
-            Tooltip.SetDefault("The ultimate basement lurker. The scarlet sky has since tempted her presence outside the mansion."); 
+            Tooltip.SetDefault("The ultimate basement lurker. The scarlet sky has since tempted her presence outside the mansion"); 
         }
 
         public override void SetDefaults()

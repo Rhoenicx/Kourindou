@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Koishi Komeiji Plushie");
-            Tooltip.SetDefault("Satori's sister? You can't seem to remember them otherwise..");
+            Tooltip.SetDefault("Satori's sister? You can't seem to remember them otherwise...");
         }
 
         public override void SetDefaults()

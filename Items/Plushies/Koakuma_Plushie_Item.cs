@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Koakuma Plushie");
-            Tooltip.SetDefault("The scarlet devil mansion's librarian, and Patchouli's assistant.");
+            Tooltip.SetDefault("The scarlet devil mansion's librarian, and Patchouli's assistant");
         }
 
         public override void SetDefaults()

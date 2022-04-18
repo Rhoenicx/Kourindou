@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Cirno Plushie");
-            Tooltip.SetDefault("The ice fairy. It's stupidly strong, and stupid as well.");
+            Tooltip.SetDefault("The ice fairy. It's stupidly strong, and stupid as well");
         }
 
         public override void SetDefaults()

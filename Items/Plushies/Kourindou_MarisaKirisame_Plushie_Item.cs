@@ -14,14 +14,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Marisa Kirisame Plushie Kourindou ver.");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("This plushie has a tracker inside it. Marisa is now coming to steal your goods, da ze!");
         }
 
         public override void SetDefaults()
         {
             // Information
-            Item.value = Item.buyPrice(0, 1, 0, 0);
-            Item.rare = ItemRarityID.White;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.Yellow;
 
             // Hitbox
             Item.width = 32;

@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Byakuren Hijiri Plushie");
-            Tooltip.SetDefault("A Buddhist nun and magician. Currently, she's then Myouren Temple's head priest."); 
+            Tooltip.SetDefault("A Buddhist nun and magician. Currently, she's then Myouren Temple's head priest"); 
         }
 
         public override void SetDefaults()

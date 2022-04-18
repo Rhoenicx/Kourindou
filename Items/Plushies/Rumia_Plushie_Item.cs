@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Rumia Plushie");
-            Tooltip.SetDefault("The youkai of the dusk.");
+            Tooltip.SetDefault("The youkai of the dusk");
         }
 
         public override void SetDefaults()

@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Alice Margatroid Plushie");
-            Tooltip.SetDefault("The seven-colored magician. Ironically, she's a doll now.");
+            Tooltip.SetDefault("The seven-colored magician. Ironically, she's a doll now");
         }
 
         public override void SetDefaults()

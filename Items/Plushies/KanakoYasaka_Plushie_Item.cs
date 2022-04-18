@@ -14,14 +14,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Kanako Yasaka Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("The current goddess of the Moriya Shrine. Religion is a business");
         }
 
         public override void SetDefaults()
         {
             // Information
-            Item.value = Item.buyPrice(0, 1, 0, 0);
-            Item.rare = ItemRarityID.White;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.Orange;
 
             // Hitbox
             Item.width = 32;

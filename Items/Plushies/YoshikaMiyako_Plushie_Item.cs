@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Yoshika Miyako Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("A Jiangshi. Their owner likes them a lot");
         }
 
         public override void SetDefaults()

@@ -223,7 +223,7 @@ namespace Kourindou.Projectiles
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				if (CanPlacePlushie() && !WorldGen.PlaceObject(plushiePlaceTileX, plushiePlaceTileY, plushieTile))
+				if (CanPlacePlushie() && WorldGen.PlaceObject(plushiePlaceTileX, plushiePlaceTileY, plushieTile))
 				{
 					KourindouWorld.SetPlushieDirtWater(plushiePlaceTileX, plushiePlaceTileY - 1, plushieDirtWater);
 

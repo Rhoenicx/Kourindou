@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Patchouli Knowledge Plushie");
-            Tooltip.SetDefault("The magician of the scarlet mansion.");
+            Tooltip.SetDefault("The magician of the scarlet mansion");
         }
 
         public override void SetDefaults()

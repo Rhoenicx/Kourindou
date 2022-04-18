@@ -36,7 +36,7 @@ namespace Kourindou.Items.Plushies
 
             // Tile placement fields
             Item.consumable = true;
-            Item.createTile = TileType<NitoriKawashiro_Plushie_Tile>();
+            Item.createTile = TileType<NagatoYuki_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
             Item.accessory = true;

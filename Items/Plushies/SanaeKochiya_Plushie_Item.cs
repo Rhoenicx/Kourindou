@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sanae Kochiya Plushie");
-            Tooltip.SetDefault("The wind god shrine maiden. She doesn't look like Reimu.");
+            Tooltip.SetDefault("The wind god shrine maiden. She doesn't look like Reimu");
         }
 
         public override void SetDefaults()

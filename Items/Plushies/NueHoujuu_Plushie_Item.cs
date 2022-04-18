@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Nue Houjuu Plushie");
-            Tooltip.SetDefault("An alien?! Perhaps this doll isn't her true form..");
+            Tooltip.SetDefault("An alien?! Perhaps this doll isn't her true form...");
         }
 
         public override void SetDefaults()

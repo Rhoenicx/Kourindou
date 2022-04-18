@@ -14,14 +14,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Hecatia Lapislazuli Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("The Goddess of Hell. She has a questionable fashion sense");
         }
 
         public override void SetDefaults()
         {
             // Information
-            Item.value = Item.buyPrice(0, 1, 0, 0);
-            Item.rare = ItemRarityID.White;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.Red;
 
             // Hitbox
             Item.width = 32;

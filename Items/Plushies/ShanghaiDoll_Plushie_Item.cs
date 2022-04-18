@@ -14,14 +14,14 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Shanghai Doll Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("A replica of Alice's most prominent doll");
         }
 
         public override void SetDefaults()
         {
             // Information
             Item.value = Item.buyPrice(0, 5, 0, 0);
-            Item.rare = ItemRarityID.Gray; 
+            Item.rare = ItemRarityID.Pink; 
 
             // Hitbox
             Item.width = 32;
@@ -73,10 +73,5 @@ namespace Kourindou.Items.Plushies
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
         }
-		
-		public override bool? CanBurnInLava()
-		{
-			return false;
-		}
     }
 } 
