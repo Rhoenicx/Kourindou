@@ -72,7 +72,7 @@ namespace Kourindou.Items.Plushies
 			    for (int i = 0; i < 4; i++)
 			    {
 			    	Projectile.NewProjectile(
-                        player.GetProjectileSource_Item(this.Item),
+                        player.GetSource_Accessory(this.Item),
 			    		player.Center,
 			    		Vector2.Normalize(Main.MouseWorld - player.Center).RotatedBy(MathHelper.ToRadians(i >= 2 ? 5 * (i - 1) : -5 * (i + 1))) * (player.HeldItem.shootSpeed > 0f ? player.HeldItem.shootSpeed : 8f),
 			    		ProjectileType<SakuyaIzayoi_Plushie_Knife>(),

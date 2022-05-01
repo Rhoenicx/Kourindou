@@ -86,7 +86,7 @@ namespace Kourindou.Items.Plushies
                 }
 
                 // Increase armor penetration by 15 points
-                player.armorPenetration += 15;
+                player.GetArmorPenetration(DamageClass.Generic) += 15;
 
                 // Increase damage by an additional 15 percent
                 player.GetDamage(DamageClass.Generic) += 0.15f;

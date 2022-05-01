@@ -64,20 +64,20 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Increase melee speed by 50 percent
-            player.meleeSpeed += 0.5f;
+            player.GetAttackSpeed(DamageClass.Melee) += 0.5f;
 
             // Increase melee crit by 15 percent
             player.GetCritChance(DamageClass.Melee) += 15;
 
             // Increase armor penetration by 6 points
-            player.armorPenetration += 6;
+            player.GetArmorPenetration(DamageClass.Melee) += 15;
 
             // Half Phantom Minion
             bool petProjectileNotSpawned = player.ownedProjectileCounts[ProjectileType<YoumuKonpaku_Plushie_HalfPhantom>()] <= 0;
             if (petProjectileNotSpawned && player.whoAmI == Main.myPlayer) 
             {
                 Projectile.NewProjectile(
-                    player.GetProjectileSource_Accessory(this.Item),
+                    player.GetSource_Accessory(this.Item),
                     player.Center,
                     Vector2.Zero,
                     ProjectileType<YoumuKonpaku_Plushie_HalfPhantom>(),

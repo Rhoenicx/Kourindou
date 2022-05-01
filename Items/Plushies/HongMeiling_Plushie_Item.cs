@@ -62,7 +62,7 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Increase melee speed by 10 percent
-            player.meleeSpeed += 0.10f;
+            player.GetAttackSpeed(DamageClass.Melee) += 0.10f;
 
             // Increase melee critrate by 10 percent
             player.GetCritChance(DamageClass.Melee) += 10;

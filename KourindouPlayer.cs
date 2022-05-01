@@ -372,7 +372,7 @@ namespace Kourindou
                     position = n.Center;
 
                     Projectile.NewProjectile(
-                        Player.GetProjectileSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
+                        Player.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
                         position,
                         Vector2.Zero,
                         ProjectileType<FlandreScarlet_Plushie_Explosion>(),
@@ -389,7 +389,7 @@ namespace Kourindou
                     position = p.Center;
 
                     Projectile.NewProjectile(
-                        Player.GetProjectileSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
+                        Player.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
                         position,
                         Vector2.Zero,
                         ProjectileType<FlandreScarlet_Plushie_Explosion>(),
@@ -427,7 +427,7 @@ namespace Kourindou
             {
                 int star = Projectile.NewProjectile
                 (
-                    Player.GetProjectileSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
+                    Player.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
                     Player.Center,
                     Vector2.Normalize(Main.MouseWorld - Player.Center) * 10f,
                     ProjectileID.StarWrath,

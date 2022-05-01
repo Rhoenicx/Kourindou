@@ -74,7 +74,7 @@ namespace Kourindou.Items.Plushies
                 player.statLifeMax2 += 50;
 
                 // Increase armor penetration by 20 points
-                player.armorPenetration += 20;
+                player.GetArmorPenetration(DamageClass.Generic) += 20;
 
                 // TODO flowe boots effect
 

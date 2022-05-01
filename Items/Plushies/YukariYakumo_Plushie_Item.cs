@@ -67,7 +67,7 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Increase Armor penetration by 50 points
-            player.armorPenetration += 50;
+            player.GetArmorPenetration(DamageClass.Generic) += 50;
 
             // Teleport effect
             // Only execute if this is our own player

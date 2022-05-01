@@ -65,7 +65,7 @@ namespace Kourindou.Items.Plushies
             player.endurance += 0.15f;
 
             // Increase melee attack speed by 25 percent
-            player.meleeSpeed += 0.25f;
+            player.GetAttackSpeed(DamageClass.Melee) += 0.25f;
 
             // Increase melee critrate by 10 percent
             player.GetCritChance(DamageClass.Melee) += 10;

@@ -56,7 +56,7 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increase minion knockback by 2
-            player.minionKB += 2;
+            player.GetKnockback(DamageClass.Summon) += 2;
 
             // Increase sentry slots by 3
             player.maxTurrets += 3;

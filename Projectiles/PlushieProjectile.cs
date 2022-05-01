@@ -241,7 +241,7 @@ namespace Kourindou.Projectiles
 				else
 				{
 					int itemSlot = Item.NewItem(
-						Projectile.GetItemSource_DropAsItem(),
+						Projectile.GetSource_DropAsItem(),
 						Projectile.getRect(),
 						plushieItem,
 						1

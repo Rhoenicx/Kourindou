@@ -61,7 +61,7 @@ namespace Kourindou.Items
             // Remove "Equipable" line if the power mode is not 2
             if (Kourindou.KourindouConfigClient.plushiePower != 2)
             {
-                TooltipLine equipmentLine = tooltips.Find(x => x.text.Contains("Equipable"));
+                TooltipLine equipmentLine = tooltips.Find(x => x.Text.Contains("Equipable"));
                 tooltips.Remove(equipmentLine);
             }
 
@@ -120,7 +120,7 @@ namespace Kourindou.Items
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
                     Projectile.NewProjectile(
-                        player.GetProjectileSource_Item(Item),
+                        player.GetSource_ItemUse(Item),
                         new Vector2(player.Center.X, player.Center.Y - 16f),
                         speed,
                         projectileType,
