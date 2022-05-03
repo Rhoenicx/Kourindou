@@ -28,7 +28,7 @@ namespace Kourindou.Items.Weapons
             Item.useTime = 30;
             Item.useAnimation = 30;
             Item.autoReuse = true;
-            Item.noUseGraphic = false;
+            Item.noUseGraphic = true;
 
             Item.damage = 175;
             Item.crit = 10;

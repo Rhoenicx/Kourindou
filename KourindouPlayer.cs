@@ -1,5 +1,9 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
+using ReLogic.Content;
+using ReLogic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -7,8 +11,10 @@ using Terraria.ID;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.GameContent;
 using Kourindou.Buffs;
 using Kourindou.Items;
+using Kourindou.Items.Weapons;
 using Kourindou.Items.Plushies;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
 using static Terraria.ModLoader.ModContent;
@@ -99,13 +105,6 @@ namespace Kourindou
 
             // Reset buff timer visibility
             Main.buffNoTimeDisplay[146] = false;
-        }   
-
-        // Update player with the equipped plushie
-        public override void PreUpdate()
-        {
-            // When the plushie power setting is changed to 0 or 1 clear the slot 
-            // and place the item on top of the player
         }
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref bool crit)
@@ -539,6 +538,89 @@ namespace Kourindou
                     Main.hoverItemName = "Plushie Slot";
                     break;
             }
+        }
+    }
+
+    public class HeldItemLayer : PlayerDrawLayer
+    {
+        Texture2D texture;
+        int itemTexture;
+        public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+        {
+            return drawInfo.drawPlayer.HeldItem.type == ItemType<KoninginDerNacht>()
+                && drawInfo.drawPlayer.itemAnimation > 0
+                && !drawInfo.drawPlayer.dead
+                && !drawInfo.drawPlayer.noItems
+                && !drawInfo.drawPlayer.CCed;
+        }
+        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.HeldItem);
+
+        protected override void Draw(ref PlayerDrawSet drawInfo)
+        {
+            const float StartAngle = -140f;
+            const float SwingAngle = 180f;
+            const float HeldOffset = 8f;
+
+            if (drawInfo.drawPlayer.HeldItem.type == ItemType<KoninginDerNacht>())
+            {
+                if (itemTexture != drawInfo.drawPlayer.HeldItem.type)
+                {
+                    itemTexture = drawInfo.drawPlayer.HeldItem.type;
+                    texture = TextureAssets.Item[drawInfo.drawPlayer.HeldItem.type].Value;
+                }
+            }
+
+            int drawX = (int)(drawInfo.Position.X - Main.screenPosition.X - drawInfo.drawPlayer.bodyFrame.Width / 2f + drawInfo.drawPlayer.width / 2f);
+            int drawY = (int)(drawInfo.Position.Y - Main.screenPosition.Y + drawInfo.drawPlayer.height - drawInfo.drawPlayer.bodyFrame.Height + 4);
+            Vector2 position = new Vector2(drawX, drawY) + drawInfo.drawPlayer.bodyPosition + drawInfo.bodyVect;
+
+            float rotation;
+
+            if (drawInfo.drawPlayer.direction == 1)
+            {
+                rotation = StartAngle + (SwingAngle / drawInfo.drawPlayer.itemAnimationMax * (drawInfo.drawPlayer.itemAnimationMax - drawInfo.drawPlayer.itemAnimation)) + 45f;
+                position += new Vector2(HeldOffset, 0f).RotatedBy(MathHelper.ToRadians(rotation - 45f));
+            }
+            else
+            {
+                rotation = StartAngle + 100f - (SwingAngle / drawInfo.drawPlayer.itemAnimationMax * (drawInfo.drawPlayer.itemAnimationMax - drawInfo.drawPlayer.itemAnimation)) - 45f + 180f;
+                position += new Vector2(HeldOffset, 0f).RotatedBy(MathHelper.ToRadians(rotation - 135f));
+            }
+
+            Vector2 offset = new Vector2(0, 0);
+
+            // Bodyframe Y values that indicate the player is at a position in the step cycle
+            // where the sprite shifts.
+            if (drawInfo.drawPlayer.bodyFrame.Y == 392 || drawInfo.drawPlayer.bodyFrame.Y == 448 || drawInfo.drawPlayer.bodyFrame.Y == 504
+                || drawInfo.drawPlayer.bodyFrame.Y == 784 || drawInfo.drawPlayer.bodyFrame.Y == 840 || drawInfo.drawPlayer.bodyFrame.Y == 896)
+            {
+                offset.Y += 2;
+            }
+
+            SpriteEffects spriteEffects = SpriteEffects.None;
+            if (drawInfo.drawPlayer.direction == -1)
+            {
+                spriteEffects |= SpriteEffects.FlipHorizontally;
+            }
+            if ((int)drawInfo.drawPlayer.gravDir == -1)
+            {
+                spriteEffects |= SpriteEffects.FlipVertically;
+                offset.Y *= -1;
+            }
+
+            drawInfo.DrawDataCache.Add(new DrawData(
+                texture,
+                position,
+                new Rectangle(0, 0, texture.Width, texture.Height),
+                drawInfo.itemColor,
+                MathHelper.ToRadians(rotation),
+                new Vector2(spriteEffects.HasFlag((Enum)(object)(SpriteEffects)1) ? texture.Width : 0, texture.Height) + offset,
+                1f,
+                spriteEffects,
+                0
+            ));
+
+            Main.NewText(rotation);
         }
     }
 }
