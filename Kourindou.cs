@@ -57,7 +57,8 @@ namespace Kourindou
 
         private static List<Func<bool>> RightClickOverrides;
 
-        public static ModKeybind YukariYakumoTPKey;
+        public static ModKeybind SkillKey;
+        public static ModKeybind UltimateKey;
 
         // Kourindou Mod Instance
         public Kourindou()
@@ -77,7 +78,8 @@ namespace Kourindou
         {
             RightClickOverrides = new List<Func<bool>>();
 
-            YukariYakumoTPKey = KeybindLoader.RegisterKeybind(this, "Yukari Yakumo Teleport Key", "Mouse2");
+            SkillKey = KeybindLoader.RegisterKeybind(this, "Skill", "Mouse2");
+            UltimateKey = KeybindLoader.RegisterKeybind(this, "Ultimate", "Mouse2");
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
@@ -96,7 +98,8 @@ namespace Kourindou
                 RightClickOverrides = null;
             }
 
-            YukariYakumoTPKey = null;
+            SkillKey = null;
+            UltimateKey = null;
 
             Instance = null;
 
@@ -520,6 +523,31 @@ namespace Kourindou
                         }
                     }
                     break;
+                }
+
+                case KourindouMessageType.AlternateFire:
+                {
+                    byte PlayerID = reader.ReadByte();
+                    bool UsedAttack = reader.ReadBoolean();
+                    int AttackID = reader.ReadInt32();
+                    int AttackCounter = reader.ReadInt32();
+
+                    KourindouPlayer player = Main.player[PlayerID].GetModPlayer<KourindouPlayer>();
+                    player.UsedAttack = UsedAttack;
+                    player.AttackID = AttackID;
+                    player.AttackCounter = AttackCounter;
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        ModPacket packet = GetPacket();
+                        packet.Write((byte) KourindouMessageType.AlternateFire);
+                        packet.Write((byte) PlayerID);
+                        packet.Write((bool) UsedAttack);
+                        packet.Write((int) AttackID);
+                        packet.Write((int) AttackCounter);
+                        packet.Send(-1, whoAmI);
+                    }
+                    break;    
                 }
 
 

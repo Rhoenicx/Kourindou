@@ -13,6 +13,7 @@ namespace Kourindou
         PlacePlushieTile,
         SetPlushieDirtWater,
         RandomPlacePlantTile,
-        PlayerPlacePlantTile
+        PlayerPlacePlantTile,
+        AlternateFire
     }
 }

@@ -52,8 +52,12 @@ namespace Kourindou
             {
                 if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().PlushieSlotItemID == ItemType<ReimuHakurei_Plushie_Item>())
                 {
-                    if ((projectile.CountsAsClass(DamageClass.Magic) || projectile.CountsAsClass(DamageClass.Melee) || projectile.CountsAsClass(DamageClass.Ranged) || projectile.CountsAsClass(DamageClass.Throwing))
-                        && projectile.type != ProjectileID.IceBlock
+                    if ((projectile.CountsAsClass(DamageClass.Magic)
+                        || projectile.CountsAsClass(DamageClass.Melee)
+                        || projectile.CountsAsClass(DamageClass.Ranged)
+                        || projectile.CountsAsClass(DamageClass.Throwing))
+                        && projectile.type != ProjectileID.IceBlock 
+                        && Main.player[projectile.owner].heldProj != projectile.whoAmI
                         )
                     {
                         List<ReimuPlushieTarget> target = new List<ReimuPlushieTarget>();

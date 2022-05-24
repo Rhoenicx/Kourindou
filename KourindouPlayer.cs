@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -12,18 +13,26 @@ using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.GameContent;
+using static Terraria.ModLoader.ModContent;
 using Kourindou.Buffs;
 using Kourindou.Items;
 using Kourindou.Items.Weapons;
 using Kourindou.Items.Plushies;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
-using static Terraria.ModLoader.ModContent;
+using Kourindou.Projectiles.Weapons;
+
 
 namespace Kourindou
 {
+    public class CooldownTimes
+    {
+        public int CurrentTime { get; set; }
+        public int MaximumTime { get; set; }
+    }
+
     public class KourindouPlayer : ModPlayer
     {
-//--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
         // Determines the power mode of all the plushies
         public byte plushiePower;
 
@@ -34,21 +43,42 @@ namespace Kourindou
         public byte CirnoPlushie_Attack_Counter;
         public bool CirnoPlushie_TimesNine;
 
-        // Yukari Yakumo teleport hotkey
-        public bool YukariYakumoTPKeyPressed;
+        // Hotkeys
+        public int keyTimer;
+        public bool SkillKeyPressed;
+        public bool SkillKeyHeld;
+        public bool SkillKeyReleased;
+        public bool UltimateKeyPressed;
+        public bool UltimateKeyHeld;
+        public bool UltimateKeyReleased;
+
+        public bool UsedAttack;
+        public int AttackID;
+        public int AttackCounter;
+
+        public int OldAttackID;
+        public int OldAttackCounter;
 
         // Half Phantom pet active
         public bool HalfPhantomPet;
 
-//--------------------------------------------------------------------------------
-        public override void SaveData(TagCompound tag) 
+        // Cooldown
+        public Dictionary<int, Dictionary<int, CooldownTimes>> Cooldowns = new Dictionary<int, Dictionary<int, CooldownTimes>>();
+        public float CooldownTimeMultiplier;
+        public int CooldownTimeAdditive;
+
+        // Weapons
+        public Dictionary<int, int> CrescentMoonStaffFlames = new Dictionary<int, int>();
+
+        //--------------------------------------------------------------------------------
+        public override void SaveData(TagCompound tag)
         {
             tag.Add("plushiePowerMode", plushiePower);
             tag.Add("cirnoPlushieAttackCounter", CirnoPlushie_Attack_Counter);
             tag.Add("cirnoPlushieTimesNine", CirnoPlushie_TimesNine);
         }
 
-        public override void LoadData(TagCompound tag) 
+        public override void LoadData(TagCompound tag)
         {
             plushiePower = tag.GetByte("plushiePowerMode");
             CirnoPlushie_Attack_Counter = tag.GetByte("cirnoPlushieAttackCounter");
@@ -67,7 +97,7 @@ namespace Kourindou
         {
             // PlushiePower Client Config
             plushiePower = (byte)Kourindou.KourindouConfigClient.plushiePower;
-            
+
             // Update other clients when joining multiplayer or when another player joins multiplayer
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
@@ -81,11 +111,69 @@ namespace Kourindou
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            if (Kourindou.YukariYakumoTPKey.JustPressed)
+            if (Player.HeldItem.ModItem is MultiUseItem item)
             {
-                YukariYakumoTPKeyPressed = true;
+                List<string> SkillKeys = Kourindou.SkillKey.GetAssignedKeys();
+                List<string> UltimateKeys = Kourindou.UltimateKey.GetAssignedKeys();
+
+                if (SkillKeys.Count == 0 && UltimateKeys.Count == 0)
+                {
+                    return;
+                }
+
+                if (item.HasSkill(Player)
+                    && item.HasUltimate(Player)
+                    && SkillKeys.Count > 0
+                    && UltimateKeys.Count > 0
+                    && SkillKeys[0] == UltimateKeys[0])
+                {
+                    // Skill is activated by clicking the assigned button
+                    // Ultimate is activated by holding the button for 1.5 seconds (90 ticks)
+                    if (Kourindou.SkillKey.JustReleased && keyTimer < 60)
+                    {
+                        SkillKeyPressed = true;
+                    }
+                    else if (Kourindou.SkillKey.JustReleased && keyTimer >= 60)
+                    {
+                        UltimateKeyPressed = true;
+                    }
+
+                    // When held down increase the timer
+                    if (Kourindou.SkillKey.Current)
+                    {
+                        keyTimer++;
+                    }
+
+                    // When the button is released or no longer pressed, reset the timer
+                    if (Kourindou.SkillKey.JustReleased || !Kourindou.UltimateKey.Current)
+                    {
+                        keyTimer = 0;
+                    }
+                }
+                else
+                {
+                    if (item.HasSkill(Player))
+                    {
+                        if (Kourindou.SkillKey.JustPressed) SkillKeyPressed = true;
+                        SkillKeyHeld = Kourindou.SkillKey.Current;
+                        if (Kourindou.SkillKey.JustReleased) SkillKeyReleased = true;
+                    }
+
+                    if (item.HasUltimate(Player))
+                    {
+                        if (Kourindou.UltimateKey.JustPressed) UltimateKeyPressed = true;
+                        UltimateKeyHeld = Kourindou.UltimateKey.Current;
+                        if (Kourindou.UltimateKey.JustReleased) UltimateKeyReleased = true;
+                    }
+                }
+
+                if (Player.HeldItem.ModItem.AltFunctionUse(Player))
+                {
+                    Player.controlUseItem = true;
+                    Player.altFunctionUse = 1;
+                }
             }
-            
+
             base.ProcessTriggers(triggersSet);
         }
 
@@ -96,7 +184,7 @@ namespace Kourindou
 
             // Suika Ibuki Effect reset scale
             if (Player.HeldItem.stack > 0 && Player.HeldItem.CountsAsClass(DamageClass.Melee) && (Player.HeldItem.useStyle == ItemUseStyleID.Swing || Player.HeldItem.useStyle == ItemUseStyleID.Thrust))
-            {   
+            {
                 Player.HeldItem.scale = Player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale;
             }
 
@@ -105,6 +193,30 @@ namespace Kourindou
 
             // Reset buff timer visibility
             Main.buffNoTimeDisplay[146] = false;
+
+            CooldownTimeMultiplier = 1f;
+            CooldownTimeAdditive = 0;
+
+            // Crescent Moon Staff - Check the projectiles in the dictionary, if they are wrong remove them
+            if (Player.whoAmI == Main.myPlayer)
+            {
+                List<int> removeKey = new List<int>();
+                foreach (KeyValuePair<int, int> pair in CrescentMoonStaffFlames)
+                {
+                    Projectile proj = Main.projectile[pair.Value];
+                    if (!proj.active
+                    || proj.owner != Player.whoAmI
+                    || proj.type != ProjectileType<CrescentMoonStaffFlame>()
+                    || pair.Key != (int)proj.ai[1])
+                    {
+                        removeKey.Add(pair.Key);
+                    }
+                }
+                foreach (int i in removeKey)
+                {
+                    CrescentMoonStaffFlames.Remove(i);
+                }
+            }
         }
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref bool crit)
@@ -112,9 +224,9 @@ namespace Kourindou
             // Shion Yorigami random damage increase on NPC hits 0.1% chance
             if (PlushieSlotItemID == ItemType<ShionYorigami_Plushie_Item>())
             {
-                if ((int)Main.rand.Next(1,1000) == 1)
+                if ((int)Main.rand.Next(1, 1000) == 1)
                 {
-                    damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
+                    damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
                 }
             }
 
@@ -179,7 +291,7 @@ namespace Kourindou
                 if (crit)
                 {
                     target.immune[proj.owner] = 0;
-                }      
+                }
             }
 
             // Marisa Kirisame Plushie Equipped
@@ -313,18 +425,11 @@ namespace Kourindou
             return true;
         }
 
-        public override void PostUpdate()
-        {
-            // On the end of this player update tick put the hotkey to false
-            // to prevent endless tping...
-            YukariYakumoTPKeyPressed = false;
-        }
-
         private void CirnoPlushie_OnHit(Player p, NPC n, bool crit)
         {
             CirnoPlushie_Attack_Counter++;
-            
-            if (CirnoPlushie_Attack_Counter == 8 && (int)Main.rand.Next(0,10) == 9)
+
+            if (CirnoPlushie_Attack_Counter == 8 && (int)Main.rand.Next(0, 10) == 9)
             {
                 CirnoPlushie_TimesNine = true;
             }
@@ -346,7 +451,7 @@ namespace Kourindou
                     p.AddBuff(BuffID.Frozen, 120);
                 }
             }
-            
+
             // Add debuffs to NPCs
             if (n != null)
             {
@@ -408,11 +513,11 @@ namespace Kourindou
                 {
                     // Send sound packet for other clients
                     ModPacket packet2 = Mod.GetPacket();
-                    packet2.Write((byte) KourindouMessageType.PlaySound);
-                    packet2.Write((byte) SoundID.DD2_ExplosiveTrapExplode.SoundId);
-                    packet2.Write((short) SoundID.DD2_ExplosiveTrapExplode.Style);
-                    packet2.Write((float) 0.8f);
-                    packet2.Write((float) 1f);
+                    packet2.Write((byte)KourindouMessageType.PlaySound);
+                    packet2.Write((byte)SoundID.DD2_ExplosiveTrapExplode.SoundId);
+                    packet2.Write((short)SoundID.DD2_ExplosiveTrapExplode.Style);
+                    packet2.Write((float)0.8f);
+                    packet2.Write((float)1f);
                     packet2.Write((int)position.X);
                     packet2.Write((int)position.Y);
                     packet2.Send();
@@ -470,10 +575,139 @@ namespace Kourindou
 
         private void TewiInabaPlushie_OnHit(NPC n)
         {
-            if ((int)Main.rand.Next(0,5) == 0 && n.life <= 0)
+            if ((int)Main.rand.Next(0, 5) == 0 && n.life <= 0)
             {
                 n.NPCLoot();
             }
+        }
+
+        //--------------------------------------------------------- Multi-useItem ---------------------------------------------------------
+        public bool OnCooldown(int itemID, int AttackID)
+        {
+            if (Cooldowns.ContainsKey(itemID))
+            {
+                if (Cooldowns[itemID].ContainsKey(AttackID))
+                {
+                    return Cooldowns[itemID][AttackID].CurrentTime > 0;
+                }
+            }
+            return false;
+        }
+
+        public void SetCooldown(int itemID, int AttackID , int time)
+        {
+            if (!Cooldowns.ContainsKey(itemID))
+            {
+                Cooldowns.Add(itemID, new Dictionary<int, CooldownTimes>());
+            }
+
+            if (!Cooldowns[itemID].ContainsKey(AttackID))
+            {
+                Cooldowns[itemID].Add(AttackID, new CooldownTimes { CurrentTime = time, MaximumTime = time });
+            }
+            else
+            {
+                Cooldowns[itemID][AttackID].CurrentTime = time;
+                Cooldowns[itemID][AttackID].MaximumTime = time;
+            }
+        }
+
+        public override bool PreItemCheck()
+        {
+            // player is not holding a multiuse weapon
+            if (!(Player.HeldItem.ModItem is MultiUseItem item))
+            { 
+                // return, we don't have a multiuse weapon
+                return base.PreItemCheck();
+            }
+
+            // Get the AttackID based on the weapon and keybind used
+            if (Player.itemAnimation <= 1 && Main.myPlayer == Player.whoAmI)
+            {
+                // Prioritize the ultimate if both keys are present at the same time
+                if (Main.mouseLeft && !(UltimateKeyPressed || UltimateKeyHeld) && !(SkillKeyPressed || SkillKeyHeld) && item.HasNormal(Player))
+                {
+                    UsedAttack = true;
+                    AttackID = item.GetNormalID(Player);
+                    AttackCounter = item.GetNormalCounter(Player);
+                }
+                else if (!Main.mouseLeft && (SkillKeyPressed || SkillKeyHeld) && !(UltimateKeyPressed || UltimateKeyHeld) && item.HasSkill(Player))
+                {
+                    UsedAttack = true;
+                    AttackID = item.GetSkillID(Player);
+                    AttackCounter = item.GetSkillCounter(Player);
+                }
+                else if (!Main.mouseLeft && (UltimateKeyPressed || UltimateKeyHeld) && !(SkillKeyPressed || SkillKeyHeld) && item.HasUltimate(Player))
+                {
+                    UsedAttack = true;
+                    AttackID = item.GetUltimateID(Player);
+                    AttackCounter = item.GetUltimateCounter(Player);
+                }
+                else if (!Main.mouseLeft && !(UltimateKeyPressed || UltimateKeyHeld) && !(SkillKeyPressed || SkillKeyHeld))
+                {
+                    item.SetDefaults();
+                    return base.PreItemCheck();
+                }
+                else
+                {
+                    UsedAttack = true;
+                    AttackID = OldAttackID;
+                    AttackCounter = OldAttackCounter;
+                }
+            }
+
+            if (Player.itemAnimation <= 1 && Main.myPlayer != Player.whoAmI)
+            {
+                item.SetDefaults();
+            }
+
+            if (UsedAttack)
+            {
+                Player.altFunctionUse = 2;
+
+                if (Main.myPlayer == Player.whoAmI && OnCooldown(item.Type, AttackID))
+                {
+                    return base.PreItemCheck();
+                }
+
+                if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient && !OnCooldown(item.Type, AttackID))
+                {
+                    ModPacket packet = Mod.GetPacket();
+                    packet.Write((byte) KourindouMessageType.AlternateFire);
+                    packet.Write((byte) Player.whoAmI);
+                    packet.Write((bool) UsedAttack);
+                    packet.Write((int) AttackID);
+                    packet.Write((int) AttackCounter);
+                    packet.Send();
+                }
+
+                item.SetItemStats(Player, AttackID, AttackCounter);
+                Player.lastVisualizedSelectedItem = Player.HeldItem;
+
+                if (Main.myPlayer == Player.whoAmI)
+                {
+                    OldAttackID = AttackID;
+                    OldAttackCounter = AttackCounter;
+                }
+            }
+
+            return base.PreItemCheck();
+        }
+
+        public override void PostUpdate()
+        {
+            // Put hotkey status to false for next tick
+            SkillKeyPressed = false;
+            SkillKeyHeld = false;
+            SkillKeyReleased = false;
+
+            UltimateKeyPressed = false;
+            UltimateKeyHeld = false;
+            UltimateKeyReleased = false;
+
+            UsedAttack = false;
+            AttackID = 0;
+            AttackCounter = 0;
         }
     }
 
@@ -559,7 +793,7 @@ namespace Kourindou
         {
             const float StartAngle = -140f;
             const float SwingAngle = 180f;
-            const float HeldOffset = 8f;
+            const float HeldOffset = 6f;
 
             if (drawInfo.drawPlayer.HeldItem.type == ItemType<KoninginDerNacht>())
             {
@@ -619,8 +853,6 @@ namespace Kourindou
                 spriteEffects,
                 0
             ));
-
-            Main.NewText(rotation);
         }
     }
 }

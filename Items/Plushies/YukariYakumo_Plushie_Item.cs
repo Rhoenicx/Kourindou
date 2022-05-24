@@ -74,7 +74,7 @@ namespace Kourindou.Items.Plushies
             if (player.whoAmI == Main.myPlayer)
             {
                 // Check if hotkey has been pressed
-                if (player.GetModPlayer<KourindouPlayer>().YukariYakumoTPKeyPressed)
+                if (player.GetModPlayer<KourindouPlayer>().SkillKeyPressed)
                 {
                     // Calculate the destination
                     Vector2 destination = new Vector2(Main.MouseWorld.X - player.width / 2f, Main.MouseWorld.Y);

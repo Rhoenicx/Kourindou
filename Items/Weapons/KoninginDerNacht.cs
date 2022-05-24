@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Audio;
-using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou.Items.Weapons
 {
@@ -18,11 +15,11 @@ namespace Kourindou.Items.Weapons
 
         public override void SetDefaults()
         {
-            Item.value = Item.buyPrice(0, 50, 0, 0);
-            Item.rare = ItemRarityID.LightRed;
+            Item.value = Item.buyPrice(0, 40, 0, 0);
+            Item.rare = ItemRarityID.Red;
 
-            Item.width = 84;
-            Item.height = 84;
+            Item.width = 112;
+            Item.height = 112;
 
             Item.useStyle = ItemUseStyleID.Swing;
             Item.useTime = 30;
@@ -36,6 +33,21 @@ namespace Kourindou.Items.Weapons
             Item.DamageType = DamageClass.Melee;
 
             Item.UseSound = SoundID.Item7;
+        }
+
+        public override void UseItemHitbox(Player player, ref Rectangle hitbox, ref bool noHitbox)
+        {
+            base.UseItemHitbox(player, ref hitbox, ref noHitbox);
+
+            int HitboxWidth = 112;
+            int HitboxHeight = 112;
+
+            hitbox = new Rectangle(
+                hitbox.X + hitbox.Width / 2 - HitboxWidth / 2, 
+                hitbox.Y + hitbox.Height / 2 - HitboxHeight / 2,
+                HitboxWidth,
+                HitboxHeight
+            );
         }
     }
 }

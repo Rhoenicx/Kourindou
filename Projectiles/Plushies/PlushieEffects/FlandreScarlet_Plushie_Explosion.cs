@@ -79,6 +79,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
                     Main.player[(int)Projectile.ai[0]].immuneTime = 0;
                 }
 
+                Projectile.rotation = MathHelper.ToRadians(Main.rand.Next(0, 360));
                 JustSpawned = false;
             }
 
