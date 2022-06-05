@@ -3,8 +3,6 @@ namespace Kourindou
     public enum KourindouMessageType : byte
     {
         ClientConfig,
-        PlushieSlot,
-        ForceUnequipPlushie,
         ThrowPlushie,
         MeleeHitbox,
         ReimuPlushieTargets,
@@ -15,6 +13,7 @@ namespace Kourindou
         PlacePlushieTile,
         SetPlushieDirtWater,
         RandomPlacePlantTile,
-        PlayerPlacePlantTile
+        PlayerPlacePlantTile,
+        AlternateFire
     }
 }

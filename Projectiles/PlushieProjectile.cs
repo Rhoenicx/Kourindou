@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Items;
@@ -45,40 +46,40 @@ namespace Kourindou.Projectiles
 		// AI & LocalAI
 		public int Timer 
 		{
-			get => (int)projectile.ai[0];
-			set => projectile.ai[0] = value;
+			get => (int)Projectile.ai[0];
+			set => Projectile.ai[0] = value;
 		}
 
 		public short plushieDirtWater
 		{
-			get => (short)projectile.ai[1];
-			set => projectile.ai[1] = value;
+			get => (short)Projectile.ai[1];
+			set => Projectile.ai[1] = value;
 		} 
 
 		public float magnitudeX
 		{
-			get => projectile.localAI[0];
-			set => projectile.localAI[0] = value;
+			get => Projectile.localAI[0];
+			set => Projectile.localAI[0] = value;
 		}
 
 		public float magnitudeY
 		{
-			get => projectile.localAI[1];
-			set => projectile.localAI[1] = value;
+			get => Projectile.localAI[1];
+			set => Projectile.localAI[1] = value;
 		}
 
-		public override bool PreDraw (SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D texture = Main.projectileTexture[projectile.type];
-		    
-			spriteBatch.Draw(
+			Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+
+			Main.EntitySpriteDraw(
 				texture, 
-				projectile.Center - Main.screenPosition, 
+				Projectile.Center - Main.screenPosition, 
 				texture.Bounds, 
 				lightColor, 
-				projectile.rotation, 
+				Projectile.rotation, 
 				texture.Size() * 0.5f, 
-				projectile.scale, 
+				Projectile.scale, 
 				SpriteEffects.None, 
 				0);
 			return false;
@@ -88,17 +89,17 @@ namespace Kourindou.Projectiles
 
 		public override bool OnTileCollide (Vector2 oldVelocity)
         {
-			if (projectile.velocity.X != oldVelocity.X)
+			if (Projectile.velocity.X != oldVelocity.X)
             {
-                projectile.velocity.X = -oldVelocity.X * 0.5f;
+                Projectile.velocity.X = -oldVelocity.X * 0.5f;
             }
 
-            if (projectile.velocity.Y != oldVelocity.Y)
+            if (Projectile.velocity.Y != oldVelocity.Y)
             {
-                projectile.velocity.Y = -oldVelocity.Y * 0.5f;
+                Projectile.velocity.Y = -oldVelocity.Y * 0.5f;
             }
 
-			if (projectile.velocity.Length() < 0.2f)
+			if (Projectile.velocity.Length() < 0.2f)
 			{
 				dropTimer++;
 			}
@@ -124,17 +125,17 @@ namespace Kourindou.Projectiles
 				JustSpawned = false;
 			}
 
-			projectile.damage = 0;
+			Projectile.damage = 0;
 
 			// Change projectile velocity towards gravity vector based on magnitude and LERP
-			projectile.velocity.X = MathHelper.Lerp(projectile.velocity.X, gravity.X, magnitudeX);
-			projectile.velocity.Y = MathHelper.Lerp(projectile.velocity.Y, gravity.Y, magnitudeY);
+			Projectile.velocity.X = MathHelper.Lerp(Projectile.velocity.X, gravity.X, magnitudeX);
+			Projectile.velocity.Y = MathHelper.Lerp(Projectile.velocity.Y, gravity.Y, magnitudeY);
 
 			// Projectile rotation based on distance travelled on X axis
-			projectile.rotation += MathHelper.ToRadians(projectile.velocity.X) * 2f;
+			Projectile.rotation += MathHelper.ToRadians(Projectile.velocity.X) * 2f;
 
 			// Check if the Plushie is NOT changing Y position => laying on the ground so reduce X speed
-			if (Vector2.Distance(new Vector2(0f, projectile.position.Y), new Vector2(0f, projectile.oldPos[4].Y)) < 0.25f)
+			if (Vector2.Distance(new Vector2(0f, Projectile.position.Y), new Vector2(0f, Projectile.oldPos[4].Y)) < 0.25f)
 			{
 				magnitudeX += 0.0025f;
 			}
@@ -148,12 +149,12 @@ namespace Kourindou.Projectiles
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
 					// If the projectile is not moving for 15 ticks, kill it
-					if (projectile.owner == Main.myPlayer)
+					if (Projectile.owner == Main.myPlayer)
 					{
 						if (dropTimer > 15)
 						{
-							projectile.netUpdate = true;
-							projectile.Kill();
+							Projectile.netUpdate = true;
+							Projectile.Kill();
 						}
 					}
 
@@ -168,10 +169,10 @@ namespace Kourindou.Projectiles
 						}
 
 						//player hitbox
-						if (Colliding(projectile.Hitbox, player.Hitbox) == true)
+						if (Colliding(Projectile.Hitbox, player.Hitbox) == true)
 						{
 							OnHitPlayer(player);
-							projectile.netUpdate = true;
+							Projectile.netUpdate = true;
 						}
 
 						Rectangle hitbox = new Rectangle();
@@ -181,10 +182,10 @@ namespace Kourindou.Projectiles
 							hitbox = KourindouGlobalItem.meleeHitbox[player.whoAmI].Value;
 							hitbox = Main.ReverseGravitySupport(hitbox);
 							
-							if (Colliding(projectile.Hitbox, hitbox) == true)
+							if (Colliding(Projectile.Hitbox, hitbox) == true)
 							{
 								OnHitPlayerMelee(player);
-								projectile.netUpdate = true;
+								Projectile.netUpdate = true;
 							}
 						}
 						else
@@ -203,10 +204,10 @@ namespace Kourindou.Projectiles
 							continue;
 						}
 
-						if (Colliding(projectile.Hitbox, Main.npc[i].Hitbox) == true)
+						if (Colliding(Projectile.Hitbox, Main.npc[i].Hitbox) == true)
 						{
 							OnHitNPC(Main.npc[i]);
-							projectile.netUpdate = true;
+							Projectile.netUpdate = true;
 						}
 					}
 				}
@@ -222,13 +223,13 @@ namespace Kourindou.Projectiles
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				if (CanPlacePlushie() && !WorldGen.PlaceObject(plushiePlaceTileX, plushiePlaceTileY, plushieTile))
+				if (CanPlacePlushie() && WorldGen.PlaceObject(plushiePlaceTileX, plushiePlaceTileY, plushieTile))
 				{
 					KourindouWorld.SetPlushieDirtWater(plushiePlaceTileX, plushiePlaceTileY - 1, plushieDirtWater);
 
 					if (Main.netMode == NetmodeID.Server)
 					{
-						ModPacket packet = mod.GetPacket();
+						ModPacket packet = Mod.GetPacket();
 						packet.Write((byte) KourindouMessageType.PlacePlushieTile);
 						packet.Write((int) plushiePlaceTileX);
 						packet.Write((int) plushiePlaceTileY);
@@ -240,19 +241,20 @@ namespace Kourindou.Projectiles
 				else
 				{
 					int itemSlot = Item.NewItem(
-						projectile.getRect(),
+						Projectile.GetSource_DropAsItem(),
+						Projectile.getRect(),
 						plushieItem,
 						1
 					);
 
-					if (Main.item[itemSlot].modItem is PlushieItem plushie)
+					if (Main.item[itemSlot].ModItem is PlushieItem plushie)
 					{
 						plushie.plushieDirtWater = plushieDirtWater;
 					}
 
 					if (Main.netMode == NetmodeID.Server)
 					{
-						ModPacket packet = mod.GetPacket();
+						ModPacket packet = Mod.GetPacket();
 						packet.Write((byte) KourindouMessageType.PlushieItemNetUpdate);
 						packet.Write((int) itemSlot);
 						packet.Write((short) plushieDirtWater);
@@ -276,25 +278,25 @@ namespace Kourindou.Projectiles
 
 		public void OnHitNPC(NPC target)
 		{
-			Vector2 direction = Vector2.Normalize(projectile.Center - target.Center);
+			Vector2 direction = Vector2.Normalize(Projectile.Center - target.Center);
 
-			projectile.velocity = direction * (projectile.velocity.Length() > target.velocity.Length() ? projectile.velocity.Length() / 2f : target.velocity.Length());
+			Projectile.velocity = direction * (Projectile.velocity.Length() > target.velocity.Length() ? Projectile.velocity.Length() / 2f : target.velocity.Length());
 			Timer = 5;
 		}
 
 		public void OnHitPlayer(Player player)
 		{
-			Vector2 direction = Vector2.Normalize(projectile.Center - player.Center);
+			Vector2 direction = Vector2.Normalize(Projectile.Center - player.Center);
 
-			projectile.velocity = direction * (projectile.velocity.Length() > player.velocity.Length() ? projectile.velocity.Length() / 2f : player.velocity.Length());
+			Projectile.velocity = direction * (Projectile.velocity.Length() > player.velocity.Length() ? Projectile.velocity.Length() / 2f : player.velocity.Length());
 			Timer = 5;
 		}
 
 		public void OnHitPlayerMelee(Player player)
 		{
-			Vector2 direction = Vector2.Normalize(projectile.Center - player.Center);
+			Vector2 direction = Vector2.Normalize(Projectile.Center - player.Center);
 
-			projectile.velocity = direction * player.HeldItem.knockBack;
+			Projectile.velocity = direction * player.HeldItem.knockBack;
 			Timer = 30;
 		}
 
@@ -304,8 +306,8 @@ namespace Kourindou.Projectiles
 			bool foundSolidTile = false;
 			int searchLimit = 0;
 
-			int tileX = (int)(projectile.Center.X / 16);
-			int tileY = (int)(projectile.Center.Y / 16);
+			int tileX = (int)(Projectile.Center.X / 16);
+			int tileY = (int)(Projectile.Center.Y / 16);
 
 			while (!foundSolidTile)
 			{
@@ -316,9 +318,9 @@ namespace Kourindou.Projectiles
 
 				Tile tile = Framing.GetTileSafely(tileX, tileY + searchLimit);
 
-				if (tile.active())
+				if (tile.HasTile)
 				{
-					if (Main.tileSolid[tile.type])
+					if (Main.tileSolid[tile.TileType])
 					{
 						tileY += searchLimit;
 						foundSolidTile = true;
@@ -328,30 +330,30 @@ namespace Kourindou.Projectiles
 			}
 
 			// Check middle tiles
-			if (Framing.GetTileSafely(tileX, tileY).slope() == 0
-				&& Framing.GetTileSafely(tileX, tileY).active()
-				&& Main.tileSolid[Framing.GetTileSafely(tileX, tileY).type]
-				&& !Framing.GetTileSafely(tileX, tileY).halfBrick()
+			if (Framing.GetTileSafely(tileX, tileY).Slope == 0
+				&& Framing.GetTileSafely(tileX, tileY).HasTile
+				&& Main.tileSolid[Framing.GetTileSafely(tileX, tileY).TileType]
+				&& !Framing.GetTileSafely(tileX, tileY).IsHalfBlock
 				&& checkTiles(Framing.GetTileSafely(tileX, tileY - 1), Framing.GetTileSafely(tileX, tileY - 2)))
 			{
 				bool leftOK = false;
 				bool rightOK = false;
 
 				// Check left tiles
-				if (Framing.GetTileSafely(tileX - 1, tileY).slope() == 0
-					&& Framing.GetTileSafely(tileX - 1, tileY).active()
-					&& Main.tileSolid[Framing.GetTileSafely(tileX - 1, tileY).type]
-					&& !Framing.GetTileSafely(tileX - 1, tileY).halfBrick()
+				if (Framing.GetTileSafely(tileX - 1, tileY).Slope == 0
+					&& Framing.GetTileSafely(tileX - 1, tileY).HasTile
+					&& Main.tileSolid[Framing.GetTileSafely(tileX - 1, tileY).TileType]
+					&& !Framing.GetTileSafely(tileX - 1, tileY).IsHalfBlock
 					&& checkTiles(Framing.GetTileSafely(tileX - 1, tileY - 1), Framing.GetTileSafely(tileX -1, tileY - 2)))
 				{
 					leftOK = true;
 				}
 
 				// check right tiles
-				if (Framing.GetTileSafely(tileX + 1, tileY).slope() == 0
-					&& Framing.GetTileSafely(tileX + 1, tileY).active()
-					&& Main.tileSolid[Framing.GetTileSafely(tileX + 1, tileY).type]
-					&& !Framing.GetTileSafely(tileX + 1, tileY).halfBrick()
+				if (Framing.GetTileSafely(tileX + 1, tileY).Slope == 0
+					&& Framing.GetTileSafely(tileX + 1, tileY).HasTile
+					&& Main.tileSolid[Framing.GetTileSafely(tileX + 1, tileY).TileType]
+					&& !Framing.GetTileSafely(tileX + 1, tileY).IsHalfBlock
 					&& checkTiles(Framing.GetTileSafely(tileX + 1, tileY - 1), Framing.GetTileSafely(tileX + 1, tileY - 2)))
 				{
 					rightOK = true;
@@ -360,7 +362,7 @@ namespace Kourindou.Projectiles
 				// determine direction
 				if (leftOK && rightOK)
 				{
-					tileX += projectile.Center.X - Math.Floor(projectile.Center.X) > 0.5f ? 0 : -1;
+					tileX += Projectile.Center.X - Math.Floor(Projectile.Center.X) > 0.5f ? 0 : -1;
 				}
 				else if (!leftOK && rightOK)
 				{
@@ -388,9 +390,9 @@ namespace Kourindou.Projectiles
 
 		public bool checkTiles(Tile tile1, Tile tile2)
 		{
-			if (tile1.active() || tile2.active() ||
-				tile1.type > 0 || tile2.type > 0 ||
-				tile1.liquid > 0 || tile2.liquid > 0)
+			if (tile1.HasTile || tile2.HasTile ||
+				tile1.TileType > 0 || tile2.TileType > 0 ||
+				tile1.LiquidType > 0 || tile2.LiquidType > 0)
 			{
 				return false;
 			}

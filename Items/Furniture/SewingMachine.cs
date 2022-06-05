@@ -16,36 +16,35 @@ namespace Kourindou.Items.Furniture
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.White;
+            Item.value = Item.buyPrice(0, 1, 0, 0);
+            Item.rare = ItemRarityID.White;
 
             // Hitbox
-            item.width = 32;
-            item.height = 32;
+            Item.width = 32;
+            Item.height = 32;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
-            // item
-            item.maxStack = 99;
+            // Item
+            Item.maxStack = 99;
 
             // Tile placement fields
-            item.consumable = true;
-            item.createTile = TileType<SewingMachine_Tile>();
+            Item.consumable = true;
+            Item.createTile = TileType<SewingMachine_Tile>();
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddRecipeGroup("IronBar", 8);
-            recipe.AddRecipeGroup("Wood", 12);
-            recipe.AddTile(16); //Anvil
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddRecipeGroup("IronBar", 8)
+                .AddRecipeGroup("Wood", 12)
+                .AddTile(16) //Anvil
+                .Register();
         }
     }
 }

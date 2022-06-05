@@ -12,5 +12,10 @@ namespace Kourindou
         {
             
         }
+
+        public static void SetupHairLoader(Mod HairLoader, Mod Kourindou)
+        {
+
+        }
     }
 }

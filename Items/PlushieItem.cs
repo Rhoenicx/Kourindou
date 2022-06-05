@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -26,15 +27,12 @@ namespace Kourindou.Items
         public float shootSpeed = 8f;
         public int projectileType = 0;
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tag)
         {
-            return new TagCompound
-            {
-                { "plushieDirtWater", plushieDirtWater}
-            };
+            tag.Add("plushieDirtWater", plushieDirtWater);
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             plushieDirtWater = tag.GetShort("plushieDirtWater");
         }
@@ -42,11 +40,11 @@ namespace Kourindou.Items
         // Re-center item texture
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            Texture2D texture = Main.itemTexture[item.type];
+            Texture2D texture = TextureAssets.Item[Item.type].Value;
 
             spriteBatch.Draw(
                 texture,
-                item.Center - Main.screenPosition,
+                Item.Center - Main.screenPosition,
                 texture.Bounds,
                 lightColor,
                 rotation,
@@ -58,40 +56,25 @@ namespace Kourindou.Items
             return false;
         }
 
-        // Make item right clickable in inventory
-        public override bool CanRightClick() 
-        { 
-            return (!Kourindou.OverrideRightClick() && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2);  
-        }
-
-        public override void RightClick(Player player) 
-        {
-            if (!CanRightClick())
-            {
-                return;
-            }
-            
-            player.GetModPlayer<KourindouPlayer>().EquipPlushie(false, item);
-        }
-
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             // Remove "Equipable" line if the power mode is not 2
-            if (Kourindou.KourindouConfigClient.plushiePower != 2)
+            if (!Kourindou.KourindouConfigClient.plushiePower)
             {
-                TooltipLine equipmentLine = tooltips.Find(x => x.text.Contains("Equipable"));
+                TooltipLine equipmentLine = tooltips.Find(x => x.Text.Contains("Equipable"));
                 tooltips.Remove(equipmentLine);
             }
 
             // Add Custom line "Can be Thrown using Right mouse button"
-            tooltips.Add(new TooltipLine(mod, "CanBeThrown", "Right Click: Throw plushie"));
+            tooltips.Add(new TooltipLine(Mod, "CanBeThrown", "Right Click: Throw plushie"));
         }
 
         // Execute custom equip effects
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            if (player.GetModPlayer<KourindouPlayer>().plushiePower == 2)
+            if (player.GetModPlayer<KourindouPlayer>().plushiePower)
             {
+                player.GetModPlayer<KourindouPlayer>().PlushieSlotItemID = Item.type;
                 PlushieEquipEffects(player);
             }
 
@@ -100,19 +83,19 @@ namespace Kourindou.Items
 
         // Determine if this accessory can be equipped in the equipment slots
         // Cannot be placed in normal equipment slots, only the plushie slot
-        public override bool CanEquipAccessory(Player player, int slot)
+        public override bool CanEquipAccessory(Player player, int slot, bool modded)
         {
-            if (slot > 0)
+            if (!modded)
+            {
+                return false;   
+            }
+
+            if (slot != GetInstance<PlushieEquipSlot>().Type)
             {
                 return false;
             }
 
-            if (player.GetModPlayer<KourindouPlayer>().plushiePower != 2)
-            {
-                return false;
-            }
-
-            return true;
+            return player.GetModPlayer<KourindouPlayer>().plushiePower;
         }
 
         // Prevent the player from putting this accessory in the tinkerer slot
@@ -127,21 +110,23 @@ namespace Kourindou.Items
             return true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
+                Item.noUseGraphic = true;
                 Vector2 speed = player.velocity + Vector2.Normalize(Main.MouseWorld - player.Center) * shootSpeed;
 
                 // Singeplayer
                 if (Main.netMode != NetmodeID.MultiplayerClient)
-                {                    
+                {
                     Projectile.NewProjectile(
+                        player.GetSource_ItemUse(Item),
                         new Vector2(player.Center.X, player.Center.Y - 16f),
                         speed,
                         projectileType,
-                        item.damage,
-                        item.knockBack,
+                        Item.damage,
+                        Item.knockBack,
                         player.whoAmI,
                         30f,
                         plushieDirtWater);
@@ -149,19 +134,25 @@ namespace Kourindou.Items
                 // Multiplayer
                 else
                 {
-                    ModPacket packet = mod.GetPacket();
-                    packet.Write((byte) KourindouMessageType.ThrowPlushie);
-                    packet.Write((byte) player.whoAmI);
+                    ModPacket packet = Mod.GetPacket();
+                    packet.Write((byte)KourindouMessageType.ThrowPlushie);
+                    packet.Write((byte)player.whoAmI);
                     packet.WriteVector2(speed);
-                    packet.Write((int) projectileType);
-                    packet.Write((int) item.damage);
-                    packet.Write((float) item.knockBack);
+                    packet.Write((int)projectileType);
+                    packet.Write((int)Item.damage);
+                    packet.Write((float)Item.knockBack);
                     packet.Send();
                 }
-
                 return true;
             }
-            return false;
+            else
+            {
+                Item.noUseGraphic = false;
+            }
+
+            player.lastVisualizedSelectedItem = Item;
+
+            return null;
         }
 
         public override void NetSend(BinaryWriter writer)
@@ -169,7 +160,7 @@ namespace Kourindou.Items
             writer.Write(plushieDirtWater);
         }
 
-        public override void NetRecieve(BinaryReader reader)
+        public override void NetReceive(BinaryReader reader)
         {
             plushieDirtWater = reader.ReadInt16();
         }

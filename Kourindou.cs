@@ -5,10 +5,13 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
@@ -19,13 +22,35 @@ using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Tiles.Plants;
 using Kourindou.Projectiles.Plushies;
+using ReLogic.Content;
 using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou
 {
+    public class PlushieTileTexture
+    {
+        public Asset<Texture2D> TileTexture { get; set; }
+        public Asset<Texture2D> oldTileTexture { get; set; }
+    }
+
+    public class PlushieItemTexture
+    {
+        public Asset<Texture2D> ItemTexture { get; set; }
+        public Asset<Texture2D> oldItemTexture { get; set; }
+    }
+
+    public class PlushieProjectileTexture
+    {
+        public Asset<Texture2D> ProjectileTexture { get; set; }
+        public Asset<Texture2D> oldProjectileTexture { get; set; }
+    }
+
     class Kourindou : Mod
     {
-        public const string PlushieSlotBackTex = "PlushieSlotBackground";
+        public static Dictionary<int, PlushieTileTexture> PlushieTileTextures;
+        public static Dictionary<int, PlushieItemTexture> PlushieItemTextures;
+        public static Dictionary<int, PlushieProjectileTexture> PlushieProjectileTextures;
+        public static Dictionary<string, SoundStyle> SoundDictionary;
 
         internal static Kourindou Instance;
 
@@ -33,7 +58,8 @@ namespace Kourindou
 
         private static List<Func<bool>> RightClickOverrides;
 
-        public static ModHotKey YukariYakumoTPKey;
+        public static ModKeybind SkillKey;
+        public static ModKeybind UltimateKey;
 
         // Kourindou Mod Instance
         public Kourindou()
@@ -42,29 +68,32 @@ namespace Kourindou
         }
 
         // Gensokyo Mod Instance
-        public static readonly Mod Gensokyo = ModLoader.GetMod("Gensokyo");
-        public static readonly bool GensokyoLoaded = Gensokyo != null  && Gensokyo.Version >= new Version(0, 7, 10, 3) ? true : false;
+        public static Mod Gensokyo;
+        public static bool GensokyoLoaded;
+
+        // Hairloader Mod Instance
+        public static Mod HairLoader;
+        public static bool HairLoaderLoaded;
 
         // Load
         public override void Load()
         {
-            Properties = new ModProperties() {
-                Autoload = true,
-                AutoloadBackgrounds = true,
-                AutoloadGores = true,
-                AutoloadSounds = true
-            };
-
             RightClickOverrides = new List<Func<bool>>();
 
-            YukariYakumoTPKey = RegisterHotKey("Yukari Yakumo Teleport Key", "Mouse2");
+            SkillKey = KeybindLoader.RegisterKeybind(this, "Skill", "Mouse2");
+            UltimateKey = KeybindLoader.RegisterKeybind(this, "Ultimate", "Mouse2");
+
+            SoundDictionary = new Dictionary<string, SoundStyle> 
+            {
+                { "Grass", SoundID.Grass },
+                { "DD2_ExplosiveTrapExplode", SoundID.DD2_ExplosiveTrapExplode }
+            };
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
             {
-
+                LoadPlushieTextures();
             }
-
         }
 
         // Unload
@@ -77,45 +106,65 @@ namespace Kourindou
                 RightClickOverrides = null;
             }
 
-            YukariYakumoTPKey = null;
+            SkillKey = null;
+            UltimateKey = null;
 
             Instance = null;
+            Gensokyo = null;
+            HairLoader = null;
+
+            SoundDictionary = null;
+
+            //code that has to be run on clients only!
+            if (!Main.dedServ)
+            {
+                PlushieTileTextures = null;
+                PlushieItemTextures = null;
+                PlushieProjectileTextures = null;
+            }
+
             base.Unload();
         }
 
         // PostSetupContent - Register mods for compatibility
         public override void PostSetupContent()
         {
+            // Check loaded mods
+            GensokyoLoaded = ModLoader.TryGetMod("Gensokyo", out Gensokyo);
+            HairLoaderLoaded = ModLoader.TryGetMod("HairLoader", out HairLoader);
+
             // Support for Gensokyo Mod
-            if (GensokyoLoaded)
+            if (Gensokyo != null)
             {
                 CrossModContent.SetupGensokyo(Gensokyo, this);
             }
 
+            // Support for HairLoader Mod
+            if (HairLoader != null)
+            {
+                CrossModContent.SetupHairLoader(HairLoader, this);
+            }
+
+            // Swap vanilla textures
             if (!Main.dedServ)
             {
-                LoadPlushieTextures();
+                SwitchPlushieTextures();
 
                 // Thread
-                Main.itemTexture[ItemID.BlackThread] = GetTexture("Items/CraftingMaterials/BlackThread");
-                Main.itemTexture[ItemID.GreenThread] = GetTexture("Items/CraftingMaterials/GreenThread");
-                Main.itemTexture[ItemID.PinkThread] = GetTexture("Items/CraftingMaterials/PinkThread");
+                TextureAssets.Item[ItemID.BlackThread]= Assets.Request<Texture2D>("Items/CraftingMaterials/BlackThread");
+                TextureAssets.Item[ItemID.GreenThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/GreenThread");
+                TextureAssets.Item[ItemID.PinkThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/PinkThread");
 
                 // Silk
-                Main.itemTexture[ItemID.Silk] = GetTexture("Items/CraftingMaterials/WhiteFabric");
-                Main.itemTexture[ItemID.SilkRope] = GetTexture("Items/Blocks/WhiteFabric_Item_Rope");
-                Main.itemTexture[ItemID.SilkRopeCoil] = GetTexture("Items/Consumables/WhiteFabric_Item_RopeCoil");
-                Main.tileTexture[TileID.SilkRope] = GetTexture("Tiles/Blocks/WhiteFabric_Tile");
-                Main.projectileTexture[ProjectileID.SilkRopeCoil] = GetTexture("Projectiles/Fabric/WhiteFabric_Projectile");
-                Main.chainsTexture[4] = GetTexture("Projectiles/Fabric/WhiteFabric_Projectile_Chain1");
-                Main.chainsTexture[5] = GetTexture("Projectiles/Fabric/WhiteFabric_Projectile_Chain2");
-                
-            }
-        }
+                TextureAssets.Item[ItemID.Silk] = Assets.Request<Texture2D>("Items/CraftingMaterials/WhiteFabric");
+                TextureAssets.Item[ItemID.SilkRope] = Assets.Request<Texture2D>("Items/Blocks/WhiteFabric_Item_Rope");
+                TextureAssets.Item[ItemID.SilkRopeCoil] = Assets.Request<Texture2D>("Items/Consumables/WhiteFabric_Item_RopeCoil");
 
-        public override void PostDrawInterface(SpriteBatch spriteBatch) {
-            KourindouPlayer player = Main.LocalPlayer.GetModPlayer<KourindouPlayer>();
-            player.Draw(spriteBatch);
+                TextureAssets.Tile[TileID.SilkRope] = Assets.Request<Texture2D>("Tiles/Blocks/WhiteFabric_Tile");
+                TextureAssets.Projectile[ProjectileID.SilkRopeCoil] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile");
+                TextureAssets.Chains[4] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain1");
+                TextureAssets.Chains[5] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain2");                
+            }
         }
 
         // Add Crafting recipe groups
@@ -125,45 +174,45 @@ namespace Kourindou
             RecipeGroup Thread = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Thread", new int[]
             {
                 ItemID.BlackThread,
-                ModContent.ItemType<BlueThread>(),
-                ModContent.ItemType<BrownThread>(),
-                ModContent.ItemType<CyanThread>(),
+                ItemType<BlueThread>(),
+                ItemType<BrownThread>(),
+                ItemType<CyanThread>(),
                 ItemID.GreenThread,
-                ModContent.ItemType<LimeThread>(),
-                ModContent.ItemType<OrangeThread>(),
+                ItemType<LimeThread>(),
+                ItemType<OrangeThread>(),
                 ItemID.PinkThread,
-                ModContent.ItemType<PurpleThread>(),
-                ModContent.ItemType<RedThread>(),
-                ModContent.ItemType<SilverThread>(),
-                ModContent.ItemType<SkyBlueThread>(),
-                ModContent.ItemType<TealThread>(),
-                ModContent.ItemType<VioletThread>(),
-                ModContent.ItemType<WhiteThread>(),
-                ModContent.ItemType<YellowThread>(),
-                ModContent.ItemType<RainbowThread>()
+                ItemType<PurpleThread>(),
+                ItemType<RedThread>(),
+                ItemType<SilverThread>(),
+                ItemType<SkyBlueThread>(),
+                ItemType<TealThread>(),
+                ItemType<VioletThread>(),
+                ItemType<WhiteThread>(),
+                ItemType<YellowThread>(),
+                ItemType<RainbowThread>()
             });
             RecipeGroup.RegisterGroup("Kourindou:Thread", Thread);
 
             // Fabric
             RecipeGroup Fabric = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Fabric", new int[]
             {
-                ModContent.ItemType<BlackFabric>(),
-                ModContent.ItemType<BlueFabric>(),
-                ModContent.ItemType<BrownFabric>(),
-                ModContent.ItemType<CyanFabric>(),
-                ModContent.ItemType<GreenFabric>(),
-                ModContent.ItemType<LimeFabric>(),
-                ModContent.ItemType<OrangeFabric>(),
-                ModContent.ItemType<PinkFabric>(),
-                ModContent.ItemType<PurpleFabric>(),
-                ModContent.ItemType<RedFabric>(),
-                ModContent.ItemType<SilverFabric>(),
-                ModContent.ItemType<SkyBlueFabric>(),
-                ModContent.ItemType<TealFabric>(),
-                ModContent.ItemType<VioletFabric>(),
+                ItemType<BlackFabric>(),
+                ItemType<BlueFabric>(),
+                ItemType<BrownFabric>(),
+                ItemType<CyanFabric>(),
+                ItemType<GreenFabric>(),
+                ItemType<LimeFabric>(),
+                ItemType<OrangeFabric>(),
+                ItemType<PinkFabric>(),
+                ItemType<PurpleFabric>(),
+                ItemType<RedFabric>(),
+                ItemType<SilverFabric>(),
+                ItemType<SkyBlueFabric>(),
+                ItemType<TealFabric>(),
+                ItemType<VioletFabric>(),
                 ItemID.Silk,
-                ModContent.ItemType<YellowFabric>(),
-                ModContent.ItemType<RainbowFabric>()
+                ItemType<YellowFabric>(),
+                ItemType<RainbowFabric>()
             });
             RecipeGroup.RegisterGroup("Kourindou:Fabric", Fabric);
 
@@ -230,7 +279,7 @@ namespace Kourindou
                     if (Main.netMode != NetmodeID.SinglePlayer)
                     {
                         byte playerID = reader.ReadByte();
-                        byte plushiePower = reader.ReadByte();
+                        bool plushiePower = reader.ReadBoolean();
 
                         Player player = Main.player[playerID];
 
@@ -242,46 +291,9 @@ namespace Kourindou
                             ModPacket packet = GetPacket();
                             packet.Write((byte)KourindouMessageType.ClientConfig);
                             packet.Write((byte)playerID);
-                            packet.Write((byte)plushiePower);
+                            packet.Write((bool)plushiePower);
                             packet.Send(-1, whoAmI);
                         }
-                    }
-                    break;
-                }
-
-                case KourindouMessageType.PlushieSlot:
-                {
-                    byte playerID = reader.ReadByte();
-                    KourindouPlayer player = Main.player[playerID].GetModPlayer<KourindouPlayer>();
-                    
-                    player.plushieEquipSlot.Item = ItemIO.Receive(reader);
-
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        ModPacket packet = GetPacket();
-                        packet.Write((byte)KourindouMessageType.PlushieSlot);
-                        packet.Write((byte)playerID);
-                        ItemIO.Send(player.plushieEquipSlot.Item, packet);
-                        packet.Send(-1, whoAmI);
-                    }
-                    break;
-                }
-
-                case KourindouMessageType.ForceUnequipPlushie:
-                {
-                    byte playerID = reader.ReadByte();
-                    Item plushie = ItemIO.Receive(reader);
-
-                    Player player = Main.player[playerID];
-
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        Item.NewItem(
-                            player.Center,
-                            new Vector2(player.width, player.height),
-                            plushie.type, 
-                            1
-                        );
                     }
                     break;
                 }
@@ -302,6 +314,7 @@ namespace Kourindou
                     if (Main.netMode == NetmodeID.Server)
                     {
                         Projectile.NewProjectile(
+                            null,
                             Main.player[playerID].Center + new Vector2(0f, -16f),
                             speed,
                             type,
@@ -358,15 +371,14 @@ namespace Kourindou
 
                     if (Main.netMode == NetmodeID.Server)
                     {
-                        ModContent.GetInstance<Cotton_Tile>().NewRightClick(i, j);
+                        ModContent.GetInstance<Cotton_Tile>().RightClick(i, j);
                     }
                     break;
                 }
 
                 case KourindouMessageType.PlaySound: 
 				{
-					byte soundType = reader.ReadByte();
-					short soundStyle = reader.ReadInt16();
+					string soundName = reader.ReadString();
 					float soundVolume = reader.ReadSingle();
 					float soundVariance = reader.ReadSingle();
 					int soundSourceX = reader.ReadInt32();
@@ -376,8 +388,7 @@ namespace Kourindou
 					{
 						ModPacket packet = GetPacket();
 						packet.Write((byte) KourindouMessageType.PlaySound);
-						packet.Write(soundType);
-						packet.Write(soundStyle);
+						packet.Write(soundName);
 						packet.Write(soundVolume);
 						packet.Write(soundVariance);
 						packet.Write(soundSourceX);
@@ -389,23 +400,15 @@ namespace Kourindou
 					
 					if (soundSourceX == -1 || soundSourceY == -1)
 					{
-						Main.PlaySound(
-							soundType,
-							(int)Main.LocalPlayer.Center.X,
-							(int)Main.LocalPlayer.Center.Y,
-							soundStyle,
-							soundVolume,
-							Main.rand.NextFloat(-soundVariance, soundVariance));
+                        SoundEngine.PlaySound(
+							SoundDictionary[soundName] with { Volume = soundVolume, PitchVariance = soundVariance},
+							Main.LocalPlayer.Center);
 					}
 					else
 					{
-						Main.PlaySound(
-							soundType,
-							soundSourceX,
-							soundSourceY,
-							soundStyle,
-							soundVolume,
-							Main.rand.NextFloat(-soundVariance, soundVariance));
+                        SoundEngine.PlaySound(
+                            SoundDictionary[soundName] with { Volume = soundVolume, PitchVariance = soundVariance },
+                            new Vector2(soundSourceX, soundSourceY));
 					}
 					break;
 				}
@@ -414,7 +417,7 @@ namespace Kourindou
 				{
 					string soundName = reader.ReadString();
 					float soundVolume = reader.ReadSingle();
-					float pitchVariance = reader.ReadSingle();
+					float soundVariance = reader.ReadSingle();
 					int soundPositionX = reader.ReadInt32();
 					int soundPositionY = reader.ReadInt32();
 
@@ -424,7 +427,7 @@ namespace Kourindou
 						packet.Write((byte) KourindouMessageType.PlayCustomSound);
 						packet.Write(soundName);
 						packet.Write(soundVolume);
-						packet.Write(pitchVariance);
+						packet.Write(soundVariance);
 						packet.Write(soundPositionX);
 						packet.Write(soundPositionY);
 
@@ -434,21 +437,15 @@ namespace Kourindou
 
 					if (soundPositionX == -1 || soundPositionY == -1)
 					{
-						Main.PlaySound((int) SoundType.Custom,
-							(int) Main.LocalPlayer.position.X,
-							(int) Main.LocalPlayer.position.Y,
-							GetSoundSlot(SoundType.Custom, "Sounds/Custom/" + soundName),
-							soundVolume,
-							Main.rand.NextFloat(-pitchVariance, pitchVariance));
+                        SoundEngine.PlaySound(
+                            new SoundStyle("Kourindou/Sounds/Custom/" + soundName) with { Volume = soundVolume, PitchVariance = soundVariance},
+                            Main.LocalPlayer.Center);
 					}
 					else
 					{
-						Main.PlaySound((int) SoundType.Custom,
-							soundPositionX,
-							soundPositionY,
-							GetSoundSlot(SoundType.Custom, "Sounds/Custom/" + soundName),
-							soundVolume,
-							Main.rand.NextFloat(-pitchVariance, pitchVariance));
+                        SoundEngine.PlaySound(
+                            new SoundStyle("Kourindou/Sounds/Custom/" + soundName) with { Volume = soundVolume, PitchVariance = soundVariance },
+                            new Vector2(soundPositionX, soundPositionY));
 					}
 					break;
 				}
@@ -462,7 +459,7 @@ namespace Kourindou
 
                     if (Main.netMode != NetmodeID.Server)
                     {   
-                        if (item.modItem is PlushieItem plushie)
+                        if (item.ModItem is PlushieItem plushie)
                         {
                             plushie.plushieDirtWater = plushieDirtWater;
                         }
@@ -533,6 +530,31 @@ namespace Kourindou
                     break;
                 }
 
+                case KourindouMessageType.AlternateFire:
+                {
+                    byte PlayerID = reader.ReadByte();
+                    bool UsedAttack = reader.ReadBoolean();
+                    int AttackID = reader.ReadInt32();
+                    int AttackCounter = reader.ReadInt32();
+
+                    KourindouPlayer player = Main.player[PlayerID].GetModPlayer<KourindouPlayer>();
+                    player.UsedAttack = UsedAttack;
+                    player.AttackID = AttackID;
+                    player.AttackCounter = AttackCounter;
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        ModPacket packet = GetPacket();
+                        packet.Write((byte) KourindouMessageType.AlternateFire);
+                        packet.Write((byte) PlayerID);
+                        packet.Write((bool) UsedAttack);
+                        packet.Write((int) AttackID);
+                        packet.Write((int) AttackCounter);
+                        packet.Send(-1, whoAmI);
+                    }
+                    break;    
+                }
+
 
                 default:
                     Logger.Warn("Kourindou: Unknown NetMessage type: " + msg);
@@ -550,9 +572,24 @@ namespace Kourindou
 
             return false;
         }
-
+ 
         public void LoadPlushieTextures()
         {
+            if (PlushieTileTextures == null)
+            {
+                PlushieTileTextures = new Dictionary<int, PlushieTileTexture>();
+            }
+
+            if (PlushieItemTextures == null)
+            {
+                PlushieItemTextures = new Dictionary<int, PlushieItemTexture>();
+            }
+
+            if (PlushieProjectileTextures == null)
+            {
+                PlushieProjectileTextures = new Dictionary<int, PlushieProjectileTexture>();
+            }
+
             SetPlushieTextures(ModContent.ItemType<ReimuHakurei_Plushie_Item>(), ModContent.TileType<ReimuHakurei_Plushie_Tile>(), ModContent.ProjectileType<ReimuHakurei_Plushie_Projectile>(), "ReimuHakurei");
             SetPlushieTextures(ModContent.ItemType<TenshiHinanawi_Plushie_Item>(), ModContent.TileType<TenshiHinanawi_Plushie_Tile>(), ModContent.ProjectileType<TenshiHinanawi_Plushie_Projectile>(), "TenshiHinanawi");
             SetPlushieTextures(ModContent.ItemType<MarisaKirisame_Plushie_Item>(), ModContent.TileType<MarisaKirisame_Plushie_Tile>(), ModContent.ProjectileType<MarisaKirisame_Plushie_Projectile>(), "MarisaKirisame");
@@ -588,11 +625,47 @@ namespace Kourindou
             SetPlushieTextures(ModContent.ItemType<YukariYakumo_Plushie_Item>(), ModContent.TileType<YukariYakumo_Plushie_Tile>(), ModContent.ProjectileType<YukariYakumo_Plushie_Projectile>(), "YukariYakumo");
         }
 
-        public void SetPlushieTextures(int item, int tile, int projectile, string itemName)
+        public void SetPlushieTextures(int item, int tile ,int projectile, string itemName)
         {
-            Main.itemTexture[item] = GetTexture("Items/Plushies/" + itemName + "_Plushie_Item" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
-            Main.tileTexture[tile] = GetTexture("Tiles/Plushies/" + itemName + "_Plushie_Tile" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
-            Main.projectileTexture[projectile] = GetTexture("Projectiles/Plushies/" + itemName + "_Plushie_Projectile" + (Kourindou.KourindouConfigClient.UseOldTextures ? "_Old" : ""));
+            if (!PlushieTileTextures.ContainsKey(tile))
+            {
+                PlushieTileTextures.Add(tile, new PlushieTileTexture 
+                {
+                    TileTexture = Assets.Request<Texture2D>("Tiles/Plushies/" + itemName + "_Plushie_Tile"),
+                    oldTileTexture = Assets.Request<Texture2D>("Tiles/Plushies/" + itemName + "_Plushie_Tile_Old") 
+                });
+            }
+
+            if (!PlushieItemTextures.ContainsKey(item))
+            {
+                PlushieItemTextures.Add(item, new PlushieItemTexture 
+                { 
+                    ItemTexture = Assets.Request<Texture2D>("Items/Plushies/" + itemName + "_Plushie_Item"), 
+                    oldItemTexture = Assets.Request<Texture2D>("Items/Plushies/" + itemName + "_Plushie_Item_Old") 
+                });
+            }
+
+            if (!PlushieProjectileTextures.ContainsKey(projectile))
+            {
+                PlushieProjectileTextures.Add(projectile, new PlushieProjectileTexture
+                {
+                    ProjectileTexture = Assets.Request<Texture2D>("Projectiles/Plushies/" + itemName + "_Plushie_Projectile"),
+                    oldProjectileTexture = Assets.Request<Texture2D>("Projectiles/Plushies/" + itemName + "_Plushie_Projectile_Old")
+                });
+            }
+        }
+
+        public void SwitchPlushieTextures()
+        {
+            foreach (KeyValuePair<int, PlushieItemTexture> entry in PlushieItemTextures)
+            {
+                TextureAssets.Item[entry.Key] = KourindouConfigClient.UseOldTextures ? entry.Value.oldItemTexture : entry.Value.ItemTexture;
+            }
+
+            foreach (KeyValuePair<int, PlushieProjectileTexture> entry in PlushieProjectileTextures)
+            { 
+                TextureAssets.Projectile[entry.Key] = KourindouConfigClient.UseOldTextures ? entry.Value.oldProjectileTexture : entry.Value.ProjectileTexture;
+            }
         }
     }
 }

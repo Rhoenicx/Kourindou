@@ -1,6 +1,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
@@ -15,35 +16,36 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Aya Shameimaru Plushie");
-            Tooltip.SetDefault("A crow tengu. Runs a newspaper that's mostly sensational gossip.");
+            Tooltip.SetDefault("A crow tengu. Runs a newspaper that's mostly sensational gossip");
+            ArmorIDs.Wing.Sets.Stats[Item.wingSlot] = new WingStats(180, 9f, 2.5f);
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 5, 0, 0);
-            item.rare = ItemRarityID.Red;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.Red;
 
             // Hitbox
-            item.width = 32;
-            item.height = 32;
+            Item.width = 32;
+            Item.height = 32;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
             // Tile placement fields
-            item.consumable = true;
-            item.createTile = TileType<AyaShameimaru_Plushie_Tile>();
+            Item.consumable = true;
+            Item.createTile = TileType<AyaShameimaru_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
-            item.accessory = true;
+            Item.accessory = true;
         }
         
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
@@ -61,32 +63,25 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<BlackFabric>(), 2);
-            recipe.AddIngredient(ItemType<RedFabric>(), 1);
-            recipe.AddIngredient(ItemID.Silk, 2);
-            recipe.AddIngredient(ItemID.BlackThread, 2);
-            recipe.AddIngredient(ItemType<RedThread>(), 1);
-            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
-            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
-            recipe.AddTile(TileType<SewingMachine_Tile>());
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlackFabric>(), 2)
+                .AddIngredient(ItemType<RedFabric>(), 1)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemID.BlackThread, 2)
+                .AddIngredient(ItemType<RedThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
         }
 
         public override void VerticalWingSpeeds(Player player, ref float ascentWhenFalling, ref float ascentWhenRising, ref float maxCanAscendMultiplier, ref float maxAscentMultiplier, ref float constantAscend)
         {
-            constantAscend = 0.9f;
+            constantAscend = 0.15f;
             ascentWhenFalling = 0.9f;
             ascentWhenRising = 0.25f;
             maxCanAscendMultiplier = 1f;
             maxAscentMultiplier = 4f;
-        }
-
-        public override void HorizontalWingSpeeds(Player player, ref float speed, ref float acceleration)
-        {
-            speed = 10f;
-            acceleration *= 3f;
         }
     }
 }

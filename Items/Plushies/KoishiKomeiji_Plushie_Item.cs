@@ -14,37 +14,35 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Koishi Komeiji Plushie");
-            Tooltip.SetDefault("Satori's sister? You can't seem to remember them otherwise..");
+            Tooltip.SetDefault("Satori's sister? You can't seem to remember them otherwise...");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 5, 0, 0);
-            item.rare = ItemRarityID.Green;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.Green;
 
             // Hitbox
-            item.width = 32;
-            item.height = 32;
+            Item.width = 32;
+            Item.height = 32;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
             // Tile placement fields
-            item.consumable = true;
-            item.createTile = TileType<KoishiKomeiji_Plushie_Tile>();
-
-            item.shootSpeed = 8f;
+            Item.consumable = true;
+            Item.createTile = TileType<KoishiKomeiji_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
-            item.accessory = true;
+            Item.accessory = true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
@@ -58,7 +56,7 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increase damage by 25 percent
-            player.allDamage += 0.25f;
+            player.GetDamage(DamageClass.Generic) += 0.25f;
 
             // Increase life regen by 1 point
             player.lifeRegen += 1;
@@ -72,21 +70,20 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddRecipeGroup("Kourindou:Lens", 1);
-            recipe.AddIngredient(ItemType<BlackFabric>(), 2);
-            recipe.AddIngredient(ItemType<GreenFabric>(), 2);
-            recipe.AddIngredient(ItemType<YellowFabric>(), 2);
-            recipe.AddIngredient(ItemID.Silk, 1);
-            recipe.AddIngredient(ItemID.BlackThread, 1);
-            recipe.AddIngredient(ItemType<BlueThread>(), 1);
-            recipe.AddIngredient(ItemID.GreenThread, 2);
-            recipe.AddIngredient(ItemType<YellowThread>(), 2);
-            recipe.AddIngredient(ItemType<WhiteThread>(), 1);
-            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
-            recipe.AddTile(TileType<SewingMachine_Tile>());
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddRecipeGroup("Kourindou:Lens", 1)
+                .AddIngredient(ItemType<BlackFabric>(), 2)
+                .AddIngredient(ItemType<GreenFabric>(), 2)
+                .AddIngredient(ItemType<YellowFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 1)
+                .AddIngredient(ItemID.BlackThread, 1)
+                .AddIngredient(ItemType<BlueThread>(), 1)
+                .AddIngredient(ItemID.GreenThread, 2)
+                .AddIngredient(ItemType<YellowThread>(), 2)
+                .AddIngredient(ItemType<WhiteThread>(), 1)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
         }
     }
 }

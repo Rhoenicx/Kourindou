@@ -1,11 +1,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.Enums;
 using Terraria.ID;
+using Terraria.DataStructures;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Terraria.GameContent;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Buffs;
 using Kourindou.Items;
@@ -19,7 +22,7 @@ namespace Kourindou.Tiles.Plushies
 
         public override void PlaceInWorld(int i, int j, Item item) //Runs only on SinglePlayer and MultiplayerClient!
         {
-            if (item.modItem is PlushieItem plushieItem)
+            if (item.ModItem is PlushieItem plushieItem)
             {
                 // Add entry to PlushieTiles locally
                 KourindouWorld.SetPlushieDirtWater(i, j - 1, plushieItem.plushieDirtWater);
@@ -27,7 +30,7 @@ namespace Kourindou.Tiles.Plushies
                 // If playing in multiplayer, also inform other parties of the placement
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte) KourindouMessageType.SetPlushieDirtWater);
                     packet.Write((int) i);
                     packet.Write((int) j - 1);
@@ -42,7 +45,7 @@ namespace Kourindou.Tiles.Plushies
             if (closer)
             {
                 Player player = Main.LocalPlayer;
-                if (player.GetModPlayer<KourindouPlayer>().plushiePower == 1)
+                if (player.GetModPlayer<KourindouPlayer>().plushiePower)
                 {
                     player.AddBuff(BuffType<Buff_PlushieInRange>(), 20);
                 }
@@ -58,7 +61,7 @@ namespace Kourindou.Tiles.Plushies
             num = 0;
 		}
 
-        public override void RightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             if (soundName != "")
             {
@@ -66,17 +69,13 @@ namespace Kourindou.Tiles.Plushies
                 float soundVolume = 0.3f;
                 float pitchVariance = 0f;
 
-                Main.PlaySound(
-                    (int)SoundType.Custom,
-                    (int) soundPosition.X,
-                    (int) soundPosition.Y,
-                    mod.GetSoundSlot(SoundType.Custom, "Sounds/Custom/" + soundName),
-                    soundVolume,
-                    pitchVariance);
+                SoundEngine.PlaySound(
+                    new SoundStyle("Kourindou/Sounds/Custom/" + soundName) with { Volume = soundVolume, PitchVariance = pitchVariance },
+                    soundPosition);
 
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                         packet.Write((byte) KourindouMessageType.PlayCustomSound);
                         packet.Write(soundName);
                         packet.Write(soundVolume);
@@ -86,6 +85,7 @@ namespace Kourindou.Tiles.Plushies
                         packet.Send();
                 }
             }
+            return true;
         }
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
@@ -96,12 +96,12 @@ namespace Kourindou.Tiles.Plushies
             }
             else
             {
-                int itemSlot = Item.NewItem(i * 16, j * 16, 16, 48, plushieItem);
+                int itemSlot = Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 48, plushieItem);
 
                 short plushieDirtWater = 0;
 
                 // Update the variable in the newly created item
-                if (Main.item[itemSlot].modItem is PlushieItem plushie)
+                if (Main.item[itemSlot].ModItem is PlushieItem plushie)
                 {
                     plushieDirtWater = KourindouWorld.GetPlushieDirtWater(i, j, true);
                     plushie.plushieDirtWater = plushieDirtWater;
@@ -110,12 +110,21 @@ namespace Kourindou.Tiles.Plushies
                 // If the tile is broken on the server also send a message to other parties
                 if (Main.netMode == NetmodeID.Server)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte)KourindouMessageType.PlushieItemNetUpdate);
                     packet.Write((int)itemSlot);
                     packet.Write((short)plushieDirtWater);
                     packet.Send(-1, Main.myPlayer);
                 }
+            }
+        }
+
+        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
+        {
+            if (Kourindou.PlushieTileTextures.ContainsKey(Type))
+            {
+                drawData.drawTexture = Kourindou.KourindouConfigClient.UseOldTextures ?
+                    Kourindou.PlushieTileTextures[Type].oldTileTexture.Value : Kourindou.PlushieTileTextures[Type].TileTexture.Value;
             }
         }
     }

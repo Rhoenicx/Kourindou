@@ -14,31 +14,30 @@ namespace Kourindou.Items.CraftingMaterials
 
         public override void SetDefaults()
         {
-            item.CloneDefaults(ItemID.BlackThread);
+            Item.CloneDefaults(ItemID.BlackThread);
 
             // Consumable
-            item.consumable = true;
+            Item.consumable = true;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
             // Tile placement fields
-            item.createTile = TileType<Thread_Tile>();
-            item.placeStyle = 16;
+            Item.createTile = TileType<Thread_Tile>();
+            Item.placeStyle = 16;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddRecipeGroup("Kourindou:Thread", 8);
-            recipe.AddIngredient(ItemID.RainbowDye);
-            recipe.AddTile(TileID.DyeVat);
-            recipe.SetResult(this, 8);
-            recipe.AddRecipe();
+            CreateRecipe(8)
+                .AddRecipeGroup("Kourindou:Thread", 8)
+                .AddIngredient(ItemID.RainbowDye)
+                .AddTile(TileID.DyeVat)
+                .Register();
         }
     }
 }

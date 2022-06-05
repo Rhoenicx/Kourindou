@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -16,30 +17,29 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 		// Network variables
 		private float IdleDistance
         {
-	        get => (int)projectile.ai[0];
-	        set => projectile.ai[0] = value;
+	        get => (int)Projectile.ai[0];
+	        set => Projectile.ai[0] = value;
         }
 
 		private float IdleRotation
 		{
-			get => (int)projectile.ai[1];
-	        set => projectile.ai[1] = value;
+			get => (int)Projectile.ai[1];
+	        set => Projectile.ai[1] = value;
 		}
 
 		private int Target
 		{
-			get => (int)projectile.localAI[0];
-			set => projectile.localAI[0] = value;
+			get => (int)Projectile.localAI[0];
+			set => Projectile.localAI[0] = value;
 		}
 
 		private int IdleMoveCooldown
 		{
-			get => (int)projectile.localAI[1];
-			set => projectile.localAI[1] = value;
+			get => (int)Projectile.localAI[1];
+			set => Projectile.localAI[1] = value;
 		}
 
 		// Attack
-		private bool Attacking;
 		private float ViewDist = 800f;
 		private bool HasTarget => Target >= 0;
 
@@ -55,7 +55,6 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 		private int frame = 0;
 		private int timer = 0;
 		private bool animDirection = true;
-		private int Rotation;
 
 		// Initialization
 		private bool _justSpawned = true;
@@ -64,46 +63,46 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Half Phantom");
-			ProjectileID.Sets.TrailCacheLength[projectile.type] = 15;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 2;
-			ProjectileID.Sets.MinionTargettingFeature[projectile.type] = true;
-			Lighting.AddLight(projectile.Center, 1f, 1f, 1f);
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
+			Lighting.AddLight(Projectile.Center, 1f, 1f, 1f);
 		}
 
         public override void SetDefaults()
         {
             // AI
-            projectile.aiStyle = -1;
-			projectile.timeLeft = 5;
-			projectile.netImportant = true;
+            Projectile.aiStyle = -1;
+			Projectile.timeLeft = 5;
+			Projectile.netImportant = true;
             
             // Entity Interaction
-            projectile.friendly = true; 
-            projectile.penetrate = -1;
+            Projectile.friendly = true; 
+            Projectile.penetrate = -1;
             
             // Hitbox
-            projectile.width = 24;
-            projectile.height = 24;
+            Projectile.width = 24;
+            Projectile.height = 24;
 			
 			// Damage
-			projectile.magic = true;
-			projectile.damage = 20;
+			Projectile.DamageType = DamageClass.Magic;
+			Projectile.damage = 20;
 
             // Movement
-            projectile.tileCollide = false;
-            projectile.ignoreWater = true;
-			projectile.manualDirectionChange = true;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+			Projectile.manualDirectionChange = true;
 
 			// Minion
-			projectile.netImportant = true;
+			Projectile.netImportant = true;
 			 
 			// visual
-			projectile.Opacity = 0.5f;
+			Projectile.Opacity = 0.5f;
 	    }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D texture = Main.projectileTexture[projectile.type];
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 			int frameWidth = texture.Width / 5;
 			int frameHeight = texture.Height / 3;
 			
@@ -112,36 +111,36 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			
 			
 			//Draw each part manually to stack opacity
-            spriteBatch.Draw(
+            Main.EntitySpriteDraw(
                 texture, 
-                projectile.Center - Main.screenPosition, 
+                Projectile.Center - Main.screenPosition, 
                 new Rectangle(frameWidth * frame, 0, frameWidth, frameHeight), 
-                Color.White * projectile.Opacity, 
-                projectile.rotation, 
+                Color.White * Projectile.Opacity, 
+                Projectile.rotation, 
                 new Vector2(offsetX, offsetY), 
-                projectile.scale, 
+                Projectile.scale, 
                 SpriteEffects.None, 
                 0);
 			
-			spriteBatch.Draw(
+			Main.EntitySpriteDraw(
                 texture, 
-                projectile.Center - Main.screenPosition, 
+                Projectile.Center - Main.screenPosition, 
                 new Rectangle(frameWidth * frame, frameHeight * 1, frameWidth, frameHeight), 
-                Color.White * projectile.Opacity, 
-                projectile.rotation, 
+                Color.White * Projectile.Opacity, 
+                Projectile.rotation, 
                 new Vector2(offsetX, offsetY), 
-                projectile.scale, 
+                Projectile.scale, 
                 SpriteEffects.None, 
                 0);
 				
-			spriteBatch.Draw(
+			Main.EntitySpriteDraw(
                 texture, 
-                projectile.Center - Main.screenPosition, 
+                Projectile.Center - Main.screenPosition, 
                 new Rectangle(frameWidth * frame, frameHeight * 2, frameWidth, frameHeight), 
-                Color.White * projectile.Opacity, 
-                projectile.rotation, 
+                Color.White * Projectile.Opacity, 
+                Projectile.rotation, 
                 new Vector2(offsetX, offsetY), 
-                projectile.scale, 
+                Projectile.scale, 
                 SpriteEffects.None, 
                 0);
             return false;
@@ -161,8 +160,8 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
         {
 			if (_justSpawned)
 			{
-				// Get the owner of this projectile
-				_owner = Main.player[projectile.owner];
+				// Get the owner of this Projectile
+				_owner = Main.player[Projectile.owner];
 
 				Target = -1;
 
@@ -195,26 +194,31 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 		private void CheckIfOwnerActive()
 		{
-			if (_owner.GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<YoumuKonpaku_Plushie_Item>())
-			{
-				projectile.timeLeft = 2;
-			}
+			Projectile.timeLeft = 2;
 
 			if (!_owner.active || _owner.dead) 
 			{
-				projectile.Kill();
+				Projectile.Kill();
+			}
+
+			if (_owner.whoAmI == Main.myPlayer)
+			{
+				if (Main.player[_owner.whoAmI].GetModPlayer<KourindouPlayer>().PlushieSlotItemID != ItemType<YoumuKonpaku_Plushie_Item>() || !_owner.GetModPlayer<KourindouPlayer>().plushiePower)
+				{
+					Projectile.Kill();
+				}
 			}
 		}
 
 		private void AcquireTarget()
 		{
 			float targetDist = ViewDist;
-			projectile.tileCollide = true;
+			Projectile.tileCollide = true;
 
 			if (_owner.HasMinionAttackTargetNPC)
 			{
 				NPC npc = Main.npc[_owner.MinionAttackTargetNPC];
-				//if (Collision.CanHitLine(projectile.position, projectile.width, projectile.height, npc.position, npc.width, npc.height))
+				//if (Collision.CanHitLine(Projectile.position, Projectile.width, Projectile.height, npc.position, npc.width, npc.height))
 		        //{
 					if (npc.active)
 					{
@@ -229,12 +233,12 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 		        {
 			        if (potentialTarget.CanBeChasedBy(this)) 
 			        {
-				        float distance = Vector2.Distance(potentialTarget.Center, projectile.Center);
+				        float distance = Vector2.Distance(potentialTarget.Center, Projectile.Center);
 				        if ((distance < targetDist || !HasTarget) 
 				            && (Collision.CanHitLine(
-					            projectile.position, 
-					            projectile.width, 
-					            projectile.height, 
+					            Projectile.position, 
+					            Projectile.width, 
+					            Projectile.height, 
 					            potentialTarget.position, 
 					            potentialTarget.width, 
 					            potentialTarget.height)
@@ -255,8 +259,8 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 		        }
 			}
 
-			projectile.tileCollide = false;
-			projectile.netUpdate = true;
+			Projectile.tileCollide = false;
+			Projectile.netUpdate = true;
 		}
 
 		private void ChaseTarget()
@@ -264,7 +268,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			float chaseDistance = 1000f;
 			NPC target = Main.npc[Target];
 
-			float distToTarget = projectile.Distance(target.Center);
+			float distToTarget = Projectile.Distance(target.Center);
 
 			if (distToTarget < chaseDistance)
 			{
@@ -273,7 +277,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			else
 			{
 				Target = -1;
-				projectile.netUpdate = true;
+				Projectile.netUpdate = true;
 			}
 
 			MoveUpdate = true;
@@ -281,7 +285,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 		private void FollowOwner()
 		{
-			Vector2 toOwner = _owner.Center - projectile.Center;
+			Vector2 toOwner = _owner.Center - Projectile.Center;
 
 			if (Main.myPlayer == _owner.whoAmI)
 			{
@@ -293,7 +297,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 					IdleRotation = MathHelper.ToRadians(Main.rand.NextFloat(-180f,0f));
 
-					projectile.netUpdate = true;
+					Projectile.netUpdate = true;
 				}	
 
 				if (IdleMoveCooldown > 0)
@@ -306,8 +310,8 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 			if (toOwner.Length() > 2000f)
 			{
-				projectile.position = position;
-				projectile.netUpdate = true;
+				Projectile.position = position;
+				Projectile.netUpdate = true;
 			}
 			else
 			{
@@ -317,10 +321,10 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 		private void Movement(Vector2 position)
 		{
-			float bonusMagnitude = projectile.Distance(position) > 1f ? (.1f - Magnitude) / projectile.Distance(position) : .1f - Magnitude;
+			float bonusMagnitude = Projectile.Distance(position) > 1f ? (.1f - Magnitude) / Projectile.Distance(position) : .1f - Magnitude;
 
-			//Get the vector2 between projectile and target position
-            Vector2 difference = position - projectile.Center;
+			//Get the vector2 between Projectile and target position
+            Vector2 difference = position - Projectile.Center;
 			
             //create a new Vector2 which is slightly less than the difference
             Vector2 offset = difference * 0.95f;
@@ -330,7 +334,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 			if (!HasTarget)
 			{
-				Vector2 Distance = position - projectile.Center;
+				Vector2 Distance = position - Projectile.Center;
 				if (Distance.Length() < MaxSpeed + 1f)
 				{
 					MoveUpdate = false;
@@ -338,33 +342,33 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 				if (MoveUpdate)
 				{
-					projectile.velocity = Vector2.Lerp(projectile.velocity, change, Magnitude + bonusMagnitude);
+					Projectile.velocity = Vector2.Lerp(Projectile.velocity, change, Magnitude + bonusMagnitude);
 				}
 				else
 				{
-					if (projectile.velocity.Length() > 0.5f)
+					if (Projectile.velocity.Length() > 0.5f)
 					{
-						projectile.velocity /= 1.1f;
-						IdlePostion = projectile.Center;
+						Projectile.velocity /= 1.1f;
+						IdlePostion = Projectile.Center;
 					}
 					else
 					{
-						projectile.velocity = Vector2.Zero;
-						IdlePostion = projectile.Center;
+						Projectile.velocity = Vector2.Zero;
+						IdlePostion = Projectile.Center;
 					}
 				}
 			}
 			else
 			{
 				MoveUpdate = true;
-				if (projectile.Distance(Main.npc[Target].Center) > MaxSpeed + 1f)
+				if (Projectile.Distance(Main.npc[Target].Center) > MaxSpeed + 1f)
 				{
-					Vector2 AttackSpeed = CapVector(Main.npc[Target].Center - projectile.Center, MaxSpeed);
-            		projectile.velocity = Vector2.Lerp(projectile.velocity, AttackSpeed, Magnitude + bonusMagnitude);
+					Vector2 AttackSpeed = CapVector(Main.npc[Target].Center - Projectile.Center, MaxSpeed);
+            		Projectile.velocity = Vector2.Lerp(Projectile.velocity, AttackSpeed, Magnitude + bonusMagnitude);
 				}
 				else
 				{
-					projectile.velocity /= 1.25f;
+					Projectile.velocity /= 1.25f;
 				}
 			}
 		}
@@ -389,7 +393,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 		private bool OwnerTooFar()
 		{
 			Vector2 Distance = _owner.Center + new Vector2(IdleDistance, 0f).RotatedBy(IdleRotation) - IdlePostion;
-			if (Distance.Length() > MaxSpeed + 1f && projectile.velocity == Vector2.Zero)
+			if (Distance.Length() > MaxSpeed + 1f && Projectile.velocity == Vector2.Zero)
 			{
 				return true;
 			}
@@ -398,13 +402,13 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 		private void Animations()
 		{	
-			if (projectile.velocity.Length() > 0.5f)
+			if (Projectile.velocity.Length() > 0.5f)
 			{
-				projectile.rotation = projectile.velocity.ToRotation() + MathHelper.PiOver4;
+				Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 			}
 
 			//tail animations
-			if (projectile.velocity.Length() < 0.5f)
+			if (Projectile.velocity.Length() < 0.5f)
 			{
 				if (animDirection)
 				{
@@ -436,11 +440,11 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 				int changeTail = 0;
 				float checkDistance = 0;
 				
-				checkDistance = Vector2.Distance(projectile.position, projectile.oldPos[0]);
+				checkDistance = Vector2.Distance(Projectile.position, Projectile.oldPos[0]);
 				
-				for (int i = 0; i < projectile.oldPos.Length - 1; i++)
+				for (int i = 0; i < Projectile.oldPos.Length - 1; i++)
 				{
-					checkDistance += Vector2.Distance(projectile.oldPos[i], projectile.oldPos[i + 1]);
+					checkDistance += Vector2.Distance(Projectile.oldPos[i], Projectile.oldPos[i + 1]);
 					
 					if (checkDistance > 25f)
 					{
@@ -451,7 +455,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 				
 				if (changeTail > 0)
 				{
-					Vector2 calcAngle = Vector2.Normalize(projectile.oldPos[changeTail] - projectile.oldPos[changeTail + 1]).RotatedBy(-(float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X));
+					Vector2 calcAngle = Vector2.Normalize(Projectile.oldPos[changeTail] - Projectile.oldPos[changeTail + 1]).RotatedBy(-(float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X));
 					float angle = MathHelper.ToDegrees((float)Math.Atan2(calcAngle.Y, calcAngle.X));
 
 					if (angle > 12f)

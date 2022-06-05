@@ -14,35 +14,35 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Patchouli Knowledge Plushie");
-            Tooltip.SetDefault("The magician of the scarlet mansion.");
+            Tooltip.SetDefault("The magician of the scarlet mansion");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 5, 0, 0);
-            item.rare = ItemRarityID.LightPurple;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.LightPurple;
 
             // Hitbox
-            item.width = 32;
-            item.height = 32;
+            Item.width = 32;
+            Item.height = 32;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
             // Tile placement fields
-            item.consumable = true;
-            item.createTile = TileType<PatchouliKnowledge_Plushie_Tile>();
+            Item.consumable = true;
+            Item.createTile = TileType<PatchouliKnowledge_Plushie_Tile>();
             
             // Register as accessory, can only be equipped when plushie power mode setting is 2
-            item.accessory = true;
+            Item.accessory = true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
@@ -56,16 +56,16 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increase Magic damage by 40 percent
-            player.magicDamage += 0.40f;
+            player.GetDamage(DamageClass.Magic) += 0.40f;
 
             // All other damage types deal zero, really into negatives because other mods might increase this
-            player.rangedDamage = -1000f;
-            player.minionDamage = -1000f;
-            player.meleeDamage = -1000f;
-            player.thrownDamage = -1000f;
+            player.GetDamage(DamageClass.Ranged) -= -1000f;
+            player.GetDamage(DamageClass.Summon) -= -1000f;
+            player.GetDamage(DamageClass.Melee) -= -1000f;
+            player.GetDamage(DamageClass.Throwing) -= 1000f;
 
             // Increase magic crit rate by 30 percent
-            player.magicCrit += 30;
+            player.GetCritChance(DamageClass.Magic) += 30;
 
             // Reduce mana consumption by 50 percent
             player.manaCost -= 0.50f;
@@ -85,20 +85,19 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.Book, 1);
-            recipe.AddIngredient(ItemType<PinkFabric>(), 2);
-            recipe.AddIngredient(ItemType<PurpleFabric>(), 1);
-            recipe.AddIngredient(ItemType<VioletFabric>(), 2);
-            recipe.AddIngredient(ItemID.Silk, 1);
-            recipe.AddIngredient(ItemID.PinkThread, 1);
-            recipe.AddIngredient(ItemType<PurpleThread>(), 1);
-            recipe.AddIngredient(ItemType<VioletThread>(), 1);
-            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
-            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
-            recipe.AddTile(TileType<SewingMachine_Tile>());
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddIngredient(ItemID.Book, 1)
+                .AddIngredient(ItemType<PinkFabric>(), 2)
+                .AddIngredient(ItemType<PurpleFabric>(), 1)
+                .AddIngredient(ItemType<VioletFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 1)
+                .AddIngredient(ItemID.PinkThread, 1)
+                .AddIngredient(ItemType<PurpleThread>(), 1)
+                .AddIngredient(ItemType<VioletThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
         }
     }
 }

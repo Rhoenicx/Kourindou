@@ -1,121 +1,94 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
+using ReLogic.Content;
+using ReLogic;
 using Terraria;
-using Terraria.GameContent.UI;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.Graphics.Effects;
-using Terraria.UI;
-using Terraria.ObjectData;
-using TerraUI.Objects;
+using Terraria.GameContent;
+using static Terraria.ModLoader.ModContent;
 using Kourindou.Buffs;
 using Kourindou.Items;
+using Kourindou.Items.Weapons;
 using Kourindou.Items.Plushies;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
-using static Terraria.ModLoader.ModContent;
+using Kourindou.Projectiles.Weapons;
+
 
 namespace Kourindou
 {
+    public class CooldownTimes
+    {
+        public int CurrentTime { get; set; }
+        public int MaximumTime { get; set; }
+    }
+
     public class KourindouPlayer : ModPlayer
     {
-//--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
         // Determines the power mode of all the plushies
-        public byte plushiePower;
+        public bool plushiePower;
 
-        // Dedicated Plushie slot
-        public UIItemSlot plushieEquipSlot;
-        
+        // Item ID of the plushie slot item
+        public int PlushieSlotItemID;
+
         // Cirno Plushie Effect Attack Counter
         public byte CirnoPlushie_Attack_Counter;
         public bool CirnoPlushie_TimesNine;
 
-        // Yukari Yakumo teleport hotkey
-        public bool YukariYakumoTPKeyPressed;
+        // Hotkeys
+        public int keyTimer;
+        public bool SkillKeyPressed;
+        public bool SkillKeyHeld;
+        public bool SkillKeyReleased;
+        public bool UltimateKeyPressed;
+        public bool UltimateKeyHeld;
+        public bool UltimateKeyReleased;
+
+        public bool UsedAttack;
+        public int AttackID;
+        public int AttackCounter;
+
+        public int OldAttackID;
+        public int OldAttackCounter;
 
         // Half Phantom pet active
         public bool HalfPhantomPet;
 
-//--------------------------------------------------------------------------------
-        public override void clientClone(ModPlayer clientClone)
+        // Cooldown
+        public Dictionary<int, Dictionary<int, CooldownTimes>> Cooldowns = new Dictionary<int, Dictionary<int, CooldownTimes>>();
+        public float CooldownTimeMultiplier;
+        public int CooldownTimeAdditive;
+
+        // Weapons
+        public Dictionary<int, int> CrescentMoonStaffFlames = new Dictionary<int, int>();
+
+        //--------------------------------------------------------------------------------
+        public override void SaveData(TagCompound tag)
         {
-            KourindouPlayer clone = clientClone as KourindouPlayer;
-
-            if (clone == null)
-            {
-                return;
-            }
-
-            clone.plushieEquipSlot.Item = plushieEquipSlot.Item.Clone();
+            tag.Add("plushiePowerMode", plushiePower);
+            tag.Add("cirnoPlushieAttackCounter", CirnoPlushie_Attack_Counter);
+            tag.Add("cirnoPlushieTimesNine", CirnoPlushie_TimesNine);
         }
 
-        public override void SendClientChanges(ModPlayer clientPlayer)
+        public override void LoadData(TagCompound tag)
         {
-            KourindouPlayer oldClone = clientPlayer as KourindouPlayer;
-
-            if (oldClone == null)
-            {
-                return;
-            }
-
-            //Detect changes in plushie equip slot
-            if (oldClone.plushieEquipSlot.Item.IsNotTheSameAs(plushieEquipSlot.Item))
-            {
-                ModPacket packet = mod.GetPacket();
-                packet.Write((byte)KourindouMessageType.PlushieSlot);
-                packet.Write((byte)player.whoAmI);
-                ItemIO.Send(plushieEquipSlot.Item, packet);
-                packet.Send(-1, player.whoAmI);
-            }
-        }
-
-        // Init
-        public override void Initialize() 
-        {
-            plushieEquipSlot = new UIItemSlot(
-                Vector2.Zero,
-                context: ItemSlot.Context.EquipAccessory,
-                hoverText: "Plushie",
-                conditions: Slot_Conditions,
-                drawBackground: Slot_DrawBackground,
-                scaleToInventory: true
-                );
-
-            plushieEquipSlot.BackOpacity = .8f;
-
-            plushieEquipSlot.Item = new Item();
-            plushieEquipSlot.Item.SetDefaults(0, true);
-        }
-
-        public override TagCompound Save() 
-        {
-            return new TagCompound 
-            {
-                { "plushieEquipSlot", ItemIO.Save(plushieEquipSlot.Item) },
-                { "plushiePowerMode", plushiePower},
-                { "cirnoPlushieAttackCounter", CirnoPlushie_Attack_Counter},
-                { "cirnoPlushieTimesNine", CirnoPlushie_TimesNine}
-            };
-        }
-
-        public override void Load(TagCompound tag) 
-        {
-            SetPlushie(ItemIO.Load(tag.GetCompound("plushieEquipSlot")));
-            plushiePower = tag.GetByte("plushiePowerMode");
+            plushiePower = tag.GetBool("plushiePowerMode");
             CirnoPlushie_Attack_Counter = tag.GetByte("cirnoPlushieAttackCounter");
             CirnoPlushie_TimesNine = tag.GetBool("cirnoPlushieTimesNine");
-            base.Load(tag);
         }
 
         public override void OnEnterWorld(Player player)
         {
             // When player joins a singleplayer world get the PlushiePower Client Config
-            plushiePower = (byte)Kourindou.KourindouConfigClient.plushiePower;
+            plushiePower = Kourindou.KourindouConfigClient.plushiePower;
 
             base.OnEnterWorld(player);
         }
@@ -123,99 +96,137 @@ namespace Kourindou
         public override void PlayerConnect(Player player)
         {
             // PlushiePower Client Config
-            plushiePower = (byte)Kourindou.KourindouConfigClient.plushiePower;
-            
+            plushiePower = Kourindou.KourindouConfigClient.plushiePower;
+
             // Update other clients when joining multiplayer or when another player joins multiplayer
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
-                ModPacket packet = mod.GetPacket();
+                ModPacket packet = Mod.GetPacket();
                 packet.Write((byte)KourindouMessageType.ClientConfig);
                 packet.Write((byte)Main.myPlayer);
-                packet.Write((byte)plushiePower);
-                packet.Send();
-
-                packet = mod.GetPacket();
-                packet.Write((byte)KourindouMessageType.PlushieSlot);
-                packet.Write((byte)Main.myPlayer);
-                ItemIO.Send(Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item, packet);
+                packet.Write((bool)plushiePower);
                 packet.Send();
             }
         }
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            if (Kourindou.YukariYakumoTPKey.JustPressed)
+            if (Player.HeldItem.ModItem is MultiUseItem item)
             {
-                YukariYakumoTPKeyPressed = true;
+                List<string> SkillKeys = Kourindou.SkillKey.GetAssignedKeys();
+                List<string> UltimateKeys = Kourindou.UltimateKey.GetAssignedKeys();
+
+                if (SkillKeys.Count == 0 && UltimateKeys.Count == 0)
+                {
+                    return;
+                }
+
+                if (item.HasSkill(Player)
+                    && item.HasUltimate(Player)
+                    && SkillKeys.Count > 0
+                    && UltimateKeys.Count > 0
+                    && SkillKeys[0] == UltimateKeys[0])
+                {
+                    // Skill is activated by clicking the assigned button
+                    // Ultimate is activated by holding the button for 1.5 seconds (90 ticks)
+                    if (Kourindou.SkillKey.JustReleased && keyTimer < 60)
+                    {
+                        SkillKeyPressed = true;
+                    }
+                    else if (Kourindou.SkillKey.JustReleased && keyTimer >= 60)
+                    {
+                        UltimateKeyPressed = true;
+                    }
+
+                    // When held down increase the timer
+                    if (Kourindou.SkillKey.Current)
+                    {
+                        keyTimer++;
+                    }
+
+                    // When the button is released or no longer pressed, reset the timer
+                    if (Kourindou.SkillKey.JustReleased || !Kourindou.UltimateKey.Current)
+                    {
+                        keyTimer = 0;
+                    }
+                }
+                else
+                {
+                    if (item.HasSkill(Player))
+                    {
+                        if (Kourindou.SkillKey.JustPressed) SkillKeyPressed = true;
+                        SkillKeyHeld = Kourindou.SkillKey.Current;
+                        if (Kourindou.SkillKey.JustReleased) SkillKeyReleased = true;
+                    }
+
+                    if (item.HasUltimate(Player))
+                    {
+                        if (Kourindou.UltimateKey.JustPressed) UltimateKeyPressed = true;
+                        UltimateKeyHeld = Kourindou.UltimateKey.Current;
+                        if (Kourindou.UltimateKey.JustReleased) UltimateKeyReleased = true;
+                    }
+                }
+
+                if (Player.HeldItem.ModItem.AltFunctionUse(Player))
+                {
+                    Player.controlUseItem = true;
+                    Player.altFunctionUse = 1;
+                }
             }
-            
+
             base.ProcessTriggers(triggersSet);
         }
 
         public override void ResetEffects()
         {
+            // Reset the plushie item slot ID
+            PlushieSlotItemID = 0;
+
             // Suika Ibuki Effect reset scale
-            if (player.HeldItem.stack > 0 && player.HeldItem.melee && (player.HeldItem.useStyle == ItemUseStyleID.SwingThrow || player.HeldItem.useStyle == ItemUseStyleID.Stabbing))
-            {   
-                player.HeldItem.scale = player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale;
+            if (Player.HeldItem.stack > 0 && Player.HeldItem.CountsAsClass(DamageClass.Melee) && (Player.HeldItem.useStyle == ItemUseStyleID.Swing || Player.HeldItem.useStyle == ItemUseStyleID.Thrust))
+            {
+                Player.HeldItem.scale = Player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale;
             }
 
             // Murasa Effect reset breathMax
-            player.breathMax = 200;
+            Player.breathMax = 200;
 
             // Reset buff timer visibility
             Main.buffNoTimeDisplay[146] = false;
-        }   
 
-        // Update player with the equipped plushie
-        public override void UpdateEquips(ref bool wallSpeedBuff, ref bool tileSpeedBuff, ref bool tileRangeBuff)
-        {
-            // When the plushie power setting is changed to 0 or 1 clear the slot 
-            // and place the item on top of the player
-            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower != 2 && player.whoAmI == Main.myPlayer)
+            CooldownTimeMultiplier = 1f;
+            CooldownTimeAdditive = 0;
+
+            // Crescent Moon Staff - Check the projectiles in the dictionary, if they are wrong remove them
+            if (Player.whoAmI == Main.myPlayer)
             {
-                if (plushieEquipSlot.Item.stack > 0)
+                List<int> removeKey = new List<int>();
+                foreach (KeyValuePair<int, int> pair in CrescentMoonStaffFlames)
                 {
-                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                    Projectile proj = Main.projectile[pair.Value];
+                    if (!proj.active
+                    || proj.owner != Player.whoAmI
+                    || proj.type != ProjectileType<CrescentMoonStaffFlame>()
+                    || pair.Key != (int)proj.ai[1])
                     {
-                        Item.NewItem(
-                            Main.player[Main.myPlayer].Center,
-                            new Vector2(Main.player[Main.myPlayer].width, Main.player[Main.myPlayer].height),
-                            plushieEquipSlot.Item.type, 
-                            1
-                        );
+                        removeKey.Add(pair.Key);
                     }
-                    else
-                    {
-                        ModPacket packet = mod.GetPacket();
-                        packet.Write((byte)KourindouMessageType.ForceUnequipPlushie);
-                        packet.Write((byte)Main.myPlayer);
-                        ItemIO.Send(Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item, packet);
-                        packet.Send();
-                    }
-
-                    plushieEquipSlot.Item = new Item();
-                    plushieEquipSlot.Item.SetDefaults(0, true);
                 }
-            }
-
-            if (plushieEquipSlot.Item.stack > 0)
-            {
-                player.VanillaUpdateAccessory(player.whoAmI, plushieEquipSlot.Item, !plushieEquipSlot.ItemVisible, ref wallSpeedBuff,
-                    ref tileSpeedBuff, ref tileRangeBuff);
-
-                player.VanillaUpdateEquip(plushieEquipSlot.Item);
+                foreach (int i in removeKey)
+                {
+                    CrescentMoonStaffFlames.Remove(i);
+                }
             }
         }
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref bool crit)
         {
             // Shion Yorigami random damage increase on NPC hits 0.1% chance
-            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<ShionYorigami_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<ShionYorigami_Plushie_Item>())
             {
-                if ((int)Main.rand.Next(1,1000) == 1)
+                if ((int)Main.rand.Next(1, 1000) == 1)
                 {
-                    damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
+                    damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
                 }
             }
 
@@ -229,37 +240,37 @@ namespace Kourindou
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
             // Cirno Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<Cirno_Plushie_Item>())
             {
                 CirnoPlushie_OnHit(null, target, crit);
             }
 
             // Flandre Scarlet Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<FlandreScarlet_Plushie_Item>())
             {
                 FlandreScarletPlushie_OnHit(target, null, damage, crit, item.useAnimation);
             }
 
             // Marisa Kirisame Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<MarisaKirisame_Plushie_Item>())
             {
-                MarisaKirisamePlushie_OnHit(target.Center, crit);
+                MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             // Remilia Scarlet Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<SatoriKomeiji_Plushie_Item>())
             {
                 SatoriKomeijiPlushie_OnHit(target, null);
             }
 
             // Tewi Inaba Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<TewiInaba_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<TewiInaba_Plushie_Item>())
             {
                 TewiInabaPlushie_OnHit(target);
             }
@@ -268,41 +279,41 @@ namespace Kourindou
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockBack, bool crit)
         {
             // Cirno Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<Cirno_Plushie_Item>())
             {
                 CirnoPlushie_OnHit(null, target, crit);
             }
 
             // Flandre Scarlet Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<FlandreScarlet_Plushie_Item>())
             {
                 FlandreScarletPlushie_OnHit(target, null, damage, crit, target.immune[proj.owner]);
                 if (crit)
                 {
                     target.immune[proj.owner] = 0;
-                }      
+                }
             }
 
             // Marisa Kirisame Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<MarisaKirisame_Plushie_Item>())
             {
-                MarisaKirisamePlushie_OnHit(target.Center, crit);
+                MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             //Remilia Scarlet Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<SatoriKomeiji_Plushie_Item>())
             {
                 SatoriKomeijiPlushie_OnHit(target, null);
             }
 
             // Tewi Inaba Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<TewiInaba_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<TewiInaba_Plushie_Item>())
             {
                 TewiInabaPlushie_OnHit(target);
             }
@@ -311,31 +322,31 @@ namespace Kourindou
         public override void OnHitPvp(Item item, Player target, int damage, bool crit)
         {
             // Cirno Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<Cirno_Plushie_Item>())
             {
                 CirnoPlushie_OnHit(target, null, crit);
             }
 
             // Flandre Scarlet Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<FlandreScarlet_Plushie_Item>())
             {
                 FlandreScarletPlushie_OnHit(null, target, damage, crit, item.useAnimation);
             }
 
             // Marisa Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<MarisaKirisame_Plushie_Item>())
             {
-                MarisaKirisamePlushie_OnHit(target.Center, crit);
+                MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             //Remilia Scarlet Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<SatoriKomeiji_Plushie_Item>())
             {
                 SatoriKomeijiPlushie_OnHit(null, target);
             }
@@ -344,13 +355,13 @@ namespace Kourindou
         public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
         {
             // Cirno Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<Cirno_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<Cirno_Plushie_Item>())
             {
                 CirnoPlushie_OnHit(target, null, crit);
             }
 
             // Flandre Scarlet Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<FlandreScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<FlandreScarlet_Plushie_Item>())
             {
                 FlandreScarletPlushie_OnHit(null, target, damage, crit, target.immuneTime);
                 if (crit)
@@ -360,19 +371,19 @@ namespace Kourindou
             }
 
             // Marisa Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<MarisaKirisame_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<MarisaKirisame_Plushie_Item>())
             {
-                MarisaKirisamePlushie_OnHit(target.Center, crit);
+                MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             //Remilia Scarlet Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<Kourindou_RemiliaScarlet_Plushie_Item>())
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            if (plushieEquipSlot.Item.type == ItemType<SatoriKomeiji_Plushie_Item>())
+            else if (PlushieSlotItemID == ItemType<SatoriKomeiji_Plushie_Item>())
             {
                 SatoriKomeijiPlushie_OnHit(null, target);
             }
@@ -380,51 +391,45 @@ namespace Kourindou
 
         public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
         {
-            if (plushieEquipSlot.Item.type == ItemType<Chen_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<Chen_Plushie_Item>())
             {
-                player.AddBuff(BuffID.ShadowDodge, 180);
+                Player.AddBuff(BuffID.ShadowDodge, 180);
             }
         }
 
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
             // Kaguya or Mokou Plushie Equipped [Mortality]
-            if (plushieEquipSlot.Item.type == ItemType<KaguyaHouraisan_Plushie_Item>() || plushieEquipSlot.Item.type == ItemType<FujiwaraNoMokou_Plushie_Item>())
+            if (PlushieSlotItemID == ItemType<KaguyaHouraisan_Plushie_Item>() || PlushieSlotItemID == ItemType<FujiwaraNoMokou_Plushie_Item>())
             {
-                if (player.HasBuff(BuffType<DeBuff_Mortality>()))
+                if (Player.HasBuff(BuffType<DeBuff_Mortality>()))
                 {
                     return true;
                 }
                 else
                 {
-                    player.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
-                    player.statLife += player.statLifeMax2;
-                    player.HealEffect(player.statLifeMax2, true);
-                    return false;
-                }
+                    Player.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
+                    Player.statLife += Player.statLifeMax2;
+                    Player.HealEffect(Player.statLifeMax2, true);
 
-                if (plushieEquipSlot.Item.type == ItemType<FujiwaraNoMokou_Plushie_Item>())
-                {
-                    player.AddBuff(BuffID.Wrath, 4140);
-                    player.AddBuff(BuffID.Inferno, 4140);
+                    if (PlushieSlotItemID == ItemType<FujiwaraNoMokou_Plushie_Item>())
+                    {
+                        Player.AddBuff(BuffID.Wrath, 4140);
+                        Player.AddBuff(BuffID.Inferno, 4140);
+                    }
+
+                    return false;
                 }
             }
 
             return true;
         }
 
-        public override void PostUpdate()
-        {
-            // On the end of this player update tick put the hotkey to false
-            // to prevent endless tping...
-            YukariYakumoTPKeyPressed = false;
-        }
-
         private void CirnoPlushie_OnHit(Player p, NPC n, bool crit)
         {
             CirnoPlushie_Attack_Counter++;
-            
-            if (CirnoPlushie_Attack_Counter == 8 && (int)Main.rand.Next(0,10) == 9)
+
+            if (CirnoPlushie_Attack_Counter == 8 && (int)Main.rand.Next(0, 10) == 9)
             {
                 CirnoPlushie_TimesNine = true;
             }
@@ -446,7 +451,7 @@ namespace Kourindou
                     p.AddBuff(BuffID.Frozen, 120);
                 }
             }
-            
+
             // Add debuffs to NPCs
             if (n != null)
             {
@@ -471,6 +476,7 @@ namespace Kourindou
                     position = n.Center;
 
                     Projectile.NewProjectile(
+                        Player.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
                         position,
                         Vector2.Zero,
                         ProjectileType<FlandreScarlet_Plushie_Explosion>(),
@@ -487,6 +493,7 @@ namespace Kourindou
                     position = p.Center;
 
                     Projectile.NewProjectile(
+                        Player.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
                         position,
                         Vector2.Zero,
                         ProjectileType<FlandreScarlet_Plushie_Explosion>(),
@@ -498,34 +505,34 @@ namespace Kourindou
                     );
                 }
 
-
-
-                Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode.SoundId, (int)position.X, (int)position.Y, SoundID.DD2_ExplosiveTrapExplode.Style, .8f, 1f);
+                SoundEngine.PlaySound(
+                    SoundID.DD2_ExplosiveTrapExplode with { Volume = .8f, PitchVariance = .1f },
+                    position);
 
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
                     // Send sound packet for other clients
-                    ModPacket packet2 = mod.GetPacket();
-                    packet2.Write((byte) KourindouMessageType.PlaySound);
-                    packet2.Write((byte) SoundID.DD2_ExplosiveTrapExplode.SoundId);
-                    packet2.Write((short) SoundID.DD2_ExplosiveTrapExplode.Style);
-                    packet2.Write((float) 0.8f);
-                    packet2.Write((float) 1f);
-                    packet2.Write((int)position.X);
-                    packet2.Write((int)position.Y);
-                    packet2.Send();
+                    ModPacket packet = Mod.GetPacket();
+                    packet.Write((byte) KourindouMessageType.PlaySound);
+                    packet.Write((string) "DD2_ExplosiveTrapExplode");
+                    packet.Write((float) 0.8f);
+                    packet.Write((float) 1f);
+                    packet.Write((int) position.X);
+                    packet.Write((int) position.Y);
+                    packet.Send();
                 }
             }
         }
 
-        private void MarisaKirisamePlushie_OnHit(Vector2 position, bool crit)
+        private void MarisaKirisamePlushie_OnHit(Vector2 position, bool crit, Entity entity)
         {
             if (crit)
             {
                 int star = Projectile.NewProjectile
                 (
-                    player.Center,
-                    Vector2.Normalize(Main.MouseWorld - player.Center) * 10f,
+                    Player.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
+                    Player.Center,
+                    Vector2.Normalize(Main.MouseWorld - Player.Center) * 10f,
                     ProjectileID.StarWrath,
                     50,
                     1f,
@@ -540,11 +547,11 @@ namespace Kourindou
 
         private void RemiliaScarletPlushie_OnHit(int damage)
         {
-            if (player.statLife < player.statLifeMax2)
+            if (Player.statLife < Player.statLifeMax2)
             {
-                int healAmount = (int)Math.Ceiling((double)((damage * 0.05) < player.statLifeMax2 - player.statLife ? (int)(damage * 0.05) : player.statLifeMax2 - player.statLife));
-                player.statLife += healAmount;
-                player.HealEffect(healAmount, true);
+                int healAmount = (int)Math.Ceiling((double)((damage * 0.05) < Player.statLifeMax2 - Player.statLife ? (int)(damage * 0.05) : Player.statLifeMax2 - Player.statLife));
+                Player.statLife += healAmount;
+                Player.HealEffect(healAmount, true);
             }
         }
 
@@ -567,122 +574,166 @@ namespace Kourindou
 
         private void TewiInabaPlushie_OnHit(NPC n)
         {
-            if ((int)Main.rand.Next(0,5) == 0 && n.life <= 0)
+            if ((int)Main.rand.Next(0, 5) == 0 && n.life <= 0)
             {
                 n.NPCLoot();
             }
         }
 
-        //Draw Plushie slot
-        private void Slot_DrawBackground(UIObject sender, SpriteBatch spriteBatch)
+        //--------------------------------------------------------- Multi-useItem ---------------------------------------------------------
+        public bool OnCooldown(int itemID, int AttackID)
         {
-            UIItemSlot slot = (UIItemSlot)sender;
-
-            if (ShouldDrawSlots())
+            if (Cooldowns.ContainsKey(itemID))
             {
-                slot.OnDrawBackground(spriteBatch);
-
-                if(slot.Item.stack == 0)
+                if (Cooldowns[itemID].ContainsKey(AttackID))
                 {
-                    Texture2D tex = mod.GetTexture(Kourindou.PlushieSlotBackTex);
-                    Vector2 origin = tex.Size() / 2f * Main.inventoryScale;
-                    Vector2 position = slot.Rectangle.TopLeft();
-
-                    spriteBatch.Draw(
-                        tex,
-                        position + (slot.Rectangle.Size() / 2f) - (origin / 2f),
-                        null,
-                        Color.White * 0.35f,
-                        0f,
-                        origin,
-                        Main.inventoryScale,
-                        SpriteEffects.None,
-                        0f); // layer depth 0 = front
+                    return Cooldowns[itemID][AttackID].CurrentTime > 0;
                 }
             }
-        }
-
-        private bool Slot_Conditions(Item item)
-        {
-            // Prevent Nasty NullReferenceException - Crashes Game 
-            if (item.modItem != null)
-            {
-                // Check whether this item can be placed in the Plushie Slot
-                if (item.Clone().modItem.GetType().IsSubclassOf(typeof(PlushieItem)) && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2)
-                {
-                    return true;
-                }
-            }   
-
             return false;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void SetCooldown(int itemID, int AttackID , int time)
         {
-            //Draw the custom inventory slot
-            if (!ShouldDrawSlots())
+            if (!Cooldowns.ContainsKey(itemID))
             {
-                return;
+                Cooldowns.Add(itemID, new Dictionary<int, CooldownTimes>());
             }
 
-            int mapH = 0;
-
-            int rX;
-            int rY;
-            float origScale = Main.inventoryScale;
-
-            Main.inventoryScale = 0.85f;
-
-            if(Main.mapEnabled) {
-                if(!Main.mapFullscreen && Main.mapStyle == 1) {
-                    mapH = 256;
-                }
-            }
-
-            if(Main.mapEnabled) {
-                int adjustY = 600;
-                if(Main.player[Main.myPlayer].ExtraAccessorySlotsShouldShow) {
-                    adjustY = 610 + PlayerInput.UsingGamepad.ToInt() * 30;
-                }
-                if((mapH + adjustY) > Main.screenHeight) {
-                    mapH = Main.screenHeight - adjustY;
-                }
-            }
-            int slotCount = 7 + Main.player[Main.myPlayer].extraAccessorySlots;
-            if((Main.screenHeight < 900) && (slotCount >= 8)) {
-                slotCount = 7;
-            }
-            rX = Main.screenWidth - 92 - 14 - (47 * 3) - (int)(Main.extraTexture[58].Width * Main.inventoryScale);
-            rY = (int)(mapH + 174 + 4 + slotCount * 56 * Main.inventoryScale);
-
-            //if Wingslot is also installed move up
-            Mod Wingslot = ModLoader.GetMod("WingSlot");
-            if (Wingslot != null && Wingslot.Version >= new Version(1,7,3))
+            if (!Cooldowns[itemID].ContainsKey(AttackID))
             {
-                if (WingSlotNextToAccessories)
+                Cooldowns[itemID].Add(AttackID, new CooldownTimes { CurrentTime = time, MaximumTime = time });
+            }
+            else
+            {
+                Cooldowns[itemID][AttackID].CurrentTime = time;
+                Cooldowns[itemID][AttackID].MaximumTime = time;
+            }
+        }
+
+        public override bool PreItemCheck()
+        {
+            // player is not holding a multiuse weapon
+            if (!(Player.HeldItem.ModItem is MultiUseItem item))
+            { 
+                // return, we don't have a multiuse weapon
+                return base.PreItemCheck();
+            }
+
+            // Get the AttackID based on the weapon and keybind used
+            if (Player.itemAnimation <= 1 && Main.myPlayer == Player.whoAmI)
+            {
+                // Prioritize the ultimate if both keys are present at the same time
+                if (Main.mouseLeft && !(UltimateKeyPressed || UltimateKeyHeld) && !(SkillKeyPressed || SkillKeyHeld) && item.HasNormal(Player))
                 {
-                    rY -= 47;
+                    UsedAttack = true;
+                    AttackID = item.GetNormalID(Player);
+                    AttackCounter = item.GetNormalCounter(Player);
+                }
+                else if (!Main.mouseLeft && (SkillKeyPressed || SkillKeyHeld) && !(UltimateKeyPressed || UltimateKeyHeld) && item.HasSkill(Player))
+                {
+                    UsedAttack = true;
+                    AttackID = item.GetSkillID(Player);
+                    AttackCounter = item.GetSkillCounter(Player);
+                }
+                else if (!Main.mouseLeft && (UltimateKeyPressed || UltimateKeyHeld) && !(SkillKeyPressed || SkillKeyHeld) && item.HasUltimate(Player))
+                {
+                    UsedAttack = true;
+                    AttackID = item.GetUltimateID(Player);
+                    AttackCounter = item.GetUltimateCounter(Player);
+                }
+                else if (!Main.mouseLeft && !(UltimateKeyPressed || UltimateKeyHeld) && !(SkillKeyPressed || SkillKeyHeld))
+                {
+                    item.SetDefaults();
+                    return base.PreItemCheck();
+                }
+                else
+                {
+                    UsedAttack = true;
+                    AttackID = OldAttackID;
+                    AttackCounter = OldAttackCounter;
                 }
             }
 
-            plushieEquipSlot.Position = new Vector2(rX, rY);
-            plushieEquipSlot.Draw(spriteBatch);
+            if (Player.itemAnimation <= 1 && Main.myPlayer != Player.whoAmI)
+            {
+                item.SetDefaults();
+            }
 
-            Main.inventoryScale = origScale;
+            if (UsedAttack)
+            {
+                Player.altFunctionUse = 2;
 
-            plushieEquipSlot.Update();
+                if (Main.myPlayer == Player.whoAmI && OnCooldown(item.Type, AttackID))
+                {
+                    return base.PreItemCheck();
+                }
+
+                if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient && !OnCooldown(item.Type, AttackID))
+                {
+                    ModPacket packet = Mod.GetPacket();
+                    packet.Write((byte) KourindouMessageType.AlternateFire);
+                    packet.Write((byte) Player.whoAmI);
+                    packet.Write((bool) UsedAttack);
+                    packet.Write((int) AttackID);
+                    packet.Write((int) AttackCounter);
+                    packet.Send();
+                }
+
+                item.SetItemStats(Player, AttackID, AttackCounter);
+                Player.lastVisualizedSelectedItem = Player.HeldItem;
+
+                if (Main.myPlayer == Player.whoAmI)
+                {
+                    OldAttackID = AttackID;
+                    OldAttackCounter = AttackCounter;
+                }
+            }
+
+            return base.PreItemCheck();
         }
-        
-        //Check WingSlot Mod Settings
-        public bool WingSlotNextToAccessories
+
+        public override void PostUpdate()
         {
-            get { return WingSlot.WingSlot.SlotsNextToAccessories; }
+            // Put hotkey status to false for next tick
+            SkillKeyPressed = false;
+            SkillKeyHeld = false;
+            SkillKeyReleased = false;
+
+            UltimateKeyPressed = false;
+            UltimateKeyHeld = false;
+            UltimateKeyReleased = false;
+
+            UsedAttack = false;
+            AttackID = 0;
+            AttackCounter = 0;
+        }
+    }
+
+    public class PlushieEquipSlot : ModAccessorySlot
+    {
+        public override string Name => "Plushie Slot";
+        public override bool DrawDyeSlot => false;
+        public override bool DrawVanitySlot => false;
+        public override bool IsEnabled()
+        {
+            if (!Main.gameMenu)
+            {
+                return Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower;
+            }
+
+            return Kourindou.KourindouConfigClient.plushiePower;
         }
 
-        // Determine if the slot should be drawn
-        public static bool ShouldDrawSlots()
+        public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
         {
-            if (Main.playerInventory == true && Main.EquipPage == 0 && Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower == 2)
+            // cannot place an item in the slot if the power mode is not active
+            if (!Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower)
+            {
+                return false;
+            }
+
+            if (checkItem.ModItem is PlushieItem plushie)
             {
                 return true;
             }
@@ -690,45 +741,117 @@ namespace Kourindou
             return false;
         }
 
-        public void EquipPlushie(bool isVanity, Item item)
+        public override bool ModifyDefaultSwapSlot(Item item, int accSlotToSwapTo)
         {
-            if (player.GetModPlayer<KourindouPlayer>().plushiePower != 2)
+            if (!Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower)
             {
-                return;
+                return false;
             }
 
-            UIItemSlot slot = plushieEquipSlot;
-            int fromSlot = Array.FindIndex(player.inventory, i => i == item);
-
-            if (fromSlot < 0)
+            if (item.ModItem is PlushieItem plushie)
             {
-                return;
+                return true;
             }
 
-            item.favorited = false;
-            player.inventory[fromSlot] = slot.Item.Clone();
-            if (player.inventory[fromSlot].modItem is PlushieItem p1 && slot.Item.modItem is PlushieItem p2)
-            {
-                p1.plushieDirtWater = p2.plushieDirtWater;
-            }
-            Main.PlaySound(SoundID.Grab);
-            Recipe.FindRecipes();
-            SetPlushie(item);
+            return false;
         }
 
-        private void SetPlushie(Item item)
+        public override bool IsVisibleWhenNotEnabled()
         {
-            plushieEquipSlot.Item = item.Clone();
-            if (plushieEquipSlot.Item.modItem is PlushieItem p1 && item.modItem is PlushieItem p2)
-            {
-                p1.plushieDirtWater = p2.plushieDirtWater;
-            }
+            return GetInstance<PlushieEquipSlot>().FunctionalItem.type != ItemID.None;
         }
 
-        public void ClearPlushie()
+        public override string FunctionalTexture => "Kourindou/PlushieSlotBackground";
+
+        public override void OnMouseHover(AccessorySlotType context)
         {
-            plushieEquipSlot.Item = new Item();
-            plushieEquipSlot.Item.SetDefaults();
+            switch (context)
+            {
+                case AccessorySlotType.FunctionalSlot:
+                    Main.hoverItemName = "Plushie Slot";
+                    break;
+            }
+        }
+    }
+
+    public class HeldItemLayer : PlayerDrawLayer
+    {
+        Texture2D texture;
+        int itemTexture;
+        public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+        {
+            return drawInfo.drawPlayer.HeldItem.type == ItemType<KoninginDerNacht>()
+                && drawInfo.drawPlayer.itemAnimation > 0
+                && !drawInfo.drawPlayer.dead
+                && !drawInfo.drawPlayer.noItems
+                && !drawInfo.drawPlayer.CCed;
+        }
+        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.HeldItem);
+
+        protected override void Draw(ref PlayerDrawSet drawInfo)
+        {
+            const float StartAngle = -140f;
+            const float SwingAngle = 180f;
+            const float HeldOffset = 6f;
+
+            if (drawInfo.drawPlayer.HeldItem.type == ItemType<KoninginDerNacht>())
+            {
+                if (itemTexture != drawInfo.drawPlayer.HeldItem.type)
+                {
+                    itemTexture = drawInfo.drawPlayer.HeldItem.type;
+                    texture = TextureAssets.Item[drawInfo.drawPlayer.HeldItem.type].Value;
+                }
+            }
+
+            int drawX = (int)(drawInfo.Position.X - Main.screenPosition.X - drawInfo.drawPlayer.bodyFrame.Width / 2f + drawInfo.drawPlayer.width / 2f);
+            int drawY = (int)(drawInfo.Position.Y - Main.screenPosition.Y + drawInfo.drawPlayer.height - drawInfo.drawPlayer.bodyFrame.Height + 4);
+            Vector2 position = new Vector2(drawX, drawY) + drawInfo.drawPlayer.bodyPosition + drawInfo.bodyVect;
+
+            float rotation;
+
+            if (drawInfo.drawPlayer.direction == 1)
+            {
+                rotation = StartAngle + (SwingAngle / drawInfo.drawPlayer.itemAnimationMax * (drawInfo.drawPlayer.itemAnimationMax - drawInfo.drawPlayer.itemAnimation)) + 45f;
+                position += new Vector2(HeldOffset, 0f).RotatedBy(MathHelper.ToRadians(rotation - 45f));
+            }
+            else
+            {
+                rotation = StartAngle + 100f - (SwingAngle / drawInfo.drawPlayer.itemAnimationMax * (drawInfo.drawPlayer.itemAnimationMax - drawInfo.drawPlayer.itemAnimation)) - 45f + 180f;
+                position += new Vector2(HeldOffset, 0f).RotatedBy(MathHelper.ToRadians(rotation - 135f));
+            }
+
+            Vector2 offset = new Vector2(0, 0);
+
+            // Bodyframe Y values that indicate the player is at a position in the step cycle
+            // where the sprite shifts.
+            if (drawInfo.drawPlayer.bodyFrame.Y == 392 || drawInfo.drawPlayer.bodyFrame.Y == 448 || drawInfo.drawPlayer.bodyFrame.Y == 504
+                || drawInfo.drawPlayer.bodyFrame.Y == 784 || drawInfo.drawPlayer.bodyFrame.Y == 840 || drawInfo.drawPlayer.bodyFrame.Y == 896)
+            {
+                offset.Y += 2;
+            }
+
+            SpriteEffects spriteEffects = SpriteEffects.None;
+            if (drawInfo.drawPlayer.direction == -1)
+            {
+                spriteEffects |= SpriteEffects.FlipHorizontally;
+            }
+            if ((int)drawInfo.drawPlayer.gravDir == -1)
+            {
+                spriteEffects |= SpriteEffects.FlipVertically;
+                offset.Y *= -1;
+            }
+
+            drawInfo.DrawDataCache.Add(new DrawData(
+                texture,
+                position,
+                new Rectangle(0, 0, texture.Width, texture.Height),
+                drawInfo.itemColor,
+                MathHelper.ToRadians(rotation),
+                new Vector2(spriteEffects.HasFlag((Enum)(object)(SpriteEffects)1) ? texture.Width : 0, texture.Height) + offset,
+                1f,
+                spriteEffects,
+                0
+            ));
         }
     }
 }

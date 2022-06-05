@@ -1,21 +1,25 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
+using Terraria.IO;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.World.Generation;
+using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Plants;
 
 namespace Kourindou
 {
-    public class KourindouWorld : ModWorld
+    public class KourindouWorld : ModSystem
     {
         // Plushie Dirt and wet mechanic saving
         public static Dictionary<long, short> plushieTiles = new Dictionary<long, short>();
@@ -28,7 +32,7 @@ namespace Kourindou
         public static int FlaxPlants = 0;
         public static int MaxFlaxPlants = 0;
 
-        public override TagCompound Save()
+        public override void SaveWorldData(TagCompound tag)
         {
             List<string> plushieTileList = new List<string>();
             foreach (KeyValuePair<long, short> pt in plushieTiles)
@@ -36,17 +40,14 @@ namespace Kourindou
                 plushieTileList.Add(pt.Key.ToString() + "/" + pt.Value.ToString());
             }
 
-            return new TagCompound
-            {
-                { "plushieTiles", plushieTileList },
-                { "maxCottonPlants", MaxCottonPlants },
-                { "placedCottonPlants", CottonPlants },
-                { "maxFlaxPlants", MaxFlaxPlants },
-                { "placedFlaxPlants", FlaxPlants }
-            };
+            tag.Add("plushieTiles", plushieTileList);
+            tag.Add("maxCottonPlants", MaxCottonPlants);
+            tag.Add("placedCottonPlants", CottonPlants);
+            tag.Add("maxFlaxPlants", MaxFlaxPlants);
+            tag.Add("placedFlaxPlants", FlaxPlants);
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadWorldData(TagCompound tag)
         {
             var plushieTileList = tag.GetList<string>("plushieTiles");
             plushieTiles.Clear();
@@ -115,7 +116,7 @@ namespace Kourindou
             }
         }
 
-        private static void PlacingCottonPlants(GenerationProgress progress = null)
+        private static void PlacingCottonPlants(GenerationProgress progress, GameConfiguration config)
         {
             MaxCottonPlants = GetCottonPlantAmount();
 
@@ -133,35 +134,35 @@ namespace Kourindou
                     int tileY = (int)(Main.worldSurface * 0.35);
 
                     // Scan downwards until we've hit a block
-                    while (!Main.tile[tileX, tileY].active())
+                    while (!Main.tile[tileX, tileY].HasTile)
                     {
                         tileY++;
                     }
 
                     // Check if the hit Tile is valid for the plant
-                    int hitTile = Main.tile[tileX, tileY].type;
+                    int hitTile = Main.tile[tileX, tileY].TileType;
 
                     if (hitTile == TileID.Dirt || hitTile == TileID.Grass || hitTile == TileID.JungleGrass || hitTile == TileID.CorruptGrass
-                        || hitTile == TileID.FleshGrass || hitTile == TileID.MushroomGrass || hitTile == TileID.HallowedGrass)
+                        || hitTile == TileID.CrimsonGrass || hitTile == TileID.MushroomGrass || hitTile == TileID.HallowedGrass)
                     {
-                        int tileRight = Main.tile[tileX + 1, tileY].type;
-                        int tileLeft = Main.tile[tileX - 1, tileY].type;
+                        int tileRight = Main.tile[tileX + 1, tileY].TileType;
+                        int tileLeft = Main.tile[tileX - 1, tileY].TileType;
 
                         if (tileRight == TileID.Dirt || tileRight == TileID.Grass || tileRight == TileID.JungleGrass || tileRight == TileID.CorruptGrass
-                            || tileRight == TileID.FleshGrass || tileRight == TileID.MushroomGrass || tileRight == TileID.HallowedGrass)
+                            || tileRight == TileID.CrimsonGrass || tileRight == TileID.MushroomGrass || tileRight == TileID.HallowedGrass)
                         {
                             WorldGen.PlaceObject(tileX, tileY - 1, TileType<Cotton_Tile>());
-                            if (Framing.GetTileSafely(tileX, tileY - 1).type == TileType<Cotton_Tile>())
+                            if (Framing.GetTileSafely(tileX, tileY - 1).TileType == TileType<Cotton_Tile>())
                             {
                                 CottonPlants++;
                                 break;
                             }
                         }
                         else if (tileLeft == TileID.Dirt || tileLeft == TileID.Grass || tileLeft == TileID.JungleGrass || tileLeft == TileID.CorruptGrass
-                            || tileLeft == TileID.FleshGrass || tileLeft == TileID.MushroomGrass || tileLeft == TileID.HallowedGrass)
+                            || tileLeft == TileID.CrimsonGrass || tileLeft == TileID.MushroomGrass || tileLeft == TileID.HallowedGrass)
                         {
                             WorldGen.PlaceObject(tileX - 1, tileY - 1, TileType<Cotton_Tile>());
-                            if (Framing.GetTileSafely(tileX - 1, tileY - 1).type == TileType<Cotton_Tile>())
+                            if (Framing.GetTileSafely(tileX - 1, tileY - 1).TileType == TileType<Cotton_Tile>())
                             {
                                 CottonPlants++;
                                 break;
@@ -177,7 +178,7 @@ namespace Kourindou
             return (int)((float)Main.maxTilesX / 4200f * 32f); //Small=32, Medium=48, Large=64
         }
 
-        private static void PlacingFlaxPlants(GenerationProgress progress = null)
+        private static void PlacingFlaxPlants(GenerationProgress progress, GameConfiguration config)
         {
             MaxFlaxPlants = GetFlaxPlantAmount();
 
@@ -195,23 +196,23 @@ namespace Kourindou
                     int tileY = (int)(Main.worldSurface * 0.35);
 
                     // Scan downwards until we've hit a block
-                    while (!Main.tile[tileX, tileY].active())
+                    while (!Main.tile[tileX, tileY].HasTile)
                     {
                         tileY++;
                     }
 
                     // Check if the hit Tile is valid for the plant
-                    int hitTile = Main.tile[tileX, tileY].type;
+                    int hitTile = Main.tile[tileX, tileY].TileType;
 
                     if (hitTile == TileID.Dirt || hitTile == TileID.Grass || hitTile == TileID.JungleGrass)
                     {
-                        int tileRight = Main.tile[tileX + 1, tileY].type;
-                        int tileLeft  = Main.tile[tileX - 1, tileY].type;
+                        int tileRight = Main.tile[tileX + 1, tileY].TileType;
+                        int tileLeft  = Main.tile[tileX - 1, tileY].TileType;
 
                         if (tileRight == TileID.Dirt || tileRight == TileID.Grass || tileRight == TileID.JungleGrass)
                         {
                             WorldGen.PlaceObject(tileX, tileY - 1, TileType<Flax_Tile>());
-                            if (Framing.GetTileSafely(tileX, tileY - 1).type == TileType<Flax_Tile>())
+                            if (Framing.GetTileSafely(tileX, tileY - 1).TileType == TileType<Flax_Tile>())
                             {
                                 FlaxPlants++;
                                 break;
@@ -220,7 +221,7 @@ namespace Kourindou
                         else if (tileLeft == TileID.Dirt || tileLeft == TileID.Grass || tileLeft == TileID.JungleGrass)
                         {
                             WorldGen.PlaceObject(tileX - 1, tileY - 1, TileType<Flax_Tile>());
-                            if (Framing.GetTileSafely(tileX - 1, tileY -1).type == TileType<Flax_Tile>())
+                            if (Framing.GetTileSafely(tileX - 1, tileY -1).TileType == TileType<Flax_Tile>())
                             {
                                 FlaxPlants++;
                                 break;

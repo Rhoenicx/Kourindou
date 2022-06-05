@@ -17,27 +17,27 @@ namespace Kourindou.Items.Seeds
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 0, 1, 0);
-            item.rare = ItemRarityID.White;
+            Item.value = Item.buyPrice(0, 0, 1, 0);
+            Item.rare = ItemRarityID.White;
 
             // Hitbox
-            item.width = 24;
-            item.height = 24;
+            Item.width = 24;
+            Item.height = 24;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
-            // item
-            item.maxStack = 999;
+            // Item
+            Item.maxStack = 999;
 
             // Tile placement fields
-            item.consumable = true;
-            item.createTile = TileType<Cotton_Tile>();
-            item.placeStyle = 0;     
+            Item.consumable = true;
+            Item.createTile = TileType<Cotton_Tile>();
+            Item.placeStyle = 0;     
         }
     }
 }

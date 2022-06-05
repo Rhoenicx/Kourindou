@@ -1,0 +1,76 @@
+- Utsuho Reiuji
+	Tooltip.SetDefault("\"The nuclear crow tengu. She watches over the flames of hell.\"");
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Orange;
+- Kisume
+	Tooltip.SetDefault("\"A Tsurube-otoshi who spends her time in buckets in the dark instead of trees. Watch your head.\"");
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Green;
+- Hecatia Lapislazuli
+	Tooltip.SetDefault("\"The Goddess of Hell. She has a questionable fashion sense.\"");
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Red;
+- Shinmyoumaru Sukuna
+	Tooltip.SetDefault("\"The inchling of the Shining Needle Castle. Her needle is very versatile.\"");
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.LightPurple;
+- Hina Kagiyama
+	Tooltip.SetDefault("\"A misfortune god that gathers misfortune. We do not have a spinning animation for it yet. Sorry.\"");
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Green;
+- Kanako Yasaka
+	Tooltip.SetDefault("\"The current goddess of the Moriya Shrine. Religion is a business.\"");
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Orange;
+- Keine Kamishirasawa
+	Tooltip.SetDefault("\"The Guardian of the Human Village. She is a school teacher there, and is also its guardian in times of peril.\"");
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Blue;
+- Reimu Hakurei [Kourindou]
+	Tooltip.SetDefault("\"The Hakurei shrine maiden, in a slightly different outfit. It's also aimbot if powered.\"");
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.LightRed;
+- Marisa Kirisame [Kourindou]
+	Tooltip.SetDefault("\"This plushie has a tracker inside it. Marisa is now coming to steal your goods, da ze!\"");
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Yellow;
+- Lily White
+	Tooltip.SetDefault("\"Spring is here!\""); // hmm..
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Pink;
+- Nitori Kawashiro
+	Tooltip.SetDefault("\"A kappa that can control water. Like all other kappa, she's skilled in technology and engineering.!\""); // hmm..
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Cyan;
+- Inu Sakuya
+	Tooltip.SetDefault("\"It comes in a box. Does the real Sakuya like this? Probably. It's adorable, why wouldn't she?\"");
+            item.value = Item.buyPrice(0, 9, 7, 5);
+            item.rare = ItemRarityID.Cyan;
+- Yoshika Miyako
+	Tooltip.SetDefault("\"A Jiangshi. Their owner likes them a lot.\""); 
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Blue;
+- Seiga Kaku
+	Tooltip.SetDefault("\"Doki, doki, waku, waku..\""); 
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Cyan;
+- Tanned Cirno
+	Tooltip.SetDefault("\"The strongest [with a tan]!\""); 
+            item.value = Item.buyPrice(0, 9, 9, 9);
+            item.rare = ItemRarityID.Cyan;
+- Medicine Melancholy
+	Tooltip.SetDefault("\"A young doll youkai that lives on the Nameless Hill. She can harness the poison of anything.\""); 
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.LightPurple;
+- Shanghai Doll
+	Tooltip.SetDefault("\"A replica of Alice's most prominent doll.\""); 
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Pink;
+- Rin Kaenbyou
+	Tooltip.SetDefault("\"One of Satori's pets. She hauls corpses into the flames of hell to maintain it.\""); 
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.LightRed;
+- Hatate Himekaidou
+	Tooltip.SetDefault("\"The reporter for the Kakashi Spirit News. Uses thoughtography to obtain material for her newspaper.\""); 
+            item.value = Item.buyPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.LightPurple;

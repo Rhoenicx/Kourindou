@@ -16,35 +16,35 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sakuya Izayoi Plushie Kourindou ver.");
-            Tooltip.SetDefault("The maid of the scarlet mansion.");
+            Tooltip.SetDefault("The maid of the scarlet mansion");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 5, 0, 0);
-            item.rare = ItemRarityID.White;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.White;
 
             // Hitbox
-            item.width = 32;
-            item.height = 32;
+            Item.width = 32;
+            Item.height = 32;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
             // Tile placement fields
-            item.consumable = true;
-            item.createTile = TileType<Kourindou_SakuyaIzayoi_Plushie_Tile>();
+            Item.consumable = true;
+            Item.createTile = TileType<Kourindou_SakuyaIzayoi_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
-            item.accessory = true;
+            Item.accessory = true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
@@ -60,18 +60,19 @@ namespace Kourindou.Items.Plushies
             if (player.whoAmI == Main.myPlayer && player.itemAnimationMax -1 == player.itemAnimation)
             {
                 // Increase damage by 5 percent
-                player.allDamage += 0.05f;
+                player.GetDamage(DamageClass.Generic) += 0.05f;
 
                 // Increase life regen by 1 point
                 player.lifeRegen += 1;
 
                 // Increase Throwing damage by 40 percent
-                player.thrownDamage += 0.40f;
+                player.GetDamage(DamageClass.Throwing) += 0.40f;
 
                 // Spawn 4 knifes on regular attack animations
 			    for (int i = 0; i < 4; i++)
 			    {
 			    	Projectile.NewProjectile(
+                        player.GetSource_Accessory(this.Item),
 			    		player.Center,
 			    		Vector2.Normalize(Main.MouseWorld - player.Center).RotatedBy(MathHelper.ToRadians(i >= 2 ? 5 * (i - 1) : -5 * (i + 1))) * (player.HeldItem.shootSpeed > 0f ? player.HeldItem.shootSpeed : 8f),
 			    		ProjectileType<SakuyaIzayoi_Plushie_Knife>(),
@@ -85,18 +86,17 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddRecipeGroup("Kourindou:Watch",1);
-            recipe.AddIngredient(ItemType<BlueFabric>(), 1);
-            recipe.AddIngredient(ItemType<SilverFabric>(), 2);
-            recipe.AddIngredient(ItemID.Silk, 3);
-            recipe.AddIngredient(ItemType<BlueThread>(), 1);
-            recipe.AddIngredient(ItemType<SilverThread>(), 2);
-            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
-            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
-            recipe.AddTile(TileType<SewingMachine_Tile>());
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddRecipeGroup("Kourindou:Watch",1)
+                .AddIngredient(ItemType<BlueFabric>(), 1)
+                .AddIngredient(ItemType<SilverFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 3)
+                .AddIngredient(ItemType<BlueThread>(), 1)
+                .AddIngredient(ItemType<SilverThread>(), 2)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
         }
     }
 }

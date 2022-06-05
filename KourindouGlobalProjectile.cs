@@ -50,10 +50,14 @@ namespace Kourindou
             //Reimu Plushie effect
             if (projectile.owner == Main.myPlayer && projectile.active)
             {
-                if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushieEquipSlot.Item.type == ItemType<ReimuHakurei_Plushie_Item>())
+                if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().PlushieSlotItemID == ItemType<ReimuHakurei_Plushie_Item>())
                 {
-                    if ((projectile.magic || projectile.melee || projectile.ranged || projectile.thrown)
-                        && projectile.type != ProjectileID.IceBlock
+                    if ((projectile.CountsAsClass(DamageClass.Magic)
+                        || projectile.CountsAsClass(DamageClass.Melee)
+                        || projectile.CountsAsClass(DamageClass.Ranged)
+                        || projectile.CountsAsClass(DamageClass.Throwing))
+                        && projectile.type != ProjectileID.IceBlock 
+                        && Main.player[projectile.owner].heldProj != projectile.whoAmI
                         )
                     {
                         List<ReimuPlushieTarget> target = new List<ReimuPlushieTarget>();
@@ -83,7 +87,7 @@ namespace Kourindou
 
                                 if (Main.netMode == NetmodeID.MultiplayerClient)
                                 {
-                                    ModPacket packet = mod.GetPacket();
+                                    ModPacket packet = Mod.GetPacket();
                                     packet.Write((byte)KourindouMessageType.ReimuPlushieTargets);
                                     packet.Write((int)projectile.whoAmI);
                                     packet.Write((int)nearest.n);

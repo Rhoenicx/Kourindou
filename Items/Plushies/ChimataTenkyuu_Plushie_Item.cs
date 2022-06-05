@@ -14,37 +14,35 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Chimata Tenkyuu Plushie");
-            Tooltip.SetDefault("The overseer of the market. Now where is that bustling marketplace..");
+            Tooltip.SetDefault("The overseer of the market. Now where is that bustling marketplace...");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 5, 0, 0);
-            item.rare = -12; //or purple
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = -12; //or purple
 
             // Hitbox
-            item.width = 32;
-            item.height = 32;
+            Item.width = 32;
+            Item.height = 32;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
             // Tile placement fields
-            item.consumable = true;
-            item.createTile = TileType<ChimataTenkyuu_Plushie_Tile>();
-
-            item.shootSpeed = 8f;
+            Item.consumable = true;
+            Item.createTile = TileType<ChimataTenkyuu_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
-            item.accessory = true;
+            Item.accessory = true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
@@ -62,16 +60,15 @@ namespace Kourindou.Items.Plushies
         
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<PurpleFabric>(), 2);
-            recipe.AddIngredient(ItemID.Silk, 2);
-            recipe.AddIngredient(ItemType<RainbowFabric>(), 3);
-            recipe.AddIngredient(ItemType<PurpleThread>(), 2);
-            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
-            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
-            recipe.AddTile(TileType<SewingMachine_Tile>());
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddIngredient(ItemType<PurpleFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemType<RainbowFabric>(), 3)
+                .AddIngredient(ItemType<PurpleThread>(), 2)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
         }
     }
 }

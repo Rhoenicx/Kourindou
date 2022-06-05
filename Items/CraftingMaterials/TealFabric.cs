@@ -10,28 +10,26 @@ namespace Kourindou.Items.CraftingMaterials
     {
         public override void SetDefaults()
         {
-            item.CloneDefaults(ItemID.Silk);
-            item.width = 32;
-            item.height = 26;
-            item.SetNameOverride("Teal Fabric");
+            Item.CloneDefaults(ItemID.Silk);
+            Item.width = 32;
+            Item.height = 26;
+            Item.SetNameOverride("Teal Fabric");
         }
 
         public override void AddRecipes()
         {
             // Add recipe
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<TealThread>(), 4);
-            recipe.AddTile(TileType<WeavingLoom_Tile>());
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddIngredient(ItemType<TealThread>(), 4)
+                .AddTile(TileType<WeavingLoom_Tile>())
+                .Register();
 
             // Recolor any fabric to this color 
-            recipe = new ModRecipe(mod);
-            recipe.AddRecipeGroup("Kourindou:Fabric", 2);
-            recipe.AddIngredient(ItemID.TealDye);
-            recipe.AddTile(TileID.DyeVat);
-            recipe.SetResult(this, 2);
-            recipe.AddRecipe();
+            CreateRecipe(2)
+                .AddRecipeGroup("Kourindou:Fabric", 2)
+                .AddIngredient(ItemID.TealDye)
+                .AddTile(TileID.DyeVat)
+                .Register();
         }
     }
 }

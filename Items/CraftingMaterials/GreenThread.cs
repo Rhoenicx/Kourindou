@@ -17,7 +17,7 @@ namespace Kourindou.Items.CraftingMaterials
                 item.consumable = true;
 
                 // Usage and Animation
-                item.useStyle = ItemUseStyleID.SwingThrow;
+                item.useStyle = ItemUseStyleID.Swing;
                 item.useTime = 15;
                 item.useAnimation = 15;
                 item.autoReuse = true;
@@ -31,22 +31,19 @@ namespace Kourindou.Items.CraftingMaterials
 
         public override void AddRecipes()
         {
-            // Remove Crafting recipes
-            RecipeFinder finder = new RecipeFinder();
-            finder.SetResult(ItemID.GreenThread);
-
-            foreach (Recipe _recipe in finder.SearchRecipes())
+            foreach (Recipe recipe in Main.recipe)
             {
-                RecipeEditor editor = new RecipeEditor(_recipe);
-                editor.DeleteRecipe();
+                if (recipe.HasResult(ItemID.GreenThread))
+                {
+                    recipe.DisableRecipe();
+                }
             }
 
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddRecipeGroup("Kourindou:Thread", 8);
-            recipe.AddIngredient(ItemID.GreenDye);
-            recipe.AddTile(TileID.DyeVat);
-            recipe.SetResult(ItemID.GreenThread, 8);
-            recipe.AddRecipe();
+            Main.recipe[ItemID.GreenThread]
+                .AddRecipeGroup("Kourindou:Thread", 8)
+                .AddIngredient(ItemID.GreenDye)
+                .AddTile(TileID.DyeVat)
+                .ReplaceResult(ItemID.GreenThread, 8);
         }
     }
 }

@@ -14,35 +14,35 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Alice Margatroid Plushie");
-            Tooltip.SetDefault("The seven-colored magician. Ironically, she's a doll now.");
+            Tooltip.SetDefault("The seven-colored magician. Ironically, she's a doll now");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 5, 0, 0);
-            item.rare = ItemRarityID.Pink;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.Pink;
 
             // Hitbox
-            item.width = 32;
-            item.height = 32;
+            Item.width = 32;
+            Item.height = 32;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
             // Tile placement fields
-            item.consumable = true;
-            item.createTile = TileType<AliceMargatroid_Plushie_Tile>();
+            Item.consumable = true;
+            Item.createTile = TileType<AliceMargatroid_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
-            item.accessory = true;           
+            Item.accessory = true;           
         }
         
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
@@ -56,7 +56,7 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increase damage by 5 percent
-            player.allDamage += 0.05f;
+            player.GetDamage(DamageClass.Generic) += 0.05f;
 
             // Increase life regen by 1 point
             player.lifeRegen += 1;
@@ -65,26 +65,25 @@ namespace Kourindou.Items.Plushies
             player.maxMinions += 1;
 
             // Increase magic crit by 15 percent
-            player.magicCrit += 15;
+            player.GetCritChance(DamageClass.Magic) += 15;
 
             // Increase magic and minion damage by 10 percent
-            player.magicDamage += 10f;
-            player.minionDamage += 10f;
+            player.GetDamage(DamageClass.Magic) += 0.10f;
+            player.GetDamage(DamageClass.Summon) += 0.10f;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<BlueFabric>(), 2);
-            recipe.AddIngredient(ItemType<YellowFabric>(), 2);
-            recipe.AddIngredient(ItemID.Silk, 2);
-            recipe.AddIngredient(ItemType<BlueThread>(), 2);
-            recipe.AddIngredient(ItemType<RedThread>(), 1);
-            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
-            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
-            recipe.AddTile(TileType<SewingMachine_Tile>());
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlueFabric>(), 2)
+                .AddIngredient(ItemType<YellowFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemType<BlueThread>(), 2)
+                .AddIngredient(ItemType<RedThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
         }
     }
 }

@@ -14,59 +14,54 @@ namespace Kourindou.Items.CraftingMaterials
 
         public override void SetDefaults()
         {
-            item.CloneDefaults(ItemID.BlackThread);
+            Item.CloneDefaults(ItemID.BlackThread);
 
             // Consumable
-            item.consumable = true;
+            Item.consumable = true;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
             // Tile placement fields
-            item.createTile = TileType<Thread_Tile>();
-            item.placeStyle = 0;
+            Item.createTile = TileType<Thread_Tile>();
+            Item.placeStyle = 0;
         }
 
         public override void AddRecipes()
         {
             // Cobweb
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.Cobweb, 4);
-            recipe.AddTile(TileID.Loom);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddIngredient(ItemID.Cobweb, 4)
+                .AddTile(TileID.Loom)
+                .Register();
 
             // Cotton
-            recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<CottonFibre>(), 2);
-            recipe.AddTile(TileID.Loom);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddIngredient(ItemType<CottonFibre>(), 2)
+                .AddTile(TileID.Loom)
+                .Register();
 
             // Flax
-            recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<FlaxBundle>(), 2);
-            recipe.AddTile(TileID.Loom);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddIngredient(ItemType<FlaxBundle>(), 2)
+                .AddTile(TileID.Loom)
+                .Register();
 
             // Remove colors on water
-            recipe = new ModRecipe(mod);
-            recipe.AddRecipeGroup("Kourindou:Thread", 1);
-            recipe.needWater = true;
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddRecipeGroup("Kourindou:Thread", 1)
+                .AddCondition(Recipe.Condition.NearWater)
+                .Register();
 
             // Remove colors on dye vat
-            recipe = new ModRecipe(mod);
-            recipe.AddRecipeGroup("Kourindou:Thread", 1);
-            recipe.AddTile(TileID.DyeVat);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddRecipeGroup("Kourindou:Thread", 1)
+                .AddTile(TileID.DyeVat)
+                .Register();
         }
     }
 }

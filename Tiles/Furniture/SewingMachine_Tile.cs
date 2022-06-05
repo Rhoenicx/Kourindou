@@ -14,7 +14,7 @@ namespace Kourindou.Tiles.Furniture
 {
     public class SewingMachine_Tile : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             // Tile Settings
             Main.tileFrameImportant[Type] = true;
@@ -48,7 +48,7 @@ namespace Kourindou.Tiles.Furniture
             // Add TileData
             TileObjectData.addTile(Type);
 
-            disableSmartCursor = true;
+            TileID.Sets.DisableSmartCursor[Type] = true;
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Sewing Machine");
@@ -57,7 +57,7 @@ namespace Kourindou.Tiles.Furniture
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(i * 16, j * 16, 16, 16, ItemType<SewingMachine>());
+            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<SewingMachine>());
         }
 
 		public override void NumDust(int i, int j, bool fail, ref int num) {

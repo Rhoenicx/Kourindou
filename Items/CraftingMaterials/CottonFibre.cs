@@ -16,22 +16,22 @@ namespace Kourindou.Items.CraftingMaterials
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 0, 2, 50);
-            item.rare = ItemRarityID.Blue;
+            Item.value = Item.buyPrice(0, 0, 2, 50);
+            Item.rare = ItemRarityID.Blue;
 
             // Hitbox
-            item.width = 24;
-            item.height = 22;
+            Item.width = 24;
+            Item.height = 22;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
-            // item
-            item.maxStack = 999;   
+            // Item
+            Item.maxStack = 999;   
         }
     }
 }

@@ -1,0 +1,5 @@
+G:\Dropbox\personal\Terraria\Mods\Kourindou\obj\Debug\net6.0\Kourindou.csproj.AssemblyReference.cache
+G:\Dropbox\personal\Terraria\Mods\Kourindou\obj\Debug\net6.0\Kourindou.GeneratedMSBuildEditorConfig.editorconfig
+G:\Dropbox\personal\Terraria\Mods\Kourindou\obj\Debug\net6.0\Kourindou.AssemblyInfoInputs.cache
+G:\Dropbox\personal\Terraria\Mods\Kourindou\obj\Debug\net6.0\Kourindou.AssemblyInfo.cs
+G:\Dropbox\personal\Terraria\Mods\Kourindou\obj\Debug\net6.0\Kourindou.csproj.CoreCompileInputs.cache

@@ -14,37 +14,35 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Nue Houjuu Plushie");
-            Tooltip.SetDefault("An alien?! Perhaps this doll isn't her true form..");
+            Tooltip.SetDefault("An alien?! Perhaps this doll isn't her true form...");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 21, 21, 21);
-            item.rare = ItemRarityID.White;
+            Item.value = Item.buyPrice(0, 21, 21, 21);
+            Item.rare = ItemRarityID.Gray;
 
             // Hitbox
-            item.width = 32;
-            item.height = 32;
+            Item.width = 32;
+            Item.height = 32;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
             // Tile placement fields
-            item.consumable = true;
-            item.createTile = TileType<NueHoujuu_Plushie_Tile>();
-
-            item.shootSpeed = 8f;
+            Item.consumable = true;
+            Item.createTile = TileType<NueHoujuu_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
-            item.accessory = true;
+            Item.accessory = true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
@@ -62,19 +60,23 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<BlackFabric>(), 3);
-            recipe.AddIngredient(ItemType<BlueFabric>(), 1);
-            recipe.AddIngredient(ItemType<RedFabric>(), 1);
-            recipe.AddIngredient(ItemID.Silk, 1);
-            recipe.AddIngredient(ItemID.BlackThread, 2);
-            recipe.AddIngredient(ItemType<BlueThread>(), 1);
-            recipe.AddIngredient(ItemType<RedThread>(), 1);
-            recipe.AddIngredient(ItemType<WhiteThread>(), 1);
-            recipe.AddRecipeGroup("Kourindou:Stuffing", 5);
-            recipe.AddTile(TileType<SewingMachine_Tile>());
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlackFabric>(), 3)
+                .AddIngredient(ItemType<BlueFabric>(), 1)
+                .AddIngredient(ItemType<RedFabric>(), 1)
+                .AddIngredient(ItemID.Silk, 1)
+                .AddIngredient(ItemID.BlackThread, 2)
+                .AddIngredient(ItemType<BlueThread>(), 1)
+                .AddIngredient(ItemType<RedThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 1)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
         }
+
+        public override bool? CanBurnInLava()
+		{
+			return false;
+		}
     }
 }

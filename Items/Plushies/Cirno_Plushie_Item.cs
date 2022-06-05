@@ -14,35 +14,35 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Cirno Plushie");
-            Tooltip.SetDefault("The ice fairy. It's stupidly strong, and stupid as well.");
+            Tooltip.SetDefault("The ice fairy. It's stupidly strong, and stupid as well");
         }
 
         public override void SetDefaults()
         {
             // Information
-            item.value = Item.buyPrice(0, 9, 9, 9);
-            item.rare = ItemRarityID.Cyan;
+            Item.value = Item.buyPrice(0, 9, 9, 9);
+            Item.rare = ItemRarityID.Cyan;
 
             // Hitbox
-            item.width = 32;
-            item.height = 32;
+            Item.width = 32;
+            Item.height = 32;
 
             // Usage and Animation
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.autoReuse = true;
+            Item.useTurn = true;
 
             // Tile placement fields
-            item.consumable = true;
-            item.createTile = TileType<Cirno_Plushie_Tile>();
+            Item.consumable = true;
+            Item.createTile = TileType<Cirno_Plushie_Tile>();
 
             // Register as accessory, can only be equipped when plushie power mode setting is 2
-            item.accessory = true;
+            Item.accessory = true;
         }
         
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
@@ -58,11 +58,11 @@ namespace Kourindou.Items.Plushies
             // Increase damage by 25 percent OR on the 9th attack 9% chance to deal time 9 dmg
             if (player.GetModPlayer<KourindouPlayer>().CirnoPlushie_TimesNine)
             {
-                player.allDamage *= 9f;
+                player.GetDamage(DamageClass.Generic) *= 9f;
             }
             else
             {
-                player.allDamage += 0.25f;
+                player.GetDamage(DamageClass.Generic) += 0.25f;
             }
 
             // Increase Life regen by +1 
@@ -74,17 +74,16 @@ namespace Kourindou.Items.Plushies
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<BlueFabric>(), 2);
-            recipe.AddIngredient(ItemType<SkyBlueFabric>(), 2);
-            recipe.AddIngredient(ItemID.Silk, 2);
-            recipe.AddIngredient(ItemType<BlueThread>(), 2);
-            recipe.AddIngredient(ItemType<RedThread>(), 1);
-            recipe.AddIngredient(ItemType<WhiteThread>(), 2);
-            recipe.AddIngredient(ItemID.IceBlock, 9);
-            recipe.AddTile(TileType<SewingMachine_Tile>());
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlueFabric>(), 2)
+                .AddIngredient(ItemType<SkyBlueFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemType<BlueThread>(), 2)
+                .AddIngredient(ItemType<RedThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddIngredient(ItemID.IceBlock, 9)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
         }
     }
 }

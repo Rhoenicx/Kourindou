@@ -27,7 +27,7 @@ namespace Kourindou
 
                         if (Main.netMode == NetmodeID.Server)
                         {
-                            ModPacket packet = mod.GetPacket();
+                            ModPacket packet = Mod.GetPacket();
                             packet.Write((byte) KourindouMessageType.RandomPlacePlantTile);
                             packet.Write((int) i);
                             packet.Write((int) j - 1);
@@ -42,7 +42,7 @@ namespace Kourindou
 
                         if (Main.netMode == NetmodeID.Server)
                         {
-                            ModPacket packet = mod.GetPacket();
+                            ModPacket packet = Mod.GetPacket();
                             packet.Write((byte)KourindouMessageType.RandomPlacePlantTile);
                             packet.Write((int)i - 1);
                             packet.Write((int)j - 1);
@@ -62,7 +62,7 @@ namespace Kourindou
 
                         if (Main.netMode == NetmodeID.Server)
                         {
-                            ModPacket packet = mod.GetPacket();
+                            ModPacket packet = Mod.GetPacket();
                             packet.Write((byte)KourindouMessageType.RandomPlacePlantTile);
                             packet.Write((int)i);
                             packet.Write((int)j - 1);
@@ -77,7 +77,7 @@ namespace Kourindou
 
                         if (Main.netMode == NetmodeID.Server)
                         {
-                            ModPacket packet = mod.GetPacket();
+                            ModPacket packet = Mod.GetPacket();
                             packet.Write((byte)KourindouMessageType.RandomPlacePlantTile);
                             packet.Write((int)i - 1);
                             packet.Write((int)j - 1);
@@ -91,17 +91,17 @@ namespace Kourindou
 
         private bool TileValidForCotton(int i, int j)
         {
-            if ((Main.tile[i,j].type == TileID.Dirt
-                || Main.tile[i, j].type == TileID.Grass
-                || Main.tile[i, j].type == TileID.JungleGrass
-                || Main.tile[i, j].type == TileID.CorruptGrass
-                || Main.tile[i, j].type == TileID.FleshGrass
-                || Main.tile[i, j].type == TileID.MushroomGrass
-                || Main.tile[i, j].type == TileID.HallowedGrass)
-                && !Main.tile[i, j - 1].active()
-                && !Main.tile[i, j - 2].active()
-                && !Main.tile[i, j - 3].active()
-                && Main.tile[i, j].slope() == 0)
+            if ((Main.tile[i, j].TileType == TileID.Dirt
+                || Main.tile[i, j].TileType == TileID.Grass
+                || Main.tile[i, j].TileType == TileID.JungleGrass
+                || Main.tile[i, j].TileType == TileID.CorruptGrass
+                || Main.tile[i, j].TileType == TileID.CrimsonGrass
+                || Main.tile[i, j].TileType == TileID.MushroomGrass
+                || Main.tile[i, j].TileType == TileID.HallowedGrass)
+                && !Main.tile[i, j - 1].HasTile
+                && !Main.tile[i, j - 2].HasTile
+                && !Main.tile[i, j - 3].HasTile
+                && Main.tile[i, j].Slope == 0)
             {
                 return true;
             }
@@ -111,12 +111,12 @@ namespace Kourindou
 
         private bool TileValidForFlax(int i, int j)
         {
-            if ((Main.tile[i, j].type == TileID.Dirt
-                || Main.tile[i, j].type == TileID.Grass
-                || Main.tile[i, j].type == TileID.JungleGrass)
-                && !Main.tile[i, j - 1].active()
-                && !Main.tile[i, j - 2].active()
-                && Main.tile[i, j].slope() == 0)
+            if ((Main.tile[i, j].TileType == TileID.Dirt
+                || Main.tile[i, j].TileType == TileID.Grass
+                || Main.tile[i, j].TileType == TileID.JungleGrass)
+                && !Main.tile[i, j - 1].HasTile
+                && !Main.tile[i, j - 2].HasTile
+                && Main.tile[i, j].Slope == 0)
             {
                 return true;
             }

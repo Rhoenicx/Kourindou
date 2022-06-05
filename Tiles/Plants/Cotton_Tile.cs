@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Enums;
@@ -20,7 +21,7 @@ namespace Kourindou.Tiles.Plants
 
         private const int PlantFrameHeight = 56;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileFrameImportant[Type] = true;
             Main.tileCut[Type] = false;
@@ -42,9 +43,10 @@ namespace Kourindou.Tiles.Plants
 			{
                 TileID.Dirt,
 				TileID.Grass,
+                TileID.GolfGrass,
                 TileID.JungleGrass,
                 TileID.CorruptGrass,
-                TileID.FleshGrass,
+                TileID.CrimsonGrass,
                 TileID.MushroomGrass,
 				TileID.HallowedGrass
 			};
@@ -60,8 +62,7 @@ namespace Kourindou.Tiles.Plants
             name.SetDefault("Cotton Plant");
             AddMapEntry(new Color(155, 155, 155), name);
 
-            soundStyle = 0;
-            soundType = 0;
+            HitSound = SoundID.Dig;
         }
 
         public override void PlaceInWorld(int i, int j, Item item) //Runs only on SinglePlayer and MultiplayerClient!
@@ -70,7 +71,7 @@ namespace Kourindou.Tiles.Plants
             {
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte) KourindouMessageType.PlayerPlacePlantTile);
                     packet.Write((int) TileType<Cotton_Tile>());
                     packet.Send(-1, Main.myPlayer);
@@ -90,8 +91,8 @@ namespace Kourindou.Tiles.Plants
             {
                 Player player = Main.LocalPlayer;
                 player.noThrow = 2;
-                player.showItemIcon = true;
-                player.showItemIcon2 = ItemType<CottonFibre>();
+                player.cursorItemIconEnabled = true;
+                player.cursorItemIconID = ItemType<CottonFibre>();
             }
         }
 
@@ -99,14 +100,14 @@ namespace Kourindou.Tiles.Plants
 		{
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-			    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonSeeds>());
+			    Item.NewItem(new EntitySource_TileBreak(i, j),i * 16, j * 16, 16, 16, ItemType<CottonSeeds>());
 
                 PlantStage stage = (PlantStage)(int)Math.Floor((double)(frameX / FrameWidth));
 
                 // Drop 1 Fibre
                 if (stage == PlantStage.Blooming1)
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
                 }
 
                 if (stage == PlantStage.Blooming2)
@@ -115,7 +116,7 @@ namespace Kourindou.Tiles.Plants
 
                     for (int a = 0; a < fibreDrops; a++)
                     {
-                        Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+                        Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
                     }
                 }
 
@@ -126,7 +127,7 @@ namespace Kourindou.Tiles.Plants
 
                     for (int a = 0; a < fibreDrops; a++)
                     {
-                        Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+                        Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
                     }
 
                     // Drop additional seeds
@@ -134,7 +135,7 @@ namespace Kourindou.Tiles.Plants
 
                     for (int a = 0; a < seedDrops; a++)
                     {
-                        Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonSeeds>());
+                        Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CottonSeeds>());
                     }
                 }
 
@@ -172,7 +173,7 @@ namespace Kourindou.Tiles.Plants
             }
 		}
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             PlantStage stage = GetStage(i, j);
 
@@ -180,10 +181,12 @@ namespace Kourindou.Tiles.Plants
             {
                 if (stage == PlantStage.Blooming1)
                 {
-                    Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+                    Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
 
                     UpdateMultiTile(i, j, -FrameWidth, (int)GetStyle(i, j));
-                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(
+                        SoundID.Grass with { Volume = .8f, Pitch = Main.rand.NextFloat(-.2f, .2f) },
+                        new Vector2(i * 16 + 8, j * 16 + 8));
                 }
 
                 if (stage == PlantStage.Blooming2)
@@ -192,11 +195,13 @@ namespace Kourindou.Tiles.Plants
 
                     for (int a = 0; a < fibreDrops; a++)
                     {
-                        Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+                        Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
                     }
 
                     UpdateMultiTile(i, j, -FrameWidth * 2, (int)GetStyle(i, j));
-                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(
+                        SoundID.Grass with { Volume = .8f, Pitch = Main.rand.NextFloat(-.2f, .2f) },
+                        new Vector2(i * 16 + 8, j * 16 + 8));
                 }
 
                 if (stage == PlantStage.Blooming3)
@@ -205,11 +210,13 @@ namespace Kourindou.Tiles.Plants
 
                     for (int a = 0; a < fibreDrops; a++)
                     {
-                        Item.NewItem(i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
+                        Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
                     }
 
                     UpdateMultiTile(i, j, -FrameWidth * 3, (int)GetStyle(i, j));
-                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(
+                        SoundID.Grass with { Volume = .8f, Pitch = Main.rand.NextFloat(-.2f, .2f) },
+                        new Vector2(i * 16 + 8, j * 16 + 8));
                 }
             }
             else
@@ -217,20 +224,21 @@ namespace Kourindou.Tiles.Plants
                 if (stage >= PlantStage.Blooming1)
                 {
                     // Send the right click event to the Server so items can be dropped
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte) KourindouMessageType.CottonRightClick);
                     packet.Write(i);
                     packet.Write(j);
                     packet.Send();
 
                     // Play the sound clientside
-                    Main.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(
+                        SoundID.Grass with { Volume = .8f, Pitch = Main.rand.NextFloat(-.2f, .2f) },
+                        new Vector2(i * 16 + 8, j * 16 + 8));
 
                     // Send sound packet for other clients
-                    ModPacket packet2 = mod.GetPacket();
+                    ModPacket packet2 = Mod.GetPacket();
                     packet2.Write((byte) KourindouMessageType.PlaySound);
-                    packet2.Write((byte) SoundID.Grass);
-                    packet2.Write((short) 0);
+                    packet2.Write((string) "Grass");
                     packet2.Write((float) 0.8f);
                     packet2.Write((float) Main.rand.NextFloat(-.2f, .2f));
                     packet2.Write((int) i * 16 + 8);
@@ -250,7 +258,7 @@ namespace Kourindou.Tiles.Plants
 
                 bool update = false;
 
-                switch (tileUnder.type)
+                switch (tileUnder.TileType)
                 {
                     case TileID.Dirt:
                     {
@@ -262,7 +270,8 @@ namespace Kourindou.Tiles.Plants
                         break;
                     }
 
-			    	case TileID.Grass:
+                    case TileID.Grass:
+                    case TileID.GolfGrass:
                     {
                         if (style != PlantStyle.Forest)
                         {
@@ -292,7 +301,7 @@ namespace Kourindou.Tiles.Plants
                         break;
                     }
 
-                    case TileID.FleshGrass:
+                    case TileID.CrimsonGrass:
                     {
                         if (style != PlantStyle.Crimson)
                         {
@@ -348,21 +357,21 @@ namespace Kourindou.Tiles.Plants
         private PlantStage GetStage(int i, int j)
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
-            return (PlantStage)(int)Math.Floor((double)(tile.frameX / FrameWidth));
+            return (PlantStage)(int)Math.Floor((double)(tile.TileFrameX / FrameWidth));
 		}
 
         private PlantStyle GetStyle(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            return (PlantStyle)(int)Math.Floor((double)(tile.frameY / PlantFrameHeight));
+            return (PlantStyle)(int)Math.Floor((double)(tile.TileFrameY / PlantFrameHeight));
         }
 
         private void UpdateMultiTile(int i, int j, int width, int style)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            int tileX = (int)Math.Floor((double)(tile.frameX / (FrameWidth / 2)));
-            int tileY = (int)Math.Floor((double)(((tile.frameY - ((int)GetStyle(i, j) * PlantFrameHeight))) / FrameHeight));
+            int tileX = (int)Math.Floor((double)(tile.TileFrameX / (FrameWidth / 2)));
+            int tileY = (int)Math.Floor((double)(((tile.TileFrameY - ((int)GetStyle(i, j) * PlantFrameHeight))) / FrameHeight));
 
             bool direction = false;
 
@@ -382,8 +391,8 @@ namespace Kourindou.Tiles.Plants
                 {
                     Tile currentTile = Framing.GetTileSafely(i + (direction ? 0 : -1) + x, j - tileY + y);
 
-                    currentTile.frameY = (short)((style * PlantFrameHeight) + y * 18);
-                    currentTile.frameX += (short)width;
+                    currentTile.TileFrameY = (short)((style * PlantFrameHeight) + y * 18);
+                    currentTile.TileFrameX += (short)width;
 
 			        if (Main.netMode == NetmodeID.Server)
                     {
