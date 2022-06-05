@@ -16,17 +16,13 @@ namespace Kourindou
         [Header("Personalization of the Kourindou mod")]
 
         // Plushie Power Mode Setting
-        [Range(0, 2)]
-        [Increment(1)]
-        [DefaultValue(1)]
-        [Slider]
-        [Label("Plushie Power Mode")]
-        [Tooltip("0 = Regular, 1 = Magical, 2 = Overpowered")]
-        public int plushiePower;
+        [DefaultValue(false)]
+        [Label("Plushie special effects")]
+        public bool plushiePower;
 
         //Old Textures
         [DefaultValue(false)]
-        [Label("Use old textures")]
+        [Label("Use old Fumomod textures (when available)")]
         public bool UseOldTextures;
 
         public override void OnLoaded()
@@ -39,7 +35,7 @@ namespace Kourindou
             // When the settings are changed while playing, update the modplayer variable(s)
             if (!Main.gameMenu)
             {
-                Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower = (byte)plushiePower;
+                Main.LocalPlayer.GetModPlayer<KourindouPlayer>().plushiePower = plushiePower;
 
                 // When the setting is changed during multiplayer, also send a packet
                 if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -47,7 +43,7 @@ namespace Kourindou
                     ModPacket packet = Mod.GetPacket();
                     packet.Write((byte)KourindouMessageType.ClientConfig);
                     packet.Write((byte)Main.LocalPlayer.whoAmI);
-                    packet.Write((byte)plushiePower);
+                    packet.Write((bool)plushiePower);
                     packet.Send();
                 }
 

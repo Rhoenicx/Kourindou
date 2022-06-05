@@ -203,7 +203,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 			if (_owner.whoAmI == Main.myPlayer)
 			{
-				if (Main.player[_owner.whoAmI].GetModPlayer<KourindouPlayer>().PlushieSlotItemID != ItemType<YoumuKonpaku_Plushie_Item>() || _owner.GetModPlayer<KourindouPlayer>().plushiePower != 2)
+				if (Main.player[_owner.whoAmI].GetModPlayer<KourindouPlayer>().PlushieSlotItemID != ItemType<YoumuKonpaku_Plushie_Item>() || !_owner.GetModPlayer<KourindouPlayer>().plushiePower)
 				{
 					Projectile.Kill();
 				}

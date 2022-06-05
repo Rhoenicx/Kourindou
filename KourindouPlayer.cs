@@ -34,7 +34,7 @@ namespace Kourindou
     {
         //--------------------------------------------------------------------------------
         // Determines the power mode of all the plushies
-        public byte plushiePower;
+        public bool plushiePower;
 
         // Item ID of the plushie slot item
         public int PlushieSlotItemID;
@@ -80,7 +80,7 @@ namespace Kourindou
 
         public override void LoadData(TagCompound tag)
         {
-            plushiePower = tag.GetByte("plushiePowerMode");
+            plushiePower = tag.GetBool("plushiePowerMode");
             CirnoPlushie_Attack_Counter = tag.GetByte("cirnoPlushieAttackCounter");
             CirnoPlushie_TimesNine = tag.GetBool("cirnoPlushieTimesNine");
         }
@@ -88,7 +88,7 @@ namespace Kourindou
         public override void OnEnterWorld(Player player)
         {
             // When player joins a singleplayer world get the PlushiePower Client Config
-            plushiePower = (byte)Kourindou.KourindouConfigClient.plushiePower;
+            plushiePower = Kourindou.KourindouConfigClient.plushiePower;
 
             base.OnEnterWorld(player);
         }
@@ -96,7 +96,7 @@ namespace Kourindou
         public override void PlayerConnect(Player player)
         {
             // PlushiePower Client Config
-            plushiePower = (byte)Kourindou.KourindouConfigClient.plushiePower;
+            plushiePower = Kourindou.KourindouConfigClient.plushiePower;
 
             // Update other clients when joining multiplayer or when another player joins multiplayer
             if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -104,7 +104,7 @@ namespace Kourindou
                 ModPacket packet = Mod.GetPacket();
                 packet.Write((byte)KourindouMessageType.ClientConfig);
                 packet.Write((byte)Main.myPlayer);
-                packet.Write((byte)plushiePower);
+                packet.Write((bool)plushiePower);
                 packet.Send();
             }
         }
@@ -505,22 +505,21 @@ namespace Kourindou
                     );
                 }
 
-
-
-                SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode.SoundId, (int)position.X, (int)position.Y, SoundID.DD2_ExplosiveTrapExplode.Style, .8f, 1f);
+                SoundEngine.PlaySound(
+                    SoundID.DD2_ExplosiveTrapExplode with { Volume = .8f, PitchVariance = .1f },
+                    position);
 
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
                     // Send sound packet for other clients
-                    ModPacket packet2 = Mod.GetPacket();
-                    packet2.Write((byte)KourindouMessageType.PlaySound);
-                    packet2.Write((byte)SoundID.DD2_ExplosiveTrapExplode.SoundId);
-                    packet2.Write((short)SoundID.DD2_ExplosiveTrapExplode.Style);
-                    packet2.Write((float)0.8f);
-                    packet2.Write((float)1f);
-                    packet2.Write((int)position.X);
-                    packet2.Write((int)position.Y);
-                    packet2.Send();
+                    ModPacket packet = Mod.GetPacket();
+                    packet.Write((byte) KourindouMessageType.PlaySound);
+                    packet.Write((string) "DD2_ExplosiveTrapExplode");
+                    packet.Write((float) 0.8f);
+                    packet.Write((float) 1f);
+                    packet.Write((int) position.X);
+                    packet.Write((int) position.Y);
+                    packet.Send();
                 }
             }
         }
@@ -720,16 +719,16 @@ namespace Kourindou
         {
             if (!Main.gameMenu)
             {
-                return Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower == 2;
+                return Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower;
             }
 
-            return Kourindou.KourindouConfigClient.plushiePower == 2;
+            return Kourindou.KourindouConfigClient.plushiePower;
         }
 
         public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
         {
-            // cannot place an item in the slot if the power mode is not 2
-            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower != 2)
+            // cannot place an item in the slot if the power mode is not active
+            if (!Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower)
             {
                 return false;
             }
@@ -744,7 +743,7 @@ namespace Kourindou
 
         public override bool ModifyDefaultSwapSlot(Item item, int accSlotToSwapTo)
         {
-            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower != 2)
+            if (!Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower)
             {
                 return false;
             }

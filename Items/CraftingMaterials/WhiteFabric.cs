@@ -25,7 +25,7 @@ namespace Kourindou.Items.CraftingMaterials
             {
                 if (recipe.HasResult(ItemID.Silk))
                 {
-                    recipe.RemoveRecipe();
+                    recipe.DisableRecipe();
                 }
             }
 

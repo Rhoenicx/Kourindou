@@ -94,7 +94,7 @@ namespace Kourindou.Items.Weapons
                     {
                         Projectile.NewProjectile(
                             source,
-                            NormalCounter == 0 ? player.Center : Main.projectile[player.GetModPlayer<KourindouPlayer>().CrescentMoonStaffFlames[NormalCounter - 1]].Center,
+                            NormalCounter == 0 ? player.Center + (Vector2.Normalize(velocity) * 56f) : Main.projectile[player.GetModPlayer<KourindouPlayer>().CrescentMoonStaffFlames[NormalCounter - 1]].Center,
                             NormalCounter == 0 ? velocity : Vector2.Normalize(Main.projectile[player.GetModPlayer<KourindouPlayer>().CrescentMoonStaffFlames[NormalCounter - 1]].Center.DirectionTo(Main.MouseWorld)) * velocity.Length(),
                             type,
                             damage,

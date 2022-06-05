@@ -57,8 +57,7 @@ namespace Kourindou.Tiles.Plants
             name.SetDefault("Flax Plant");
             AddMapEntry(new Color(1, 128, 201), name);
 
-            SoundStyle = 0;
-            SoundType = SoundID.Grass;
+            HitSound = SoundID.Grass;
         }
 
         public override void PlaceInWorld(int i, int j, Item item) //Runs only on SinglePlayer and MultiplayerClient!

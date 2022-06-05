@@ -50,6 +50,7 @@ namespace Kourindou
         public static Dictionary<int, PlushieTileTexture> PlushieTileTextures;
         public static Dictionary<int, PlushieItemTexture> PlushieItemTextures;
         public static Dictionary<int, PlushieProjectileTexture> PlushieProjectileTextures;
+        public static Dictionary<string, SoundStyle> SoundDictionary;
 
         internal static Kourindou Instance;
 
@@ -70,8 +71,9 @@ namespace Kourindou
         public static Mod Gensokyo;
         public static bool GensokyoLoaded;
 
-        // Plushie Textures
-
+        // Hairloader Mod Instance
+        public static Mod HairLoader;
+        public static bool HairLoaderLoaded;
 
         // Load
         public override void Load()
@@ -80,6 +82,12 @@ namespace Kourindou
 
             SkillKey = KeybindLoader.RegisterKeybind(this, "Skill", "Mouse2");
             UltimateKey = KeybindLoader.RegisterKeybind(this, "Ultimate", "Mouse2");
+
+            SoundDictionary = new Dictionary<string, SoundStyle> 
+            {
+                { "Grass", SoundID.Grass },
+                { "DD2_ExplosiveTrapExplode", SoundID.DD2_ExplosiveTrapExplode }
+            };
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
@@ -102,6 +110,10 @@ namespace Kourindou
             UltimateKey = null;
 
             Instance = null;
+            Gensokyo = null;
+            HairLoader = null;
+
+            SoundDictionary = null;
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
@@ -117,8 +129,9 @@ namespace Kourindou
         // PostSetupContent - Register mods for compatibility
         public override void PostSetupContent()
         {
-            // Check if Gensokyo mod is also loaded
+            // Check loaded mods
             GensokyoLoaded = ModLoader.TryGetMod("Gensokyo", out Gensokyo);
+            HairLoaderLoaded = ModLoader.TryGetMod("HairLoader", out HairLoader);
 
             // Support for Gensokyo Mod
             if (Gensokyo != null)
@@ -126,6 +139,13 @@ namespace Kourindou
                 CrossModContent.SetupGensokyo(Gensokyo, this);
             }
 
+            // Support for HairLoader Mod
+            if (HairLoader != null)
+            {
+                CrossModContent.SetupHairLoader(HairLoader, this);
+            }
+
+            // Swap vanilla textures
             if (!Main.dedServ)
             {
                 SwitchPlushieTextures();
@@ -259,7 +279,7 @@ namespace Kourindou
                     if (Main.netMode != NetmodeID.SinglePlayer)
                     {
                         byte playerID = reader.ReadByte();
-                        byte plushiePower = reader.ReadByte();
+                        bool plushiePower = reader.ReadBoolean();
 
                         Player player = Main.player[playerID];
 
@@ -271,7 +291,7 @@ namespace Kourindou
                             ModPacket packet = GetPacket();
                             packet.Write((byte)KourindouMessageType.ClientConfig);
                             packet.Write((byte)playerID);
-                            packet.Write((byte)plushiePower);
+                            packet.Write((bool)plushiePower);
                             packet.Send(-1, whoAmI);
                         }
                     }
@@ -358,8 +378,7 @@ namespace Kourindou
 
                 case KourindouMessageType.PlaySound: 
 				{
-					byte soundType = reader.ReadByte();
-					short soundStyle = reader.ReadInt16();
+					string soundName = reader.ReadString();
 					float soundVolume = reader.ReadSingle();
 					float soundVariance = reader.ReadSingle();
 					int soundSourceX = reader.ReadInt32();
@@ -369,8 +388,7 @@ namespace Kourindou
 					{
 						ModPacket packet = GetPacket();
 						packet.Write((byte) KourindouMessageType.PlaySound);
-						packet.Write(soundType);
-						packet.Write(soundStyle);
+						packet.Write(soundName);
 						packet.Write(soundVolume);
 						packet.Write(soundVariance);
 						packet.Write(soundSourceX);
@@ -383,22 +401,14 @@ namespace Kourindou
 					if (soundSourceX == -1 || soundSourceY == -1)
 					{
                         SoundEngine.PlaySound(
-							soundType,
-							(int)Main.LocalPlayer.Center.X,
-							(int)Main.LocalPlayer.Center.Y,
-							soundStyle,
-							soundVolume,
-							Main.rand.NextFloat(-soundVariance, soundVariance));
+							SoundDictionary[soundName] with { Volume = soundVolume, PitchVariance = soundVariance},
+							Main.LocalPlayer.Center);
 					}
 					else
 					{
                         SoundEngine.PlaySound(
-							soundType,
-							soundSourceX,
-							soundSourceY,
-							soundStyle,
-							soundVolume,
-							Main.rand.NextFloat(-soundVariance, soundVariance));
+                            SoundDictionary[soundName] with { Volume = soundVolume, PitchVariance = soundVariance },
+                            new Vector2(soundSourceX, soundSourceY));
 					}
 					break;
 				}
@@ -407,7 +417,7 @@ namespace Kourindou
 				{
 					string soundName = reader.ReadString();
 					float soundVolume = reader.ReadSingle();
-					float pitchVariance = reader.ReadSingle();
+					float soundVariance = reader.ReadSingle();
 					int soundPositionX = reader.ReadInt32();
 					int soundPositionY = reader.ReadInt32();
 
@@ -417,7 +427,7 @@ namespace Kourindou
 						packet.Write((byte) KourindouMessageType.PlayCustomSound);
 						packet.Write(soundName);
 						packet.Write(soundVolume);
-						packet.Write(pitchVariance);
+						packet.Write(soundVariance);
 						packet.Write(soundPositionX);
 						packet.Write(soundPositionY);
 
@@ -428,19 +438,14 @@ namespace Kourindou
 					if (soundPositionX == -1 || soundPositionY == -1)
 					{
                         SoundEngine.PlaySound(
-                            SoundLoader.GetLegacySoundSlot(Instance, "Sounds/Custom/" + soundName)
-                                .WithVolume(soundVolume)
-                                .WithPitchVariance(Main.rand.NextFloat(-pitchVariance, pitchVariance)),
+                            new SoundStyle("Kourindou/Sounds/Custom/" + soundName) with { Volume = soundVolume, PitchVariance = soundVariance},
                             Main.LocalPlayer.Center);
 					}
 					else
 					{
                         SoundEngine.PlaySound(
-                            SoundLoader.GetLegacySoundSlot(Instance, "Sounds/Custom/" + soundName)
-                                .WithVolume(soundVolume)
-                                .WithPitchVariance(Main.rand.NextFloat(-pitchVariance, pitchVariance)),
-                            soundPositionX,
-                            soundPositionY);
+                            new SoundStyle("Kourindou/Sounds/Custom/" + soundName) with { Volume = soundVolume, PitchVariance = soundVariance },
+                            new Vector2(soundPositionX, soundPositionY));
 					}
 					break;
 				}

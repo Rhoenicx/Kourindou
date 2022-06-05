@@ -62,9 +62,7 @@ namespace Kourindou.Tiles.Plants
             name.SetDefault("Cotton Plant");
             AddMapEntry(new Color(155, 155, 155), name);
 
-            
-            SoundStyle = 0;
-            SoundType = 0;
+            HitSound = SoundID.Dig;
         }
 
         public override void PlaceInWorld(int i, int j, Item item) //Runs only on SinglePlayer and MultiplayerClient!
@@ -186,7 +184,9 @@ namespace Kourindou.Tiles.Plants
                     Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CottonFibre>());
 
                     UpdateMultiTile(i, j, -FrameWidth, (int)GetStyle(i, j));
-                    SoundEngine.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(
+                        SoundID.Grass with { Volume = .8f, Pitch = Main.rand.NextFloat(-.2f, .2f) },
+                        new Vector2(i * 16 + 8, j * 16 + 8));
                 }
 
                 if (stage == PlantStage.Blooming2)
@@ -199,7 +199,9 @@ namespace Kourindou.Tiles.Plants
                     }
 
                     UpdateMultiTile(i, j, -FrameWidth * 2, (int)GetStyle(i, j));
-                    SoundEngine.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(
+                        SoundID.Grass with { Volume = .8f, Pitch = Main.rand.NextFloat(-.2f, .2f) },
+                        new Vector2(i * 16 + 8, j * 16 + 8));
                 }
 
                 if (stage == PlantStage.Blooming3)
@@ -212,7 +214,9 @@ namespace Kourindou.Tiles.Plants
                     }
 
                     UpdateMultiTile(i, j, -FrameWidth * 3, (int)GetStyle(i, j));
-                    SoundEngine.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(
+                        SoundID.Grass with { Volume = .8f, Pitch = Main.rand.NextFloat(-.2f, .2f) },
+                        new Vector2(i * 16 + 8, j * 16 + 8));
                 }
             }
             else
@@ -227,13 +231,14 @@ namespace Kourindou.Tiles.Plants
                     packet.Send();
 
                     // Play the sound clientside
-                    SoundEngine.PlaySound(SoundID.Grass, i * 16 + 8, j * 16 + 8, 0, .8f, Main.rand.NextFloat(-.2f,.2f));
+                    SoundEngine.PlaySound(
+                        SoundID.Grass with { Volume = .8f, Pitch = Main.rand.NextFloat(-.2f, .2f) },
+                        new Vector2(i * 16 + 8, j * 16 + 8));
 
                     // Send sound packet for other clients
                     ModPacket packet2 = Mod.GetPacket();
                     packet2.Write((byte) KourindouMessageType.PlaySound);
-                    packet2.Write((byte) SoundID.Grass);
-                    packet2.Write((short) 0);
+                    packet2.Write((string) "Grass");
                     packet2.Write((float) 0.8f);
                     packet2.Write((float) Main.rand.NextFloat(-.2f, .2f));
                     packet2.Write((int) i * 16 + 8);

@@ -45,7 +45,7 @@ namespace Kourindou.Tiles.Plushies
             if (closer)
             {
                 Player player = Main.LocalPlayer;
-                if (player.GetModPlayer<KourindouPlayer>().plushiePower == 1)
+                if (player.GetModPlayer<KourindouPlayer>().plushiePower)
                 {
                     player.AddBuff(BuffType<Buff_PlushieInRange>(), 20);
                 }
@@ -70,12 +70,8 @@ namespace Kourindou.Tiles.Plushies
                 float pitchVariance = 0f;
 
                 SoundEngine.PlaySound(
-                    SoundLoader.GetLegacySoundSlot(Kourindou.Instance, "Sounds/Custom/" + soundName)
-                        .WithVolume(soundVolume)
-                        .WithPitchVariance(Main.rand.NextFloat(-pitchVariance, pitchVariance)),
-                    (int)soundPosition.X,
-                    (int)soundPosition.Y);
-
+                    new SoundStyle("Kourindou/Sounds/Custom/" + soundName) with { Volume = soundVolume, PitchVariance = pitchVariance },
+                    soundPosition);
 
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {

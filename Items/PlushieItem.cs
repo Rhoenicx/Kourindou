@@ -59,7 +59,7 @@ namespace Kourindou.Items
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             // Remove "Equipable" line if the power mode is not 2
-            if (Kourindou.KourindouConfigClient.plushiePower != 2)
+            if (!Kourindou.KourindouConfigClient.plushiePower)
             {
                 TooltipLine equipmentLine = tooltips.Find(x => x.Text.Contains("Equipable"));
                 tooltips.Remove(equipmentLine);
@@ -72,7 +72,7 @@ namespace Kourindou.Items
         // Execute custom equip effects
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            if (player.GetModPlayer<KourindouPlayer>().plushiePower == 2)
+            if (player.GetModPlayer<KourindouPlayer>().plushiePower)
             {
                 player.GetModPlayer<KourindouPlayer>().PlushieSlotItemID = Item.type;
                 PlushieEquipEffects(player);
@@ -85,17 +85,17 @@ namespace Kourindou.Items
         // Cannot be placed in normal equipment slots, only the plushie slot
         public override bool CanEquipAccessory(Player player, int slot, bool modded)
         {
-            if (slot > 0)
+            if (!modded)
+            {
+                return false;   
+            }
+
+            if (slot != GetInstance<PlushieEquipSlot>().Type)
             {
                 return false;
             }
 
-            if (player.GetModPlayer<KourindouPlayer>().plushiePower != 2)
-            {
-                return false;
-            }
-
-            return true;
+            return player.GetModPlayer<KourindouPlayer>().plushiePower;
         }
 
         // Prevent the player from putting this accessory in the tinkerer slot
@@ -114,6 +114,7 @@ namespace Kourindou.Items
         {
             if (player.altFunctionUse == 2)
             {
+                Item.noUseGraphic = true;
                 Vector2 speed = player.velocity + Vector2.Normalize(Main.MouseWorld - player.Center) * shootSpeed;
 
                 // Singeplayer
@@ -134,16 +135,22 @@ namespace Kourindou.Items
                 else
                 {
                     ModPacket packet = Mod.GetPacket();
-                    packet.Write((byte) KourindouMessageType.ThrowPlushie);
-                    packet.Write((byte) player.whoAmI);
+                    packet.Write((byte)KourindouMessageType.ThrowPlushie);
+                    packet.Write((byte)player.whoAmI);
                     packet.WriteVector2(speed);
-                    packet.Write((int) projectileType);
-                    packet.Write((int) Item.damage);
-                    packet.Write((float) Item.knockBack);
+                    packet.Write((int)projectileType);
+                    packet.Write((int)Item.damage);
+                    packet.Write((float)Item.knockBack);
                     packet.Send();
                 }
                 return true;
             }
+            else
+            {
+                Item.noUseGraphic = false;
+            }
+
+            player.lastVisualizedSelectedItem = Item;
 
             return null;
         }

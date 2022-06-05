@@ -35,7 +35,7 @@ namespace Kourindou.Items.CraftingMaterials
             {
                 if (recipe.HasResult(ItemID.PinkThread))
                 {
-                    recipe.RemoveRecipe();
+                    recipe.DisableRecipe();
                 }
             }
 
