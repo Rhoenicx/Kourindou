@@ -12,6 +12,9 @@ namespace Kourindou.Projectiles.Weapons
 {
     public class CrescentMoonStaffStar : ModProjectile
     {
+        public bool JustSpawned = true;
+        public int RotateDirection;
+
         public bool resized = false;
         public List<int> npcHit = new List<int>();
 
@@ -88,14 +91,20 @@ namespace Kourindou.Projectiles.Weapons
 
         public override void AI()
         {
+            if (JustSpawned)
+            {
+                RotateDirection = Main.rand.Next(0, 2);
+                JustSpawned = false;
+            }
+
             if (Projectile.Opacity < 1f)
             {
                 Projectile.Opacity += 1f / 15f;
             }
 
-            Projectile.rotation += Projectile.ai[0] == 0f ? MathHelper.ToRadians(7f) : MathHelper.ToRadians(-7f);
+            Projectile.rotation += RotateDirection == 0 ? MathHelper.ToRadians(7f) : MathHelper.ToRadians(-7f);
 
-            if (!Projectile.tileCollide && (!Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height) || Projectile.localAI[0] > 60))
+            if (!Projectile.tileCollide && (!Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height) || Projectile.localAI[0] > 60) || Projectile.ai[0] == 0f)
             {
                 Projectile.tileCollide = true;
                 Projectile.netUpdate = true;
@@ -108,9 +117,7 @@ namespace Kourindou.Projectiles.Weapons
                     Projectile.position,
                     Projectile.Hitbox.Width,
                     Projectile.Hitbox.Height,
-                    Projectile.ai[1] == 0f ? 292 : 15
-
-                    );
+                    Projectile.ai[1] == 0f ? 292 : 15);
             }
             
             Projectile.localAI[0]++;

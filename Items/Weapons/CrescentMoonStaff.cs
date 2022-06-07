@@ -100,7 +100,7 @@ namespace Kourindou.Items.Weapons
                             damage,
                             knockback,
                             player.whoAmI,
-                            Main.rand.Next(0, 2),
+                            NormalCounter,
                             Main.rand.Next(0, 2)
                         );
                     }
