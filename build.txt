@@ -1,4 +1,4 @@
-author = Rhoenicx
+author = KourindouDev
 version = 0.1.0.0
 displayName = Kourindou
 hideCode = false
