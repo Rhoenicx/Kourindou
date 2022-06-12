@@ -1,8 +1,7 @@
 author = Rhoenicx
-version = 0.0.0.1
+version = 0.1.0.0
 displayName = Kourindou
-hideCode = true
-hideResources = true
+hideCode = false
+hideResources = false
 homepage = https://discord.gg/q6S69rv8Gw
 buildIgnore = _Development/*
-weakReferences = WingSlotExtra@1.2.3
