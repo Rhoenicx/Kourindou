@@ -20,32 +20,32 @@ namespace Kourindou.Items.CraftingMaterials
 
         public override void AddRecipes()
         {
-            // Remove Crafting recipes
+            // Remove existing recipes
             foreach (Recipe recipe in Main.recipe)
             {
-                if (recipe.HasResult(ItemID.Silk))
+                if (recipe.TryGetResult(ItemID.Silk, out Item result))
                 {
-                    recipe.DisableRecipe();
+                    Main.recipe[recipe.RecipeIndex].DisableRecipe();
                 }
             }
 
-            // Add recipe
-            Main.recipe[ItemID.Silk]
-                .AddIngredient(ItemType<WhiteThread>(), 4)
-                .AddTile(TileType<WeavingLoom_Tile>())
-                .Register();
+            // Add new recipe
+            Recipe newRecipe = Mod.CreateRecipe(ItemID.Silk, 1);
+            newRecipe.AddIngredient(ItemType<WhiteThread>(), 4);
+            newRecipe.AddTile(TileType<WeavingLoom_Tile>());
+            newRecipe.Register();
 
             // Remove colors on water
-            Main.recipe[ItemID.Silk]
-                .AddRecipeGroup("Kourindou:Fabric", 1)
-                .AddCondition(Recipe.Condition.NearWater)
-                .Register();
+            Recipe newRecipe2 = Mod.CreateRecipe(ItemID.Silk, 1);
+            newRecipe2.AddRecipeGroup("Kourindou:Fabric", 1);
+            newRecipe2.AddCondition(Recipe.Condition.NearWater);
+            newRecipe2.Register();
 
             // Remove colors on dye vat
-            Main.recipe[ItemID.Silk]
-                .AddRecipeGroup("Kourindou:Fabric", 1)
-                .AddTile(TileID.DyeVat)
-                .Register();
+            Recipe newRecipe3 = Mod.CreateRecipe(ItemID.Silk, 1);
+            newRecipe3.AddRecipeGroup("Kourindou:Fabric", 1);
+            newRecipe3.AddTile(TileID.DyeVat);
+            newRecipe3.Register();
         }
     }
 }

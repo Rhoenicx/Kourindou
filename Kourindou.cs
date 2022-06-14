@@ -83,7 +83,7 @@ namespace Kourindou
             SkillKey = KeybindLoader.RegisterKeybind(this, "Skill", "Mouse2");
             UltimateKey = KeybindLoader.RegisterKeybind(this, "Ultimate", "Mouse2");
 
-            SoundDictionary = new Dictionary<string, SoundStyle> 
+            SoundDictionary = new Dictionary<string, SoundStyle>
             {
                 { "Grass", SoundID.Grass },
                 { "DD2_ExplosiveTrapExplode", SoundID.DD2_ExplosiveTrapExplode }
@@ -101,7 +101,7 @@ namespace Kourindou
         {
             KourindouConfigClient = null;
 
-            if(RightClickOverrides != null) {
+            if (RightClickOverrides != null) {
                 RightClickOverrides.Clear();
                 RightClickOverrides = null;
             }
@@ -151,7 +151,7 @@ namespace Kourindou
                 SwitchPlushieTextures();
 
                 // Thread
-                TextureAssets.Item[ItemID.BlackThread]= Assets.Request<Texture2D>("Items/CraftingMaterials/BlackThread");
+                TextureAssets.Item[ItemID.BlackThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/BlackThread");
                 TextureAssets.Item[ItemID.GreenThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/GreenThread");
                 TextureAssets.Item[ItemID.PinkThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/PinkThread");
 
@@ -163,7 +163,7 @@ namespace Kourindou
                 TextureAssets.Tile[TileID.SilkRope] = Assets.Request<Texture2D>("Tiles/Blocks/WhiteFabric_Tile");
                 TextureAssets.Projectile[ProjectileID.SilkRopeCoil] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile");
                 TextureAssets.Chains[4] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain1");
-                TextureAssets.Chains[5] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain2");                
+                TextureAssets.Chains[5] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain2");
             }
         }
 
