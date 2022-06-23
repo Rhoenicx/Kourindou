@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
+using Kourindou.Items.Plushies;
+using Kourindou.Projectiles.Plushies.PlushieEffects;
 
 namespace Kourindou
 {
@@ -54,7 +57,27 @@ namespace Kourindou
 			}
 		}
 
-		public override void PostUpdate(Item item)
+        public override void UseAnimation(Item item, Player player)
+        {
+			if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<Kourindou_SakuyaIzayoi_Plushie_Item>()) && item.damage > 0)
+			{
+				// Spawn 4 knifes on regular attack animations
+				for (int i = 0; i < 4; i++)
+				{
+					Projectile.NewProjectile(
+						player.GetSource_Accessory(new Item(ItemType<Kourindou_SakuyaIzayoi_Plushie_Item>())),
+						player.Center,
+						Vector2.Normalize(Main.MouseWorld - player.Center).RotatedBy(MathHelper.ToRadians(i >= 2 ? 5 * (i - 1) : -5 * (i + 1))) * (player.HeldItem.shootSpeed > 0f ? player.HeldItem.shootSpeed : 8f),
+						ProjectileType<SakuyaIzayoi_Plushie_Knife>(),
+						10 + (int)(player.statLifeMax2 / 15),
+						1f,
+						Main.myPlayer
+					);
+				}
+			}
+        }
+
+        public override void PostUpdate(Item item)
 		{
 			base.PostUpdate(item);
 		}

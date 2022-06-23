@@ -57,7 +57,7 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-            if (player.whoAmI == Main.myPlayer && player.itemAnimationMax -1 == player.itemAnimation)
+            if (player.whoAmI == Main.myPlayer)
             {
                 // Increase damage by 5 percent
                 player.GetDamage(DamageClass.Generic) += 0.05f;
@@ -67,20 +67,6 @@ namespace Kourindou.Items.Plushies
 
                 // Increase Throwing damage by 40 percent
                 player.GetDamage(DamageClass.Throwing) += 0.40f;
-
-                // Spawn 4 knifes on regular attack animations
-			    for (int i = 0; i < 4; i++)
-			    {
-			    	Projectile.NewProjectile(
-                        player.GetSource_Accessory(this.Item),
-			    		player.Center,
-			    		Vector2.Normalize(Main.MouseWorld - player.Center).RotatedBy(MathHelper.ToRadians(i >= 2 ? 5 * (i - 1) : -5 * (i + 1))) * (player.HeldItem.shootSpeed > 0f ? player.HeldItem.shootSpeed : 8f),
-			    		ProjectileType<SakuyaIzayoi_Plushie_Knife>(),
-			    		10 + (int)(player.statLifeMax2 / 15),
-			    		1f,
-			    		Main.myPlayer
-			    	);
-			    }
             }
         }
 
