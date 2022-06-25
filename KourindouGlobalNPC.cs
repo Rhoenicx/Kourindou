@@ -5,12 +5,29 @@ using Terraria.GameContent.ItemDropRules;
 using Kourindou.Items.Plushies;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
+using Kourindou.Buffs;
+using Microsoft.Xna.Framework;
 
 namespace Kourindou
 {
     public class KourindouGlobalNPC : GlobalNPC
     {
-        
+        public override bool InstancePerEntity => true;
+
+        // Debuffs
+        public bool DebuffMedicineMelancholy;
+        public int DebuffMedicineMelancholyStacks;
+
+        public override void ResetEffects(NPC npc)
+        {
+            DebuffMedicineMelancholy = false;
+
+            if (!npc.HasBuff<DeBuff_MedicineMelancholy>())
+            {
+                DebuffMedicineMelancholyStacks = 0;
+            }
+        }
+
         public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
         {
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
@@ -23,19 +40,22 @@ namespace Kourindou
             }
 
             // Shion Yorigami random damage increase on NPC hits 0.1% chance
-            if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()))
+            if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()) && (int)Main.rand.Next(1, 1000) == 1)
             {
-                if ((int)Main.rand.Next(1,1000) == 1)
-                {
-                    damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
-                }
+                damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
+            }
+
+            // Medicine Melancholy debuff present increase damage
+            if (DebuffMedicineMelancholy)
+            {
+                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
             }
         }
 
         public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
-            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
+            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
             {
                 if (projectile.CountsAsClass(DamageClass.Melee) || projectile.CountsAsClass(DamageClass.Ranged) || projectile.CountsAsClass(DamageClass.Throwing) || projectile.minion)
                 {
@@ -44,18 +64,20 @@ namespace Kourindou
             }
 
             // Shion Yorigami random damage increase on NPC hits 0.1% chance
-            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()))
+            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>())&& (int)Main.rand.Next(1,1000) == 1)
             {
-                if ((int)Main.rand.Next(1,1000) == 1)
-                {
-                    damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
-                }
+                damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
             }
 
             // Disable crit for Flandre Scarlet Plushie effect
             if (projectile.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
             {
                 crit = false;
+            }
+
+            if (DebuffMedicineMelancholy)
+            {
+                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
             }
         }
 
@@ -72,13 +94,13 @@ namespace Kourindou
                     player.statLife += 25;
                     player.HealEffect(25, true);
                 }
-            }    
+            }
         }
 
         public override void OnHitByProjectile(NPC npc, Projectile projectile, int damage, float knockback, bool crit)
         {
             // Chen Plushie Effect
-            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
+            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
             {
                 if (npc.life <= 0 && !npc.friendly)
                 {
@@ -87,6 +109,42 @@ namespace Kourindou
                     Main.player[projectile.owner].AddBuff(BuffID.WellFed, 720);
                     Main.player[projectile.owner].statLife += 25;
                     Main.player[projectile.owner].HealEffect(25, true);
+                }
+            }
+        }
+
+        public override void UpdateLifeRegen(NPC npc, ref int damage)
+        {
+            if (DebuffMedicineMelancholy && !npc.buffImmune[BuffID.Poisoned])
+            {
+                int damagePerSecond = 20;
+
+                if (npc.lifeRegen > 0)
+                {
+                    npc.lifeRegen = 0;
+                }
+
+                npc.lifeRegen -= damagePerSecond * (DebuffMedicineMelancholyStacks + 1) * (npc.HasBuff(BuffID.Venom)? 2 : 1);
+            }
+        }
+
+        public override void DrawEffects(NPC npc, ref Color drawColor)
+        {
+            if (DebuffMedicineMelancholy)
+            {
+                if (Main.rand.Next(0, 3) == 0)
+                {
+                    Dust.NewDust(
+                        npc.position,
+                        npc.width,
+                        npc.height,
+                        DustID.Cloud,
+                        Main.rand.NextFloat(-2f, 2f),
+                        Main.rand.NextFloat(-2f, 2f),
+                        Main.rand.Next(10, 255),
+                        new Color(193, 11, 136),
+                        Main.rand.NextFloat(0.1f, 1f)
+                    );
                 }
             }
         }
@@ -303,7 +361,12 @@ namespace Kourindou
     {
         public bool CanDrop(DropAttemptInfo info)
         {
-            return info.npc.Center.X < Main.UnderworldLayer;
+            if (!info.IsInSimulation)
+            {
+                return (int)(info.npc.position.Y / 16) <= Main.UnderworldLayer; ;
+            }
+
+            return !Main.player[Main.myPlayer].ZoneUnderworldHeight;
         }
 
         public bool CanShowItemDropInUI()
@@ -320,7 +383,12 @@ namespace Kourindou
     {
         public bool CanDrop(DropAttemptInfo info)
         {
-            return info.npc.Center.X > Main.UnderworldLayer;
+            if (!info.IsInSimulation)
+            {
+                return (int)(info.npc.position.Y / 16) > Main.UnderworldLayer;
+            }
+
+            return Main.player[Main.myPlayer].ZoneUnderworldHeight;
         }
 
         public bool CanShowItemDropInUI()

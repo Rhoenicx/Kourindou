@@ -55,7 +55,14 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase hp regen by 1 point
+            player.lifeRegen += 1;
 
+            // Increase all damage by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // Immunity to poison debuff
+            player.buffImmune[BuffID.Poisoned] = true;
         }
 
         public override void AddRecipes()

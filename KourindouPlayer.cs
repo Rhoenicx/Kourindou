@@ -62,6 +62,10 @@ namespace Kourindou
         // Half Phantom pet active
         public bool HalfPhantomPet;
 
+        // Buffs
+        public bool DebuffMedicineMelancholy;
+        public int DebuffMedicineMelancholyStacks;
+
         // Cooldown
         public Dictionary<int, Dictionary<int, CooldownTimes>> Cooldowns = new Dictionary<int, Dictionary<int, CooldownTimes>>();
         public float CooldownTimeMultiplier;
@@ -83,6 +87,27 @@ namespace Kourindou
             plushiePower = tag.GetBool("plushiePowerMode");
             CirnoPlushie_Attack_Counter = tag.GetByte("cirnoPlushieAttackCounter");
             CirnoPlushie_TimesNine = tag.GetBool("cirnoPlushieTimesNine");
+        }
+
+        public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+        {
+            if (DebuffMedicineMelancholy)
+            {
+                if (Main.rand.Next(0, 3) == 0)
+                {
+                    Dust.NewDust(
+                        drawInfo.drawPlayer.position,
+                        drawInfo.drawPlayer.width,
+                        drawInfo.drawPlayer.height,
+                        DustID.Cloud,
+                        Main.rand.NextFloat(-2f, 2f),
+                        Main.rand.NextFloat(-2f, 2f),
+                        Main.rand.Next(10, 255),
+                        new Color(193, 11, 136),
+                        Main.rand.NextFloat(0.1f, 1f)
+                    );
+                }
+            }
         }
 
         public override void OnEnterWorld(Player player)
@@ -217,26 +242,17 @@ namespace Kourindou
                     CrescentMoonStaffFlames.Remove(i);
                 }
             }
-        }
 
-        public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref bool crit)
-        {
-            // Shion Yorigami random damage increase on NPC hits 0.1% chance
-            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()))
-            {
-                if ((int)Main.rand.Next(1, 1000) == 1)
-                {
-                    damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
-                }
-            }
+            // Reset Medicine's debuff
+            DebuffMedicineMelancholy = false;
 
-            // Disable crit for Flandre Scarlet Plushie effect
-            if (projectile.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
+            if (!Player.HasBuff(BuffType<DeBuff_MedicineMelancholy>()))
             {
-                crit = false;
+                DebuffMedicineMelancholyStacks = 0;
             }
         }
 
+        // --------- Triggers on PVE --------- //
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
             // Cirno Plushie Equipped
@@ -274,8 +290,14 @@ namespace Kourindou
             {
                 TewiInabaPlushie_OnHit(target);
             }
-        }
 
+            // Medicine Melancholy Plushie Equipped
+            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()) && (int)Main.rand.Next(0, 100) < 12)
+            {
+                target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
+                target.AddBuff(BuffID.Poisoned, 600);
+            }
+        }
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockBack, bool crit)
         {
             // Cirno Plushie Equipped
@@ -317,8 +339,16 @@ namespace Kourindou
             {
                 TewiInabaPlushie_OnHit(target);
             }
+
+            // Medicine Melancholy Plushie Equipped
+            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()) && (int)Main.rand.Next(0, 100) < 12)
+            {
+                target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
+                target.AddBuff(BuffID.Poisoned, 600);
+            }
         }
 
+        // --------- Triggers on PVP --------- //
         public override void OnHitPvp(Item item, Player target, int damage, bool crit)
         {
             // Cirno Plushie Equipped
@@ -350,8 +380,14 @@ namespace Kourindou
             {
                 SatoriKomeijiPlushie_OnHit(null, target);
             }
-        }
 
+            // Medicine Melancholy Plushie Equipped
+            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()) && (int)Main.rand.Next(0, 100) < 12)
+            {
+                target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
+                target.AddBuff(BuffID.Poisoned, 300);
+            }
+        }
         public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
         {
             // Cirno Plushie Equipped
@@ -387,8 +423,62 @@ namespace Kourindou
             {
                 SatoriKomeijiPlushie_OnHit(null, target);
             }
+
+            // Medicine Melancholy Plushie Equipped
+            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()) && (int)Main.rand.Next(0, 100) < 12)
+            {
+                target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
+                target.AddBuff(BuffID.Poisoned, 300);
+            }
         }
 
+        // --------- Hits on THIS player by other things --------- //
+        public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
+        {
+            if (DebuffMedicineMelancholy)
+            {
+                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
+            }
+        }
+        public override void ModifyHitByProjectile(Projectile proj, ref int damage, ref bool crit)
+        {
+            if (DebuffMedicineMelancholy)
+            {
+                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
+            }
+        }
+
+        // --------- Hits on OTHER player --------- //
+        public override void ModifyHitPvp(Item item, Player target, ref int damage, ref bool crit)
+        {
+            // Shion Yorigami random damage increase on Player hits 0.1% chance
+            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()))
+            {
+                if ((int)Main.rand.Next(1, 1000) == 1)
+                {
+                    damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
+                }
+            }
+        }
+        public override void ModifyHitPvpWithProj(Projectile proj, Player target, ref int damage, ref bool crit)
+        {
+            // Shion Yorigami random damage increase on Player hits 0.1% chance
+            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()))
+            {
+                if ((int)Main.rand.Next(1, 1000) == 1)
+                {
+                    damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
+                }
+            }
+
+            // Disable crit for Flandre Scarlet Plushie effect
+            if (proj.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
+            {
+                crit = false;
+            }
+        }
+
+        // --------- Player got hurt --------- //
         public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
         {
             if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
@@ -424,6 +514,26 @@ namespace Kourindou
 
             return true;
         }
+
+        public override void UpdateBadLifeRegen()
+        {
+            // Medicine Melancholy poison tick
+            if (DebuffMedicineMelancholy && !Player.buffImmune[BuffID.Poisoned])
+            {
+                int damagePerSecond = 5;
+
+                if (Player.lifeRegen > 0)
+                {
+                    Player.lifeRegen = 0;
+                }
+
+                Player.lifeRegen -= damagePerSecond * (DebuffMedicineMelancholyStacks + 1) * (Player.HasBuff(BuffID.Venom) ? 2 : 1);
+            }
+        }
+
+        //--------------------------------------------------------------------------------------------------------------------//
+        //------------------------------------------------ Specific Equipped methods -----------------------------------------//
+        //--------------------------------------------------------------------------------------------------------------------//
 
         private void CirnoPlushie_OnHit(Player p, NPC n, bool crit)
         {
@@ -580,7 +690,9 @@ namespace Kourindou
             }
         }
 
-        //--------------------------------------------------------- Multi-useItem ---------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------- Multi-Use Items logic-- -----------------------------------------//
+//--------------------------------------------------------------------------------------------------------------------//
         public bool OnCooldown(int itemID, int AttackID)
         {
             if (Cooldowns.ContainsKey(itemID))
