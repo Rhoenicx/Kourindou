@@ -292,9 +292,12 @@ namespace Kourindou
             }
 
             // Medicine Melancholy Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()) && (int)Main.rand.Next(0, 100) < 12)
+            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
-                target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
+                if ((int)Main.rand.Next(0, 100) < 12)
+                {
+                    target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
+                }
                 target.AddBuff(BuffID.Poisoned, 600);
             }
         }
@@ -341,9 +344,12 @@ namespace Kourindou
             }
 
             // Medicine Melancholy Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()) && (int)Main.rand.Next(0, 100) < 12)
+            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
-                target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
+                if ((int)Main.rand.Next(0, 100) < 12)
+                {
+                    target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
+                }
                 target.AddBuff(BuffID.Poisoned, 600);
             }
         }
@@ -382,9 +388,12 @@ namespace Kourindou
             }
 
             // Medicine Melancholy Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()) && (int)Main.rand.Next(0, 100) < 12)
+            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
-                target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
+                if ((int)Main.rand.Next(0, 100) < 12)
+                {
+                    target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
+                }
                 target.AddBuff(BuffID.Poisoned, 300);
             }
         }
@@ -425,9 +434,12 @@ namespace Kourindou
             }
 
             // Medicine Melancholy Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()) && (int)Main.rand.Next(0, 100) < 12)
+            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
-                target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
+                if ((int)Main.rand.Next(0, 100) < 12)
+                {
+                    target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
+                }
                 target.AddBuff(BuffID.Poisoned, 300);
             }
         }
