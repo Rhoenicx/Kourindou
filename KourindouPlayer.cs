@@ -294,11 +294,7 @@ namespace Kourindou
             // Medicine Melancholy Plushie Equipped
             else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
-                if ((int)Main.rand.Next(0, 100) < 12)
-                {
-                    target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
-                }
-                target.AddBuff(BuffID.Poisoned, 600);
+                MedicineMelancholyPlushie_OnHit(target, null);
             }
         }
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockBack, bool crit)
@@ -346,11 +342,7 @@ namespace Kourindou
             // Medicine Melancholy Plushie Equipped
             else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
-                if ((int)Main.rand.Next(0, 100) < 12)
-                {
-                    target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
-                }
-                target.AddBuff(BuffID.Poisoned, 600);
+                MedicineMelancholyPlushie_OnHit(target, null);
             }
         }
 
@@ -390,11 +382,7 @@ namespace Kourindou
             // Medicine Melancholy Plushie Equipped
             else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
-                if ((int)Main.rand.Next(0, 100) < 12)
-                {
-                    target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
-                }
-                target.AddBuff(BuffID.Poisoned, 300);
+                MedicineMelancholyPlushie_OnHit(null, target);
             }
         }
         public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
@@ -436,11 +424,7 @@ namespace Kourindou
             // Medicine Melancholy Plushie Equipped
             else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
-                if ((int)Main.rand.Next(0, 100) < 12)
-                {
-                    target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
-                }
-                target.AddBuff(BuffID.Poisoned, 300);
+                MedicineMelancholyPlushie_OnHit(null, target);
             }
         }
 
@@ -635,12 +619,12 @@ namespace Kourindou
                 {
                     // Send sound packet for other clients
                     ModPacket packet = Mod.GetPacket();
-                    packet.Write((byte) KourindouMessageType.PlaySound);
-                    packet.Write((string) "DD2_ExplosiveTrapExplode");
-                    packet.Write((float) 0.8f);
-                    packet.Write((float) 1f);
-                    packet.Write((int) position.X);
-                    packet.Write((int) position.Y);
+                    packet.Write((byte)KourindouMessageType.PlaySound);
+                    packet.Write((string)"DD2_ExplosiveTrapExplode");
+                    packet.Write((float)0.8f);
+                    packet.Write((float)1f);
+                    packet.Write((int)position.X);
+                    packet.Write((int)position.Y);
                     packet.Send();
                 }
             }
@@ -702,9 +686,30 @@ namespace Kourindou
             }
         }
 
-//--------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------- Multi-Use Items logic-- -----------------------------------------//
-//--------------------------------------------------------------------------------------------------------------------//
+        private void MedicineMelancholyPlushie_OnHit(NPC n, Player p)
+        {
+            if (n != null)
+            {
+                if ((int)Main.rand.Next(0, 100) < 12)
+                {
+                    n.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
+                }
+                n.AddBuff(BuffID.Poisoned, 600);
+            }
+
+            if (p != null)
+            {
+                if ((int)Main.rand.Next(0, 100) < 12)
+                {
+                    p.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
+                }
+                p.AddBuff(BuffID.Poisoned, 300);
+            }
+        }
+
+        //--------------------------------------------------------------------------------------------------------------------//
+        //-------------------------------------------------- Multi-Use Items logic-- -----------------------------------------//
+        //--------------------------------------------------------------------------------------------------------------------//
         public bool OnCooldown(int itemID, int AttackID)
         {
             if (Cooldowns.ContainsKey(itemID))
