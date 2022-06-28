@@ -72,6 +72,11 @@ namespace Kourindou.Items.Plushies
                 Player.tileRangeY += 10;
             }
         }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Increased digging speed and increased reach";
+        }
 
         public override void AddRecipes()
         {

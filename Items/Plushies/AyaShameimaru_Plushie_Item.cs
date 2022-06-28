@@ -17,7 +17,7 @@ namespace Kourindou.Items.Plushies
         {
             DisplayName.SetDefault("Aya Shameimaru Plushie");
             Tooltip.SetDefault("A crow tengu. Runs a newspaper that's mostly sensational gossip");
-            ArmorIDs.Wing.Sets.Stats[Item.wingSlot] = new WingStats(180, 9f, 2.5f);
+            ArmorIDs.Wing.Sets.Stats[Item.wingSlot] = new WingStats(600, 9f, 2.5f);
         }
 
         public override void SetDefaults()
@@ -58,7 +58,16 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-            player.wingTimeMax = 200;
+            // Increase damage by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Functions as wings";
         }
 
         public override void AddRecipes()

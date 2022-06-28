@@ -69,6 +69,11 @@ namespace Kourindou.Items.Plushies
 			
 			// On Kill effect handled in globalnpc
         }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Kills grant 25 HP, well fed and rapid healing for 12 seconds.\r\n" + "When hurt gain shadow dodge for 3 seconds. +25% damage";
+        }
 
         public override void AddRecipes()
         {

@@ -64,6 +64,11 @@ namespace Kourindou.Items.Plushies
             // Immunity to poison debuff
             player.buffImmune[BuffID.Poisoned] = true;
         }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Every hit has a 12% chance to inflict a stackable poison debuff. Also gain poison immunity";
+        }
 
         public override void AddRecipes()
         {

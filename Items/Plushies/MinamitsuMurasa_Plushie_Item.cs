@@ -70,7 +70,7 @@ namespace Kourindou.Items.Plushies
             // Makes Fishron mount speed permanent
             if (player.mount.Type == MountID.CuteFishron && player.mount.Active)
             {
-                player.MountFishronSpecialCounter = 300;
+                player.MountFishronSpecialCounter += 1;
             }
 
             // Boosted stats in water
@@ -88,6 +88,12 @@ namespace Kourindou.Items.Plushies
                 //Increase life regen by 5 points
                 player.lifeRegen += 5;
             }
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Ability to swim, doubled breath and permanent fishron mount speed buff\r\n" + 
+                    "+10% damage, when in water: +10% damage, +5% crit and increased hp regen";
         }
 
         public override void AddRecipes()

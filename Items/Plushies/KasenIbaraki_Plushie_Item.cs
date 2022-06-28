@@ -69,6 +69,12 @@ namespace Kourindou.Items.Plushies
             player.buffImmune[BuffID.Darkness] = true;
             player.buffImmune[BuffID.Bleeding] = true;
             player.buffImmune[BuffID.Burning] = true;
+            player.buffImmune[BuffID.Obstructed] = true;
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Greatly increases life regen and gain immunity to most debuffs";
         }
 
         public override void AddRecipes()

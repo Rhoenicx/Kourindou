@@ -63,6 +63,11 @@ namespace Kourindou.Items.Plushies
 
             // All damage heals for 5% 
         }
+        
+        public override string AddEffectTooltip()
+        {
+            return "You heal for 5% of all damage done! +25% damage";
+        }
 
         public override void AddRecipes()
         {

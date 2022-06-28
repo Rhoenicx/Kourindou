@@ -64,6 +64,10 @@ namespace Kourindou.Items.Plushies
             // Increase minion slots by 3
             player.maxMinions += 3;
 
+            // Increased minion damage by 25 percent
+            player.GetDamage(DamageClass.Summon) += 0.25f;
+
+            // Well fed buff
             if (player.HasBuff(BuffID.WellFed))
             {
                 // Increase attack damage by 25 percent
@@ -107,6 +111,12 @@ namespace Kourindou.Items.Plushies
                     player.accRunSpeed = player.maxRunSpeed;
                 }
             }
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Increased minion knockback and minion & turret slots. + 25% minion damage\r\n" +
+                    "When Well fed: +25% damage and increased movement speed. Reversed when not well fed";
         }
 
         public override void AddRecipes()

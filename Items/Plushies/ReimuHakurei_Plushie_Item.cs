@@ -66,6 +66,11 @@ namespace Kourindou.Items.Plushies
 
             // Homing Handled in GlobalProjectile => AI();
         }
+        
+        public override string AddEffectTooltip()
+        {
+            return "All projectiles fired are homing but damage is decreased by 25%";
+        }
 
         public override void AddRecipes()
         {

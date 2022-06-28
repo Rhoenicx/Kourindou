@@ -55,41 +55,7 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-            // Increase damage by 25 percent
-            player.GetDamage(DamageClass.Generic) += 0.25f;
 
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-
-            // Also some kind of dash
-            player.dash = 1;
-
-            // Check if player has Happy! buff
-            if (player.HasBuff(BuffID.Sunflower))
-            {
-                // Increase defense by 7 points
-                player.statDefense += 7;
-
-                // Increase max HP by 50 points
-                player.statLifeMax2 += 50;
-
-                // Increase armor penetration by 20 points
-                player.GetArmorPenetration(DamageClass.Generic) += 20;
-
-                // TODO flowe boots effect
-
-                // Double movement speed
-                if (player.accRunSpeed > player.maxRunSpeed)
-                {
-                    player.accRunSpeed *= 2f;
-                    player.maxRunSpeed *= 2f;
-                }
-                else
-                {
-                    player.maxRunSpeed *= 2f;
-                    player.accRunSpeed = player.maxRunSpeed;
-                }
-            }
         }
 
         public override void AddRecipes()

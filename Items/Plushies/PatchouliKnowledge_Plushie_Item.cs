@@ -56,13 +56,13 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increase Magic damage by 40 percent
-            player.GetDamage(DamageClass.Magic) += 0.40f;
+            player.GetDamage(DamageClass.Magic) *= 2.00f;
 
             // All other damage types deal zero, really into negatives because other mods might increase this
-            player.GetDamage(DamageClass.Ranged) -= -1000f;
-            player.GetDamage(DamageClass.Summon) -= -1000f;
-            player.GetDamage(DamageClass.Melee) -= -1000f;
-            player.GetDamage(DamageClass.Throwing) -= 1000f;
+            player.GetDamage(DamageClass.Ranged).Flat = 0f;
+            player.GetDamage(DamageClass.Summon).Flat = 0f;
+            player.GetDamage(DamageClass.Melee).Flat = 0f;
+            player.GetDamage(DamageClass.Throwing).Flat = 0f;
 
             // Increase magic crit rate by 30 percent
             player.GetCritChance(DamageClass.Magic) += 30;
@@ -81,6 +81,12 @@ namespace Kourindou.Items.Plushies
                 player.maxRunSpeed *= 0.5f;
                 player.accRunSpeed = player.maxRunSpeed;
             }
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Doubled magic damage but non-magic attacks deal no damage and movement speed is halved\r\n" +
+                    "+30% magic crit, -50% mana cost";
         }
 
         public override void AddRecipes()

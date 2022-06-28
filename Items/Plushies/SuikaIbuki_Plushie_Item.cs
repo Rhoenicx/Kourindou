@@ -57,7 +57,10 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increase damage by 25 percent
-            player.GetDamage(DamageClass.Generic) += 0.25f;
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // Double melee damage done
+            player.GetDamage(DamageClass.Melee) *= 2.00f;
 
             // Increase life regen by 1 point
             player.lifeRegen += 1;
@@ -83,6 +86,12 @@ namespace Kourindou.Items.Plushies
                 // Decrease incoming damage by 10 percent
                 player.endurance += 0.10f;
             }
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Melee weapons are twice as big and deal double damage! Also increased falling speed!\r\n" +
+                    "When tipsy: +16 defense, +10% melee crit, -10% damage taken";
         }
 
         public override void AddRecipes()

@@ -68,8 +68,13 @@ namespace Kourindou.Items.Plushies
             player.statLifeMax2 += 50;
 
             // Reduce potion delay times by 35%
-            player.potionDelayTime = (int)((double)player.potionDelayTime * 0.65);
-            player.restorationDelayTime = (int)((double)player.restorationDelayTime * 0.65);
+            player.potionDelayTime = (int)((double)player.potionDelayTime * 0.8);
+            player.restorationDelayTime = (int)((double)player.restorationDelayTime * 0.8);
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "+10 HP regen, +50 max HP, +10% arrow damage, +25% damage, reduced potion cooldown";
         }
 
         public override void AddRecipes()

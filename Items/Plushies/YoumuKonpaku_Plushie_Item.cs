@@ -89,6 +89,12 @@ namespace Kourindou.Items.Plushies
 				);
             }
         }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Summon myon to fight for you!\r\n" + 
+                    "+25% damage, +50% melee speed, +15% melee crit, +15 melee penetration";
+        }
 
         public override void AddRecipes()
         {

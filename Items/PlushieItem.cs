@@ -64,13 +64,13 @@ namespace Kourindou.Items
                 TooltipLine equipmentLine = tooltips.Find(x => x.Text.Contains("Equipable"));
                 tooltips.Remove(equipmentLine);
             }
-            //else
-            //{
-            //    TooltipLine EffectLine = new TooltipLine(Mod, "PlushieEffect", AddEffectTooltip());
-            //    EffectLine.OverrideColor = new Color(255, 100, 100);
-            //
-            //    tooltips.Add(EffectLine);
-            //}
+            else
+            {
+                TooltipLine EffectLine = new TooltipLine(Mod, "PlushieEffect", "Effect: " + AddEffectTooltip());
+                EffectLine.OverrideColor = new Color(255, 255, 0);
+            
+                tooltips.Add(EffectLine);
+            }
 
             // Add Custom line "Can be Thrown using Right mouse button"
             TooltipLine line = new TooltipLine(Mod, "CanBeThrown", "Right Click: Throw plushie");
@@ -81,7 +81,7 @@ namespace Kourindou.Items
 
         public virtual string AddEffectTooltip()
         {
-            return "This plushie does not have an effect yet... :(";
+            return "None... :(";
         }
 
         // Execute custom equip effects

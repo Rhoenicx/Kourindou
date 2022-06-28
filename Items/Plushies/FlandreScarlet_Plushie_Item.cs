@@ -56,12 +56,20 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increase damage by 25 percent
-            player.GetDamage(DamageClass.Generic) += 0.25f;
+            player.GetDamage(DamageClass.Generic) += 0.50f;
 
             // Increase Life regen by +1 
             player.lifeRegen += 1;
 
+            // Increase crit by 10 percent
+            player.GetCritChance(DamageClass.Generic) += 10;
+
             // Crit hits explode
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Critical hits explode! +50% damage, +10% crit";
         }
 
         public override void AddRecipes()

@@ -55,6 +55,12 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase all damage done by 5%
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+            
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+            
             if (!player.ZoneBeach
                 && !player.ZoneCorrupt
                 && !player.ZoneCrimson
@@ -69,7 +75,14 @@ namespace Kourindou.Items.Plushies
             {
                 player.AddBuff(BuffID.Sunflower, 20);
                 Main.buffNoTimeDisplay[146] = true;
+                
+                player.lifeRegen += 10;
             }
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "In forest biome gain permanent sunflower buff and greatly increased life regen";
         }
 
         public override void AddRecipes()

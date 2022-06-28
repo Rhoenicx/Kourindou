@@ -56,20 +56,21 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increased damage by 5 percent
-            player.GetDamage(DamageClass.Generic) += 0.05f;
+            player.GetDamage(DamageClass.Generic) += 0.25f;
 
             // Increase Life regen by +1 
             player.lifeRegen += 1;
 
             // Increase Critrate by 25 percent
-            player.GetCritChance(DamageClass.Magic) += 25;
-            player.GetCritChance(DamageClass.Ranged) += 25;
-            player.GetCritChance(DamageClass.Melee) += 25;
-            player.GetCritChance(DamageClass.Throwing) += 25;
-            player.GetCritChance(DamageClass.Summon) += 25;
+            player.GetCritChance(DamageClass.Generic) += 25;
 
             // Immunity to mighty wind debuff
             player.buffImmune[BuffID.WindPushed] = true;
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Immunity to the mighty winds! +25% damage, +25% crit";
         }
 
         public override void AddRecipes()

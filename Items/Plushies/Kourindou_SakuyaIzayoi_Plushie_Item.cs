@@ -57,17 +57,20 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-            if (player.whoAmI == Main.myPlayer)
-            {
-                // Increase damage by 5 percent
-                player.GetDamage(DamageClass.Generic) += 0.05f;
+            // Increase damage by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
 
-                // Increase life regen by 1 point
-                player.lifeRegen += 1;
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
 
-                // Increase Throwing damage by 40 percent
-                player.GetDamage(DamageClass.Throwing) += 0.40f;
-            }
+            // Increase Throwing damage by 40 percent
+            player.GetDamage(DamageClass.Throwing) += 0.40f;
+            player.GetDamage(DamageClass.Ranged) += 0.40f;
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Throw 4 knives upon using a weapon. +40% throwing and ranged damage";
         }
 
         public override void AddRecipes()

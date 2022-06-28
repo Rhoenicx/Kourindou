@@ -71,6 +71,11 @@ namespace Kourindou.Items.Plushies
             player.GetDamage(DamageClass.Magic) += 0.10f;
             player.GetDamage(DamageClass.Summon) += 0.10f;
         }
+        
+        public override string AddEffectTooltip()
+        {
+            return "+15% magic crit, +10% magic & summon damage, +1 minion slots";
+        }
 
         public override void AddRecipes()
         {

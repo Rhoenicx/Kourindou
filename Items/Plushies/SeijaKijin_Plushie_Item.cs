@@ -55,14 +55,18 @@ namespace Kourindou.Items.Plushies
 
         public override void PlushieEquipEffects(Player player)
         {
-            // Increase life regen by 1 point
+            player.GetDamage(DamageClass.Generic) += 0.25f;
+
             player.lifeRegen += 1;
 
-            // Increase damage done by 5 percent
-            player.GetDamage(DamageClass.Generic) += 0.05f;
+            player.GetCritChance(DamageClass.Generic) += 10;
 
-            // Gravity Globe effect and no fall damage
             player.gravControl2 = true;
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Control gravity! +25% damage, +10% crit";
         }
 
         public override void AddRecipes()

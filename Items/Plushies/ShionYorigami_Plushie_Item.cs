@@ -62,12 +62,14 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Reduce crit chance by 100 percent
-            player.GetCritChance(DamageClass.Melee) -= 100;
-            player.GetCritChance(DamageClass.Magic) -= 100;
-            player.GetCritChance(DamageClass.Throwing) -= 100;
-            player.GetCritChance(DamageClass.Ranged) -= 100;
+            player.GetCritChance(DamageClass.Generic) -= 100f;
 
             // Random dmg increase is handled in GlobalNPC.
+        }
+        public override string AddEffectTooltip()
+        {
+            return "Small chance to instantly kill the enemy hit!\r\n" + 
+                    "-25% damage, -100% crit";
         }
 
         public override void AddRecipes()

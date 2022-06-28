@@ -62,7 +62,7 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Increase bullet damage by 20 percent
-            player.bulletDamage += 0.20f;
+            player.GetDamage(DamageClass.Ranged) += 0.25f;
 
             // Increase ranged crit by 20 percent
             player.GetCritChance(DamageClass.Ranged) += 20;
@@ -100,6 +100,12 @@ namespace Kourindou.Items.Plushies
                 // Permanent NightOwl buff
                 player.AddBuff(BuffID.NightOwl, 60, true);
             }
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "During a blood moon gain a massive stat boost!\r\n" +
+                    "+25% Ranged damage, +20% ranged crit, +15 penetration";
         }
 
         public override void AddRecipes()

@@ -63,6 +63,11 @@ namespace Kourindou.Items.Plushies
             
             // All Attacks inflict Cursed Flames, Ichor and Confusion
         }
+        
+        public override string AddEffectTooltip()
+        {
+            return "All hits inflict cursed flames, ichor and confusion!";
+        }
 
         public override void AddRecipes()
         {

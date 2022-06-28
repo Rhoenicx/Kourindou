@@ -62,7 +62,7 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Also some kind of dash
-            player.dash = 1;
+            player.dashType = 1;
 
             // Check if player has Happy! buff
             if (player.HasBuff(BuffID.Sunflower))
@@ -90,6 +90,12 @@ namespace Kourindou.Items.Plushies
                     player.accRunSpeed = player.maxRunSpeed;
                 }
             }
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "When Happy!: gain +7 defense, +50 max HP, +20 penetration and doubled movement speed!\r\n" +
+                    "+25% damage, ability to dash \r\n";
         }
 
         public override void AddRecipes()

@@ -61,7 +61,7 @@ namespace Kourindou.Items.Plushies
         public override void PlushieEquipEffects(Player player)
         {
             // Increase damage by 5 percent
-            player.GetDamage(DamageClass.Generic) += 0.05f;
+            player.GetDamage(DamageClass.Generic) += 0.15f;
 
             // Increase life regen by 1 point
             player.lifeRegen += 1;
@@ -127,6 +127,12 @@ namespace Kourindou.Items.Plushies
                     }
                 }
             }
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Teleport to the mouse cursor using skill button\r\n" +
+                    "+15% damage, +50 penetration";
         }
 
         public override void AddRecipes()

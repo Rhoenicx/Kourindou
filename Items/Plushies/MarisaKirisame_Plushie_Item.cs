@@ -55,16 +55,25 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-            // Increase damage by 25 percent
-            player.GetDamage(DamageClass.Generic) += 0.25f;
+            // Increase magic damage by 25 percent
+            player.GetDamage(DamageClass.Magic) += 0.25f;
 
             // Increase life regen by 1 point
             player.lifeRegen += 1;
 
             // Increase magic crit by 30%
-            player.GetCritChance(DamageClass.Magic) += 30;
+            player.GetCritChance(DamageClass.Magic) += 15;
+
+            // Reduced mana corst 25 percent
+            player.manaCost -= 0.50f;
+
 
             // On crit spawns a star projectile that is aimed at the target hit
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "Critical hits shoot a star projectile! +25% magic damage, +15% magic crit, -25% mana cost";
         }
 
         public override void AddRecipes()

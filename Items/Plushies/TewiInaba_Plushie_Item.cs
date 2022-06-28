@@ -58,10 +58,18 @@ namespace Kourindou.Items.Plushies
             // Increase damage by 5 percent
             player.GetDamage(DamageClass.Generic) += 0.05f;
 
+            // Increased crit by 20 percent
+            player.GetCritChance(DamageClass.Generic) += 20;
+
             // Increase life regen by 1 point
             player.lifeRegen += 1;
             
             // 25 percent chance for all NPC's to drop double loot
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Chance for enemies killed to drop double loot! +20% crit";
         }
 
         public override void AddRecipes()

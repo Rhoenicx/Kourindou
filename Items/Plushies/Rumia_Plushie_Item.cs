@@ -62,10 +62,15 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
             
             // Grant infinite flight time, sneaky thing here: just putting the elapsed flight time back to 1
-            player.wingTime = 1;
+            player.wingTime += 1;
             
             // Permanently afflicted with blackout debuff
             player.AddBuff(BuffID.Obstructed, 60, false);
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Infinite flying in the dark...";
         }
 
         public override void AddRecipes()

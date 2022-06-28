@@ -136,6 +136,11 @@ namespace Kourindou
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
+            if (EquippedPlushies.Contains(ItemType<YukariYakumo_Plushie_Item>()))
+            {
+                SkillKeyPressed = Kourindou.SkillKey.JustPressed;
+            }
+
             if (Player.HeldItem.ModItem is MultiUseItem item)
             {
                 List<string> SkillKeys = Kourindou.SkillKey.GetAssignedKeys();

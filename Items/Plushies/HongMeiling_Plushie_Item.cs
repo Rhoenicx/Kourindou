@@ -70,12 +70,18 @@ namespace Kourindou.Items.Plushies
             if (player.velocity.Length() < 0.1f)
             {
                 // Increase life regen by 20 additional points
-                player.lifeRegen += 20;
+                player.lifeRegen += 50;
 
                 // add debuffs because you're not moving!
                 player.AddBuff(BuffID.Dazed, 60);
                 player.AddBuff(BuffID.Slow, 60);
             }
+        }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Tremendously increases life regen when not moving, but you are dazed and slowed \r\n" + 
+                    "+25% damage, +10% melee speed, 10% melee crit";
         }
 
         public override void AddRecipes()

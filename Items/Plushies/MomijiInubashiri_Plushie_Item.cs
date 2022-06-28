@@ -72,6 +72,12 @@ namespace Kourindou.Items.Plushies
             player.detectCreature = true;
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Permanent dangersense and hunter buff\r\n" +
+                    "+10 % damage, +25 % melee damage, +10 % melee crit";
+        }
+
         public override void AddRecipes()
         {
             CreateRecipe(1)

@@ -67,6 +67,11 @@ namespace Kourindou.Items.Plushies
             // reduce player aggro
             player.aggro -= 1500;
         }
+        
+        public override string AddEffectTooltip()
+        {
+            return "Permanent invisibility and reduced aggro, +25% damage";
+        }
 
         public override void AddRecipes()
         {

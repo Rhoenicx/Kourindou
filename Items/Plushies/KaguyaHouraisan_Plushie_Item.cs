@@ -69,6 +69,12 @@ namespace Kourindou.Items.Plushies
 
             // When you get damage that should kill you, heal for maxhp and get mortality debuff
         }
+        
+        public override string AddEffectTooltip()
+        {
+            return "When killed heal all your HP, 60 second cooldown \r\n" + 
+                    "+25% damage, -25% damage taken, +15 defense";
+        }
 
         public override void AddRecipes()
         {
