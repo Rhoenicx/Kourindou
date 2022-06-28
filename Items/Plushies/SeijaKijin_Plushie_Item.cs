@@ -55,8 +55,14 @@ namespace Kourindou.Items.Plushies
 
         public override void PlushieEquipEffects(Player player)
         {
-            // Gravity Globe effect. Hehe.
-            // Oh, maybe also a chance to reflect projectiles at low HP?
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Increase damage done by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // Gravity Globe effect and no fall damage
+            player.gravControl2 = true;
         }
 
         public override void AddRecipes()

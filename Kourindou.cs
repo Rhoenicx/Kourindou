@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
@@ -7,15 +6,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.GameContent.UI;
-using Terraria.Graphics.Effects;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using Terraria.DataStructures;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
-using Terraria.UI;
 using Terraria.Localization;
+using Terraria.Initializers;
 using Kourindou.Items;
 using Kourindou.Items.Plushies;
 using Kourindou.Items.CraftingMaterials;
@@ -93,6 +87,8 @@ namespace Kourindou
             if (!Main.dedServ)
             {
                 LoadPlushieTextures();
+
+                SwitchModTextures(true);
             }
         }
 
@@ -121,6 +117,8 @@ namespace Kourindou
                 PlushieTileTextures = null;
                 PlushieItemTextures = null;
                 PlushieProjectileTextures = null;
+
+                SwitchModTextures(false);
             }
 
             base.Unload();
@@ -149,21 +147,6 @@ namespace Kourindou
             if (!Main.dedServ)
             {
                 SwitchPlushieTextures();
-
-                // Thread
-                TextureAssets.Item[ItemID.BlackThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/BlackThread");
-                TextureAssets.Item[ItemID.GreenThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/GreenThread");
-                TextureAssets.Item[ItemID.PinkThread] = Assets.Request<Texture2D>("Items/CraftingMaterials/PinkThread");
-
-                // Silk
-                TextureAssets.Item[ItemID.Silk] = Assets.Request<Texture2D>("Items/CraftingMaterials/WhiteFabric");
-                TextureAssets.Item[ItemID.SilkRope] = Assets.Request<Texture2D>("Items/Blocks/WhiteFabric_Item_Rope");
-                TextureAssets.Item[ItemID.SilkRopeCoil] = Assets.Request<Texture2D>("Items/Consumables/WhiteFabric_Item_RopeCoil");
-
-                TextureAssets.Tile[TileID.SilkRope] = Assets.Request<Texture2D>("Tiles/Blocks/WhiteFabric_Tile");
-                TextureAssets.Projectile[ProjectileID.SilkRopeCoil] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile");
-                TextureAssets.Chains[4] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain1");
-                TextureAssets.Chains[5] = Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain2");
             }
         }
 
@@ -666,6 +649,25 @@ namespace Kourindou
             { 
                 TextureAssets.Projectile[entry.Key] = KourindouConfigClient.UseOldTextures ? entry.Value.oldProjectileTexture : entry.Value.ProjectileTexture;
             }
+        }
+
+        public void SwitchModTextures(bool loading)
+        {
+            // Thread
+            TextureAssets.Item[ItemID.BlackThread] = loading ? Assets.Request<Texture2D>("Items/CraftingMaterials/BlackThread") : Main.Assets.Request<Texture2D>("Images\\Item_254", 0);
+            TextureAssets.Item[ItemID.GreenThread] = loading ? Assets.Request<Texture2D>("Items/CraftingMaterials/GreenThread") : Main.Assets.Request<Texture2D>("Images\\Item_255", 0);
+            TextureAssets.Item[ItemID.PinkThread] = loading ? Assets.Request<Texture2D>("Items/CraftingMaterials/PinkThread") : Main.Assets.Request<Texture2D>("Images\\Item_981", 0);
+
+            // Silk
+            TextureAssets.Item[ItemID.Silk] = loading ? Assets.Request<Texture2D>("Items/CraftingMaterials/WhiteFabric") : Main.Assets.Request<Texture2D>("Images\\Item_225", 0);
+            TextureAssets.Item[ItemID.SilkRope] = loading ? Assets.Request<Texture2D>("Items/Blocks/WhiteFabric_Item_Rope") : Main.Assets.Request<Texture2D>("Images\\Item_3077", 0);
+            TextureAssets.Item[ItemID.SilkRopeCoil] = loading ? Assets.Request<Texture2D>("Items/Consumables/WhiteFabric_Item_RopeCoil") : Main.Assets.Request<Texture2D>("Images\\Item_3079", 0);
+
+            // Other
+            TextureAssets.Tile[TileID.SilkRope] = loading ? Assets.Request<Texture2D>("Tiles/Blocks/WhiteFabric_Tile") : Main.Assets.Request<Texture2D>("Images\\Tiles_365", 0);
+            TextureAssets.Projectile[ProjectileID.SilkRopeCoil] = loading ? Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile") : Main.Assets.Request<Texture2D>("Images\\Projectile_505", 0);
+            TextureAssets.Chains[4] = loading ? Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain1") : Main.Assets.Request<Texture2D>("Images\\Chains_4", 0);
+            TextureAssets.Chains[5] = loading ? Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain2") : Main.Assets.Request<Texture2D>("Images\\Chains_5", 0);
         }
     }
 }
