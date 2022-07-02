@@ -41,7 +41,7 @@ namespace Kourindou.Items.CraftingMaterials
             }
 
             // Add new recipe
-            Recipe newRecipe = Mod.CreateRecipe(ItemID.PinkThread, 8);
+            Recipe newRecipe = Recipe.Create(ItemID.PinkThread, 8);
             newRecipe.AddRecipeGroup("Kourindou:Thread", 8);
             newRecipe.AddIngredient(ItemID.PinkDye);
             newRecipe.AddTile(TileID.DyeVat);

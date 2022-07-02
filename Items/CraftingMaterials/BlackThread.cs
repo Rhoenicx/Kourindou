@@ -32,7 +32,7 @@ namespace Kourindou.Items.CraftingMaterials
         public override void AddRecipes()
         {
             // Add new recipe
-            Recipe recipe = Mod.CreateRecipe(ItemID.BlackThread, 8);
+            Recipe recipe = Recipe.Create(ItemID.BlackThread, 8);
             recipe.AddRecipeGroup("Kourindou:Thread", 8);
             recipe.AddIngredient(ItemID.BlackDye);
             recipe.AddTile(TileID.DyeVat);
