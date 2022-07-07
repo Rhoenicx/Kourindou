@@ -60,11 +60,15 @@ namespace Kourindou.Items.Plushies
 
             // Increase life regen by 1 point
             player.lifeRegen += 1;
+
+            // Grant infinite flight time, sneaky thing here: just putting the elapsed flight time back to 1. 
+            // Now only gets applied if the player has the obstructed debuff...
+            if (player.HasBuff(BuffID.Obstructed))
+            {
+                player.wingTime += 1;
+            }
             
-            // Grant infinite flight time, sneaky thing here: just putting the elapsed flight time back to 1
-            player.wingTime += 1;
-            
-            // Permanently afflicted with blackout debuff
+            // Permanently afflicted with obstructed debuff
             player.AddBuff(BuffID.Obstructed, 60, false);
         }
         

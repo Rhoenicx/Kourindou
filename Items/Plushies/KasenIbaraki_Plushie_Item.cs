@@ -58,6 +58,9 @@ namespace Kourindou.Items.Plushies
             // Increase life regen by 10 points
             player.lifeRegen += 10;
 
+            // Increase players minion slots by 2
+            player.maxMinions += 2;
+
             // Immunity to the same debuffs as anhk shield
             player.buffImmune[BuffID.Weak] = true;
             player.buffImmune[BuffID.BrokenArmor] = true;
@@ -74,7 +77,7 @@ namespace Kourindou.Items.Plushies
         
         public override string AddEffectTooltip()
         {
-            return "Greatly increases life regen and gain immunity to most debuffs";
+            return "Greatly increases life regen, gain immunity to most debuffs and increases minion slots";
         }
 
         public override void AddRecipes()
