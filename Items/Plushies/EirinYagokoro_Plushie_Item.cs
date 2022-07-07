@@ -68,8 +68,9 @@ namespace Kourindou.Items.Plushies
             player.statLifeMax2 += 50;
 
             // Reduce potion delay times by 35%
-            player.potionDelayTime = (int)((double)player.potionDelayTime * 0.8);
-            player.restorationDelayTime = (int)((double)player.restorationDelayTime * 0.8);
+            player.potionDelayTime = (int)((double)player.potionDelayTime * 0.75);
+            player.restorationDelayTime = (int)((double)player.restorationDelayTime * 0.75);
+            player.mushroomDelayTime = (int)((double)player.mushroomDelayTime * 0.75);
         }
         
         public override string AddEffectTooltip()
