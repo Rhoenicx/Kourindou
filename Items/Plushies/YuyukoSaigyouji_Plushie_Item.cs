@@ -68,7 +68,7 @@ namespace Kourindou.Items.Plushies
             player.GetDamage(DamageClass.Summon) += 0.25f;
 
             // Well fed buff
-            if (player.HasBuff(BuffID.WellFed))
+            if (player.HasBuff(BuffID.WellFed) || player.HasBuff(BuffID.WellFed2) || player.HasBuff(BuffID.WellFed3))
             {
                 // Increase attack damage by 25 percent
                 player.GetDamage(DamageClass.Generic) += 0.25f;
@@ -116,7 +116,7 @@ namespace Kourindou.Items.Plushies
         public override string AddEffectTooltip()
         {
             return "Increased minion knockback and minion & turret slots. + 25% minion damage\r\n" +
-                    "When Well fed: +25% damage and increased movement speed. Reversed when not well fed";
+                    "With active food buff: +25% damage and increased movement speed. Reversed effects when no food buff!";
         }
 
         public override void AddRecipes()
