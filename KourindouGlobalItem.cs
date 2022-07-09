@@ -77,6 +77,21 @@ namespace Kourindou
 			}
         }
 
+        public override bool CanEquipAccessory(Item item, Player player, int slot, bool modded)
+        {
+			if (item != null
+				&& item.wingSlot > 0
+				&& player.wingsLogic > 0
+				&& player.equippedWings != null
+				&& player.equippedWings.type == ItemType<AyaShameimaru_Plushie_Item>()
+				&& (!modded && slot < 13))
+			{
+				return false;
+			}
+	
+            return base.CanEquipAccessory(item, player, slot, modded);
+        }
+
         public override void PostUpdate(Item item)
 		{
 			base.PostUpdate(item);

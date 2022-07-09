@@ -867,6 +867,11 @@ namespace Kourindou
                 return false;
             }
 
+            if (Main.player[Main.myPlayer].wingsLogic > 0 && checkItem.type == ItemType<AyaShameimaru_Plushie_Item>())
+            {
+                return false;
+            }
+
             if (checkItem.ModItem is PlushieItem plushie)
             {
                 return true;
@@ -878,6 +883,11 @@ namespace Kourindou
         public override bool ModifyDefaultSwapSlot(Item item, int accSlotToSwapTo)
         {
             if (!Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower)
+            {
+                return false;
+            }
+
+            if (Main.player[Main.myPlayer].wingsLogic > 0 && item.type == ItemType<AyaShameimaru_Plushie_Item>())
             {
                 return false;
             }
