@@ -16,10 +16,9 @@ using Terraria.GameContent;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Buffs;
 using Kourindou.Items;
-using Kourindou.Items.Weapons;
 using Kourindou.Items.Plushies;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
-using Kourindou.Projectiles.Weapons;
+//using Kourindou.Projectiles.Weapons;
 
 
 namespace Kourindou
@@ -72,7 +71,7 @@ namespace Kourindou
         public int CooldownTimeAdditive;
 
         // Weapons
-        public Dictionary<int, int> CrescentMoonStaffFlames = new Dictionary<int, int>();
+//        public Dictionary<int, int> CrescentMoonStaffFlames = new Dictionary<int, int>();
 
         //--------------------------------------------------------------------------------
         public override void SaveData(TagCompound tag)
@@ -227,26 +226,26 @@ namespace Kourindou
             CooldownTimeMultiplier = 1f;
             CooldownTimeAdditive = 0;
 
-            // Crescent Moon Staff - Check the projectiles in the dictionary, if they are wrong remove them
-            if (Player.whoAmI == Main.myPlayer)
-            {
-                List<int> removeKey = new List<int>();
-                foreach (KeyValuePair<int, int> pair in CrescentMoonStaffFlames)
-                {
-                    Projectile proj = Main.projectile[pair.Value];
-                    if (!proj.active
-                    || proj.owner != Player.whoAmI
-                    || proj.type != ProjectileType<CrescentMoonStaffFlame>()
-                    || pair.Key != (int)proj.ai[1])
-                    {
-                        removeKey.Add(pair.Key);
-                    }
-                }
-                foreach (int i in removeKey)
-                {
-                    CrescentMoonStaffFlames.Remove(i);
-                }
-            }
+//            // Crescent Moon Staff - Check the projectiles in the dictionary, if they are wrong remove them
+//            if (Player.whoAmI == Main.myPlayer)
+//            {
+//                List<int> removeKey = new List<int>();
+//                foreach (KeyValuePair<int, int> pair in CrescentMoonStaffFlames)
+//                {
+//                    Projectile proj = Main.projectile[pair.Value];
+//                    if (!proj.active
+//                    || proj.owner != Player.whoAmI
+//                    || proj.type != ProjectileType<CrescentMoonStaffFlame>()
+//                    || pair.Key != (int)proj.ai[1])
+//                    {
+//                        removeKey.Add(pair.Key);
+//                    }
+//                }
+//                foreach (int i in removeKey)
+//                {
+//                    CrescentMoonStaffFlames.Remove(i);
+//                }
+//            }
 
             // Reset Medicine's debuff
             DebuffMedicineMelancholy = false;
@@ -918,84 +917,84 @@ namespace Kourindou
         }
     }
 
-    public class HeldItemLayer : PlayerDrawLayer
-    {
-        Texture2D texture;
-        int itemTexture;
-        public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
-        {
-            return drawInfo.drawPlayer.HeldItem.type == ItemType<KoninginDerNacht>()
-                && drawInfo.drawPlayer.itemAnimation > 0
-                && !drawInfo.drawPlayer.dead
-                && !drawInfo.drawPlayer.noItems
-                && !drawInfo.drawPlayer.CCed;
-        }
-        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.HeldItem);
-
-        protected override void Draw(ref PlayerDrawSet drawInfo)
-        {
-            const float StartAngle = -140f;
-            const float SwingAngle = 180f;
-            const float HeldOffset = 6f;
-
-            if (drawInfo.drawPlayer.HeldItem.type == ItemType<KoninginDerNacht>())
-            {
-                if (itemTexture != drawInfo.drawPlayer.HeldItem.type)
-                {
-                    itemTexture = drawInfo.drawPlayer.HeldItem.type;
-                    texture = TextureAssets.Item[drawInfo.drawPlayer.HeldItem.type].Value;
-                }
-            }
-
-            int drawX = (int)(drawInfo.Position.X - Main.screenPosition.X - drawInfo.drawPlayer.bodyFrame.Width / 2f + drawInfo.drawPlayer.width / 2f);
-            int drawY = (int)(drawInfo.Position.Y - Main.screenPosition.Y + drawInfo.drawPlayer.height - drawInfo.drawPlayer.bodyFrame.Height + 4);
-            Vector2 position = new Vector2(drawX, drawY) + drawInfo.drawPlayer.bodyPosition + drawInfo.bodyVect;
-
-            float rotation;
-
-            if (drawInfo.drawPlayer.direction == 1)
-            {
-                rotation = StartAngle + (SwingAngle / drawInfo.drawPlayer.itemAnimationMax * (drawInfo.drawPlayer.itemAnimationMax - drawInfo.drawPlayer.itemAnimation)) + 45f;
-                position += new Vector2(HeldOffset, 0f).RotatedBy(MathHelper.ToRadians(rotation - 45f));
-            }
-            else
-            {
-                rotation = StartAngle + 100f - (SwingAngle / drawInfo.drawPlayer.itemAnimationMax * (drawInfo.drawPlayer.itemAnimationMax - drawInfo.drawPlayer.itemAnimation)) - 45f + 180f;
-                position += new Vector2(HeldOffset, 0f).RotatedBy(MathHelper.ToRadians(rotation - 135f));
-            }
-
-            Vector2 offset = new Vector2(0, 0);
-
-            // Bodyframe Y values that indicate the player is at a position in the step cycle
-            // where the sprite shifts.
-            if (drawInfo.drawPlayer.bodyFrame.Y == 392 || drawInfo.drawPlayer.bodyFrame.Y == 448 || drawInfo.drawPlayer.bodyFrame.Y == 504
-                || drawInfo.drawPlayer.bodyFrame.Y == 784 || drawInfo.drawPlayer.bodyFrame.Y == 840 || drawInfo.drawPlayer.bodyFrame.Y == 896)
-            {
-                offset.Y += 2;
-            }
-
-            SpriteEffects spriteEffects = SpriteEffects.None;
-            if (drawInfo.drawPlayer.direction == -1)
-            {
-                spriteEffects |= SpriteEffects.FlipHorizontally;
-            }
-            if ((int)drawInfo.drawPlayer.gravDir == -1)
-            {
-                spriteEffects |= SpriteEffects.FlipVertically;
-                offset.Y *= -1;
-            }
-
-            drawInfo.DrawDataCache.Add(new DrawData(
-                texture,
-                position,
-                new Rectangle(0, 0, texture.Width, texture.Height),
-                drawInfo.itemColor,
-                MathHelper.ToRadians(rotation),
-                new Vector2(spriteEffects.HasFlag((Enum)(object)(SpriteEffects)1) ? texture.Width : 0, texture.Height) + offset,
-                1f,
-                spriteEffects,
-                0
-            ));
-        }
-    }
+//    public class HeldItemLayer : PlayerDrawLayer
+//    {
+//        Texture2D texture;
+//        int itemTexture;
+//        public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+//        {
+//            return drawInfo.drawPlayer.HeldItem.type == ItemType<KoninginDerNacht>()
+//                && drawInfo.drawPlayer.itemAnimation > 0
+//                && !drawInfo.drawPlayer.dead
+//                && !drawInfo.drawPlayer.noItems
+//                && !drawInfo.drawPlayer.CCed;
+//        }
+//        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.HeldItem);
+//
+//        protected override void Draw(ref PlayerDrawSet drawInfo)
+//        {
+//            const float StartAngle = -140f;
+//            const float SwingAngle = 180f;
+//            const float HeldOffset = 6f;
+//
+//            if (drawInfo.drawPlayer.HeldItem.type == ItemType<KoninginDerNacht>())
+//            {
+//                if (itemTexture != drawInfo.drawPlayer.HeldItem.type)
+//                {
+//                    itemTexture = drawInfo.drawPlayer.HeldItem.type;
+//                    texture = TextureAssets.Item[drawInfo.drawPlayer.HeldItem.type].Value;
+//                }
+//            }
+//
+//            int drawX = (int)(drawInfo.Position.X - Main.screenPosition.X - drawInfo.drawPlayer.bodyFrame.Width / 2f + drawInfo.drawPlayer.width / 2f);
+//            int drawY = (int)(drawInfo.Position.Y - Main.screenPosition.Y + drawInfo.drawPlayer.height - drawInfo.drawPlayer.bodyFrame.Height + 4);
+//            Vector2 position = new Vector2(drawX, drawY) + drawInfo.drawPlayer.bodyPosition + drawInfo.bodyVect;
+//
+//            float rotation;
+//
+//            if (drawInfo.drawPlayer.direction == 1)
+//            {
+//                rotation = StartAngle + (SwingAngle / drawInfo.drawPlayer.itemAnimationMax * (drawInfo.drawPlayer.itemAnimationMax - drawInfo.drawPlayer.itemAnimation)) + 45f;
+//                position += new Vector2(HeldOffset, 0f).RotatedBy(MathHelper.ToRadians(rotation - 45f));
+//            }
+//            else
+//            {
+//                rotation = StartAngle + 100f - (SwingAngle / drawInfo.drawPlayer.itemAnimationMax * (drawInfo.drawPlayer.itemAnimationMax - drawInfo.drawPlayer.itemAnimation)) - 45f + 180f;
+//                position += new Vector2(HeldOffset, 0f).RotatedBy(MathHelper.ToRadians(rotation - 135f));
+//            }
+//
+//            Vector2 offset = new Vector2(0, 0);
+//
+//            // Bodyframe Y values that indicate the player is at a position in the step cycle
+//            // where the sprite shifts.
+//            if (drawInfo.drawPlayer.bodyFrame.Y == 392 || drawInfo.drawPlayer.bodyFrame.Y == 448 || drawInfo.drawPlayer.bodyFrame.Y == 504
+//                || drawInfo.drawPlayer.bodyFrame.Y == 784 || drawInfo.drawPlayer.bodyFrame.Y == 840 || drawInfo.drawPlayer.bodyFrame.Y == 896)
+//            {
+//                offset.Y += 2;
+//            }
+//
+//            SpriteEffects spriteEffects = SpriteEffects.None;
+//            if (drawInfo.drawPlayer.direction == -1)
+//            {
+//                spriteEffects |= SpriteEffects.FlipHorizontally;
+//            }
+//            if ((int)drawInfo.drawPlayer.gravDir == -1)
+//            {
+//                spriteEffects |= SpriteEffects.FlipVertically;
+//                offset.Y *= -1;
+//            }
+//
+//            drawInfo.DrawDataCache.Add(new DrawData(
+//                texture,
+//                position,
+//                new Rectangle(0, 0, texture.Width, texture.Height),
+//                drawInfo.itemColor,
+//                MathHelper.ToRadians(rotation),
+//                new Vector2(spriteEffects.HasFlag((Enum)(object)(SpriteEffects)1) ? texture.Width : 0, texture.Height) + offset,
+//                1f,
+//                spriteEffects,
+//                0
+//            ));
+//        }
+//    }
 }
