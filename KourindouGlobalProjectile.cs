@@ -58,14 +58,25 @@ namespace Kourindou
                         || projectile.CountsAsClass(DamageClass.Throwing))
                         && projectile.type != ProjectileID.IceBlock 
                         && Main.player[projectile.owner].heldProj != projectile.whoAmI
+                        && !projectile.minion
                         )
                     {
                         List<ReimuPlushieTarget> target = new List<ReimuPlushieTarget>();
 
                         foreach (NPC npc in Main.npc)
                         {
-                            if (!npc.friendly && npc.active && Collision.CanHit(projectile.Center, 1, 1, npc.position, npc.width, npc.height) && Vector2.Distance(npc.Center, projectile.Center) < 500f)
+                            if (!npc.friendly
+                                && npc.active
+                                && npc.life > 5
+                                && npc.type != NPCID.TargetDummy
+                                && Collision.CanHit(projectile.Center, 1, 1, npc.position, npc.width, npc.height) 
+                                && Vector2.Distance(npc.Center, projectile.Center) < 500f)
                             {
+                                if (projectile.penetrate == -1)
+                                {
+                                    projectile.penetrate = 1;
+                                    projectile.netUpdate = true;
+                                }
                                 target.Add(new ReimuPlushieTarget(npc.whoAmI, Vector2.Distance(npc.position, projectile.position)));
                             }
                         }
