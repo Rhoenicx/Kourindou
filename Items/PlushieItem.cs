@@ -58,6 +58,8 @@ namespace Kourindou.Items
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
+            base.ModifyTooltips(tooltips);
+
             // Remove "Equipable" line if the power mode is not 2
             if (!Kourindou.KourindouConfigClient.plushiePower)
             {
@@ -68,15 +70,32 @@ namespace Kourindou.Items
             {
                 TooltipLine EffectLine = new TooltipLine(Mod, "PlushieEffect", "Effect: " + AddEffectTooltip());
                 EffectLine.OverrideColor = new Color(255, 255, 0);
-            
-                tooltips.Add(EffectLine);
+
+                // Add Custom line "Can be Thrown using Right mouse button"
+                TooltipLine line = new TooltipLine(Mod, "CanBeThrown", "Right Click: Throw plushie");
+                line.OverrideColor = new Color(255, 255, 0);
+
+                for (int index = 0; index < tooltips.Count; ++index)
+                {
+                    if (tooltips[index].Name == "SpecialPrice")
+                    { 
+                        tooltips.Insert(index, EffectLine);
+                        break;
+                    }
+
+                    if (tooltips[index].Name == "Price")
+                    {
+                        tooltips.Insert(index, EffectLine);
+                        break;
+                    }
+
+                    if (index == tooltips.Count - 1)
+                    {
+                        tooltips.Insert(tooltips.Count, EffectLine);
+                        break;
+                    }
+                }
             }
-
-            // Add Custom line "Can be Thrown using Right mouse button"
-            TooltipLine line = new TooltipLine(Mod, "CanBeThrown", "Right Click: Throw plushie");
-            line.OverrideColor = new Color(255,255,0);
-
-            tooltips.Add(line);
         }
 
         public virtual string AddEffectTooltip()
