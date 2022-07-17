@@ -59,6 +59,7 @@ namespace Kourindou
                         && projectile.type != ProjectileID.IceBlock 
                         && Main.player[projectile.owner].heldProj != projectile.whoAmI
                         && !projectile.minion
+                        && (projectile.ModProjectile == null || (projectile.ModProjectile != null && projectile.ModProjectile.ShouldUpdatePosition()))
                         )
                     {
                         List<ReimuPlushieTarget> target = new List<ReimuPlushieTarget>();

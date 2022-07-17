@@ -55,7 +55,19 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
 
+            // Increase damage by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // discount for listening to all people (at once)
+            player.discount = true;
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "Call a beam of light upon those you've damaged!";
         }
 
         public override void AddRecipes()

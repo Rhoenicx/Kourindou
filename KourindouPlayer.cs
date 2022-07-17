@@ -266,39 +266,45 @@ namespace Kourindou
             }
 
             // Flandre Scarlet Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
             {
                 FlandreScarletPlushie_OnHit(target, null, damage, crit, item.useAnimation);
             }
 
             // Marisa Kirisame Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
             {
                 MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             // Remilia Scarlet Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
             {
                 SatoriKomeijiPlushie_OnHit(target, null);
             }
 
             // Tewi Inaba Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<TewiInaba_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<TewiInaba_Plushie_Item>()))
             {
                 TewiInabaPlushie_OnHit(target);
             }
 
             // Medicine Melancholy Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
                 MedicineMelancholyPlushie_OnHit(target, null);
+            }
+
+            // Toyosatomimi No Miko Plushie Equipped
+            if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>()))
+            {
+                ToyosatomimiNoMikoPlushie_OnHit(target, null);
             }
         }
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockBack, bool crit)
@@ -310,7 +316,7 @@ namespace Kourindou
             }
 
             // Flandre Scarlet Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
             {
                 FlandreScarletPlushie_OnHit(target, null, damage, crit, target.immune[proj.owner]);
                 if (crit)
@@ -320,33 +326,40 @@ namespace Kourindou
             }
 
             // Marisa Kirisame Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
             {
                 MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             //Remilia Scarlet Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
             {
                 SatoriKomeijiPlushie_OnHit(target, null);
             }
 
             // Tewi Inaba Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<TewiInaba_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<TewiInaba_Plushie_Item>()))
             {
                 TewiInabaPlushie_OnHit(target);
             }
 
             // Medicine Melancholy Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
                 MedicineMelancholyPlushie_OnHit(target, null);
+            }
+
+            // Toyosatomimi No Miko Plushie Equipped
+            if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>())
+                && proj.type != ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
+            {
+                ToyosatomimiNoMikoPlushie_OnHit(target, null);
             }
         }
 
@@ -360,33 +373,39 @@ namespace Kourindou
             }
 
             // Flandre Scarlet Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
             {
                 FlandreScarletPlushie_OnHit(null, target, damage, crit, item.useAnimation);
             }
 
             // Marisa Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
             {
                 MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             //Remilia Scarlet Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
             {
                 SatoriKomeijiPlushie_OnHit(null, target);
             }
 
             // Medicine Melancholy Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
                 MedicineMelancholyPlushie_OnHit(null, target);
+            }
+
+            // Toyosatomimi No Miko Plushie Equipped
+            if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>()))
+            {
+                ToyosatomimiNoMikoPlushie_OnHit(null, target);
             }
         }
         public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
@@ -398,7 +417,7 @@ namespace Kourindou
             }
 
             // Flandre Scarlet Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
             {
                 FlandreScarletPlushie_OnHit(null, target, damage, crit, target.immuneTime);
                 if (crit)
@@ -408,27 +427,34 @@ namespace Kourindou
             }
 
             // Marisa Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
             {
                 MarisaKirisamePlushie_OnHit(target.Center, crit, target);
             }
 
             //Remilia Scarlet Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
             {
                 RemiliaScarletPlushie_OnHit(damage);
             }
 
             // Satori Komeiji Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
             {
                 SatoriKomeijiPlushie_OnHit(null, target);
             }
 
             // Medicine Melancholy Plushie Equipped
-            else if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
+            if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
             {
                 MedicineMelancholyPlushie_OnHit(null, target);
+            }
+
+            // Toyosatomimi No Miko Plushie Equipped
+            if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>()) 
+                && proj.type != ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
+            {
+                ToyosatomimiNoMikoPlushie_OnHit(null, target);
             }
         }
 
@@ -711,9 +737,32 @@ namespace Kourindou
             }
         }
 
-        //--------------------------------------------------------------------------------------------------------------------//
-        //-------------------------------------------------- Multi-Use Items logic-- -----------------------------------------//
-        //--------------------------------------------------------------------------------------------------------------------//
+        private void ToyosatomimiNoMikoPlushie_OnHit(NPC n, Player p)
+        {
+            Vector2 SpawnPosition = Vector2.Zero;
+            if (n != null)
+            {
+                SpawnPosition = n.Center;
+            }
+            if (p != null)
+            {
+                SpawnPosition = p.Center;
+            }
+
+            Projectile.NewProjectile(
+                Player.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
+                SpawnPosition,
+                Vector2.Zero,
+                ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>(),
+                Player.HeldItem.damage,
+                Player.HeldItem.knockBack,
+                Main.myPlayer
+            );
+        }
+
+                //--------------------------------------------------------------------------------------------------------------------//
+                //-------------------------------------------------- Multi-Use Items logic-- -----------------------------------------//
+                //--------------------------------------------------------------------------------------------------------------------//
         public bool OnCooldown(int itemID, int AttackID)
         {
             if (Cooldowns.ContainsKey(itemID))
