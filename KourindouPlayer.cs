@@ -304,7 +304,7 @@ namespace Kourindou
             // Toyosatomimi No Miko Plushie Equipped
             if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>()))
             {
-                ToyosatomimiNoMikoPlushie_OnHit(target, null);
+                ToyosatomimiNoMikoPlushie_OnHit(target, null, crit);
             }
         }
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockBack, bool crit)
@@ -359,7 +359,7 @@ namespace Kourindou
             if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>())
                 && proj.type != ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
             {
-                ToyosatomimiNoMikoPlushie_OnHit(target, null);
+                ToyosatomimiNoMikoPlushie_OnHit(target, null, crit);
             }
         }
 
@@ -405,7 +405,7 @@ namespace Kourindou
             // Toyosatomimi No Miko Plushie Equipped
             if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>()))
             {
-                ToyosatomimiNoMikoPlushie_OnHit(null, target);
+                ToyosatomimiNoMikoPlushie_OnHit(null, target, crit);
             }
         }
         public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
@@ -454,7 +454,7 @@ namespace Kourindou
             if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>()) 
                 && proj.type != ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
             {
-                ToyosatomimiNoMikoPlushie_OnHit(null, target);
+                ToyosatomimiNoMikoPlushie_OnHit(null, target, crit);
             }
         }
 
@@ -737,7 +737,7 @@ namespace Kourindou
             }
         }
 
-        private void ToyosatomimiNoMikoPlushie_OnHit(NPC n, Player p)
+        private void ToyosatomimiNoMikoPlushie_OnHit(NPC n, Player p, bool crit)
         {
             Vector2 SpawnPosition = Vector2.Zero;
             if (n != null)
@@ -756,7 +756,9 @@ namespace Kourindou
                 ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>(),
                 Player.HeldItem.damage,
                 Player.HeldItem.knockBack,
-                Main.myPlayer
+                Main.myPlayer,
+                0f,
+                crit ? 1f : 0f
             );
         }
 

@@ -37,7 +37,6 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
             Projectile.penetrate = -1;
             Projectile.DamageType = DamageClass.Magic;
             Projectile.damage = 1;
-            Projectile.CritChance = 10;
 
             // Hitbox
             Projectile.width = 10;
@@ -110,9 +109,8 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
             {
                 Projectile.rotation = MathHelper.ToRadians(Main.rand.NextFloat(-30f, 30f)) + MathHelper.Pi;
                 Projectile.netUpdate = true;
+                Projectile.damage = Main.player[Projectile.owner].GetWeaponDamage(Main.player[Projectile.owner].HeldItem);
                 Projectile.DamageType = Main.player[Projectile.owner].HeldItem.DamageType;
-                Projectile.CritChance = (int)Main.player[Projectile.owner].GetCritChance(Main.player[Projectile.owner].HeldItem.DamageType);
-                //SoundEngine.PlaySound(SoundID.Item33 with { Volume = 0.5f, PitchVariance = 0.4f}, Projectile.Center);
                 JustSpawned = false;
             }
 
@@ -127,6 +125,16 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
             {
                 Projectile.ai[0] -= MaxWidth / EndTime;
             }
+        }
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            crit = Projectile.ai[1] == 1f ? true : false;
+        }
+
+        public override void ModifyHitPvp(Player target, ref int damage, ref bool crit)
+        {
+            crit = Projectile.ai[1] == 1f ? true : false;
         }
 
         public override bool ShouldUpdatePosition()

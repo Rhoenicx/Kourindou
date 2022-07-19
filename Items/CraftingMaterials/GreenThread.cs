@@ -42,7 +42,7 @@ namespace Kourindou.Items.CraftingMaterials
 
             // Add new recipe
             Recipe newRecipe = Recipe.Create(ItemID.GreenThread, 8);
-            newRecipe.AddRecipeGroup("Kourindou:Thread", 8);
+            newRecipe.AddIngredient(ItemType<WhiteThread>(), 8);
             newRecipe.AddIngredient(ItemID.GreenDye);
             newRecipe.AddTile(TileID.DyeVat);
             newRecipe.Register();

@@ -31,7 +31,7 @@ namespace Kourindou.Items.CraftingMaterials
 
             // Recolor any fabric to this color 
             CreateRecipe(2)
-                .AddRecipeGroup("Kourindou:Fabric", 2)
+                .AddIngredient(ItemID.Silk, 2)
                 .AddIngredient(ItemID.BlueDye)
                 .AddTile(TileID.DyeVat)
                 .Register();  

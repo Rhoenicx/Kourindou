@@ -34,7 +34,7 @@ namespace Kourindou.Items.CraftingMaterials
         public override void AddRecipes()
         {
             CreateRecipe(8)
-                .AddRecipeGroup("Kourindou:Thread", 8)
+                .AddIngredient(ItemType<WhiteThread>(), 8)
                 .AddIngredient(ItemID.PurpleDye)
                 .AddTile(TileID.DyeVat)
                 .Register();

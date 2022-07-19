@@ -1,5 +1,6 @@
 using Terraria;
 using Terraria.ID;
+using Terraria.Audio;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Furniture;
@@ -35,17 +36,24 @@ namespace Kourindou.Items.CraftingMaterials
             newRecipe.AddTile(TileType<WeavingLoom_Tile>());
             newRecipe.Register();
 
-            // Remove colors on water
-            Recipe newRecipe2 = Recipe.Create(ItemID.Silk, 1);
-            newRecipe2.AddRecipeGroup("Kourindou:Fabric", 1);
-            newRecipe2.AddCondition(Recipe.Condition.NearWater);
-            newRecipe2.Register();
+            
+            foreach (int i in Kourindou.FabricItems)
+            {
+                if (i != ItemID.Silk)
+                {
+                    // Remove colors on water
+                    Recipe newRecipe2 = Recipe.Create(ItemID.Silk, 1);
+                    newRecipe2.AddIngredient(i, 1);
+                    newRecipe2.AddCondition(Recipe.Condition.NearWater);
+                    newRecipe2.Register();
 
-            // Remove colors on dye vat
-            Recipe newRecipe3 = Recipe.Create(ItemID.Silk, 1);
-            newRecipe3.AddRecipeGroup("Kourindou:Fabric", 1);
-            newRecipe3.AddTile(TileID.DyeVat);
-            newRecipe3.Register();
+                    // Remove colors on dye vat
+                    Recipe newRecipe3 = Recipe.Create(ItemID.Silk, 1);
+                    newRecipe3.AddIngredient(i, 1);
+                    newRecipe3.AddTile(TileID.DyeVat);
+                    newRecipe3.Register();
+                }
+            }
         }
     }
 }

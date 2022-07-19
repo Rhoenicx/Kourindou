@@ -51,17 +51,23 @@ namespace Kourindou.Items.CraftingMaterials
                 .AddTile(TileID.Loom)
                 .Register();
 
-            // Remove colors on water
-            CreateRecipe(1)
-                .AddRecipeGroup("Kourindou:Thread", 1)
-                .AddCondition(Recipe.Condition.NearWater)
-                .Register();
+            foreach (int i in Kourindou.ThreadItems)
+            {
+                if (i != this.Type)
+                {
+                    // Remove colors on water
+                    CreateRecipe(1)
+                        .AddIngredient(i, 1)
+                        .AddCondition(Recipe.Condition.NearWater)
+                        .Register();
 
-            // Remove colors on dye vat
-            CreateRecipe(1)
-                .AddRecipeGroup("Kourindou:Thread", 1)
-                .AddTile(TileID.DyeVat)
-                .Register();
+                    // Remove colors on dye vat
+                    CreateRecipe(1)
+                        .AddIngredient(i, 1)
+                        .AddTile(TileID.DyeVat)
+                        .Register();
+                }
+            }
         }
     }
 }

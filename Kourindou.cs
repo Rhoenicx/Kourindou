@@ -46,6 +46,9 @@ namespace Kourindou
         public static Dictionary<int, PlushieProjectileTexture> PlushieProjectileTextures;
         public static Dictionary<string, SoundStyle> SoundDictionary;
 
+        public static HashSet<int> FabricItems;
+        public static HashSet<int> ThreadItems;
+
         internal static Kourindou Instance;
 
         internal static KourindouConfigClient KourindouConfigClient;
@@ -83,6 +86,9 @@ namespace Kourindou
                 { "DD2_ExplosiveTrapExplode", SoundID.DD2_ExplosiveTrapExplode }
             };
 
+            FabricItems = new HashSet<int>();
+            ThreadItems = new HashSet<int>();
+
             //code that has to be run on clients only!
             if (!Main.dedServ)
             {
@@ -110,6 +116,9 @@ namespace Kourindou
             HairLoader = null;
 
             SoundDictionary = null;
+
+            FabricItems = null;
+            ThreadItems = null;
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
@@ -148,62 +157,19 @@ namespace Kourindou
             {
                 SwitchPlushieTextures();
             }
+
+            FabricSetup();
+            ThreadSetup();
         }
 
         // Add Crafting recipe groups
         public override void AddRecipeGroups()
         {
-            // Thread
-            RecipeGroup Thread = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Thread", new int[]
-            {
-                ItemID.BlackThread,
-                ItemType<BlueThread>(),
-                ItemType<BrownThread>(),
-                ItemType<CyanThread>(),
-                ItemID.GreenThread,
-                ItemType<LimeThread>(),
-                ItemType<OrangeThread>(),
-                ItemID.PinkThread,
-                ItemType<PurpleThread>(),
-                ItemType<RedThread>(),
-                ItemType<SilverThread>(),
-                ItemType<SkyBlueThread>(),
-                ItemType<TealThread>(),
-                ItemType<VioletThread>(),
-                ItemType<WhiteThread>(),
-                ItemType<YellowThread>(),
-                ItemType<RainbowThread>()
-            });
-            RecipeGroup.RegisterGroup("Kourindou:Thread", Thread);
-
-            // Fabric
-            RecipeGroup Fabric = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Fabric", new int[]
-            {
-                ItemType<BlackFabric>(),
-                ItemType<BlueFabric>(),
-                ItemType<BrownFabric>(),
-                ItemType<CyanFabric>(),
-                ItemType<GreenFabric>(),
-                ItemType<LimeFabric>(),
-                ItemType<OrangeFabric>(),
-                ItemType<PinkFabric>(),
-                ItemType<PurpleFabric>(),
-                ItemType<RedFabric>(),
-                ItemType<SilverFabric>(),
-                ItemType<SkyBlueFabric>(),
-                ItemType<TealFabric>(),
-                ItemType<VioletFabric>(),
-                ItemID.Silk,
-                ItemType<YellowFabric>(),
-                ItemType<RainbowFabric>()
-            });
-            RecipeGroup.RegisterGroup("Kourindou:Fabric", Fabric);
-
             // Stuffing
             RecipeGroup Stuffing = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Stuffing", new int[]
             {
                 ItemID.Hay,
-                ModContent.ItemType<CottonFibre>()
+                ItemType<CottonFibre>()
             });
             RecipeGroup.RegisterGroup("Kourindou:Stuffing", Stuffing);
 
@@ -228,6 +194,7 @@ namespace Kourindou
             });
             RecipeGroup.RegisterGroup("Kourindou:Lens", Lens);
 
+            // Watch
             RecipeGroup Watch = new RecipeGroup(() => Language.GetTextValue("LegacyMics.37") + " Watch", new int[]
             {
                 ItemID.CopperWatch,
@@ -240,6 +207,7 @@ namespace Kourindou
             });
             RecipeGroup.RegisterGroup("Kourindou:Watch", Watch);
 
+            // Copper bar or tin bar?
             RecipeGroup CopperBar = new RecipeGroup(() => "Copper or tin bar", new int[]
             {
                 ItemID.CopperBar,
@@ -668,6 +636,48 @@ namespace Kourindou
             TextureAssets.Projectile[ProjectileID.SilkRopeCoil] = loading ? Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile") : Main.Assets.Request<Texture2D>("Images\\Projectile_505", 0);
             TextureAssets.Chains[4] = loading ? Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain1") : Main.Assets.Request<Texture2D>("Images\\Chains_4", 0);
             TextureAssets.Chains[5] = loading ? Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain2") : Main.Assets.Request<Texture2D>("Images\\Chains_5", 0);
+        }
+
+        public void FabricSetup()
+        {
+            FabricItems.Add(ItemType<BlackFabric>());
+            FabricItems.Add(ItemType<BlueFabric>());
+            FabricItems.Add(ItemType<BrownFabric>());
+            FabricItems.Add(ItemType<CyanFabric>());
+            FabricItems.Add(ItemType<GreenFabric>());
+            FabricItems.Add(ItemType<LimeFabric>());
+            FabricItems.Add(ItemType<OrangeFabric>());
+            FabricItems.Add(ItemType<PinkFabric>());
+            FabricItems.Add(ItemType<PurpleFabric>());
+            FabricItems.Add(ItemType<RedFabric>());
+            FabricItems.Add(ItemType<SilverFabric>());
+            FabricItems.Add(ItemType<SkyBlueFabric>());
+            FabricItems.Add(ItemType<TealFabric>());
+            FabricItems.Add(ItemType<VioletFabric>());
+            FabricItems.Add(ItemID.Silk);
+            FabricItems.Add(ItemType<YellowFabric>());
+            FabricItems.Add(ItemType<RainbowFabric>());
+        }
+
+        public void ThreadSetup()
+        {
+            ThreadItems.Add(ItemID.BlackThread);
+            ThreadItems.Add(ItemType<BlueThread>());
+            ThreadItems.Add(ItemType<BrownThread>());
+            ThreadItems.Add(ItemType<CyanThread>());
+            ThreadItems.Add(ItemID.GreenThread);
+            ThreadItems.Add(ItemType<LimeThread>());
+            ThreadItems.Add(ItemType<OrangeThread>());
+            ThreadItems.Add(ItemID.PinkThread);
+            ThreadItems.Add(ItemType<PurpleThread>());
+            ThreadItems.Add(ItemType<RedThread>());
+            ThreadItems.Add(ItemType<SilverThread>());
+            ThreadItems.Add(ItemType<SkyBlueThread>());
+            ThreadItems.Add(ItemType<TealThread>());
+            ThreadItems.Add(ItemType<VioletThread>());
+            ThreadItems.Add(ItemType<WhiteThread>());
+            ThreadItems.Add(ItemType<YellowThread>());
+            ThreadItems.Add(ItemType<RainbowThread>());
         }
     }
 }
