@@ -285,7 +285,7 @@ namespace Kourindou
                 Kourindou.Gensokyo.TryFind<ModNPC>("ToyosatomimiNoMiko", out ModNPC Miko);
                 if (Miko != null && npc.type == Miko.Type)
                 {
-                    //npcLoot.Add(ItemDropRule.Common(ItemType<>(), 1));
+                    npcLoot.Add(ItemDropRule.Common(ItemType<ToyosatomimiNoMiko_Plushie_Item>(), 1));
                 }
 
                 Kourindou.Gensokyo.TryFind<ModNPC>("UtsuhoReiuji", out ModNPC Utsuho);
