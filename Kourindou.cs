@@ -11,6 +11,7 @@ using Terraria.ModLoader;
 using Terraria.Localization;
 using Terraria.Initializers;
 using Kourindou.Items;
+using Kourindou.Items.Consumables;
 using Kourindou.Items.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Plushies;
@@ -46,15 +47,23 @@ namespace Kourindou
         public static Dictionary<int, PlushieProjectileTexture> PlushieProjectileTextures;
         public static Dictionary<string, SoundStyle> SoundDictionary;
 
+        // Recipegroups hack
         public static HashSet<int> FabricItems;
         public static HashSet<int> ThreadItems;
 
+        // Item ID of items that use custom helditemlayer
+        public static HashSet<int> ItemsUseHeldLayer = new HashSet<int>();
+
+        // Mod Instance
         internal static Kourindou Instance;
 
+        // Mod config
         internal static KourindouConfigClient KourindouConfigClient;
 
+        // Right clicks
         private static List<Func<bool>> RightClickOverrides;
 
+        // Keybinds
         public static ModKeybind SkillKey;
         public static ModKeybind UltimateKey;
 
@@ -88,6 +97,7 @@ namespace Kourindou
 
             FabricItems = new HashSet<int>();
             ThreadItems = new HashSet<int>();
+            ItemsUseHeldLayer = new HashSet<int>();
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
@@ -119,6 +129,7 @@ namespace Kourindou
 
             FabricItems = null;
             ThreadItems = null;
+            ItemsUseHeldLayer = null;
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
@@ -160,6 +171,7 @@ namespace Kourindou
 
             FabricSetup();
             ThreadSetup();
+            HeldItemSetup();
         }
 
         // Add Crafting recipe groups
@@ -678,6 +690,11 @@ namespace Kourindou
             ThreadItems.Add(ItemType<WhiteThread>());
             ThreadItems.Add(ItemType<YellowThread>());
             ThreadItems.Add(ItemType<RainbowThread>());
+        }
+
+        public void HeldItemSetup()
+        {
+            ItemsUseHeldLayer.Add(ItemType<FumoCola>());
         }
     }
 }

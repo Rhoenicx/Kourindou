@@ -17,6 +17,7 @@ using static Terraria.ModLoader.ModContent;
 using Kourindou.Buffs;
 using Kourindou.Items;
 using Kourindou.Items.Plushies;
+using Kourindou.Items.Consumables;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
 //using Kourindou.Projectiles.Weapons;
 
@@ -38,6 +39,9 @@ namespace Kourindou
         // Item ID of the plushie slot item
         public HashSet<int> EquippedPlushies = new HashSet<int>();
 
+        // Reimu plushie maximum homing distance
+        public float ReimuPlushieMaxDistance = 500f;
+
         // Cirno Plushie Effect Attack Counter
         public byte CirnoPlushie_Attack_Counter;
         public bool CirnoPlushie_TimesNine;
@@ -58,6 +62,10 @@ namespace Kourindou
         public int OldAttackID;
         public int OldAttackCounter;
 
+        // Items
+        public int FumoColaTurnIntoPlushieID = -1;
+        public int FumoColaAnimationTimer;
+
         // Half Phantom pet active
         public bool HalfPhantomPet;
 
@@ -71,9 +79,13 @@ namespace Kourindou
         public int CooldownTimeAdditive;
 
         // Weapons
-//        public Dictionary<int, int> CrescentMoonStaffFlames = new Dictionary<int, int>();
+        //        public Dictionary<int, int> CrescentMoonStaffFlames = new Dictionary<int, int>();
 
-        //--------------------------------------------------------------------------------
+
+        //--------------------------------------------------------------------------------------------------------------------//
+        //-------------------------------------------------- Save/Load data --------------------------------------------------//
+        //--------------------------------------------------------------------------------------------------------------------//
+
         public override void SaveData(TagCompound tag)
         {
             tag.Add("plushiePowerMode", plushiePower);
@@ -86,6 +98,33 @@ namespace Kourindou
             plushiePower = tag.GetBool("plushiePowerMode");
             CirnoPlushie_Attack_Counter = tag.GetByte("cirnoPlushieAttackCounter");
             CirnoPlushie_TimesNine = tag.GetBool("cirnoPlushieTimesNine");
+        }
+
+        //--------------------------------------------------------------------------------------------------------------------//
+        //----------------------------------------------------- Drawing ------------------------------------------------------//
+        //--------------------------------------------------------------------------------------------------------------------//
+
+        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+        {
+            if (!drawInfo.headOnlyRender
+                && drawInfo.drawPlayer.GetModPlayer<KourindouPlayer>().FumoColaAnimationTimer > 0
+                && drawInfo.drawPlayer.itemAnimation > 0
+                && drawInfo.drawPlayer.ItemAnimationActive)
+            {
+                float progress = (float)drawInfo.drawPlayer.itemAnimation / (float)drawInfo.drawPlayer.itemAnimationMax;
+
+                float FrontArmAngle = 80f;
+                float BackArmAngle = 35f;
+
+                if ((int)drawInfo.drawPlayer.gravDir == -1)
+                {
+                    BackArmAngle *= -1;
+                    FrontArmAngle *= -1;
+                }
+
+                drawInfo.drawPlayer.compositeFrontArm = new Player.CompositeArmData(true, progress <= 0.8f ? Player.CompositeArmStretchAmount.ThreeQuarters : Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(drawInfo.drawPlayer.direction * -FrontArmAngle));
+                drawInfo.drawPlayer.compositeBackArm = new Player.CompositeArmData(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(drawInfo.drawPlayer.direction * -BackArmAngle));
+            }
         }
 
         public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
@@ -108,6 +147,10 @@ namespace Kourindou
                 }
             }
         }
+
+        //--------------------------------------------------------------------------------------------------------------------//
+        //----------------------------------------------------- Player methods -----------------------------------------------//
+        //--------------------------------------------------------------------------------------------------------------------//
 
         public override void OnEnterWorld(Player player)
         {
@@ -206,6 +249,14 @@ namespace Kourindou
             base.ProcessTriggers(triggersSet);
         }
 
+        public override void PreUpdate()
+        {
+            if (FumoColaAnimationTimer > 0)
+            {
+                FumoColaAnimationTimer--;
+            }
+        }
+
         public override void ResetEffects()
         {
             // Reset the plushie item slots
@@ -226,26 +277,26 @@ namespace Kourindou
             CooldownTimeMultiplier = 1f;
             CooldownTimeAdditive = 0;
 
-//            // Crescent Moon Staff - Check the projectiles in the dictionary, if they are wrong remove them
-//            if (Player.whoAmI == Main.myPlayer)
-//            {
-//                List<int> removeKey = new List<int>();
-//                foreach (KeyValuePair<int, int> pair in CrescentMoonStaffFlames)
-//                {
-//                    Projectile proj = Main.projectile[pair.Value];
-//                    if (!proj.active
-//                    || proj.owner != Player.whoAmI
-//                    || proj.type != ProjectileType<CrescentMoonStaffFlame>()
-//                    || pair.Key != (int)proj.ai[1])
-//                    {
-//                        removeKey.Add(pair.Key);
-//                    }
-//                }
-//                foreach (int i in removeKey)
-//                {
-//                    CrescentMoonStaffFlames.Remove(i);
-//                }
-//            }
+            //            // Crescent Moon Staff - Check the projectiles in the dictionary, if they are wrong remove them
+            //            if (Player.whoAmI == Main.myPlayer)
+            //            {
+            //                List<int> removeKey = new List<int>();
+            //                foreach (KeyValuePair<int, int> pair in CrescentMoonStaffFlames)
+            //                {
+            //                    Projectile proj = Main.projectile[pair.Value];
+            //                    if (!proj.active
+            //                    || proj.owner != Player.whoAmI
+            //                    || proj.type != ProjectileType<CrescentMoonStaffFlame>()
+            //                    || pair.Key != (int)proj.ai[1])
+            //                    {
+            //                        removeKey.Add(pair.Key);
+            //                    }
+            //                }
+            //                foreach (int i in removeKey)
+            //                {
+            //                    CrescentMoonStaffFlames.Remove(i);
+            //                }
+            //            }
 
             // Reset Medicine's debuff
             DebuffMedicineMelancholy = false;
@@ -253,6 +304,15 @@ namespace Kourindou
             if (!Player.HasBuff(BuffType<DeBuff_MedicineMelancholy>()))
             {
                 DebuffMedicineMelancholyStacks = 0;
+            }
+
+            // Reset FumoCola fields
+            if (FumoColaTurnIntoPlushieID != -1 
+                && (FumoColaAnimationTimer == 0
+                || Player.itemAnimation == 0
+                || !Player.ItemAnimationActive))
+            {
+                FumoColaTurnIntoPlushieID = -1;
             }
         }
 
@@ -451,7 +511,7 @@ namespace Kourindou
             }
 
             // Toyosatomimi No Miko Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>()) 
+            if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>())
                 && proj.type != ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
             {
                 ToyosatomimiNoMikoPlushie_OnHit(null, target, crit);
@@ -762,9 +822,9 @@ namespace Kourindou
             );
         }
 
-                //--------------------------------------------------------------------------------------------------------------------//
-                //-------------------------------------------------- Multi-Use Items logic-- -----------------------------------------//
-                //--------------------------------------------------------------------------------------------------------------------//
+        //--------------------------------------------------------------------------------------------------------------------//
+        //-------------------------------------------------- Multi-Use Items logic-- -----------------------------------------//
+        //--------------------------------------------------------------------------------------------------------------------//
         public bool OnCooldown(int itemID, int AttackID)
         {
             if (Cooldowns.ContainsKey(itemID))
@@ -777,7 +837,7 @@ namespace Kourindou
             return false;
         }
 
-        public void SetCooldown(int itemID, int AttackID , int time)
+        public void SetCooldown(int itemID, int AttackID, int time)
         {
             if (!Cooldowns.ContainsKey(itemID))
             {
@@ -799,7 +859,7 @@ namespace Kourindou
         {
             // player is not holding a multiuse weapon
             if (!(Player.HeldItem.ModItem is MultiUseItem item))
-            { 
+            {
                 // return, we don't have a multiuse weapon
                 return base.PreItemCheck();
             }
@@ -856,11 +916,11 @@ namespace Kourindou
                 if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient && !OnCooldown(item.Type, AttackID))
                 {
                     ModPacket packet = Mod.GetPacket();
-                    packet.Write((byte) KourindouMessageType.AlternateFire);
-                    packet.Write((byte) Player.whoAmI);
-                    packet.Write((bool) UsedAttack);
-                    packet.Write((int) AttackID);
-                    packet.Write((int) AttackCounter);
+                    packet.Write((byte)KourindouMessageType.AlternateFire);
+                    packet.Write((byte)Player.whoAmI);
+                    packet.Write((bool)UsedAttack);
+                    packet.Write((int)AttackID);
+                    packet.Write((int)AttackCounter);
                     packet.Send();
                 }
 
@@ -875,6 +935,18 @@ namespace Kourindou
             }
 
             return base.PreItemCheck();
+        }
+
+        public override void PostItemCheck()
+        {
+            if (Kourindou.ItemsUseHeldLayer.Contains(Player.HeldItem.type)
+                && FumoColaAnimationTimer > 0
+                && Player.itemAnimation > 0
+                && Player.ItemAnimationActive)
+            {
+                Player.compositeBackArm.enabled = true;
+                Player.compositeFrontArm.enabled = true;
+            }
         }
 
         public override void PostUpdate()
@@ -968,6 +1040,105 @@ namespace Kourindou
         }
     }
 
+    public class HeldItemLayer : PlayerDrawLayer
+    {
+        public Texture2D HeldItemTexture;
+        public Texture2D HeldItemTexture2;
+
+        public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+        {
+            return drawInfo.drawPlayer.itemAnimation > 0
+                && !drawInfo.drawPlayer.dead
+                && !drawInfo.drawPlayer.noItems
+                && !drawInfo.drawPlayer.CCed
+                && !drawInfo.headOnlyRender;
+        }
+
+        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.HeldItem);
+
+        protected override void Draw(ref PlayerDrawSet drawInfo)
+        {
+            Player player = drawInfo.drawPlayer;
+            Item item = player.HeldItem;
+
+            if (player.GetModPlayer<KourindouPlayer>().FumoColaAnimationTimer > 0)
+            {
+                // Get the textures
+                HeldItemTexture = TextureAssets.Item[ItemType<FumoCola>()].Value;
+                HeldItemTexture2 = player.GetModPlayer<KourindouPlayer>().FumoColaTurnIntoPlushieID != -1 ? TextureAssets.Item[player.GetModPlayer<KourindouPlayer>().FumoColaTurnIntoPlushieID].Value : null;
+
+                int drawX = (int)(drawInfo.Position.X - Main.screenPosition.X - player.bodyFrame.Width / 2f + player.width / 2f);
+                int drawY = (int)(drawInfo.Position.Y - Main.screenPosition.Y + player.height - player.bodyFrame.Height + 4);
+                Vector2 position = new Vector2(drawX, drawY) + player.bodyPosition + drawInfo.bodyVect;
+
+                Vector2 offset = new Vector2(10, 14);
+                SpriteEffects spriteEffects = SpriteEffects.None;
+                float rotation = 0f;
+                float Opacity = 1f;
+                float Opacity2 = 0f;
+
+                // calculate the progress of the animation
+                float progress = (float)player.itemAnimation / (float)player.itemAnimationMax;
+
+                if (player.GetModPlayer<KourindouPlayer>().FumoColaTurnIntoPlushieID != -1)
+                {
+                    Opacity = progress > 0.8f ? 1f : 1f + ((float)player.itemAnimation - (float)player.itemAnimationMax * 0.8f) / ((float)player.itemAnimationMax * 0.2f);
+                    Opacity2 = progress > 0.8f ? 0f : -((float)player.itemAnimation - (float)player.itemAnimationMax * 0.8f) / ((float)player.itemAnimationMax * 0.2f);
+                }
+
+                if (player.bodyFrame.Y == 392 || player.bodyFrame.Y == 448 || player.bodyFrame.Y == 504
+                    || player.bodyFrame.Y == 784 || player.bodyFrame.Y == 840 || player.bodyFrame.Y == 896)
+                {
+                    offset.Y -= 2;
+                }
+                
+                if (player.direction == -1)
+                {
+                    spriteEffects |= SpriteEffects.FlipHorizontally;
+                    offset.X *= -1;
+                    rotation *= -1;
+                }
+
+                if ((int)player.gravDir == -1)
+                {
+                    spriteEffects |= SpriteEffects.FlipVertically;
+                    offset.Y *= -1;
+                    rotation *= -1;
+                }
+
+                // Can
+                drawInfo.DrawDataCache.Add(new DrawData(
+                    HeldItemTexture,
+                    position + offset,
+                    new Rectangle(0, 0, HeldItemTexture.Width, HeldItemTexture.Height),
+                    drawInfo.itemColor * Opacity,
+                    MathHelper.ToRadians(rotation),
+                    new Vector2(HeldItemTexture.Width, HeldItemTexture.Height) * 0.5f,
+                    0.8f,
+                    spriteEffects,
+                    0
+                ));
+
+                // Plushie
+                if (player.GetModPlayer<KourindouPlayer>().FumoColaTurnIntoPlushieID != -1)
+                {
+                    drawInfo.DrawDataCache.Add(new DrawData(
+                        HeldItemTexture2,
+                        position + offset,
+                        new Rectangle(0, 0, HeldItemTexture2.Width, HeldItemTexture2.Height),
+                        drawInfo.itemColor * Opacity2,
+                        MathHelper.ToRadians(rotation),
+                        new Vector2(HeldItemTexture2.Width, HeldItemTexture2.Height) * 0.5f,
+                        0.8f,
+                        spriteEffects,
+                        0
+                    ));
+                }
+            }
+        }
+    }
+}
+
 //    public class HeldItemLayer : PlayerDrawLayer
 //    {
 //        Texture2D texture;
@@ -1048,4 +1219,3 @@ namespace Kourindou
 //            ));
 //        }
 //    }
-}

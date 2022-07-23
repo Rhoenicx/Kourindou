@@ -70,7 +70,7 @@ namespace Kourindou.Tiles.Plushies
                 float pitchVariance = 0f;
 
                 SoundEngine.PlaySound(
-                    new SoundStyle("Kourindou/Sounds/Custom/" + soundName) with { Volume = soundVolume, PitchVariance = pitchVariance },
+                    new SoundStyle("Kourindou/Sounds/Music/" + soundName) with { Volume = soundVolume, PitchVariance = pitchVariance },
                     soundPosition);
 
                 if (Main.netMode == NetmodeID.MultiplayerClient)

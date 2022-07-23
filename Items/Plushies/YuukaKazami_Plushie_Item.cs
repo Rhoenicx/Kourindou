@@ -95,7 +95,7 @@ namespace Kourindou.Items.Plushies
         public override string AddEffectTooltip()
         {
             return "When Happy!: gain +7 defense, +50 max HP, +20 penetration and doubled movement speed!\r\n" +
-                    "+25% damage, ability to dash \r\n";
+                    "+25% damage, ability to dash";
         }
 
         public override void AddRecipes()

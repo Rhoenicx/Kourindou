@@ -33,7 +33,7 @@ namespace Kourindou.Items.CraftingMaterials
         {
             // Add new recipe
             Recipe recipe = Recipe.Create(ItemID.BlackThread, 8);
-            recipe.AddIngredient(ItemID.Silk, 8);
+            recipe.AddIngredient(ItemType<WhiteThread>(), 8);
             recipe.AddIngredient(ItemID.BlackDye);
             recipe.AddTile(TileID.DyeVat);
             recipe.Register();
