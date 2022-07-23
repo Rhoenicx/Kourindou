@@ -53,5 +53,11 @@ namespace Kourindou.Tiles.Plushies
 
             plushieItem = ItemType<ReisenUdongeinInaba_Plushie_Item>();
         }
+
+        public override bool RightClick(int i, int j)
+        {
+            soundName = "ReisenUdongeinInaba_Music";
+            return base.RightClick(i, j);
+        }
     }
 }

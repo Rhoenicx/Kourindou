@@ -53,5 +53,11 @@ namespace Kourindou.Tiles.Plushies
 
             plushieItem = ItemType<AliceMargatroid_Plushie_Item>();
         }
+
+        public override bool RightClick(int i, int j)
+        {
+            soundName = "AliceMargatroid_Music";
+            return base.RightClick(i, j);
+        }
     }
 }
