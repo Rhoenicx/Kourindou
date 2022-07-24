@@ -126,8 +126,6 @@ namespace Kourindou
                     && !Main.npc[(int)ReimuPlushieHomingTarget[projectile.whoAmI]].dontTakeDamage
                     && Vector2.Distance(Main.npc[(int)ReimuPlushieHomingTarget[projectile.whoAmI]].position, projectile.position) < Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().ReimuPlushieMaxDistance)
                 {
-                    Main.NewText("test1");
-
                     Vector2 target = Main.npc[(int)ReimuPlushieHomingTarget[projectile.whoAmI]].Center;
                     float distance = Vector2.Distance(projectile.Center, target);
                     float magnitude = distance < Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().ReimuPlushieMaxDistance ? (1f * (1f - distance / Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().ReimuPlushieMaxDistance)) : 0f;
@@ -150,8 +148,6 @@ namespace Kourindou
                     {
                         projectile.velocity = direction * projectile.velocity.Length();
                     }
-
-                    Main.NewText("test2");
                 }
                 else
                 {
