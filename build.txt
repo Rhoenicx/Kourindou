@@ -1,5 +1,5 @@
 author = KourindouDev
-version = 0.1.0.12
+version = 0.1.0.13
 displayName = Kourindou
 hideCode = false
 hideResources = false
