@@ -10,7 +10,10 @@ namespace Kourindou
     {
         public static void SetupGensokyo(Mod Gensokyo, Mod Kourindou)
         {
-            
+            Gensokyo.Call(
+                "RegisterShopAccess",
+                Kourindou.Name
+            );
         }
 
         public static void SetupHairLoader(Mod HairLoader, Mod Kourindou)

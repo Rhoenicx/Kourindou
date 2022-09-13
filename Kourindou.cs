@@ -144,6 +144,38 @@ namespace Kourindou
             base.Unload();
         }
 
+        public override object Call(params object[] args)
+        {
+            try
+            {
+                string message = args[0] as string;
+
+                switch (message)
+                {
+                    case "AddGensokyoShopItem":
+                        if (Gensokyo != null)
+                        {
+                             Gensokyo.Call(
+                                "AddShopItem",
+                                (int)args[1],
+                                "Consumables",
+                                ItemType<FumoCola>(),
+                                true
+                            );
+                        }
+
+                        return "Success";
+                }
+                Logger.Debug("Kourindou Call Error: Unknown Message: " + message);
+            }
+            catch (Exception e)
+            {
+                Logger.Warn("Kourindou Call Error: " + e.StackTrace + e.Message);
+            }
+
+            return "Failure";
+        }
+
         // PostSetupContent - Register mods for compatibility
         public override void PostSetupContent()
         {

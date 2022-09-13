@@ -15,7 +15,7 @@ namespace Kourindou.Items.Consumables
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Fumo Cola");
-            Tooltip.SetDefault("Coca Cola es Fumo");
+            Tooltip.SetDefault("Coca Cola is Fumo");
         }
 
         public override void SetDefaults()
@@ -34,7 +34,7 @@ namespace Kourindou.Items.Consumables
             Item.useAnimation = 60;
             Item.autoReuse = false;
             Item.useTurn = true;
-            Item.noUseGraphic = false;
+            Item.noUseGraphic = true;
 
             // Item consumable and stack size
             Item.maxStack = 99;
