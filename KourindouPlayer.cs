@@ -65,6 +65,7 @@ namespace Kourindou
         // Items
         public int FumoColaTurnIntoPlushieID = -1;
         public int FumoColaAnimationTimer;
+        public int FumoColaBuffStacks;
 
         // Half Phantom pet active
         public bool HalfPhantomPet;
@@ -91,6 +92,7 @@ namespace Kourindou
             tag.Add("plushiePowerMode", plushiePower);
             tag.Add("cirnoPlushieAttackCounter", CirnoPlushie_Attack_Counter);
             tag.Add("cirnoPlushieTimesNine", CirnoPlushie_TimesNine);
+            tag.Add("fumoColaBuffStacks", FumoColaBuffStacks);
         }
 
         public override void LoadData(TagCompound tag)
@@ -98,34 +100,12 @@ namespace Kourindou
             plushiePower = tag.GetBool("plushiePowerMode");
             CirnoPlushie_Attack_Counter = tag.GetByte("cirnoPlushieAttackCounter");
             CirnoPlushie_TimesNine = tag.GetBool("cirnoPlushieTimesNine");
+            FumoColaBuffStacks = tag.GetInt("fumoColaBuffStacks");
         }
 
         //--------------------------------------------------------------------------------------------------------------------//
         //----------------------------------------------------- Drawing ------------------------------------------------------//
         //--------------------------------------------------------------------------------------------------------------------//
-
-        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
-        {
-            if (!drawInfo.headOnlyRender
-                && drawInfo.drawPlayer.GetModPlayer<KourindouPlayer>().FumoColaAnimationTimer > 0
-                && drawInfo.drawPlayer.itemAnimation > 0
-                && drawInfo.drawPlayer.ItemAnimationActive)
-            {
-                float progress = (float)drawInfo.drawPlayer.itemAnimation / (float)drawInfo.drawPlayer.itemAnimationMax;
-
-                float FrontArmAngle = 80f;
-                float BackArmAngle = 35f;
-
-                if ((int)drawInfo.drawPlayer.gravDir == -1)
-                {
-                    BackArmAngle *= -1;
-                    FrontArmAngle *= -1;
-                }
-
-                drawInfo.drawPlayer.compositeFrontArm = new Player.CompositeArmData(true, progress <= 0.8f ? Player.CompositeArmStretchAmount.ThreeQuarters : Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(drawInfo.drawPlayer.direction * -FrontArmAngle));
-                drawInfo.drawPlayer.compositeBackArm = new Player.CompositeArmData(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(drawInfo.drawPlayer.direction * -BackArmAngle));
-            }
-        }
 
         public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
         {
@@ -313,6 +293,12 @@ namespace Kourindou
                 || !Player.ItemAnimationActive))
             {
                 FumoColaTurnIntoPlushieID = -1;
+            }
+
+            // Reset FumoCola buff
+            if (!Player.HasBuff(BuffType<Buff_FumoCola>()))
+            {
+                FumoColaBuffStacks = 0;
             }
         }
 
@@ -565,7 +551,7 @@ namespace Kourindou
         }
 
         // --------- Player got hurt --------- //
-        public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+        public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
         {
             if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
             {
@@ -944,8 +930,37 @@ namespace Kourindou
                 && Player.itemAnimation > 0
                 && Player.ItemAnimationActive)
             {
-                Player.compositeBackArm.enabled = true;
-                Player.compositeFrontArm.enabled = true;
+                if (Player.HeldItem.type == ItemType<FumoCola>())
+                {
+                    float progress = (float)Player.itemAnimation / (float)Player.itemAnimationMax;
+
+
+
+                    if ((int)((float)Player.itemAnimationMax * FumoCola.DrinkProgress) == (int)(progress * (float)Player.itemAnimationMax))
+                    {
+                        SoundEngine.PlaySound(SoundID.Item3 with { Volume = 0.8f, PitchVariance = 0.1f });
+                    }
+
+                    float FrontArmAngle = 80f;
+                    float BackArmAngle = 35f;
+
+                    if ((int)Player.gravDir == -1)
+                    {
+                        BackArmAngle *= -1;
+                        FrontArmAngle *= -1;
+                    }
+
+                    if (progress > 0f && progress < FumoCola.DrinkProgress)
+                    {
+                        BackArmAngle += 50f;
+                    }
+
+                    Player.compositeFrontArm = new Player.CompositeArmData(true, progress <= FumoCola.OpeningProgress ? Player.CompositeArmStretchAmount.ThreeQuarters : Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -FrontArmAngle));
+                    Player.compositeBackArm = new Player.CompositeArmData(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -BackArmAngle));
+
+                    Player.compositeBackArm.enabled = true;
+                    Player.compositeFrontArm.enabled = progress > FumoCola.DrinkProgress;
+                }
             }
         }
 
@@ -1080,10 +1095,18 @@ namespace Kourindou
                 // calculate the progress of the animation
                 float progress = (float)player.itemAnimation / (float)player.itemAnimationMax;
 
+                // Drink animation
+                if (progress < FumoCola.DrinkProgress)
+                {
+                    offset += new Vector2(4, -18);
+                    rotation += -100f;
+                }
+
+                // Flip Visibility if a plushie is equipped
                 if (player.GetModPlayer<KourindouPlayer>().FumoColaTurnIntoPlushieID != -1)
                 {
-                    Opacity = progress > 0.8f ? 1f : 1f + ((float)player.itemAnimation - (float)player.itemAnimationMax * 0.8f) / ((float)player.itemAnimationMax * 0.2f);
-                    Opacity2 = progress > 0.8f ? 0f : -((float)player.itemAnimation - (float)player.itemAnimationMax * 0.8f) / ((float)player.itemAnimationMax * 0.2f);
+                    Opacity = progress > FumoCola.OpeningProgress ? 1f : 1f + ((float)player.itemAnimation - (float)player.itemAnimationMax * FumoCola.OpeningProgress) / ((float)player.itemAnimationMax * (1f - FumoCola.OpeningProgress));
+                    Opacity2 = progress > FumoCola.OpeningProgress ? 0f : -((float)player.itemAnimation - (float)player.itemAnimationMax * FumoCola.OpeningProgress) / ((float)player.itemAnimationMax * (1f - FumoCola.OpeningProgress));
                 }
 
                 if (player.bodyFrame.Y == 392 || player.bodyFrame.Y == 448 || player.bodyFrame.Y == 504

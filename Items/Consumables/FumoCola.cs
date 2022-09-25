@@ -7,11 +7,16 @@ using Terraria.ID;
 using Terraria.Audio;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using Kourindou.Buffs;
 
 namespace Kourindou.Items.Consumables
 {
     public class FumoCola : ModItem
     {
+
+        public static float OpeningProgress = 0.8f;
+        public static float DrinkProgress = 0.3f;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Fumo Cola");
@@ -30,8 +35,8 @@ namespace Kourindou.Items.Consumables
 
             // Usage and Animation
             Item.useStyle = ItemUseStyleID.HiddenAnimation;
-            Item.useTime = 60;
-            Item.useAnimation = 60;
+            Item.useTime = 90;
+            Item.useAnimation = 90;
             Item.autoReuse = false;
             Item.useTurn = true;
             Item.noUseGraphic = true;
@@ -39,6 +44,10 @@ namespace Kourindou.Items.Consumables
             // Item consumable and stack size
             Item.maxStack = 99;
             Item.consumable = true;
+
+            // Buff
+            Item.buffType = BuffType<Buff_FumoCola>();
+            Item.buffTime = 36000;
 
             // Usesound
             Item.UseSound = new SoundStyle("Kourindou/Sounds/Custom/Soda") with { Volume = 0.66f, PitchVariance = 1f };
@@ -50,12 +59,7 @@ namespace Kourindou.Items.Consumables
 
             if (player.whoAmI == Main.myPlayer)
             {
-                if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Count < 1)
-                {
-                    // Needs to be Red's potion...
-                    player.AddBuff(BuffID.Slow, 60);
-                }
-                else
+                if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Count > 0)
                 {
                     int[] plushieIDs = player.GetModPlayer<KourindouPlayer>().EquippedPlushies.ToArray();
                     int FumoColaTurnIntoPlushieID = plushieIDs[Main.rand.Next(plushieIDs.Length)];
