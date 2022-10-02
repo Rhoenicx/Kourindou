@@ -14,7 +14,7 @@ namespace Kourindou.Items.Plushies
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Nagato Yuki Plushie");
-            Tooltip.SetDefault("");
+            Tooltip.SetDefault("An introverted, taciturn bibliophile. Also an alien");
         }
 
         public override void SetDefaults()
