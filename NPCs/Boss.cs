@@ -78,6 +78,97 @@ namespace Kourindou.NPCs
         }
         #endregion
 
+        // Targeting logic
+        protected readonly HashSet<int> Targets = new HashSet<int>();
+        protected bool BossTriggered = false;
+        protected float TriggerDistance = 200f;
+        protected float TargetSearchDistance = 2500f;
+        protected float DespawnDistance = 5000f;
+
+        protected bool GetTarget()
+        {
+            // Check if the current target is still alive
+            Player player = Main.player[NPC.target];
+            if (!player.active || player.dead)
+            {
+                // if not try to get another target
+                NPC.TargetClosest(false);
+                player = Main.player[NPC.target];
+
+                // then check if this target is valid and in range
+                if (!player.active || player.dead || NPC.Distance(player.Center) > DespawnDistance)
+                {
+                    // if not then there are no valid targets
+                    return false;
+                }
+            }
+            // target still valid
+            return true;
+        }
+
+        // Fill target list with players
+        protected int[] GetMultiTargets(bool TargetClosest, int TargetAmount = -1)
+        {
+            // Clear target list
+            Targets.Clear();
+
+            foreach (Player player in Main.player)
+            {
+                if ((player.dead || !player.active) 
+                    && NPC.Distance(player.Center) < TargetSearchDistance)
+                {
+                    Targets.Add(player.whoAmI);
+                }
+            }
+
+            return new int[] { 1,2,3};
+        }
+
+        protected void TriggerBoss()
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                return;
+            }
+
+            if (!BossTriggered)
+            {
+                BossTriggered = true;
+            }
+        }
+
+        public override void AI()
+        {
+            switch (State)
+            {
+                case (byte)States.NotTriggered:
+                {
+                    if (BossTriggered)
+                    {
+                        NPC.TargetClosest(false);
+                        State = (byte)States.TriggerAnimation;
+                    }
+                    return;
+                }
+
+                case (byte)States.TriggerAnimation:
+                {
+                    return;
+                }
+            }
+
+            base.AI();
+        }
+
+        public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
+        {
+            TriggerBoss();
+        }
+
+        public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
+        {
+            TriggerBoss();
+        }
 
         protected virtual void RunSynchronize()
         {
@@ -90,7 +181,9 @@ namespace Kourindou.NPCs
         #region Enumerators
         protected enum States
         { 
-            FindTarget,
+            NotTriggered,
+            TriggerAnimation,
+            CheckTarget,
             MovePrepare,
             Move,
             MoveEnd,
