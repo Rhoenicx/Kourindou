@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -83,11 +83,103 @@ namespace Kourindou.NPCs
         protected bool BossTriggered = false;
         protected float TriggerDistance = 200f;
         protected float TargetSearchDistance = 2500f;
-        protected float DespawnDistance = 5000f;
+        protected float MaximumTargetDistance = 5000f;
+
+        #region Targeting
+
+        // Add a target to the target list
+        // Triggered: When a player damages the boss or called
+        protected void AddTarget(int ID)
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                return;
+            }
+            
+            if (!Targets.Contains(ID))
+            {
+                Targets.Add(ID);
+            }
+        }
+
+        // Check if a target is still alive / logged in
+        protected void UpdateAvailableTargets()
+        {
+            foreach (int i in Targets)
+            {
+                Player player = Main.player[i];
+                if (!player.active || player.dead || NPC.Distance(player.Center) > MaximumTargetDistance)
+                {
+                    Targets.Remove(i);
+                }
+            }
+        }
+        
+        protected void SearchForTargets()
+        {
+            foreach (Player player in Main.player)
+            {
+                if (player.active && !player.dead && NPC.Distance(player.Center) < TargetSearchDistance)
+                {
+                    AddTarget(player.whoAmI);
+                }
+            }
+        }
 
         protected bool GetTarget()
         {
-            // Check if the current target is still alive
+            // In multiplayer target logic should only be executed serverside
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                return;
+            }
+            
+            // Just in case update the target list to remove invalid targets
+            UpdateAvailableTargets()
+            
+            // Check if the current targeted player is still available in the Target list
+            // For example the player died, logged out or is no longer in range
+            if (!Targets.Contains(NPC.target))
+            {
+                // If the current target is no longer available, search the area for more targets close by
+                SearchForTargets();
+                
+                // Run vanilla targeting logic to get the closest target
+                NPC.TargetClosest(false); // NPC.target gets updated automatically here
+                
+                // Now check again if the selected target is valid / has been added by the search
+                if (!Targets.Contains(NPC.target))
+                {
+                    // Target chosen by the vanilla logic is not in range
+                    // Just in case run code to verify there are any targets (more than zero...)
+                    if (Targets.Count <= 0)
+                    {
+                        // There don't seem to be any valid targets => despawn
+                        return false;
+                    }
+                    
+                    // Now select the closest target that is still in the target list
+                    // Convert the HashSet to a array for easy access
+                    int[] arTargets = Targets.ToArray();
+                    
+                    // Select the first entry as target
+                    NPC.Target = atTargets[0];
+                    
+                    // loop through the entire array to find the closest one
+                    foreach (int i in arTargets)
+                    {
+                        // Compare distance of old selected target to this one
+                        if (Main.player[i].Distance(NPC.Center) < Main.player[NPC.target].Distance(NPC.Center))
+                        {
+                            // Update the target to the current one if closer
+                            NPC.Target = i;
+                        }
+                    }
+                }
+            }
+            return true;
+            
+            
             Player player = Main.player[NPC.target];
             if (!player.active || player.dead)
             {
@@ -106,8 +198,7 @@ namespace Kourindou.NPCs
             return true;
         }
 
-        // Fill target list with players
-        protected int[] GetMultiTargets(bool TargetClosest, int TargetAmount = -1)
+        protected int[] GetMultipleTargets(bool TargetClosest, int TargetAmount = -1)
         {
             // Clear target list
             Targets.Clear();
@@ -123,6 +214,7 @@ namespace Kourindou.NPCs
 
             return new int[] { 1,2,3};
         }
+        #endregion
 
         protected void TriggerBoss()
         {
@@ -139,6 +231,8 @@ namespace Kourindou.NPCs
 
         public override void AI()
         {
+            UpdateTargets();
+            
             switch (State)
             {
                 case (byte)States.NotTriggered:
@@ -163,11 +257,13 @@ namespace Kourindou.NPCs
         public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
         {
             TriggerBoss();
+            AddTarget(player.whoAmI);
         }
 
         public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
             TriggerBoss();
+            AddTarget(projectile.owner);
         }
 
         protected virtual void RunSynchronize()
