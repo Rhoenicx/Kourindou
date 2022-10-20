@@ -9,84 +9,208 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace Kourindou.NPCs
-{
-    public abstract class Boss : ModNPC
+{    
+    public abstract class BossNPC : ModNPC
     {
-        #region States
-        // Split up the first AI field into 4 'state' bytes
+        #region VAR_States
         protected byte Stage
         {
-            get => (byte)(BitConverter.SingleToUInt32Bits(NPC.ai[0]));
+            get => (byte)(BitConverter.SingleToUInt32Bits(NPC.ai[0]) & 0x000000FF);
             set
             {
-                NPC.ai[0] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[0]) & 0xFFFFFF00) + (uint)(value));
-                RunSynchronize();
+                NPC.ai[0] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[0]) & 0xFFFFFF00) | ((uint)value & 0x000000FF));
+                Synchronize();
             }
         }
 
         protected byte State
         {
-            get => (byte)(BitConverter.SingleToUInt32Bits(NPC.ai[0]) >> 8);
+            get => (byte)((BitConverter.SingleToUInt32Bits(NPC.ai[0]) >> 8) & 0x000000FF);
             set
             {
-                NPC.ai[0] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[0]) & 0xFFFF00FF) + (uint)(value << 8));
-                RunSynchronize();
+                NPC.ai[0] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[0]) & 0xFFFF00FF) | (((uint)value << 8) & 0x0000FF00));
+                Synchronize();
             }
         }
 
-        protected byte MoveIndex
+        protected byte SubState
         {
-            get => (byte)(BitConverter.SingleToUInt32Bits(NPC.ai[0]) >> 16);
+            get => (byte)((BitConverter.SingleToUInt32Bits(NPC.ai[0]) >> 16) & 0x000000FF);
             set
             {
-                NPC.ai[0] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[0]) & 0xFF00FFFF) + (uint)(value << 16));
-                RunSynchronize();
+                NPC.ai[0] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[0]) & 0xFF00FFFF) | (((uint)value << 16) & 0x00FF0000));
+                Synchronize();
+            }
+        }
+
+        protected byte Unused1
+        {
+            get => (byte)((BitConverter.SingleToUInt32Bits(NPC.ai[0]) >> 24) & 0x000000FF);
+            set
+            {
+                NPC.ai[0] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[0]) & 0x00FFFFFF) | (((uint)value << 24) & 0xFF000000));
+                Synchronize();
+            }
+        }
+        #endregion
+
+        #region VAR_Attacks
+        protected bool Attacking = AttackTimer > 0 || AttackIndex > 0 || AttackState > 0;
+        
+        protected short AttackTimer
+        {
+            get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[1]) & 0x0000FFFF);
+            set
+            {
+                NPC.ai[1] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[1]) & 0xFFFF0000) | ((uint)value & 0x0000FFFF));
             }
         }
 
         protected byte AttackIndex
         {
-            get => (byte)(BitConverter.SingleToUInt32Bits(NPC.ai[0]) >> 24);
+            get => (byte)((BitConverter.SingleToUInt32Bits(NPC.ai[1]) >> 16) & 0x000000FF);
             set
             {
-                NPC.ai[0] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[0]) & 0x00FFFFFF) + (uint)(value << 24));
-                RunSynchronize();
+                NPC.ai[1] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[1]) & 0xFF00FFFF) | (((uint)value << 16) & 0x00FF0000));
+                Synchronize();
             }
+        }
+        
+        protected byte AttackState
+        {
+            get => (byte)((BitConverter.SingleToUInt32Bits(NPC.ai[1]) >> 24) & 0x000000FF);
+            set
+            {
+                NPC.ai[1] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[1]) & 0x00FFFFFF) | (((uint)value << 24) & 0xFF000000));
+                Synchronize();
+            }              
         }
         #endregion
 
-        #region Timers
-        // Split up the second AI field into 2 'timer' shorts
-        protected short AttackTimer
-        {
-            get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[1]));
-            set
-            {
-                NPC.ai[1] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[0]) & 0xFFFF0000) + (uint)(value));
-                RunSynchronize();
-            }
-        }
-
+        #region VAR_Movement
+        protected bool Moving = MoveTimer > 0 || MoveIndex > 0 || MoveState > 0;
         protected short MoveTimer
         {
-            get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[1]) >> 16);
+            get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[2]) & 0x0000FFFF);
             set
             {
-                NPC.ai[1] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[0]) & 0x0000FFFF) + (uint)(value << 16));
-                RunSynchronize();
+                NPC.ai[2] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[2]) & 0xFFFF0000) | ((uint)value & 0x0000FFFF));
+            }
+        }
+        
+        protected byte MoveIndex
+        {
+            get => (byte)((BitConverter.SingleToUInt32Bits(NPC.ai[2]) >> 16) & 0x000000FF);
+            set
+            {
+                NPC.ai[2] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[2]) & 0xFF00FFFF) | (((uint)value << 16) & 0x00FF0000));
+                Synchronize();
+            }
+        }
+        
+        protected byte MoveState
+        {
+            get => (byte)((BitConverter.SingleToUInt32Bits(NPC.ai[2]) >> 24) & 0x000000FF);
+            set
+            {
+                NPC.ai[2] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[2]) & 0x00FFFFFF) | (((uint)value << 24) & 0xFF000000));
+                Synchronize();
+            }              
+        }
+        #endregion
+        
+        #region VAR_Timers
+        protected short MainTimer
+        {
+            get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0x0000FFFF)
+            set
+            {
+                NPC.ai[3] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0xFFFF0000) | ((uint)value & 0x0000FFFF));
+                Synchronize();
+            }
+        }
+        
+        protected short SubTimer
+        {
+            get => (short)((BitConverter.SingleToUInt32Bits(NPC.ai[3]) >> 16) & 0x0000FFFF)
+            set
+            {
+                NPC.ai[3] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0x0000FFFF) | (((uint)value << 16) & 0xFFFF0000));
+                Synchronize();
+            }
+        }
+        
+        #endregion
+        
+        #region VAR_Stats
+        protected abstract int Difficulty { get; }
+        protected abstract int StageAmount { get; }
+        protected abstract int[] StageHealth { get; }
+        protected abstract int[] StageDefense { get; }
+        #endregion
+        
+        #region VAR_Other
+        // Targets
+        protected readonly HashSet<int> Targets = new HashSet<int>();
+        protected float MaximumTargetDistance = 5000f;
+
+        protected Vector2 TargetCenter => TargetDecoys && Main.player[NPC.target].tankPet >= 0 
+            ? Main.projectile[Main.player[NPC.target].tankPet].Center 
+            : Main.player[NPC.target].Center;
+        
+        // Decoys
+        protected const bool TargetDecoys;
+        protected float StageProgress => NPC.
+        protected int Difficulty;
+
+        #endregion
+        
+        #region AI_Stats
+        protected int GetMaxHealth()
+        {
+            int hp;
+            foreach (int i in StageHealth)
+            {
+                hp += StageHealth[i];
+            }
+            
+            return hp;
+        }
+        
+        protected int GetAverageDefense()
+        {
+            int def;
+            foreach (int i in StageDefense)
+            {
+                def += StageDefense[i];
+            }
+            
+            return def / StageDefense.Count;
+        }
+       
+        protected void SetStageHealth()
+        {
+            int hp;
+            foreach (int i in StageHealth)
+            {
+                hp += StageHealth[i];
+            }
+            
+            float factor = (float) NPC.lifeMax / (float) hp;
+            
+            if (factor == 1f)
+            {
+                return;
+            }
+            
+            foreach (int i in StageHealth)
+            {
+                StageHealth[i] *= factor;
             }
         }
         #endregion
-
-        // Targeting logic
-        protected readonly HashSet<int> Targets = new HashSet<int>();
-        protected bool BossTriggered = false;
-        protected float TriggerDistance = 200f;
-        protected float TargetSearchDistance = 2500f;
-        protected float MaximumTargetDistance = 5000f;
-
-        #region Targeting
-
+        
+        #region AI_Targeting
         // Add a target to the target list
         // Triggered: When a player damages the boss or called
         protected void AddTarget(int ID)
@@ -103,7 +227,7 @@ namespace Kourindou.NPCs
         }
 
         // Check if a target is still alive / logged in
-        protected void UpdateAvailableTargets()
+        protected void UpdateTargets()
         {
             foreach (int i in Targets)
             {
@@ -114,19 +238,19 @@ namespace Kourindou.NPCs
                 }
             }
         }
-        
-        protected void SearchForTargets()
+
+        protected bool GetFirstTarget()
         {
-            foreach (Player player in Main.player)
+            if (Main.netMode == NetmodeID.MultiplayerClient)
             {
-                if (player.active && !player.dead && NPC.Distance(player.Center) < TargetSearchDistance)
-                {
-                    AddTarget(player.whoAmI);
-                }
+                return;
             }
+            
+            NPC.TargetClosest(false);
+            AddTarget(NPC.target);
         }
 
-        protected bool GetTarget()
+        protected bool GetSingleTarget()
         {
             // In multiplayer target logic should only be executed serverside
             if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -135,15 +259,12 @@ namespace Kourindou.NPCs
             }
             
             // Just in case update the target list to remove invalid targets
-            UpdateAvailableTargets()
+            UpdateTargets()
             
             // Check if the current targeted player is still available in the Target list
             // For example the player died, logged out or is no longer in range
             if (!Targets.Contains(NPC.target))
             {
-                // If the current target is no longer available, search the area for more targets close by
-                SearchForTargets();
-                
                 // Run vanilla targeting logic to get the closest target
                 NPC.TargetClosest(false); // NPC.target gets updated automatically here
                 
@@ -163,7 +284,7 @@ namespace Kourindou.NPCs
                     int[] arTargets = Targets.ToArray();
                     
                     // Select the first entry as target
-                    NPC.Target = atTargets[0];
+                    NPC.Target = arTargets[0];
                     
                     // loop through the entire array to find the closest one
                     foreach (int i in arTargets)
@@ -178,66 +299,86 @@ namespace Kourindou.NPCs
                 }
             }
             return true;
-            
-            
-            Player player = Main.player[NPC.target];
-            if (!player.active || player.dead)
-            {
-                // if not try to get another target
-                NPC.TargetClosest(false);
-                player = Main.player[NPC.target];
-
-                // then check if this target is valid and in range
-                if (!player.active || player.dead || NPC.Distance(player.Center) > DespawnDistance)
-                {
-                    // if not then there are no valid targets
-                    return false;
-                }
-            }
-            // target still valid
-            return true;
         }
 
-        protected int[] GetMultipleTargets(bool TargetClosest, int TargetAmount = -1)
-        {
-            // Clear target list
-            Targets.Clear();
-
-            foreach (Player player in Main.player)
-            {
-                if ((player.dead || !player.active) 
-                    && NPC.Distance(player.Center) < TargetSearchDistance)
-                {
-                    Targets.Add(player.whoAmI);
-                }
-            }
-
-            return new int[] { 1,2,3};
-        }
-        #endregion
-
-        protected void TriggerBoss()
+        protected int GetMultiTargetAmount()
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
                 return;
             }
-
-            if (!BossTriggered)
-            {
-                BossTriggered = true;
-            }
+            
+            return Targets.Count;
         }
 
+        protected HashSet[] GetMultiTargets(bool TargetClosest, bool RandomTargets, bool IncludeMainTarget, int TargetAmount = -1)
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient || TargetAmount <= 0)
+            {
+                return new HashSet<int>() { NPC.target };
+            }
+            
+            HashSet<int> MultiTargets = new HashSet<int>();
+            HashSet<int> TempTargets = new HashSet<int>(Targets);
+            
+            if (IncludeMainTarget && TempTargets.Contains(NPC.target))
+            {
+                TempTargets.Remove(NPC.target);
+                MultiTargets.Add(NPC.target)
+            }
+            
+            if (TargetClosest)
+            {
+                for (int i = (int)IncludeMainTarget; i < TargetAmount; i++)
+                {
+                    int closest = TempTargets[0];
+                    
+                    foreach (int j in TempTargets)
+                    {
+                        if (NPC.Distance(Main.player[j].Center) < NPC.Distance(Main.player[closest].Center))
+                        {
+                            closest = j;
+                        }
+                    }
+                    
+                    MultiTargets.Add(closest);
+                    TempTargets.Remove(closest);
+                }
+                
+                return MultiTargets;
+            }
+            
+            if (RandomTargets)
+            {
+                for (int i = (int)IncludeMainTarget; i < TargetAmount; i++)
+                {
+                    int selected = (int)Main.rand.Next(0, TempTargets.Count);
+                    
+                    MultiTargets.Add(TempTargets[selected]);
+                    TempTargets.Remove(selected);
+                }
+                return MultiTargets;
+            }
+            
+            return new HashSet<int>() { NPC.target };
+        }
+        #endregion
+
+        #region AI_Main
         public override void AI()
         {
             UpdateTargets();
             
             switch (State)
             {
-                case (byte)States.NotTriggered:
+                case (byte) State.SpawnAnimation:
+                    // Move the boss to a location around the player
+                    return;
+                
+                case (byte)States.Trigger:
                 {
-                    if (BossTriggered)
+                    // Check if the boss has taken damage, we use this to check if a player has attacked the boss after the spawn in animation
+                    if (NPC.Health != NPC.MaxHealth)
                     {
                         NPC.TargetClosest(false);
                         State = (byte)States.TriggerAnimation;
@@ -253,40 +394,68 @@ namespace Kourindou.NPCs
 
             base.AI();
         }
+        
+        #endregion
 
+        #region AI_OnHit
         public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
         {
-            TriggerBoss();
             AddTarget(player.whoAmI);
+            CountDamage(player.whoAmI);
         }
 
         public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
-            TriggerBoss();
             AddTarget(projectile.owner);
+            CountDamage(projectile.owner);
         }
 
-        protected virtual void RunSynchronize()
+        protected void Synchronize()
         {
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
                 NPC.netUpdate = true;
             }
         }
+        #endregion
 
-        #region Enumerators
+        #region Networking
+        
+        #endregion
+
+        #region Enums
         protected enum States
         { 
-            NotTriggered,
+            Spawn,
+            SpawnAnimation,
+            Trigger,
             TriggerAnimation,
-            CheckTarget,
-            MovePrepare,
-            Move,
-            MoveEnd,
-            AttackPrepare,
-            Attack,
-            AttackEnd,
-            Despawn
+            MainLoop,
+            DespawnAnimation,
+            Despawn,
+            DefeatAnimation,
+            Defeat
+        }
+        
+        // Store attackindex
+        protected enum Attacks
+        {
+            none,
+            idle,
+            end
+        }
+        
+        // Store moveindex
+        protected enum Moves
+        {
+            none,
+            idle
+            end
+        }
+        
+        protected enum NetworkMessages
+        {
+            Targets
         }
         #endregion
     }
