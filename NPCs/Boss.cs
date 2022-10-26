@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +56,7 @@ namespace Kourindou.NPCs
         #endregion
 
         #region VAR_Attacks
-        protected bool Attacking = AttackTimer > 0 || AttackIndex > 0 || AttackState > 0;
+        protected bool Attacking { get => AttackTimer > 0 || AttackIndex > 0 || AttackState > 0; }
         
         protected short AttackTimer
         {
@@ -88,7 +89,7 @@ namespace Kourindou.NPCs
         #endregion
 
         #region VAR_Movement
-        protected bool Moving = MoveTimer > 0 || MoveIndex > 0 || MoveState > 0;
+        protected bool Moving { get => MoveTimer > 0 || MoveIndex > 0 || MoveState > 0; }
         protected short MoveTimer
         {
             get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[2]) & 0x0000FFFF);
@@ -122,7 +123,7 @@ namespace Kourindou.NPCs
         #region VAR_Timers
         protected short MainTimer
         {
-            get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0x0000FFFF)
+            get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0x0000FFFF);
             set
             {
                 NPC.ai[3] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0xFFFF0000) | ((uint)value & 0x0000FFFF));
@@ -132,7 +133,7 @@ namespace Kourindou.NPCs
         
         protected short SubTimer
         {
-            get => (short)((BitConverter.SingleToUInt32Bits(NPC.ai[3]) >> 16) & 0x0000FFFF)
+            get => (short)((BitConverter.SingleToUInt32Bits(NPC.ai[3]) >> 16) & 0x0000FFFF);
             set
             {
                 NPC.ai[3] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0x0000FFFF) | (((uint)value << 16) & 0xFFFF0000));
@@ -159,16 +160,14 @@ namespace Kourindou.NPCs
             : Main.player[NPC.target].Center;
         
         // Decoys
-        protected const bool TargetDecoys;
-        protected float StageProgress => NPC.
-        protected int Difficulty;
+        protected abstract bool TargetDecoys { get; }
 
         #endregion
         
         #region AI_Stats
         protected int GetMaxHealth()
         {
-            int hp;
+            int hp = 0;
             foreach (int i in StageHealth)
             {
                 hp += StageHealth[i];
@@ -179,24 +178,18 @@ namespace Kourindou.NPCs
         
         protected int GetAverageDefense()
         {
-            int def;
+            int def = 0;
             foreach (int i in StageDefense)
             {
                 def += StageDefense[i];
             }
             
-            return def / StageDefense.Count;
+            return def / StageDefense.Length;
         }
        
         protected void SetStageHealth()
         {
-            int hp;
-            foreach (int i in StageHealth)
-            {
-                hp += StageHealth[i];
-            }
-            
-            float factor = (float) NPC.lifeMax / (float) hp;
+            float factor = (float) NPC.lifeMax / (float) GetMaxHealth();
             
             if (factor == 1f)
             {
@@ -205,7 +198,7 @@ namespace Kourindou.NPCs
             
             foreach (int i in StageHealth)
             {
-                StageHealth[i] *= factor;
+                StageHealth[i] = (int)(StageHealth[i] * factor);
             }
         }
         #endregion
@@ -240,26 +233,16 @@ namespace Kourindou.NPCs
         }
 
         protected bool GetFirstTarget()
-        {
-            if (Main.netMode == NetmodeID.MultiplayerClient)
-            {
-                return;
-            }
-            
+        {            
             NPC.TargetClosest(false);
             AddTarget(NPC.target);
+            return true;
         }
 
         protected bool GetSingleTarget()
         {
-            // In multiplayer target logic should only be executed serverside
-            if (Main.netMode == NetmodeID.MultiplayerClient)
-            {
-                return;
-            }
-            
             // Just in case update the target list to remove invalid targets
-            UpdateTargets()
+            UpdateTargets();
             
             // Check if the current targeted player is still available in the Target list
             // For example the player died, logged out or is no longer in range
@@ -284,7 +267,7 @@ namespace Kourindou.NPCs
                     int[] arTargets = Targets.ToArray();
                     
                     // Select the first entry as target
-                    NPC.Target = arTargets[0];
+                    NPC.target = arTargets[0];
                     
                     // loop through the entire array to find the closest one
                     foreach (int i in arTargets)
@@ -293,7 +276,7 @@ namespace Kourindou.NPCs
                         if (Main.player[i].Distance(NPC.Center) < Main.player[NPC.target].Distance(NPC.Center))
                         {
                             // Update the target to the current one if closer
-                            NPC.Target = i;
+                            NPC.target = i;
                         }
                     }
                 }
@@ -303,15 +286,10 @@ namespace Kourindou.NPCs
 
         protected int GetMultiTargetAmount()
         {
-            if (Main.netMode == NetmodeID.MultiplayerClient)
-            {
-                return;
-            }
-            
             return Targets.Count;
         }
 
-        protected HashSet[] GetMultiTargets(bool TargetClosest, bool RandomTargets, bool IncludeMainTarget, int TargetAmount = -1)
+        protected HashSet<int> GetMultiTargets(bool TargetClosest, bool RandomTargets, bool IncludeMainTarget, int TargetAmount = -1)
         {
             if (Main.netMode == NetmodeID.MultiplayerClient || TargetAmount <= 0)
             {
@@ -324,14 +302,14 @@ namespace Kourindou.NPCs
             if (IncludeMainTarget && TempTargets.Contains(NPC.target))
             {
                 TempTargets.Remove(NPC.target);
-                MultiTargets.Add(NPC.target)
+                MultiTargets.Add(NPC.target);
             }
             
-            if (TargetClosest)
+            if (TargetClosest && !RandomTargets)
             {
-                for (int i = (int)IncludeMainTarget; i < TargetAmount; i++)
+                for (int i = IncludeMainTarget ? 1 : 0; i < TargetAmount; i++)
                 {
-                    int closest = TempTargets[0];
+                    int closest = TempTargets.First<int>();
                     
                     foreach (int j in TempTargets)
                     {
@@ -348,14 +326,21 @@ namespace Kourindou.NPCs
                 return MultiTargets;
             }
             
-            if (RandomTargets)
+            if (RandomTargets && !TargetClosest)
             {
-                for (int i = (int)IncludeMainTarget; i < TargetAmount; i++)
+                if (TempTargets.Count >= TargetAmount)
                 {
+                    return Targets;
+                }
+
+                for (int i = IncludeMainTarget ? 1 : 0; i < TargetAmount; i++)
+                {
+                    List<int> list = TempTargets.ToList<int>();
+
                     int selected = (int)Main.rand.Next(0, TempTargets.Count);
                     
-                    MultiTargets.Add(TempTargets[selected]);
-                    TempTargets.Remove(selected);
+                    MultiTargets.Add(list[selected]);
+                    TempTargets.Remove(list[selected]);
                 }
                 return MultiTargets;
             }
@@ -371,14 +356,14 @@ namespace Kourindou.NPCs
             
             switch (State)
             {
-                case (byte) State.SpawnAnimation:
+                case (byte)States.SpawnAnimation:
                     // Move the boss to a location around the player
                     return;
                 
                 case (byte)States.Trigger:
                 {
                     // Check if the boss has taken damage, we use this to check if a player has attacked the boss after the spawn in animation
-                    if (NPC.Health != NPC.MaxHealth)
+                    if (NPC.life != NPC.lifeMax)
                     {
                         NPC.TargetClosest(false);
                         State = (byte)States.TriggerAnimation;
@@ -401,13 +386,13 @@ namespace Kourindou.NPCs
         public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
         {
             AddTarget(player.whoAmI);
-            CountDamage(player.whoAmI);
+            //CountDamage(player.whoAmI);
         }
 
         public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
             AddTarget(projectile.owner);
-            CountDamage(projectile.owner);
+            //CountDamage(projectile.owner);
         }
 
         protected void Synchronize()
@@ -449,7 +434,7 @@ namespace Kourindou.NPCs
         protected enum Moves
         {
             none,
-            idle
+            idle,
             end
         }
         
