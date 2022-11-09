@@ -9,7 +9,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace Kourindou.NPCs
+namespace Kourindou.NPCs.Bosses
 {    
     public abstract class BossNPC : ModNPC
     {
@@ -61,10 +61,7 @@ namespace Kourindou.NPCs
         protected short AttackTimer
         {
             get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[1]) & 0x0000FFFF);
-            set
-            {
-                NPC.ai[1] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[1]) & 0xFFFF0000) | ((uint)value & 0x0000FFFF));
-            }
+            set => NPC.ai[1] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[1]) & 0xFFFF0000) | ((uint)value & 0x0000FFFF));
         }
 
         protected byte AttackIndex
@@ -93,10 +90,7 @@ namespace Kourindou.NPCs
         protected short MoveTimer
         {
             get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[2]) & 0x0000FFFF);
-            set
-            {
-                NPC.ai[2] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[2]) & 0xFFFF0000) | ((uint)value & 0x0000FFFF));
-            }
+            set => NPC.ai[2] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[2]) & 0xFFFF0000) | ((uint)value & 0x0000FFFF));
         }
         
         protected byte MoveIndex
@@ -124,21 +118,13 @@ namespace Kourindou.NPCs
         protected short MainTimer
         {
             get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0x0000FFFF);
-            set
-            {
-                NPC.ai[3] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0xFFFF0000) | ((uint)value & 0x0000FFFF));
-                Synchronize();
-            }
+            set => NPC.ai[3] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0xFFFF0000) | ((uint)value & 0x0000FFFF));
         }
         
         protected short SubTimer
         {
             get => (short)((BitConverter.SingleToUInt32Bits(NPC.ai[3]) >> 16) & 0x0000FFFF);
-            set
-            {
-                NPC.ai[3] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0x0000FFFF) | (((uint)value << 16) & 0xFFFF0000));
-                Synchronize();
-            }
+            set => NPC.ai[3] = BitConverter.UInt32BitsToSingle((BitConverter.SingleToUInt32Bits(NPC.ai[3]) & 0x0000FFFF) | (((uint)value << 16) & 0xFFFF0000));
         }
         
         #endregion
@@ -168,7 +154,7 @@ namespace Kourindou.NPCs
         protected int GetMaxHealth()
         {
             int hp = 0;
-            foreach (int i in StageHealth)
+            for (int i = 0; i < StageHealth.Length; i++)
             {
                 hp += StageHealth[i];
             }
@@ -179,7 +165,7 @@ namespace Kourindou.NPCs
         protected int GetAverageDefense()
         {
             int def = 0;
-            foreach (int i in StageDefense)
+            for (int i = 0; i < StageDefense.Length; i++)
             {
                 def += StageDefense[i];
             }
@@ -195,8 +181,8 @@ namespace Kourindou.NPCs
             {
                 return;
             }
-            
-            foreach (int i in StageHealth)
+
+            for (int i = 0; i < StageHealth.Length; i++)
             {
                 StageHealth[i] = (int)(StageHealth[i] * factor);
             }
@@ -376,8 +362,6 @@ namespace Kourindou.NPCs
                     return;
                 }
             }
-
-            base.AI();
         }
         
         #endregion
