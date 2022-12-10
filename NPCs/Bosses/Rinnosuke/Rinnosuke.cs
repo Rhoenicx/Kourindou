@@ -16,11 +16,14 @@ namespace Kourindou.NPCs.Bosses.Rinnosuke
 {
     public class Rinnosuke : BossNPC
     {
-        protected override int Difficulty => 7;
         protected override int StageAmount => 7;
         protected override int[] StageHealth => new int[] { 1000, 1000, 1000, 1000, 1000, 1000, 1000 };
         protected override int[] StageDefense => new int[] { 10, 10, 10, 10, 10, 10, 10 };
         protected override bool TargetDecoys => false;
+        protected override short SpawnAnimationTime => 120;
+        protected override short DefeatAnimationTime => 120;
+        protected override short[] StageSwitchAnimationTime => new short[] { 120, 120, 120, 120, 120, 120, 120 };
+
 
         public override void SetStaticDefaults()
         {
@@ -73,9 +76,52 @@ namespace Kourindou.NPCs.Bosses.Rinnosuke
             SetStageHealth();
         }
 
-        public override void AI()
+        public override void Conditioning()
         {
-            base.AI();
+
+        }
+
+        public override bool Attack()
+        {
+            switch (AttackIndex)
+            {
+                case (byte)Attacks.MoveOnly: // Special number used for Move-only
+                    {
+
+                    }
+                    break;
+                case 1:
+                    {
+
+                    }
+                    break;
+                case (byte)Attacks.StageSwitch: // Special number used for stage-switching
+                    {
+
+                    }
+                    break;
+            }
+
+            return true;
+        }
+
+        public override bool Move()
+        {
+            switch (MoveIndex)
+            {
+                case 0:
+                    {
+
+                    }
+                    break;
+                case 1:
+                    {
+
+                    }
+                    break;
+            }
+
+            return true;
         }
     }
 }

@@ -55,9 +55,7 @@ namespace Kourindou.NPCs.Bosses
         }
         #endregion
 
-        #region VAR_Attacks
-        protected bool Attacking { get => AttackTimer > 0 || AttackIndex > 0 || AttackState > 0; }
-        
+        #region VAR_Attacks        
         protected short AttackTimer
         {
             get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[1]) & 0x0000FFFF);
@@ -86,7 +84,6 @@ namespace Kourindou.NPCs.Bosses
         #endregion
 
         #region VAR_Movement
-        protected bool Moving { get => MoveTimer > 0 || MoveIndex > 0 || MoveState > 0; }
         protected short MoveTimer
         {
             get => (short)(BitConverter.SingleToUInt32Bits(NPC.ai[2]) & 0x0000FFFF);
@@ -129,27 +126,43 @@ namespace Kourindou.NPCs.Bosses
         
         #endregion
         
-        #region VAR_Stats
-        protected abstract int Difficulty { get; }
+        #region VAR
+        // Stats
         protected abstract int StageAmount { get; }
         protected abstract int[] StageHealth { get; }
         protected abstract int[] StageDefense { get; }
-        #endregion
-        
-        #region VAR_Other
+
+        // Times
+        protected abstract short SpawnAnimationTime { get; }
+        protected abstract short DefeatAnimationTime { get; }
+        protected abstract short[] StageSwitchAnimationTime { get; }
+
         // Targets
         protected readonly HashSet<int> Targets = new HashSet<int>();
         protected float MaximumTargetDistance = 5000f;
-
         protected Vector2 TargetCenter => TargetDecoys && Main.player[NPC.target].tankPet >= 0 
             ? Main.projectile[Main.player[NPC.target].tankPet].Center 
             : Main.player[NPC.target].Center;
-        
+
+        // Spawn
+        protected bool _JustSpawned = true;
+
         // Decoys
         protected abstract bool TargetDecoys { get; }
 
+        // Movement
+        protected Vector2 destination;
+        //protected abstract float[] AccelerationMultiplier { get; }
+        //protected abstract float[] DecelerationMultiplier { get; }
+
+        // Other
+        protected bool defeated = false;
+        protected bool debug = true;
+        protected bool NextStage = false;
+        protected bool ResetNextStage = false;
+
         #endregion
-        
+
         #region AI_Stats
         protected int GetMaxHealth()
         {
@@ -187,6 +200,28 @@ namespace Kourindou.NPCs.Bosses
                 StageHealth[i] = (int)(StageHealth[i] * factor);
             }
         }
+
+        protected void SetHealth(int stage)
+        {
+            if (stage >= StageAmount)
+            {
+                return;
+            }
+
+            NPC.lifeMax = StageHealth[stage];
+            NPC.life = NPC.lifeMax;
+        }
+
+        protected void SetDefense(int stage)
+        {
+            if (stage >= StageAmount)
+            {
+                return;
+            }
+
+            NPC.defense = StageDefense[stage];
+        }
+
         #endregion
         
         #region AI_Targeting
@@ -218,7 +253,7 @@ namespace Kourindou.NPCs.Bosses
             }
         }
 
-        protected bool GetFirstTarget()
+        protected bool GetClosestTarget()
         {            
             NPC.TargetClosest(false);
             AddTarget(NPC.target);
@@ -339,31 +374,182 @@ namespace Kourindou.NPCs.Bosses
         public override void AI()
         {
             UpdateTargets();
-            
+
             switch (State)
             {
-                case (byte)States.SpawnAnimation:
-                    // Move the boss to a location around the player
-                    return;
-                
-                case (byte)States.Trigger:
-                {
-                    // Check if the boss has taken damage, we use this to check if a player has attacked the boss after the spawn in animation
-                    if (NPC.life != NPC.lifeMax)
+                case (byte)States.JustSpawned:
                     {
-                        NPC.TargetClosest(false);
-                        State = (byte)States.TriggerAnimation;
+                        NPC.despawnEncouraged = false;
+                        GetClosestTarget();
+                        SetHealth(Stage);
+                        SetDefense(Stage);
+                        AttackIndex = 0;
+                        MoveIndex = (byte)Moves.Straight;
+                        State = (byte)States.PrepareExecution;
+                        _JustSpawned = false;
+                        return;
                     }
-                    return;
-                }
+                    
+                case (byte)States.CheckStage:
+                    {
+                        // If the stage should not be changed, just go to the next state
+                        if (!NextStage)
+                        {
+                            State = (byte)States.SearchForTargets;
+                            return;
+                        }
 
-                case (byte)States.TriggerAnimation:
-                {
-                    return;
-                }
+                        // When 
+                        if (ResetNextStage)
+                        {
+                            Main.NewText(Stage);
+                            NextStage = false;
+                            ResetNextStage = false;
+                            SetHealth(Stage);
+                            SetDefense(Stage);
+                            State = (byte)States.SearchForTargets;
+                            return;
+                        }
+
+                        // Increase Stage by 1 
+                        Stage++;
+                        Main.NewText("Stage changed to: " + Stage);
+
+                        // Put the reset boolean for the next execution, we want to run attack 255 first
+                        ResetNextStage = true;
+                        GetClosestTarget();
+                        AttackIndex = 255;
+                        State = (byte)States.PrepareExecution;
+                        return;
+                    }
+
+                case (byte)States.SearchForTargets:
+                    {
+                        if (!GetSingleTarget())
+                        {
+                            State = (byte)States.Despawn;
+                            return;
+                        }
+
+                        State = (byte)States.Conditioning;
+                        return;
+                    }
+
+                case (byte)States.Conditioning:
+                    {
+                        Conditioning();
+
+                        State = (byte)States.PrepareExecution;
+                        return;
+                    }
+
+                case (byte)States.PrepareExecution:
+                    {
+                        State = (byte)States.Execution;
+                        return;
+                    }
+
+                case (byte)States.Execution:
+                    {
+                        if (Attack() && Move())
+                        {
+                            State = (byte)States.DoneExecution;
+                        }
+
+                        return;
+                    }
+
+                case (byte)States.DoneExecution:
+                    {
+                        // Reset Attack
+                        AttackState = 0;
+                        AttackTimer = 0;
+                        AttackIndex = 0;
+
+                        // Reset Move
+                        MoveState = 0;
+                        MoveTimer = 0;
+                        MoveIndex = 0;
+
+                        // Back to the top of the state machine => CheckStage
+                        State = (byte)States.CheckStage;
+                        return;
+                    }
+
+                case (byte)States.Despawn:
+                    {
+                        switch (SubState)
+                        {
+                            case 0:
+                                {
+                                    SubTimer = DefeatAnimationTime;
+                                    SubState = 1;
+                                    break;
+                                }
+
+                            case 1:
+                                {
+                                    if (SubTimer-- <= 0)
+                                    {
+                                        SubState = 2;
+                                    }
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    NPC.velocity = new Vector2(0f, -8f);
+                                    NPC.despawnEncouraged = true;
+                                    break;
+                                }
+                        }
+                        return;
+                    }
+
+                case (byte)States.Defeat:
+                    {
+                        switch (SubState)
+                        {
+                            case 0:
+                                {
+                                    SubTimer = DefeatAnimationTime;
+                                    SubState = 1;
+                                    break;
+                                }
+
+                            case 1:
+                                {
+                                    if (SubTimer-- <= 0)
+                                    {
+                                        SubState = 2;
+                                    }
+                                    break;
+                                }
+
+                            case 2:
+                                {
+                                    defeated = true;
+                                    break;
+                                }
+                        }
+                        return;
+                    }
             }
         }
-        
+
+        public virtual void Conditioning()
+        {
+
+        }
+
+        public virtual bool Attack()
+        {
+            return true;
+        }
+
+        public virtual bool Move()
+        {
+            return true;
+        }
         #endregion
 
         #region AI_OnHit
@@ -388,38 +574,71 @@ namespace Kourindou.NPCs.Bosses
         }
         #endregion
 
+        #region AI_CheckDead
+        public override bool CheckDead()
+        {
+            if (defeated)
+            {
+                return true;
+            }
+
+            if (Stage < StageAmount - 1)
+            {
+                if (!NextStage)
+                {
+                    NextStage = true;
+                }
+
+                NPC.life = 1;
+            }
+            else if (State != (byte)States.Defeat)
+            {
+                SubState = 0;
+                NPC.life = 1;
+                State = (byte)States.Defeat;
+            }
+            else if (State == (byte)States.Defeat)
+            {
+                NPC.life = 1;
+            }
+
+            return false;
+        }
+
+        #endregion
+
         #region Networking
-        
+
         #endregion
 
         #region Enums
         protected enum States
         { 
-            Spawn,
-            SpawnAnimation,
-            Trigger,
-            TriggerAnimation,
-            MainLoop,
-            DespawnAnimation,
+            JustSpawned,
+            CheckStage,
+            SearchForTargets,
+            Conditioning,
+            PrepareExecution,
+            Execution,
+            DoneExecution,
             Despawn,
-            DefeatAnimation,
             Defeat
         }
         
         // Store attackindex
         protected enum Attacks
         {
-            none,
-            idle,
-            end
+            MoveOnly = 0,
+            StageSwitch = 255
         }
         
         // Store moveindex
         protected enum Moves
         {
-            none,
-            idle,
-            end
+            None,
+            Straight,
+            Bezier,
+            Following
         }
         
         protected enum NetworkMessages
