@@ -34,25 +34,21 @@ namespace Kourindou
 			{
 				meleeHitbox[player.whoAmI] = hitbox;
 			}
-			else
+			else if (player.whoAmI == Main.myPlayer && !noHitbox)
 			{
-				if (hitbox.X - (int)player.Center.X != syncHitbox.X 
-				 || hitbox.Y - (int)player.Center.Y != syncHitbox.Y 
-				 || hitbox.Width != syncHitbox.Width 
-				 || hitbox.Height != syncHitbox.Height)
+				if (hitbox.Width != syncHitbox.Width || hitbox.Height != syncHitbox.Height)
 				{
+					meleeHitbox[player.whoAmI] = hitbox;
 					syncHitbox = hitbox;
-					syncHitbox.X -= (int)player.Center.X;
-					syncHitbox.Y -= (int)player.Center.Y;
 					
 					ModPacket packet = Mod.GetPacket();
 					packet.Write((byte) KourindouMessageType.MeleeHitbox);
 					packet.Write((byte) player.whoAmI);
-					packet.Write((int) syncHitbox.X);
-					packet.Write((int) syncHitbox.Y);
+					packet.Write((int) syncHitbox.X - (int)player.Center.X);
+					packet.Write((int) syncHitbox.Y - (int)player.Center.Y);
 					packet.Write((int) syncHitbox.Width);
 					packet.Write((int) syncHitbox.Height);
-					packet.Send();
+					packet.Send(-1, player.whoAmI);
 				}
 			}
 		}

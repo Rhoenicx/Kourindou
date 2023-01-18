@@ -35,7 +35,7 @@ namespace Kourindou.Tiles.Plushies
                     packet.Write((int) i);
                     packet.Write((int) j - 1);
                     packet.Write((short) plushieItem.plushieDirtWater);
-                    packet.Send();
+                    packet.Send(-1, Main.myPlayer);
                 }
             }
         }
@@ -45,9 +45,9 @@ namespace Kourindou.Tiles.Plushies
             if (closer)
             {
                 Player player = Main.LocalPlayer;
-                if (player.GetModPlayer<KourindouPlayer>().plushiePower)
+                if (player.GetModPlayer<KourindouPlayer>().plushiePower && player.active && !player.dead)
                 {
-                    player.AddBuff(BuffType<Buff_PlushieInRange>(), 20);
+                    player.AddBuff(BuffType<Buff_PlushieInRange>(), 60);
                 }
             }
         }
@@ -82,7 +82,7 @@ namespace Kourindou.Tiles.Plushies
                         packet.Write(pitchVariance);
                         packet.Write(soundPosition.X);
                         packet.Write(soundPosition.Y);
-                        packet.Send();
+                        packet.Send(-1, Main.myPlayer);
                 }
             }
             return true;

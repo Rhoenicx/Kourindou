@@ -8,6 +8,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Chat;
 using Terraria.Localization;
 using Terraria.Initializers;
 using Kourindou.Items;
@@ -261,7 +262,7 @@ namespace Kourindou
 
         }
 
-        // Handle netwrok packets
+        // Handle network packets
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
             KourindouMessageType msg = (KourindouMessageType)reader.ReadByte();
@@ -333,9 +334,7 @@ namespace Kourindou
 
                     if (Main.netMode == NetmodeID.Server)
                     {
-                        Player p = Main.player[playerID];
-
-                        Rectangle meleeHitbox = new Rectangle(X + (int)p.Center.X, Y + (int)p.Center.Y, Width, Height);
+                        Rectangle meleeHitbox = new Rectangle(X, Y, Width, Height);
                         KourindouGlobalItem.meleeHitbox[playerID] = meleeHitbox;
                     }
                     break;
@@ -366,7 +365,7 @@ namespace Kourindou
 
                     if (Main.netMode == NetmodeID.Server)
                     {
-                        ModContent.GetInstance<Cotton_Tile>().RightClick(i, j);
+                        GetInstance<Cotton_Tile>().RightClick(i, j);
                     }
                     break;
                 }
@@ -550,6 +549,24 @@ namespace Kourindou
                     break;    
                 }
 
+                case KourindouMessageType.RanPlushieStacks:
+                {
+                    byte PlayerID = reader.ReadByte();
+                    byte Stacks = reader.ReadByte();
+
+                    KourindouPlayer player = Main.player[PlayerID].GetModPlayer<KourindouPlayer>();
+                    player.RanPlushie_Stacks = Stacks;
+
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        ModPacket packet = GetPacket();
+                        packet.Write((byte)KourindouMessageType.RanPlushieStacks);
+                        packet.Write((byte)PlayerID);
+                        packet.Write((byte)Stacks);
+                        packet.Send(-1, whoAmI);
+                    }
+                    break;
+                }
 
                 default:
                     Logger.Warn("Kourindou: Unknown NetMessage type: " + msg);

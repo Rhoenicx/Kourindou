@@ -109,7 +109,7 @@ namespace Kourindou
                             packet.Write((byte)KourindouMessageType.ReimuPlushieTargets);
                             packet.Write((int)projectile.whoAmI);
                             packet.Write((int)nearest.n);
-                            packet.Send();
+                            packet.Send(-1, Main.myPlayer);
                         }
                     }
                 }

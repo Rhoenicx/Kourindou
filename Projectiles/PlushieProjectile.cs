@@ -180,6 +180,8 @@ namespace Kourindou.Projectiles
 						if (KourindouGlobalItem.meleeHitbox[player.whoAmI].HasValue && player.itemAnimation > 0)
 						{
 							hitbox = KourindouGlobalItem.meleeHitbox[player.whoAmI].Value;
+							hitbox.X += (int)player.Center.X;
+							hitbox.Y += (int)player.Center.Y;
 							hitbox = Main.ReverseGravitySupport(hitbox);
 							
 							if (Colliding(Projectile.Hitbox, hitbox) == true)

@@ -86,13 +86,22 @@ namespace Kourindou
             // Chen Plushie Effect
             if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
             {
-                if (npc.life <= 0 && !npc.friendly)
+                if (npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
                 {
                     // On kill gain rapid healing, well fed and 25 health
                     player.AddBuff(BuffID.RapidHealing, 720);
                     player.AddBuff(BuffID.WellFed, 720);
                     player.statLife += 25;
                     player.HealEffect(25, true);
+                }
+            }
+
+            // Ran Plushie Effect
+            if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
+            {
+                if (npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
+                {
+                    player.GetModPlayer<KourindouPlayer>().RanPlushie_EnemyKill();
                 }
             }
         }
@@ -102,13 +111,22 @@ namespace Kourindou
             // Chen Plushie Effect
             if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
             {
-                if (npc.life <= 0 && !npc.friendly)
+                if (npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
                 {
                     // On kill gain rapid healing, well fed and 25 health
                     Main.player[projectile.owner].AddBuff(BuffID.RapidHealing, 720);
                     Main.player[projectile.owner].AddBuff(BuffID.WellFed, 720);
                     Main.player[projectile.owner].statLife += 25;
                     Main.player[projectile.owner].HealEffect(25, true);
+                }
+            }
+
+            // Ran Plushie Effect
+            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
+            {
+                if (npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
+                {
+                    Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().RanPlushie_EnemyKill();
                 }
             }
         }

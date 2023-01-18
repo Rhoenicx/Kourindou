@@ -15,6 +15,7 @@ namespace Kourindou
         RandomPlacePlantTile,
         PlayerPlacePlantTile,
         AlternateFire,
-        FumoCola
+        FumoCola,
+        RanPlushieStacks
     }
 }

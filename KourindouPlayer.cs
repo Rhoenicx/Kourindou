@@ -6,6 +6,7 @@ using ReLogic.Graphics;
 using ReLogic.Content;
 using ReLogic;
 using Terraria;
+using Terraria.Chat;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -46,6 +47,10 @@ namespace Kourindou
         public byte CirnoPlushie_Attack_Counter;
         public bool CirnoPlushie_TimesNine;
 
+        // Ran Plushie kill and stack counter
+        public byte RanPlushie_EnemieKillCounter;
+        public byte RanPlushie_Stacks;
+
         // Hotkeys
         public int keyTimer;
         public bool SkillKeyPressed;
@@ -80,7 +85,7 @@ namespace Kourindou
         public int CooldownTimeAdditive;
 
         // Weapons
-        //        public Dictionary<int, int> CrescentMoonStaffFlames = new Dictionary<int, int>();
+        // public Dictionary<int, int> CrescentMoonStaffFlames = new Dictionary<int, int>();
 
 
         //--------------------------------------------------------------------------------------------------------------------//
@@ -93,6 +98,7 @@ namespace Kourindou
             tag.Add("cirnoPlushieAttackCounter", CirnoPlushie_Attack_Counter);
             tag.Add("cirnoPlushieTimesNine", CirnoPlushie_TimesNine);
             tag.Add("fumoColaBuffStacks", FumoColaBuffStacks);
+            tag.Add("ranPlushieStacks", RanPlushie_Stacks);
         }
 
         public override void LoadData(TagCompound tag)
@@ -101,6 +107,7 @@ namespace Kourindou
             CirnoPlushie_Attack_Counter = tag.GetByte("cirnoPlushieAttackCounter");
             CirnoPlushie_TimesNine = tag.GetBool("cirnoPlushieTimesNine");
             FumoColaBuffStacks = tag.GetInt("fumoColaBuffStacks");
+            RanPlushie_Stacks = tag.GetByte("ranPlushieStacks");
         }
 
         //--------------------------------------------------------------------------------------------------------------------//
@@ -131,28 +138,46 @@ namespace Kourindou
         //--------------------------------------------------------------------------------------------------------------------//
         //----------------------------------------------------- Player methods -----------------------------------------------//
         //--------------------------------------------------------------------------------------------------------------------//
-
         public override void OnEnterWorld(Player player)
         {
-            // When player joins a singleplayer world get the PlushiePower Client Config
-            plushiePower = Kourindou.KourindouConfigClient.plushiePower;
+            Kourindou.KourindouConfigClient.plushiePower = Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower;
 
-            base.OnEnterWorld(player);
-        }
-
-        public override void PlayerConnect(Player player)
-        {
-            // PlushiePower Client Config
-            plushiePower = Kourindou.KourindouConfigClient.plushiePower;
-
-            // Update other clients when joining multiplayer or when another player joins multiplayer
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
+                // Send the configured plushie power setting
                 ModPacket packet = Mod.GetPacket();
                 packet.Write((byte)KourindouMessageType.ClientConfig);
                 packet.Write((byte)Main.myPlayer);
-                packet.Write((bool)plushiePower);
-                packet.Send();
+                packet.Write((bool)Kourindou.KourindouConfigClient.plushiePower);
+                packet.Send(-1, Main.myPlayer);
+
+                // Send the stack amount of the Ran Plushie
+                packet = Mod.GetPacket();
+                packet.Write((byte)KourindouMessageType.RanPlushieStacks);
+                packet.Write((byte)Main.myPlayer);
+                packet.Write((byte)Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().RanPlushie_Stacks);
+                packet.Send(-1, Main.myPlayer);
+            }
+        }
+
+
+        public override void PlayerConnect(Player player)
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                // Send the configured plushie power setting
+                ModPacket packet = Mod.GetPacket();
+                packet.Write((byte)KourindouMessageType.ClientConfig);
+                packet.Write((byte)Main.myPlayer);
+                packet.Write((bool)Kourindou.KourindouConfigClient.plushiePower);
+                packet.Send(-1, Main.myPlayer);
+
+                // Send the stack amount of the Ran Plushie
+                packet = Mod.GetPacket();
+                packet.Write((byte)KourindouMessageType.RanPlushieStacks);
+                packet.Write((byte)Main.myPlayer);
+                packet.Write((byte)Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().RanPlushie_Stacks);
+                packet.Send(-1, Main.myPlayer);
             }
         }
 
@@ -234,7 +259,7 @@ namespace Kourindou
             if (FumoColaAnimationTimer > 0)
             {
                 FumoColaAnimationTimer--;
-            }
+            }            
         }
 
         public override void ResetEffects()
@@ -587,6 +612,25 @@ namespace Kourindou
             return true;
         }
 
+        public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+        {
+            // Reset Ran's counter and stacks when the player dies
+            if (EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
+            {
+                RanPlushie_EnemieKillCounter = 0;
+                RanPlushie_Stacks = 0;
+
+                if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    ModPacket packet = Mod.GetPacket();
+                    packet.Write((byte)KourindouMessageType.RanPlushieStacks);
+                    packet.Write((byte)Main.myPlayer);
+                    packet.Write((byte)RanPlushie_Stacks);
+                    packet.Send(-1, Main.myPlayer);
+                }
+            }
+        }
+
         public override void UpdateBadLifeRegen()
         {
             // Medicine Melancholy poison tick
@@ -701,7 +745,7 @@ namespace Kourindou
                     packet.Write((float)1f);
                     packet.Write((int)position.X);
                     packet.Write((int)position.Y);
-                    packet.Send();
+                    packet.Send(-1, Main.myPlayer);
                 }
             }
         }
@@ -808,6 +852,31 @@ namespace Kourindou
             );
         }
 
+        public void RanPlushie_EnemyKill()
+        {
+            // Increase kill counter
+            if (RanPlushie_Stacks < 8)
+            {
+                RanPlushie_EnemieKillCounter++;
+            }
+
+            // Increase stacks
+            if (RanPlushie_EnemieKillCounter >= 10 && RanPlushie_Stacks < 8)
+            {
+                RanPlushie_Stacks++;
+                RanPlushie_EnemieKillCounter = 0;
+
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    ModPacket packet = Mod.GetPacket();
+                    packet.Write((byte) KourindouMessageType.RanPlushieStacks);
+                    packet.Write((byte) Main.myPlayer);
+                    packet.Write((byte) RanPlushie_Stacks);
+                    packet.Send(-1, Main.myPlayer);
+                }
+            }
+        }
+
         //--------------------------------------------------------------------------------------------------------------------//
         //-------------------------------------------------- Multi-Use Items logic-- -----------------------------------------//
         //--------------------------------------------------------------------------------------------------------------------//
@@ -903,11 +972,11 @@ namespace Kourindou
                 {
                     ModPacket packet = Mod.GetPacket();
                     packet.Write((byte)KourindouMessageType.AlternateFire);
-                    packet.Write((byte)Player.whoAmI);
+                    packet.Write((byte)Main.myPlayer);
                     packet.Write((bool)UsedAttack);
                     packet.Write((int)AttackID);
                     packet.Write((int)AttackCounter);
-                    packet.Send();
+                    packet.Send(-1, Main.myPlayer);
                 }
 
                 item.SetItemStats(Player, AttackID, AttackCounter);
@@ -986,14 +1055,15 @@ namespace Kourindou
         public override string Name => "Plushie Slot";
         public override bool DrawDyeSlot => false;
         public override bool DrawVanitySlot => false;
+
         public override bool IsEnabled()
         {
-            if (!Main.gameMenu)
-            {
-                return Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower;
-            }
+            return Player.GetModPlayer<KourindouPlayer>().plushiePower;
+        }
 
-            return Kourindou.KourindouConfigClient.plushiePower;
+        public override bool IsVisibleWhenNotEnabled()
+        {
+            return FunctionalItem.type != ItemID.None;
         }
 
         public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
@@ -1035,11 +1105,6 @@ namespace Kourindou
             }
 
             return false;
-        }
-
-        public override bool IsVisibleWhenNotEnabled()
-        {
-            return GetInstance<PlushieEquipSlot>().FunctionalItem.type != ItemID.None;
         }
 
         public override string FunctionalTexture => "Kourindou/PlushieSlotBackground";
