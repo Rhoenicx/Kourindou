@@ -175,7 +175,7 @@ namespace Kourindou
                                     "Consumables",
                                     ItemType<FumoCola>(),
                                     1,
-                                    ItemID.None,
+                                    (int)ItemID.None,
                                     0
                                 );
                             }
