@@ -47,7 +47,7 @@ namespace Kourindou
                     packet.Send();
                 }
 
-                Kourindou.Instance.SwitchPlushieTextures();
+                Kourindou.SwitchPlushieTextures();
             } 
         }
     }

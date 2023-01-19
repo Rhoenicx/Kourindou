@@ -124,7 +124,7 @@ namespace Kourindou.Tiles.Plushies
             if (Kourindou.PlushieTileTextures.ContainsKey(Type))
             {
                 drawData.drawTexture = Kourindou.KourindouConfigClient.UseOldTextures ?
-                    Kourindou.PlushieTileTextures[Type].oldTileTexture.Value : Kourindou.PlushieTileTextures[Type].TileTexture.Value;
+                    Kourindou.PlushieTileTextures[Type].OldTileTexture.Value : Kourindou.PlushieTileTextures[Type].TileTexture.Value;
             }
         }
     }

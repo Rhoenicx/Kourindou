@@ -694,6 +694,11 @@ namespace Kourindou
             { 
                 TextureAssets.Projectile[entry.Key] = KourindouConfigClient.UseOldTextures ? entry.Value.OldProjectileTexture : entry.Value.ProjectileTexture;
             }
+
+            foreach (KeyValuePair<int, PlushieTileTexture> entry in PlushieTileTextures)
+            {
+                TextureAssets.Tile[entry.Key] = KourindouConfigClient.UseOldTextures ? entry.Value.OldTileTexture : entry.Value.TileTexture;
+            }
         }
 
         public void SwitchModTextures(bool loading)
