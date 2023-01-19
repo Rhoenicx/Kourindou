@@ -156,7 +156,7 @@ namespace Kourindou
                     case "AddGensokyoShopItem":
                         if (Gensokyo != null)
                         {
-                            if (Gensokyo.Version < new Version(0, 9, 45, 10))
+                            if (Gensokyo.Version <= new Version(0, 9, 45, 10))
                             {
                                 Gensokyo.Call(
                                    "AddShopItem",
