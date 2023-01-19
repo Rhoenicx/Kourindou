@@ -26,19 +26,19 @@ namespace Kourindou
     public class PlushieTileTexture
     {
         public Asset<Texture2D> TileTexture { get; set; }
-        public Asset<Texture2D> oldTileTexture { get; set; }
+        public Asset<Texture2D> OldTileTexture { get; set; }
     }
 
     public class PlushieItemTexture
     {
         public Asset<Texture2D> ItemTexture { get; set; }
-        public Asset<Texture2D> oldItemTexture { get; set; }
+        public Asset<Texture2D> OldItemTexture { get; set; }
     }
 
     public class PlushieProjectileTexture
     {
         public Asset<Texture2D> ProjectileTexture { get; set; }
-        public Asset<Texture2D> oldProjectileTexture { get; set; }
+        public Asset<Texture2D> OldProjectileTexture { get; set; }
     }
 
     class Kourindou : Mod
@@ -53,7 +53,7 @@ namespace Kourindou
         public static HashSet<int> ThreadItems;
 
         // Item ID of items that use custom helditemlayer
-        public static HashSet<int> ItemsUseHeldLayer = new HashSet<int>();
+        public static HashSet<int> ItemsUseHeldLayer = new();
 
         // Mod Instance
         internal static Kourindou Instance;
@@ -156,13 +156,29 @@ namespace Kourindou
                     case "AddGensokyoShopItem":
                         if (Gensokyo != null)
                         {
-                             Gensokyo.Call(
-                                "AddShopItem",
-                                (int)args[1],
-                                "Consumables",
-                                ItemType<FumoCola>(),
-                                true
-                            );
+                            if (Gensokyo.Version < new Version(0, 9, 45, 10))
+                            {
+                                Gensokyo.Call(
+                                   "AddShopItem",
+                                   (int)args[1],
+                                   "Consumables",
+                                   ItemType<FumoCola>(),
+                                   true
+                               );
+                            }
+                            else
+                            {
+                                Gensokyo.Call(
+                                    "AddShopItem",
+                                    (int)args[1],
+                                    true,
+                                    "Consumables",
+                                    ItemType<FumoCola>(),
+                                    1,
+                                    ItemID.None,
+                                    0
+                                );
+                            }
                         }
 
                         return "Success";
@@ -211,7 +227,7 @@ namespace Kourindou
         public override void AddRecipeGroups()
         {
             // Stuffing
-            RecipeGroup Stuffing = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Stuffing", new int[]
+            RecipeGroup Stuffing = new (() => Language.GetTextValue("LegacyMisc.37") + " Stuffing", new int[]
             {
                 ItemID.Hay,
                 ItemType<CottonFibre>()
@@ -219,7 +235,7 @@ namespace Kourindou
             RecipeGroup.RegisterGroup("Kourindou:Stuffing", Stuffing);
 
             // Gemstone
-            RecipeGroup Gemstone = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Gemstone", new int[]
+            RecipeGroup Gemstone = new (() => Language.GetTextValue("LegacyMisc.37") + " Gemstone", new int[]
             {
                 ItemID.Diamond,
                 ItemID.Ruby,
@@ -232,7 +248,7 @@ namespace Kourindou
             RecipeGroup.RegisterGroup("Kourindou:Gemstone", Gemstone);
 
             // Lens
-            RecipeGroup Lens = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " Lens", new int[]
+            RecipeGroup Lens = new (() => Language.GetTextValue("LegacyMisc.37") + " Lens", new int[]
             {
                 ItemID.Lens,
                 ItemID.BlackLens
@@ -240,7 +256,7 @@ namespace Kourindou
             RecipeGroup.RegisterGroup("Kourindou:Lens", Lens);
 
             // Watch
-            RecipeGroup Watch = new RecipeGroup(() => Language.GetTextValue("LegacyMics.37") + " Watch", new int[]
+            RecipeGroup Watch = new (() => Language.GetTextValue("LegacyMics.37") + " Watch", new int[]
             {
                 ItemID.CopperWatch,
                 ItemID.TinWatch,
@@ -253,7 +269,7 @@ namespace Kourindou
             RecipeGroup.RegisterGroup("Kourindou:Watch", Watch);
 
             // Copper bar or tin bar?
-            RecipeGroup CopperBar = new RecipeGroup(() => "Copper or tin bar", new int[]
+            RecipeGroup CopperBar = new (() => "Copper or tin bar", new int[]
             {
                 ItemID.CopperBar,
                 ItemID.TinBar
@@ -334,7 +350,7 @@ namespace Kourindou
 
                     if (Main.netMode == NetmodeID.Server)
                     {
-                        Rectangle meleeHitbox = new Rectangle(X, Y, Width, Height);
+                        Rectangle meleeHitbox = new (X, Y, Width, Height);
                         KourindouGlobalItem.meleeHitbox[playerID] = meleeHitbox;
                     }
                     break;
@@ -644,7 +660,7 @@ namespace Kourindou
                 PlushieTileTextures.Add(tile, new PlushieTileTexture 
                 {
                     TileTexture = Assets.Request<Texture2D>("Tiles/Plushies/" + itemName + "_Plushie_Tile"),
-                    oldTileTexture = Assets.Request<Texture2D>("Tiles/Plushies/" + itemName + "_Plushie_Tile_Old") 
+                    OldTileTexture = Assets.Request<Texture2D>("Tiles/Plushies/" + itemName + "_Plushie_Tile_Old") 
                 });
             }
 
@@ -653,7 +669,7 @@ namespace Kourindou
                 PlushieItemTextures.Add(item, new PlushieItemTexture 
                 { 
                     ItemTexture = Assets.Request<Texture2D>("Items/Plushies/" + itemName + "_Plushie_Item"), 
-                    oldItemTexture = Assets.Request<Texture2D>("Items/Plushies/" + itemName + "_Plushie_Item_Old") 
+                    OldItemTexture = Assets.Request<Texture2D>("Items/Plushies/" + itemName + "_Plushie_Item_Old") 
                 });
             }
 
@@ -662,21 +678,21 @@ namespace Kourindou
                 PlushieProjectileTextures.Add(projectile, new PlushieProjectileTexture
                 {
                     ProjectileTexture = Assets.Request<Texture2D>("Projectiles/Plushies/" + itemName + "_Plushie_Projectile"),
-                    oldProjectileTexture = Assets.Request<Texture2D>("Projectiles/Plushies/" + itemName + "_Plushie_Projectile_Old")
+                    OldProjectileTexture = Assets.Request<Texture2D>("Projectiles/Plushies/" + itemName + "_Plushie_Projectile_Old")
                 });
             }
         }
 
-        public void SwitchPlushieTextures()
+        public static void SwitchPlushieTextures()
         {
             foreach (KeyValuePair<int, PlushieItemTexture> entry in PlushieItemTextures)
             {
-                TextureAssets.Item[entry.Key] = KourindouConfigClient.UseOldTextures ? entry.Value.oldItemTexture : entry.Value.ItemTexture;
+                TextureAssets.Item[entry.Key] = KourindouConfigClient.UseOldTextures ? entry.Value.OldItemTexture : entry.Value.ItemTexture;
             }
 
             foreach (KeyValuePair<int, PlushieProjectileTexture> entry in PlushieProjectileTextures)
             { 
-                TextureAssets.Projectile[entry.Key] = KourindouConfigClient.UseOldTextures ? entry.Value.oldProjectileTexture : entry.Value.ProjectileTexture;
+                TextureAssets.Projectile[entry.Key] = KourindouConfigClient.UseOldTextures ? entry.Value.OldProjectileTexture : entry.Value.ProjectileTexture;
             }
         }
 
@@ -699,7 +715,7 @@ namespace Kourindou
             TextureAssets.Chains[5] = loading ? Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain2") : Main.Assets.Request<Texture2D>("Images\\Chains_5", 0);
         }
 
-        public void FabricSetup()
+        public static void FabricSetup()
         {
             FabricItems.Add(ItemType<BlackFabric>());
             FabricItems.Add(ItemType<BlueFabric>());
@@ -720,7 +736,7 @@ namespace Kourindou
             FabricItems.Add(ItemType<RainbowFabric>());
         }
 
-        public void ThreadSetup()
+        public static void ThreadSetup()
         {
             ThreadItems.Add(ItemID.BlackThread);
             ThreadItems.Add(ItemType<BlueThread>());
@@ -741,7 +757,7 @@ namespace Kourindou
             ThreadItems.Add(ItemType<RainbowThread>());
         }
 
-        public void HeldItemSetup()
+        public static void HeldItemSetup()
         {
             ItemsUseHeldLayer.Add(ItemType<FumoCola>());
         }
