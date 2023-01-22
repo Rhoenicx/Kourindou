@@ -30,31 +30,6 @@ namespace Kourindou
 
         public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
         {
-            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
-            if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
-            {
-                if (item.CountsAsClass(DamageClass.Melee) || item.CountsAsClass(DamageClass.Ranged) || item.CountsAsClass(DamageClass.Throwing))
-                {
-                    damage = 0;
-                }
-            }
-
-            // Shion Yorigami random damage increase on NPC hits 0.1% chance
-            if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()) && (int)Main.rand.Next(1, 1000) == 1)
-            {
-                damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
-            }
-
-            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
-            if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && item.DamageType == DamageClass.Melee)
-            {
-                if (crit)
-                {
-                    damage *= 2;
-                }
-                knockback *= 3;
-            }
-
             // Medicine Melancholy debuff present increase damage
             if (DebuffMedicineMelancholy)
             {
@@ -64,90 +39,10 @@ namespace Kourindou
 
         public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
-            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
-            {
-                if (projectile.CountsAsClass(DamageClass.Melee) || projectile.CountsAsClass(DamageClass.Ranged) || projectile.CountsAsClass(DamageClass.Throwing) || projectile.minion)
-                {
-                    damage = 0;
-                }
-            }
-
-            // Shion Yorigami random damage increase on NPC hits 0.1% chance
-            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>())&& (int)Main.rand.Next(1,1000) == 1)
-            {
-                damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
-            }
-
-            // Disable crit for Flandre Scarlet Plushie effect
-            if (projectile.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
-            {
-                crit = false;
-            }
-
-            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
-            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && projectile.DamageType == DamageClass.Melee)
-            {
-                if (crit)
-                {
-                    damage *= 2;
-                }
-                knockback *= 3;
-            }
-
+            // Medicine Melancholy debuff present increase damage
             if (DebuffMedicineMelancholy)
             {
                 damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
-            }
-        }
-
-        public override void OnHitByItem(NPC npc, Player player, Item item, int damage, float knockback, bool crit)
-        {
-            // Chen Plushie Effect
-            if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
-            {
-                if (npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
-                {
-                    // On kill gain rapid healing, well fed and 25 health
-                    player.AddBuff(BuffID.RapidHealing, 720);
-                    player.AddBuff(BuffID.WellFed, 720);
-                    player.statLife += 25;
-                    player.HealEffect(25, true);
-                }
-            }
-
-            // Ran Plushie Effect
-            if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
-            {
-                if (npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
-                {
-                    player.GetModPlayer<KourindouPlayer>().RanPlushie_EnemyKill();
-                }
-            }
-        }
-
-        public override void OnHitByProjectile(NPC npc, Projectile projectile, int damage, float knockback, bool crit)
-        {
-            // Chen Plushie Effect
-            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
-            {
-                if (npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
-                {
-                    // On kill gain rapid healing, well fed and 25 health
-                    Main.player[projectile.owner].AddBuff(BuffID.RapidHealing, 720);
-                    Main.player[projectile.owner].AddBuff(BuffID.WellFed, 720);
-                    Main.player[projectile.owner].statLife += 25;
-                    Main.player[projectile.owner].HealEffect(25, true);
-                }
-            }
-
-            // Ran Plushie Effect
-            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
-            {
-                if (npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
-                {
-                    Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().RanPlushie_EnemyKill();
-                }
             }
         }
 

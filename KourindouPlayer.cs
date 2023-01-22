@@ -51,6 +51,10 @@ namespace Kourindou
         public byte RanPlushie_EnemieKillCounter;
         public byte RanPlushie_Stacks;
 
+        // Tenshi Plushie Effect
+        public bool TenshiPlushie_Revenge;
+        public int TenshiPlushie_Damage;
+
         // Hotkeys
         public int keyTimer;
         public bool SkillKeyPressed;
@@ -344,6 +348,7 @@ namespace Kourindou
             return base.CanBeHitByNPC(npc, ref cooldownSlot);
         }
 
+        #region OnHit
         // --------- Triggers on PVE --------- //
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
@@ -393,6 +398,18 @@ namespace Kourindou
             if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>()))
             {
                 ToyosatomimiNoMikoPlushie_OnHit(target, null, crit);
+            }
+
+            // Chen Plushie Equipped
+            if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
+            {
+                ChenPlushie_OnHit(target, null);
+            }
+
+            // Ran Yakumo Plushie Equipped
+            if (EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
+            {
+                RanYakumoPlushie_OnHit(target, null);
             }
         }
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockBack, bool crit)
@@ -449,6 +466,18 @@ namespace Kourindou
             {
                 ToyosatomimiNoMikoPlushie_OnHit(target, null, crit);
             }
+
+            // Chen Plushie Equipped
+            if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
+            {
+                ChenPlushie_OnHit(target, null);
+            }
+
+            // Ran Yakumo Plushie Equipped
+            if (EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
+            {
+                RanYakumoPlushie_OnHit(target, null);
+            }
         }
 
         // --------- Triggers on PVP --------- //
@@ -494,6 +523,18 @@ namespace Kourindou
             if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>()))
             {
                 ToyosatomimiNoMikoPlushie_OnHit(null, target, crit);
+            }
+
+            // Chen Plushie Equipped
+            if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
+            {
+                ChenPlushie_OnHit(null, target);
+            }
+
+            // Ran Yakumo Plushie Equipped
+            if (EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
+            {
+                RanYakumoPlushie_OnHit(null, target);
             }
         }
         public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
@@ -544,141 +585,19 @@ namespace Kourindou
             {
                 ToyosatomimiNoMikoPlushie_OnHit(null, target, crit);
             }
-        }
 
-        // --------- Hits on THIS player by other things --------- //
-        public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
-        {
-            if (DebuffMedicineMelancholy)
-            {
-                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
-            }
-        }
-        public override void ModifyHitByProjectile(Projectile proj, ref int damage, ref bool crit)
-        {
-            if (DebuffMedicineMelancholy)
-            {
-                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
-            }
-        }
-
-        // --------- Hits on OTHER player --------- //
-        public override void ModifyHitPvp(Item item, Player target, ref int damage, ref bool crit)
-        {
-            // Shion Yorigami random damage increase on Player hits 0.1% chance
-            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()))
-            {
-                if ((int)Main.rand.Next(1, 1000) == 1)
-                {
-                    damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
-                }
-            }
-
-            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
-            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && item.DamageType == DamageClass.Melee && crit)
-            {
-                damage *= 2;
-            }
-        }
-        public override void ModifyHitPvpWithProj(Projectile proj, Player target, ref int damage, ref bool crit)
-        {
-            // Shion Yorigami random damage increase on Player hits 0.1% chance
-            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()))
-            {
-                if ((int)Main.rand.Next(1, 1000) == 1)
-                {
-                    damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
-                }
-            }
-
-            // Disable crit for Flandre Scarlet Plushie effect
-            if (proj.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
-            {
-                crit = false;
-            }
-
-            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
-            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && proj.DamageType == DamageClass.Melee && crit)
-            {
-                damage *= 2;
-            }
-        }
-
-        // --------- Player got hurt --------- //
-        public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
-        {
+            // Chen Plushie Equipped
             if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
             {
-                Player.AddBuff(BuffID.ShadowDodge, 180);
-            }
-        }
-
-        public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
-        {
-            // Kaguya or Mokou Plushie Equipped [Mortality]
-            if (EquippedPlushies.Contains(ItemType<KaguyaHouraisan_Plushie_Item>()) || EquippedPlushies.Contains(ItemType<FujiwaraNoMokou_Plushie_Item>()))
-            {
-                if (Player.HasBuff(BuffType<DeBuff_Mortality>()))
-                {
-                    return true;
-                }
-                else
-                {
-                    Player.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
-                    Player.statLife += Player.statLifeMax2;
-                    Player.HealEffect(Player.statLifeMax2, true);
-
-                    if (EquippedPlushies.Contains(ItemType<FujiwaraNoMokou_Plushie_Item>()))
-                    {
-                        Player.AddBuff(BuffID.Wrath, 4140);
-                        Player.AddBuff(BuffID.Inferno, 4140);
-                    }
-
-                    return false;
-                }
+                ChenPlushie_OnHit(null, target);
             }
 
-            return true;
-        }
-
-        public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
-        {
-            // Reset Ran's counter and stacks when the player dies
+            // Ran Yakumo Plushie Equipped
             if (EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
             {
-                RanPlushie_EnemieKillCounter = 0;
-                RanPlushie_Stacks = 0;
-
-                if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
-                {
-                    ModPacket packet = Mod.GetPacket();
-                    packet.Write((byte)KourindouMessageType.RanPlushieStacks);
-                    packet.Write((byte)Main.myPlayer);
-                    packet.Write((byte)RanPlushie_Stacks);
-                    packet.Send(-1, Main.myPlayer);
-                }
+                RanYakumoPlushie_OnHit(null, target);
             }
         }
-
-        public override void UpdateBadLifeRegen()
-        {
-            // Medicine Melancholy poison tick
-            if (DebuffMedicineMelancholy && !Player.buffImmune[BuffID.Poisoned])
-            {
-                int damagePerSecond = 5;
-
-                if (Player.lifeRegen > 0)
-                {
-                    Player.lifeRegen = 0;
-                }
-
-                Player.lifeRegen -= damagePerSecond * (DebuffMedicineMelancholyStacks + 1) * (Player.HasBuff(BuffID.Venom) ? 2 : 1);
-            }
-        }
-
-        //--------------------------------------------------------------------------------------------------------------------//
-        //------------------------------------------------ Specific Equipped methods -----------------------------------------//
-        //--------------------------------------------------------------------------------------------------------------------//
 
         private void CirnoPlushie_OnHit(Player p, NPC n, bool crit)
         {
@@ -881,28 +800,338 @@ namespace Kourindou
             );
         }
 
-        public void RanPlushie_EnemyKill()
+        private void ChenPlushie_OnHit(NPC n, Player p)
         {
-            // Increase kill counter
-            if (RanPlushie_Stacks < 8)
+            if (n != null && n.life <= 0 && !n.friendly && n.lifeMax > 5)
             {
-                RanPlushie_EnemieKillCounter++;
+                // On kill gain rapid healing, well fed and 25 health
+                Player.AddBuff(BuffID.RapidHealing, 720);
+                Player.AddBuff(BuffID.WellFed, 720);
+                Player.statLife += 25;
+                Player.HealEffect(25, true);
             }
 
-            // Increase stacks
-            if (RanPlushie_EnemieKillCounter >= 10 && RanPlushie_Stacks < 8)
+            if (p != null && (p.statLife <= 0 || p.dead))
             {
-                RanPlushie_Stacks++;
-                RanPlushie_EnemieKillCounter = 0;
+                // On kill gain rapid healing, well fed and 25 health
+                Player.AddBuff(BuffID.RapidHealing, 720);
+                Player.AddBuff(BuffID.WellFed, 720);
+                Player.statLife += 25;
+                Player.HealEffect(25, true);
+            }
+        }
 
-                if (Main.netMode == NetmodeID.MultiplayerClient)
+        private void RanYakumoPlushie_OnHit(NPC n, Player p)
+        {
+            if (n != null && n.life <= 0 && !n.friendly && n.lifeMax > 5)
+            {
+                // Increase kill counter
+                if (RanPlushie_Stacks < 8)
+                {
+                    RanPlushie_EnemieKillCounter++;
+                }
+
+                // Increase stacks
+                if (RanPlushie_EnemieKillCounter >= 10 && RanPlushie_Stacks < 8)
+                {
+                    RanPlushie_Stacks++;
+                    RanPlushie_EnemieKillCounter = 0;
+
+                    if (Main.netMode == NetmodeID.MultiplayerClient)
+                    {
+                        ModPacket packet = Mod.GetPacket();
+                        packet.Write((byte)KourindouMessageType.RanPlushieStacks);
+                        packet.Write((byte)Main.myPlayer);
+                        packet.Write((byte)RanPlushie_Stacks);
+                        packet.Send(-1, Main.myPlayer);
+                    }
+                }
+            }
+
+            if (p != null && (p.statLife <= 0 || p.dead))
+            {
+                // Increase kill counter
+                if (RanPlushie_Stacks < 8)
+                {
+                    RanPlushie_EnemieKillCounter++;
+                }
+
+                // Increase stacks
+                if (RanPlushie_EnemieKillCounter >= 10 && RanPlushie_Stacks < 8)
+                {
+                    RanPlushie_Stacks++;
+                    RanPlushie_EnemieKillCounter = 0;
+
+                    if (Main.netMode == NetmodeID.MultiplayerClient)
+                    {
+                        ModPacket packet = Mod.GetPacket();
+                        packet.Write((byte)KourindouMessageType.RanPlushieStacks);
+                        packet.Write((byte)Main.myPlayer);
+                        packet.Write((byte)RanPlushie_Stacks);
+                        packet.Send(-1, Main.myPlayer);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region OnHitME
+        public override void OnHitByNPC(NPC npc, int damage, bool crit)
+        {
+            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()))
+            {
+                TenshiHinanawiPlushie_OnHitBy(damage);
+            }
+        }
+
+        public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
+        {
+            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()))
+            {
+                TenshiHinanawiPlushie_OnHitBy(damage);
+            }
+        }
+
+        private void TenshiHinanawiPlushie_OnHitBy(int damage)
+        {
+            TenshiPlushie_Damage = damage;
+            TenshiPlushie_Revenge = true;
+        }
+        #endregion
+
+        #region ModifyHit
+        // --------- Hits this player does on NPC --------- //
+        public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
+        {
+            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
+            if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
+            {
+                if (item.CountsAsClass(DamageClass.Melee) || item.CountsAsClass(DamageClass.Ranged) || item.CountsAsClass(DamageClass.Throwing))
+                {
+                    damage = 0;
+                }
+            }
+
+            // Shion Yorigami random damage increase on NPC hits 0.1% chance
+            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()) && (int)Main.rand.Next(1, 1000) == 1)
+            {
+                damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
+            }
+
+            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
+            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && item.DamageType == DamageClass.Melee)
+            {
+                if (crit)
+                {
+                    damage *= 2;
+                }
+                knockback *= 3;
+            }
+
+            // Tenshi Hinanawi revenge effect
+            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()) && TenshiPlushie_Revenge)
+            {
+                damage += TenshiPlushie_Damage * 5;
+                TenshiPlushie_Revenge = false;
+            }
+        }
+        public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
+            if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
+            {
+                if (proj.CountsAsClass(DamageClass.Melee) || proj.CountsAsClass(DamageClass.Ranged) || proj.CountsAsClass(DamageClass.Throwing) || proj.minion)
+                {
+                    damage = 0;
+                }
+            }
+
+            // Shion Yorigami random damage increase on NPC hits 0.1% chance
+            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()) && (int)Main.rand.Next(1, 1000) == 1)
+            {
+                damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
+            }
+
+            // Disable crit for Flandre Scarlet Plushie effect
+            if (proj.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
+            {
+                crit = false;
+            }
+
+            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
+            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && proj.DamageType == DamageClass.Melee)
+            {
+                if (crit)
+                {
+                    damage *= 2;
+                }
+                knockback *= 3;
+            }
+
+            // Tenshi Hinanawi revenge effect
+            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()) && TenshiPlushie_Revenge)
+            {
+                damage += TenshiPlushie_Damage * 5;
+                TenshiPlushie_Revenge = false;
+            }
+        }
+
+        // --------- Hits on OTHER player --------- //
+        public override void ModifyHitPvp(Item item, Player target, ref int damage, ref bool crit)
+        {
+            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
+            if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
+            {
+                if (item.CountsAsClass(DamageClass.Melee) || item.CountsAsClass(DamageClass.Ranged) || item.CountsAsClass(DamageClass.Throwing))
+                {
+                    damage = 0;
+                }
+            }
+
+            // Shion Yorigami random damage increase on Player hits 0.1% chance
+            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()) && (int)Main.rand.Next(1, 1000) == 1)
+            {
+                damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
+            }
+
+            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
+            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && item.DamageType == DamageClass.Melee && crit)
+            {
+                damage *= 2;
+            }
+
+            // Tenshi Hinanawi revenge effect
+            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()) && TenshiPlushie_Revenge)
+            {
+                damage += TenshiPlushie_Damage * 5;
+                TenshiPlushie_Revenge = false;
+            }
+        }
+        public override void ModifyHitPvpWithProj(Projectile proj, Player target, ref int damage, ref bool crit)
+        {
+            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
+            if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
+            {
+                if (proj.CountsAsClass(DamageClass.Melee) || proj.CountsAsClass(DamageClass.Ranged) || proj.CountsAsClass(DamageClass.Throwing) || proj.minion)
+                {
+                    damage = 0;
+                }
+            }
+
+            // Shion Yorigami random damage increase on Player hits 0.1% chance
+            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()) && (int)Main.rand.Next(1, 1000) == 1)
+            {
+                damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
+            }
+
+            // Disable crit for Flandre Scarlet Plushie effect
+            if (proj.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
+            {
+                crit = false;
+            }
+
+            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
+            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && proj.DamageType == DamageClass.Melee && crit)
+            {
+                damage *= 2;
+            }
+
+            // Tenshi Hinanawi revenge effect
+            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()) && TenshiPlushie_Revenge)
+            {
+                damage += TenshiPlushie_Damage * 5;
+                TenshiPlushie_Revenge = false;
+            }
+        }
+        #endregion
+
+        #region ModifyHitME
+        // --------- Hits on THIS player by NPC --------- //
+        public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
+        {
+            if (DebuffMedicineMelancholy)
+            {
+                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
+            }
+        }
+        public override void ModifyHitByProjectile(Projectile proj, ref int damage, ref bool crit)
+        {
+            if (DebuffMedicineMelancholy)
+            {
+                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
+            }
+        }
+        #endregion
+
+        // --------- Player got hurt --------- //
+        public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
+        {
+            if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
+            {
+                Player.AddBuff(BuffID.ShadowDodge, 180);
+            }
+        }
+
+        public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        {
+            // Kaguya or Mokou Plushie Equipped [Mortality]
+            if (EquippedPlushies.Contains(ItemType<KaguyaHouraisan_Plushie_Item>()) || EquippedPlushies.Contains(ItemType<FujiwaraNoMokou_Plushie_Item>()))
+            {
+                if (Player.HasBuff(BuffType<DeBuff_Mortality>()))
+                {
+                    return true;
+                }
+                else
+                {
+                    Player.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
+                    Player.statLife += Player.statLifeMax2;
+                    Player.HealEffect(Player.statLifeMax2, true);
+
+                    if (EquippedPlushies.Contains(ItemType<FujiwaraNoMokou_Plushie_Item>()))
+                    {
+                        Player.AddBuff(BuffID.Wrath, 4140);
+                        Player.AddBuff(BuffID.Inferno, 4140);
+                    }
+
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+        {
+            // Reset Ran's counter and stacks when the player dies
+            if (EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
+            {
+                RanPlushie_EnemieKillCounter = 0;
+                RanPlushie_Stacks = 0;
+
+                if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
                 {
                     ModPacket packet = Mod.GetPacket();
-                    packet.Write((byte) KourindouMessageType.RanPlushieStacks);
-                    packet.Write((byte) Main.myPlayer);
-                    packet.Write((byte) RanPlushie_Stacks);
+                    packet.Write((byte)KourindouMessageType.RanPlushieStacks);
+                    packet.Write((byte)Main.myPlayer);
+                    packet.Write((byte)RanPlushie_Stacks);
                     packet.Send(-1, Main.myPlayer);
                 }
+            }
+        }
+
+        public override void UpdateBadLifeRegen()
+        {
+            // Medicine Melancholy poison tick
+            if (DebuffMedicineMelancholy && !Player.buffImmune[BuffID.Poisoned])
+            {
+                int damagePerSecond = 5;
+
+                if (Player.lifeRegen > 0)
+                {
+                    Player.lifeRegen = 0;
+                }
+
+                Player.lifeRegen -= damagePerSecond * (DebuffMedicineMelancholyStacks + 1) * (Player.HasBuff(BuffID.Venom) ? 2 : 1);
             }
         }
 
