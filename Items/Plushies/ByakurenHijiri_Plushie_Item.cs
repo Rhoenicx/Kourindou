@@ -1,3 +1,4 @@
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -55,7 +56,23 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
+            // Increase Life regen by +1 
+            player.lifeRegen += 1;
 
+            // Reduce damage from all sources by 50%
+            player.GetDamage(DamageClass.Generic) -= 0.50f;
+
+            // but increase all melee damage with 100% (+50% offset from generic)
+            player.GetDamage(DamageClass.Melee) += 1.50f;
+
+            // Increase max HP by 25%
+            player.statLifeMax2 = (int)Math.Floor((double)player.statLifeMax2 * 1.25);
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "Increases HP by 25%. Increases melee damage by 100%, but decrease all other damage by 50% \r\n"
+                    + "Multiply knockback by 3. Doubles melee crit damage, but can no longer receive critrate buffs";
         }
 
         public override void AddRecipes()

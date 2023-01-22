@@ -556,6 +556,12 @@ namespace Kourindou
                     damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
                 }
             }
+
+            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
+            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && item.DamageType == DamageClass.Melee && crit)
+            {
+                damage *= 2;
+            }
         }
         public override void ModifyHitPvpWithProj(Projectile proj, Player target, ref int damage, ref bool crit)
         {
@@ -572,6 +578,12 @@ namespace Kourindou
             if (proj.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
             {
                 crit = false;
+            }
+
+            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
+            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && proj.DamageType == DamageClass.Melee && crit)
+            {
+                damage *= 2;
             }
         }
 
@@ -1047,6 +1059,17 @@ namespace Kourindou
             UsedAttack = false;
             AttackID = 0;
             AttackCounter = 0;
+
+            // Byakuren Plushie equipped: Lock all critrates to 4%
+            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()))
+            {
+                Player.GetCritChance(DamageClass.Default) = 0f;
+                Player.GetCritChance(DamageClass.Melee) = 0f;
+                Player.GetCritChance(DamageClass.Magic) = 0f;
+                Player.GetCritChance(DamageClass.Ranged) = 0f;
+                Player.GetCritChance(DamageClass.Summon) = 0f;
+                Player.GetCritChance(DamageClass.MagicSummonHybrid) = 0f;
+            }
         }
     }
 

@@ -74,7 +74,7 @@ namespace Kourindou.Items.Plushies
         
         public override string AddEffectTooltip()
         {
-            return "Every 9th hit has 9% chance to deal 9 times damage!" + "+25% damage, -17% damage taken";
+            return "Every 9th hit has 9% chance to deal 9 times damage! +25% damage, -17% damage taken";
         }
 
         public override void AddRecipes()

@@ -45,6 +45,16 @@ namespace Kourindou
                 damage = (int)(damage * Main.rand.NextFloat(1000f,1000000f));
             }
 
+            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
+            if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && item.DamageType == DamageClass.Melee)
+            {
+                if (crit)
+                {
+                    damage *= 2;
+                }
+                knockback *= 3;
+            }
+
             // Medicine Melancholy debuff present increase damage
             if (DebuffMedicineMelancholy)
             {
@@ -73,6 +83,16 @@ namespace Kourindou
             if (projectile.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
             {
                 crit = false;
+            }
+
+            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
+            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && projectile.DamageType == DamageClass.Melee)
+            {
+                if (crit)
+                {
+                    damage *= 2;
+                }
+                knockback *= 3;
             }
 
             if (DebuffMedicineMelancholy)
