@@ -52,9 +52,6 @@ namespace Kourindou
         public static HashSet<int> FabricItems;
         public static HashSet<int> ThreadItems;
 
-        // Item ID of items that use custom helditemlayer
-        public static HashSet<int> ItemsUseHeldLayer = new();
-
         // Mod Instance
         internal static Kourindou Instance;
 
@@ -78,6 +75,35 @@ namespace Kourindou
         public static Mod Gensokyo;
         public static bool GensokyoLoaded;
 
+        // Gensokyo Mod NPC Types
+        public static int Gensokyo_AliceMargatroid_Type;
+        public static int Gensokyo_Cirno_Type;
+        public static int Gensokyo_EternityLarva_Type;
+        public static int Gensokyo_HinaKagiyama_Type;
+        public static int Gensokyo_KaguyaHouraisan_Type;
+        public static int Gensokyo_Kisume_Type;
+        public static int Gensokyo_LilyWhite_Type;
+        public static int Gensokyo_MayumiJoutouguu_Type;
+        public static int Gensokyo_MedicineMelancholy_Type;
+        public static int Gensokyo_MinamitsuMurasa_Type;
+        public static int Gensokyo_NitoriKawashiro_Type;
+        public static int Gensokyo_Rumia_Type;
+        public static int Gensokyo_SakuyaIzayoi_Type;
+        public static int Gensokyo_SeijaKijin_Type;
+        public static int Gensokyo_Sekibanki_Type;
+        public static int Gensokyo_TenshiHinanawi_Type;
+        public static int Gensokyo_ToyosatomimiNoMiko_Type;
+        public static int Gensokyo_UtsuhoReiuji_Type;
+        public static int Gensokyo_CasterDoll_Type;
+        public static int Gensokyo_LancerDoll_Type;
+        public static int Gensokyo_Fairy_Bone_Type;
+        public static int Gensokyo_Fairy_Flower_Type;
+        public static int Gensokyo_Fairy_Lava_Type;
+        public static int Gensokyo_Fairy_Snow_Type;
+        public static int Gensokyo_Fairy_Stone_Type;
+        public static int Gensokyo_Fairy_Sunflower_Type;
+        public static int Gensokyo_Fairy_Thorn_Type;
+
         // Hairloader Mod Instance
         public static Mod HairLoader;
         public static bool HairLoaderLoaded;
@@ -98,7 +124,6 @@ namespace Kourindou
 
             FabricItems = new HashSet<int>();
             ThreadItems = new HashSet<int>();
-            ItemsUseHeldLayer = new HashSet<int>();
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
@@ -130,7 +155,6 @@ namespace Kourindou
 
             FabricItems = null;
             ThreadItems = null;
-            ItemsUseHeldLayer = null;
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
@@ -220,7 +244,6 @@ namespace Kourindou
 
             FabricSetup();
             ThreadSetup();
-            HeldItemSetup();
         }
 
         // Add Crafting recipe groups
@@ -760,11 +783,6 @@ namespace Kourindou
             ThreadItems.Add(ItemType<WhiteThread>());
             ThreadItems.Add(ItemType<YellowThread>());
             ThreadItems.Add(ItemType<RainbowThread>());
-        }
-
-        public static void HeldItemSetup()
-        {
-            ItemsUseHeldLayer.Add(ItemType<FumoCola>());
         }
     }
 }

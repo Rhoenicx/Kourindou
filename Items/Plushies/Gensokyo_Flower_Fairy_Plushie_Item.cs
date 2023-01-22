@@ -55,7 +55,14 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-
+            if (Kourindou.GensokyoLoaded)
+            {
+                player.npcTypeNoAggro[Kourindou.Gensokyo_Fairy_Flower_Type] = true;
+            }
+        }
+        public override string AddEffectTooltip()
+        {
+            return "Flower fairies become friendly";
         }
 
         public override void AddRecipes()

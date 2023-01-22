@@ -327,6 +327,23 @@ namespace Kourindou
             }
         }
 
+        // Gensokyo Fairy Plushies
+        public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot)
+        {
+            if (Kourindou.GensokyoLoaded)
+            {
+                if (npc.type == Kourindou.Gensokyo_Fairy_Bone_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Bone_Fairy_Plushie_Item>())) { return false; }
+                if (npc.type == Kourindou.Gensokyo_Fairy_Flower_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Flower_Fairy_Plushie_Item>())) { return false; }
+                if (npc.type == Kourindou.Gensokyo_Fairy_Lava_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Lava_Fairy_Plushie_Item>())) { return false; }
+                if (npc.type == Kourindou.Gensokyo_Fairy_Snow_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Snow_Fairy_Plushie_Item>())) { return false; }
+                if (npc.type == Kourindou.Gensokyo_Fairy_Stone_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Stone_Fairy_Plushie_Item>())) { return false; }
+                if (npc.type == Kourindou.Gensokyo_Fairy_Sunflower_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Sunflower_Fairy_Plushie_Item>())) { return false; }
+                if (npc.type == Kourindou.Gensokyo_Fairy_Thorn_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Thorn_Fairy_Plushie_Item>())) { return false; }
+            }
+
+            return base.CanBeHitByNPC(npc, ref cooldownSlot);
+        }
+
         // --------- Triggers on PVE --------- //
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
@@ -1006,42 +1023,37 @@ namespace Kourindou
 
         public override void PostItemCheck()
         {
-            if (Kourindou.ItemsUseHeldLayer.Contains(Player.HeldItem.type)
-                && FumoColaAnimationTimer > 0
+            // Fumo Cola animations
+            if (FumoColaAnimationTimer > 0
                 && Player.itemAnimation > 0
                 && Player.ItemAnimationActive)
             {
-                if (Player.HeldItem.type == ItemType<FumoCola>())
+                float progress = (float)Player.itemAnimation / (float)Player.itemAnimationMax;
+
+                if ((int)((float)Player.itemAnimationMax * FumoCola.DrinkProgress) == (int)(progress * (float)Player.itemAnimationMax))
                 {
-                    float progress = (float)Player.itemAnimation / (float)Player.itemAnimationMax;
-
-
-
-                    if ((int)((float)Player.itemAnimationMax * FumoCola.DrinkProgress) == (int)(progress * (float)Player.itemAnimationMax))
-                    {
-                        SoundEngine.PlaySound(SoundID.Item3 with { Volume = 0.8f, PitchVariance = 0.1f });
-                    }
-
-                    float FrontArmAngle = 80f;
-                    float BackArmAngle = 35f;
-
-                    if ((int)Player.gravDir == -1)
-                    {
-                        BackArmAngle *= -1;
-                        FrontArmAngle *= -1;
-                    }
-
-                    if (progress > 0f && progress < FumoCola.DrinkProgress)
-                    {
-                        BackArmAngle += 50f;
-                    }
-
-                    Player.compositeFrontArm = new Player.CompositeArmData(true, progress <= FumoCola.OpeningProgress ? Player.CompositeArmStretchAmount.ThreeQuarters : Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -FrontArmAngle));
-                    Player.compositeBackArm = new Player.CompositeArmData(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -BackArmAngle));
-
-                    Player.compositeBackArm.enabled = true;
-                    Player.compositeFrontArm.enabled = progress > FumoCola.DrinkProgress;
+                    SoundEngine.PlaySound(SoundID.Item3 with { Volume = 0.8f, PitchVariance = 0.1f });
                 }
+
+                float FrontArmAngle = 80f;
+                float BackArmAngle = 35f;
+
+                if ((int)Player.gravDir == -1)
+                {
+                    BackArmAngle *= -1;
+                    FrontArmAngle *= -1;
+                }
+
+                if (progress > 0f && progress < FumoCola.DrinkProgress)
+                {
+                    BackArmAngle += 50f;
+                }
+
+                Player.compositeFrontArm = new Player.CompositeArmData(true, progress <= FumoCola.OpeningProgress ? Player.CompositeArmStretchAmount.ThreeQuarters : Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -FrontArmAngle));
+                Player.compositeBackArm = new Player.CompositeArmData(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -BackArmAngle));
+
+                Player.compositeBackArm.enabled = true;
+                Player.compositeFrontArm.enabled = progress > FumoCola.DrinkProgress;
             }
         }
 
@@ -1060,7 +1072,7 @@ namespace Kourindou
             AttackID = 0;
             AttackCounter = 0;
 
-            // Byakuren Plushie equipped: Lock all critrates to 4%
+            // Byakuren Plushie equipped: Prevent critrate buffs
             if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()))
             {
                 Player.GetCritChance(DamageClass.Default) = 0f;

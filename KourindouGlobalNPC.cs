@@ -221,119 +221,100 @@ namespace Kourindou
         {
             if (Kourindou.GensokyoLoaded)
             {
-                Kourindou.Gensokyo.TryFind<ModNPC>("AliceMargatroid", out ModNPC Alice);
-                if (Alice != null && npc.type == Alice.Type)
+                if (npc.type == Kourindou.Gensokyo_AliceMargatroid_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<AliceMargatroid_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("Cirno", out ModNPC Cirno);
-                if (Cirno != null && npc.type == Cirno.Type)
+                if (npc.type == Kourindou.Gensokyo_Cirno_Type)
                 {
                     npcLoot.Add(ItemDropRule.ByCondition(new IsNotInHellBiome(), ItemType<Cirno_Plushie_Item>()));
                     npcLoot.Add(ItemDropRule.ByCondition(new IsInHellBiome(), ItemType<Tanned_Cirno_Plushie_Item>()));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("EternityLarva", out ModNPC Larva);
-                if (Larva != null && npc.type == Larva.Type)
+                if (npc.type == Kourindou.Gensokyo_EternityLarva_Type)
                 {
                     //npcLoot.Add(ItemDropRule.Common(ItemType<>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("HinaKagiyama", out ModNPC Hina);
-                if (Hina != null && npc.type == Hina.Type)
+                if (npc.type == Kourindou.Gensokyo_HinaKagiyama_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<HinaKagiyama_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("KaguyaHouraisan", out ModNPC Kaguya);
-                if (Kaguya != null && npc.type == Kaguya.Type)
+                if (npc.type == Kourindou.Gensokyo_KaguyaHouraisan_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<KaguyaHouraisan_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("Kisume", out ModNPC Kisume);
-                if (Kisume != null && npc.type == Kisume.Type)
+                if (npc.type == Kourindou.Gensokyo_Kisume_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Kisume_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("LilyWhite", out ModNPC Lily);
-                if (Lily != null && npc.type == Lily.Type)
+                if (npc.type == Kourindou.Gensokyo_LilyWhite_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<LilyWhite_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("MayumiJoutouguu", out ModNPC Mayumi);
-                if (Mayumi != null && npc.type == Mayumi.Type)
+                if (npc.type == Kourindou.Gensokyo_MayumiJoutouguu_Type)
                 {
                     //npcLoot.Add(ItemDropRule.Common(ItemType<>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("MedicineMelancholy", out ModNPC Medicine);
-                if (Medicine != null && npc.type == Medicine.Type)
+                if (npc.type == Kourindou.Gensokyo_MedicineMelancholy_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<MedicineMelancholy_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("MinamitsuMurasa", out ModNPC Murasa);
-                if (Murasa != null && npc.type == Murasa.Type)
+                if (npc.type == Kourindou.Gensokyo_MinamitsuMurasa_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<MinamitsuMurasa_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("NitoriKawashiro", out ModNPC Nitori);
-                if (Nitori != null && npc.type == Nitori.Type)
+                if (npc.type == Kourindou.Gensokyo_NitoriKawashiro_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<NitoriKawashiro_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("Rumia", out ModNPC Rumia);
-                if (Rumia != null && npc.type == Rumia.Type)
+                if (npc.type == Kourindou.Gensokyo_Rumia_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Rumia_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("SakuyaIzayoi", out ModNPC Sakuya);
-                if (Sakuya != null && npc.type == Sakuya.Type)
+                if (npc.type == Kourindou.Gensokyo_SakuyaIzayoi_Type)
                 {
                     npcLoot.Add(ItemDropRule.OneFromOptions(
                         ItemType<Kourindou_SakuyaIzayoi_Plushie_Item>(),
                         ItemType<InuSakuyaIzayoi_Plushie_Item>()));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("SeijaKijin", out ModNPC Seija);
-                if (Seija != null && npc.type == Seija.Type)
+                if (npc.type == Kourindou.Gensokyo_SeijaKijin_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<SeijaKijin_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("Sekibanki", out ModNPC Sekibanki);
-                if (Sekibanki != null && npc.type == Sekibanki.Type)
+                if (npc.type == Kourindou.Gensokyo_Sekibanki_Type)
                 {
                     //npcLoot.Add(ItemDropRule.Common(ItemType<>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("TenshiHinanawi", out ModNPC Tenshi);
-                if (Tenshi != null && npc.type == Tenshi.Type)
+                if (npc.type == Kourindou.Gensokyo_TenshiHinanawi_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<TenshiHinanawi_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("ToyosatomimiNoMiko", out ModNPC Miko);
-                if (Miko != null && npc.type == Miko.Type)
+                if (npc.type == Kourindou.Gensokyo_ToyosatomimiNoMiko_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<ToyosatomimiNoMiko_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("UtsuhoReiuji", out ModNPC Utsuho);
-                if (Utsuho != null && npc.type == Utsuho.Type)
+                if (npc.type == Kourindou.Gensokyo_UtsuhoReiuji_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<UtsuhoReiuji_Plushie_Item>(), 1));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("CasterDoll", out ModNPC Caster);
-                if (Caster != null && npc.type == Caster.Type)
+                if (npc.type == Kourindou.Gensokyo_CasterDoll_Type)
                 {
                     npcLoot.Add(ItemDropRule.OneFromOptions(
                         100,
@@ -341,8 +322,7 @@ namespace Kourindou
                         ItemType<ShanghaiDoll_Plushie_Item>()));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("LancerDoll", out ModNPC Lancer);
-                if (Lancer != null && npc.type == Lancer.Type)
+                if (npc.type == Kourindou.Gensokyo_LancerDoll_Type)
                 {
                     npcLoot.Add(ItemDropRule.OneFromOptions(
                         100,
@@ -350,44 +330,37 @@ namespace Kourindou
                         ItemType<ShanghaiDoll_Plushie_Item>()));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("Fairy_Bone", out ModNPC Fairy_Bone);
-                if (Fairy_Bone != null && npc.type == Fairy_Bone.Type)
+                if (npc.type == Kourindou.Gensokyo_Fairy_Bone_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Bone_Fairy_Plushie_Item>(), 200));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("Fairy_Flower", out ModNPC Fairy_Flower);
-                if (Fairy_Flower != null && npc.type == Fairy_Flower.Type)
+                if (npc.type == Kourindou.Gensokyo_Fairy_Flower_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Flower_Fairy_Plushie_Item>(), 200));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("Fairy_Lava", out ModNPC Fairy_Lava);
-                if (Fairy_Lava != null && npc.type == Fairy_Lava.Type)
+                if (npc.type == Kourindou.Gensokyo_Fairy_Lava_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Lava_Fairy_Plushie_Item>(), 200));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("Fairy_Snow", out ModNPC Fairy_Snow);
-                if (Fairy_Snow != null && npc.type == Fairy_Snow.Type)
+                if (npc.type == Kourindou.Gensokyo_Fairy_Snow_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Snow_Fairy_Plushie_Item>(), 200));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("Fairy_Stone", out ModNPC Fairy_Stone);
-                if (Fairy_Stone != null && npc.type == Fairy_Stone.Type)
+                if (npc.type == Kourindou.Gensokyo_Fairy_Stone_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Stone_Fairy_Plushie_Item>(), 200));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("Fairy_Sunflower", out ModNPC Fairy_Sunflower);
-                if (Fairy_Sunflower != null && npc.type == Fairy_Sunflower.Type)
+                if (npc.type == Kourindou.Gensokyo_Fairy_Sunflower_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Sunflower_Fairy_Plushie_Item>(), 200));
                 }
 
-                Kourindou.Gensokyo.TryFind<ModNPC>("Fairy_Thorn", out ModNPC Fairy_Thorn);
-                if (Fairy_Thorn != null && npc.type == Fairy_Thorn.Type)
+                if (npc.type == Kourindou.Gensokyo_Fairy_Thorn_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Thorn_Fairy_Plushie_Item>(), 200));
                 }

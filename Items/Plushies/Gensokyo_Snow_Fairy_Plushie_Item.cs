@@ -55,7 +55,14 @@ namespace Kourindou.Items.Plushies
         // This only executes when plushie power mode is 2
         public override void PlushieEquipEffects(Player player)
         {
-
+            if (Kourindou.GensokyoLoaded)
+            {
+                player.npcTypeNoAggro[Kourindou.Gensokyo_Fairy_Snow_Type] = true;
+            }
+        }
+        public override string AddEffectTooltip()
+        {
+            return "Snow fairies become friendly";
         }
 
         public override void AddRecipes()
