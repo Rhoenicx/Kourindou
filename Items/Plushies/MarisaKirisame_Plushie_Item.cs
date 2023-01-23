@@ -53,7 +53,7 @@ namespace Kourindou.Items.Plushies
         }
 
         // This only executes when plushie power mode is 2
-        public override void PlushieEquipEffects(Player player)
+        public override void PlushieUpdateEquips(Player player)
         {
             // Increase magic damage by 25 percent
             player.GetDamage(DamageClass.Magic) += 0.25f;
@@ -64,8 +64,8 @@ namespace Kourindou.Items.Plushies
             // Increase magic crit by 30%
             player.GetCritChance(DamageClass.Magic) += 15;
 
-            // Reduced mana corst 25 percent
-            player.manaCost -= 0.50f;
+            // Reduced mana cost by 25 percent
+            player.manaCost -= 0.25f;
 
 
             // On crit spawns a star projectile that is aimed at the target hit

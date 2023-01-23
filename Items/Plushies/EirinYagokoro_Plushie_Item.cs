@@ -53,7 +53,7 @@ namespace Kourindou.Items.Plushies
         }
 
         // This only executes when plushie power mode is 2
-        public override void PlushieEquipEffects(Player player)
+        public override void PlushieUpdateEquips(Player player)
         {
             // Increase damage by 25 percent
             player.GetDamage(DamageClass.Generic) += 0.25f;
@@ -62,7 +62,7 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 10;
 
             // Arrow Damage increased by 10 percent
-            player.arrowDamage += 0.1f;
+            player.arrowDamage += 0.10f;
 
             // Max life increased by 50 points
             player.statLifeMax2 += 50;

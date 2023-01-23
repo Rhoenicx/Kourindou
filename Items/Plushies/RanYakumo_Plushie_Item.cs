@@ -57,11 +57,8 @@ namespace Kourindou.Items.Plushies
         }
 
         // This only executes when plushie power mode is 2
-        public override void PlushieEquipEffects(Player player)
+        public override void PlushieUpdateEquips(Player player)
         {
-            // Increase player's max hp by 10% + Stacks
-            player.statLifeMax2 = (int)Math.Floor((double)player.statLifeMax2 * (1.1 + (0.05 * player.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks)));
-
             // Increased minion damage by 10 percent + Stacks
             player.GetDamage(DamageClass.Generic) += 0.10f + (0.05f * player.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks);
 
@@ -77,7 +74,13 @@ namespace Kourindou.Items.Plushies
                 player.accRunSpeed = player.maxRunSpeed;
             }
         }
-        
+
+        public override void PlushiePostUpdateEquips(Player player)
+        {
+            // Increase player's max hp by 10% + Stacks
+            player.statLifeMax2 = (int)Math.Floor((double)player.statLifeMax2 * (1.1 + (0.05 * player.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks)));
+        }
+
         public override string AddEffectTooltip()
         {
             return "Every 10 enemies defeated increases max HP, damage and movement speed by 5% until death\r\n" + "Stacks up to 8 times. Increases max HP, damage and movement speed by 10%";

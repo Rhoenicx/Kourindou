@@ -54,7 +54,7 @@ namespace Kourindou.Items.Plushies
         }
 
         // This only executes when plushie power mode is 2
-        public override void PlushieEquipEffects(Player player)
+        public override void PlushieUpdateEquips(Player player)
         {
             // Increase Life regen by +1 
             player.lifeRegen += 1;
@@ -67,6 +67,17 @@ namespace Kourindou.Items.Plushies
 
             // Increase max HP by 25%
             player.statLifeMax2 = (int)Math.Floor((double)player.statLifeMax2 * 1.25);
+        }
+
+        public override void PlushiePostUpdateEquips(Player player)
+        {
+            // Set critrate to 0, generic has 4% as default
+            player.GetCritChance(DamageClass.Default) = 0f;
+            player.GetCritChance(DamageClass.Melee) = 0f;
+            player.GetCritChance(DamageClass.Magic) = 0f;
+            player.GetCritChance(DamageClass.Ranged) = 0f;
+            player.GetCritChance(DamageClass.Summon) = 0f;
+            player.GetCritChance(DamageClass.MagicSummonHybrid) = 0f;
         }
 
         public override string AddEffectTooltip()

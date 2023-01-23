@@ -53,7 +53,7 @@ namespace Kourindou.Items.Plushies
         }
 
         // This only executes when plushie power mode is 2
-        public override void PlushieEquipEffects(Player player)
+        public override void PlushieUpdateEquips(Player player)
         {
             // Increase all damage done by 5%
             player.GetDamage(DamageClass.Generic) += 0.05f;

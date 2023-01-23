@@ -53,7 +53,7 @@ namespace Kourindou.Items.Plushies
         }
 
         // This only executes when plushie power mode is 2
-        public override void PlushieEquipEffects(Player player)
+        public override void PlushieUpdateEquips(Player player)
         {
             // Increase minion knockback by 2
             player.GetKnockback(DamageClass.Summon) += 2;

@@ -53,7 +53,7 @@ namespace Kourindou.Items.Plushies
         }
 
         // This only executes when plushie power mode is 2
-        public override void PlushieEquipEffects(Player player)
+        public override void PlushieUpdateEquips(Player player)
         {
             // Increase damage by 25 percent
             player.GetDamage(DamageClass.Generic) += 0.25f;
@@ -67,7 +67,7 @@ namespace Kourindou.Items.Plushies
             // Increase movement speed by 35 percent
             player.moveSpeed += 0.35f;
 			
-			// On Kill effect handled in globalnpc
+			// On Kill effect handled in player
         }
         
         public override string AddEffectTooltip()

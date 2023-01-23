@@ -603,7 +603,7 @@ namespace Kourindou
         {
             CirnoPlushie_Attack_Counter++;
 
-            if (CirnoPlushie_Attack_Counter == 8 && (int)Main.rand.Next(0, 10) == 9)
+            if (CirnoPlushie_Attack_Counter == 9 && (int)Main.rand.Next(0, 10) == 9)
             {
                 CirnoPlushie_TimesNine = true;
             }
@@ -611,7 +611,6 @@ namespace Kourindou
             if (CirnoPlushie_Attack_Counter >= 9)
             {
                 CirnoPlushie_Attack_Counter = 0;
-                CirnoPlushie_TimesNine = false;
             }
 
             // Add debuffs to players
@@ -903,6 +902,13 @@ namespace Kourindou
         // --------- Hits this player does on NPC --------- //
         public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
         {
+            // Cirno Plushie every 9th hit has 9% chance to deal 9 times dmg
+            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()) && CirnoPlushie_TimesNine)
+            {
+                damage *= 9;
+                CirnoPlushie_TimesNine = false;
+            }
+
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
             if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
             {
@@ -937,6 +943,13 @@ namespace Kourindou
         }
         public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
+            // Cirno Plushie every 9th hit has 9% chance to deal 9 times dmg
+            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()) && CirnoPlushie_TimesNine)
+            {
+                damage *= 9;
+                CirnoPlushie_TimesNine = false;
+            }
+
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
             if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
             {
@@ -979,6 +992,13 @@ namespace Kourindou
         // --------- Hits on OTHER player --------- //
         public override void ModifyHitPvp(Item item, Player target, ref int damage, ref bool crit)
         {
+            // Cirno Plushie every 9th hit has 9% chance to deal 9 times dmg
+            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()) && CirnoPlushie_TimesNine)
+            {
+                damage *= 9;
+                CirnoPlushie_TimesNine = false;
+            }
+
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
             if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
             {
@@ -1009,6 +1029,13 @@ namespace Kourindou
         }
         public override void ModifyHitPvpWithProj(Projectile proj, Player target, ref int damage, ref bool crit)
         {
+            // Cirno Plushie every 9th hit has 9% chance to deal 9 times dmg
+            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()) && CirnoPlushie_TimesNine)
+            {
+                damage *= 9;
+                CirnoPlushie_TimesNine = false;
+            }
+
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
             if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
             {
@@ -1100,6 +1127,14 @@ namespace Kourindou
             return true;
         }
 
+        public override void ModifyWeaponCrit(Item item, ref float crit)
+        {
+            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()))
+            {
+                crit = 4f;
+            }
+        }
+
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
         {
             // Reset Ran's counter and stacks when the player dies
@@ -1135,9 +1170,18 @@ namespace Kourindou
             }
         }
 
-        //--------------------------------------------------------------------------------------------------------------------//
-        //-------------------------------------------------- Multi-Use Items logic-- -----------------------------------------//
-        //--------------------------------------------------------------------------------------------------------------------//
+        public override void PostUpdateEquips()
+        {
+            // Post plushie effects for non-multiplier based stats
+            foreach (int i in EquippedPlushies)
+            {
+                if (new Item(i).ModItem is PlushieItem plushie)
+                {
+                    plushie.PlushiePostUpdateEquips(Player);
+                }
+            }
+        }
+
         public bool OnCooldown(int itemID, int AttackID)
         {
             if (Cooldowns.ContainsKey(itemID))
@@ -1300,17 +1344,6 @@ namespace Kourindou
             UsedAttack = false;
             AttackID = 0;
             AttackCounter = 0;
-
-            // Byakuren Plushie equipped: Prevent critrate buffs
-            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()))
-            {
-                Player.GetCritChance(DamageClass.Default) = 0f;
-                Player.GetCritChance(DamageClass.Melee) = 0f;
-                Player.GetCritChance(DamageClass.Magic) = 0f;
-                Player.GetCritChance(DamageClass.Ranged) = 0f;
-                Player.GetCritChance(DamageClass.Summon) = 0f;
-                Player.GetCritChance(DamageClass.MagicSummonHybrid) = 0f;
-            }
         }
     }
 

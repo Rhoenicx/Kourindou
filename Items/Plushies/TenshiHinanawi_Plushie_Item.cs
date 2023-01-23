@@ -1,3 +1,4 @@
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -53,9 +54,25 @@ namespace Kourindou.Items.Plushies
         }
 
         // This only executes when plushie power mode is 2
-        public override void PlushieEquipEffects(Player player)
+        public override void PlushieUpdateEquips(Player player)
         {
+            // Increase damage by 20%
+            player.GetDamage(DamageClass.Generic) += 0.20f;
+        }
 
+        public override void PlushiePostUpdateEquips(Player player)
+        {
+            // Increase life regen by 50%
+            player.lifeRegen += (int)Math.Floor(player.lifeRegen * 0.5);
+
+            // Increase mana by 100%
+            player.statManaMax2 += player.statManaMax2;
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "Whenever you get hit, increase your next attack by 5 times received damage\r\n" +
+                    "+20% damage, +50% life regen, doubles mana";
         }
 
         public override void AddRecipes()

@@ -52,7 +52,7 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        public override void PlushieEquipEffects(Player player)
+        public override void PlushieUpdateEquips(Player player)
         {
             // Gravity Globe effect. Hehe.
             // Oh, maybe also a chance to reflect projectiles at low HP?

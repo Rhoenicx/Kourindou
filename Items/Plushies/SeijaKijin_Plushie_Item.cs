@@ -53,7 +53,7 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        public override void PlushieEquipEffects(Player player)
+        public override void PlushieUpdateEquips(Player player)
         {
             player.GetDamage(DamageClass.Generic) += 0.25f;
 

@@ -109,7 +109,7 @@ namespace Kourindou.Items
             if (player.GetModPlayer<KourindouPlayer>().plushiePower)
             {
                 player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Add(Item.type);
-                PlushieEquipEffects(player);
+                PlushieUpdateEquips(player);
             }
 
             base.UpdateAccessory(player, hideVisual);
@@ -200,9 +200,14 @@ namespace Kourindou.Items
         }
 
         // Execute custom effects when this Plushie is equipped
-        public virtual void PlushieEquipEffects(Player player)
+        public virtual void PlushieUpdateEquips(Player player)
         {
 
+        }
+
+        public virtual void PlushiePostUpdateEquips(Player player)
+        { 
+        
         }
     }
 
