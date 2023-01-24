@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -108,7 +110,21 @@ namespace Kourindou.Items
         {
             if (player.GetModPlayer<KourindouPlayer>().plushiePower)
             {
-                player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Add(Item.type);
+                if (!player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Any(kvp => kvp.Key.Type == Item.type) && Item.ModItem is PlushieItem plushie)
+                {
+                    player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Add(plushie, 1);
+                }
+                else
+                {
+                    foreach (KeyValuePair<PlushieItem, int> kvp in player.GetModPlayer<KourindouPlayer>().EquippedPlushies)
+                    {
+                        if (kvp.Key.Type == Item.type)
+                        {
+                            player.GetModPlayer<KourindouPlayer>().EquippedPlushies[kvp.Key]++;
+                        }
+                    }
+                }
+
                 PlushieUpdateEquips(player);
             }
 
@@ -209,6 +225,50 @@ namespace Kourindou.Items
         { 
         
         }
-    }
 
+        public virtual void PlushieCanbeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot)
+        { 
+        
+        }
+
+        public virtual void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit)
+        { 
+        
+        }
+
+        public virtual void PlushieOnHitBy(Player myPlayer, Projectile proj, NPC npc, int damage, bool crit)
+        { 
+        
+        }
+
+        public virtual void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit)
+        { 
+        
+        }
+        public virtual void PlushieHurt(Player myPlayer, bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
+        { 
+
+        }
+
+        public virtual void PlushiePreKill(Player myPlayer, double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        { 
+        
+        }
+        public virtual void PlushieModifyWeaponCrit(Player myPlayer, Item item, ref float crit)
+        { 
+        
+        }
+
+        public virtual void PlushieKill(Player myPlayer, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+        { 
+        
+        }
+
+        public virtual void PlushieUpdateBadLifeRegen(Player myPlayer)
+        { 
+        
+        }
+
+
+    }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,7 +39,7 @@ namespace Kourindou
         public bool plushiePower;
 
         // Item ID of the plushie slot item
-        public HashSet<int> EquippedPlushies = new HashSet<int>();
+        public Dictionary<PlushieItem, int> EquippedPlushies = new Dictionary<PlushieItem, int>();
 
         // Reimu plushie maximum homing distance
         public float ReimuPlushieMaxDistance = 500f;
@@ -164,7 +165,6 @@ namespace Kourindou
             }
         }
 
-
         public override void PlayerConnect(Player player)
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -187,7 +187,7 @@ namespace Kourindou
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            if (EquippedPlushies.Contains(ItemType<YukariYakumo_Plushie_Item>()))
+            if (EquippedPlushies.Any(kvp => kvp.Key.Type == ItemType<YukariYakumo_Plushie_Item>()))
             {
                 SkillKeyPressed = Kourindou.SkillKey.JustPressed;
             }
