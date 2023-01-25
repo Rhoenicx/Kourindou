@@ -6,6 +6,7 @@ using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
+using Kourindou.Buffs;
 
 namespace Kourindou.Items.Plushies
 {
@@ -15,6 +16,12 @@ namespace Kourindou.Items.Plushies
         {
             DisplayName.SetDefault("Kaguya Houraisan Plushie");
             Tooltip.SetDefault("The exiled princess of the moon");
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "When killed heal all your HP, 60 second cooldown \r\n" +
+                    "+25% damage, -25% damage taken, +15 defense";
         }
 
         public override void SetDefaults()
@@ -52,8 +59,21 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlackFabric>(), 2)
+                .AddIngredient(ItemType<PinkFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemID.BlackThread, 1)
+                .AddIngredient(ItemID.PinkThread, 2)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase damage by 25 percent
             player.GetDamage(DamageClass.Generic) += 0.25f;
@@ -69,25 +89,19 @@ namespace Kourindou.Items.Plushies
 
             // When you get damage that should kill you, heal for maxhp and get mortality debuff
         }
-        
-        public override string AddEffectTooltip()
-        {
-            return "When killed heal all your HP, 60 second cooldown \r\n" + 
-                    "+25% damage, -25% damage taken, +15 defense";
-        }
 
-        public override void AddRecipes()
+        public override bool PlushiePreKill(Player myPlayer, double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, int amountEquipped)
         {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<BlackFabric>(), 2)
-                .AddIngredient(ItemType<PinkFabric>(), 2)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemID.BlackThread, 1)
-                .AddIngredient(ItemID.PinkThread, 2)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
+            if (myPlayer.HasBuff(BuffType<DeBuff_Mortality>()))
+            {
+                return true;
+            }
+
+            myPlayer.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
+            myPlayer.statLife += myPlayer.statLifeMax2;
+            myPlayer.HealEffect(myPlayer.statLifeMax2, true);
+
+            return false;
         }
     }
 }

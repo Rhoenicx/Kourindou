@@ -17,6 +17,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The ice fairy. It's stupidly strong, and stupid as well");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Every 9th hit has 9% chance to deal 9 times damage! +25% damage, -17% damage taken";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,24 +57,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase damage by 25 percent
-            player.GetDamage(DamageClass.Generic) += 0.25f;
-
-            // Increase Life regen by +1 
-            player.lifeRegen += 1;
-
-            //Decrease damage taken by 17%
-            player.endurance += 0.17f;
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Every 9th hit has 9% chance to deal 9 times damage! +25% damage, -17% damage taken";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -82,6 +69,65 @@ namespace Kourindou.Items.Plushies
                 .AddIngredient(ItemID.IceBlock, 9)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 25 percent
+            player.GetDamage(DamageClass.Generic) += 0.25f;
+
+            // Increase Life regen by +1 
+            player.lifeRegen += 1;
+
+            //Decrease damage taken by 17%
+            player.endurance += 0.17f;
+        }
+
+        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        {
+            myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_Attack_Counter++;
+
+            if (myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_Attack_Counter == 9 && (int)Main.rand.Next(0, 10) == 9)
+            {
+                myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_TimesNine = true;
+            }
+
+            if (myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_Attack_Counter >= 9)
+            {
+                myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_Attack_Counter = 0;
+            }
+
+            if (player != null)
+            {
+                player.AddBuff(BuffID.Chilled, 600);
+                player.AddBuff(BuffID.Frostburn, 600);
+                player.AddBuff(BuffID.Slow, 600);
+                if (crit)
+                {
+                    player.AddBuff(BuffID.Frozen, 120);
+                }
+            }
+
+            if (npc != null)
+            {
+                npc.AddBuff(BuffID.Chilled, 600);
+                npc.AddBuff(BuffID.Frostburn, 600);
+                npc.AddBuff(BuffID.Slow, 600);
+                if (crit)
+                {
+                    npc.AddBuff(BuffID.Frozen, 120);
+                }
+            }
+
+        }
+
+        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
+        {
+            if (myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_TimesNine)
+            {
+                damage *= 9;
+                myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_TimesNine = false;
+            }
         }
     }
 }

@@ -331,591 +331,92 @@ namespace Kourindou
             }
         }
 
-        // Gensokyo Fairy Plushies
-        public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot)
+        public override void UpdateEquips()
         {
-            if (Kourindou.GensokyoLoaded)
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                if (npc.type == Kourindou.Gensokyo_Fairy_Bone_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Bone_Fairy_Plushie_Item>())) { return false; }
-                if (npc.type == Kourindou.Gensokyo_Fairy_Flower_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Flower_Fairy_Plushie_Item>())) { return false; }
-                if (npc.type == Kourindou.Gensokyo_Fairy_Lava_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Lava_Fairy_Plushie_Item>())) { return false; }
-                if (npc.type == Kourindou.Gensokyo_Fairy_Snow_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Snow_Fairy_Plushie_Item>())) { return false; }
-                if (npc.type == Kourindou.Gensokyo_Fairy_Stone_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Stone_Fairy_Plushie_Item>())) { return false; }
-                if (npc.type == Kourindou.Gensokyo_Fairy_Sunflower_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Sunflower_Fairy_Plushie_Item>())) { return false; }
-                if (npc.type == Kourindou.Gensokyo_Fairy_Thorn_Type && EquippedPlushies.Contains(ItemType<Gensokyo_Thorn_Fairy_Plushie_Item>())) { return false; }
+                plushie.Key.PlushieUpdateEquips(Player, plushie.Value);
             }
-
-            return base.CanBeHitByNPC(npc, ref cooldownSlot);
         }
 
-        #region OnHit
+        public override void PostUpdateEquips()
+        {
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
+            {
+                plushie.Key.PlushiePostUpdateEquips(Player, plushie.Value);
+            }
+        }
+
+        public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot)
+        {
+            bool hit = base.CanBeHitByNPC(npc, ref cooldownSlot);
+
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
+            {
+                if (!plushie.Key.PlushieCanbeHitByNPC(Player, npc, ref cooldownSlot, plushie.Value))
+                {
+                    hit = false;
+                }
+            }
+
+            return hit;
+        }
+
         // --------- Triggers on PVE --------- //
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
-            // Cirno Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()))
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                CirnoPlushie_OnHit(null, target, crit);
-            }
-
-            // Flandre Scarlet Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
-            {
-                FlandreScarletPlushie_OnHit(target, null, damage, crit, item.useAnimation);
-            }
-
-            // Marisa Kirisame Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
-            {
-                MarisaKirisamePlushie_OnHit(target.Center, crit, target);
-            }
-
-            // Remilia Scarlet Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
-            {
-                RemiliaScarletPlushie_OnHit(damage);
-            }
-
-            // Satori Komeiji Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
-            {
-                SatoriKomeijiPlushie_OnHit(target, null);
-            }
-
-            // Tewi Inaba Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<TewiInaba_Plushie_Item>()))
-            {
-                TewiInabaPlushie_OnHit(target);
-            }
-
-            // Medicine Melancholy Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
-            {
-                MedicineMelancholyPlushie_OnHit(target, null);
-            }
-
-            // Toyosatomimi No Miko Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>()))
-            {
-                ToyosatomimiNoMikoPlushie_OnHit(target, null, crit);
-            }
-
-            // Chen Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
-            {
-                ChenPlushie_OnHit(target, null);
-            }
-
-            // Ran Yakumo Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
-            {
-                RanYakumoPlushie_OnHit(target, null);
+                plushie.Key.PlushieOnHit(Player, item, null, target, null, damage, knockback, crit, plushie.Value);
             }
         }
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockBack, bool crit)
         {
-            // Cirno Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()))
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                CirnoPlushie_OnHit(null, target, crit);
-            }
-
-            // Flandre Scarlet Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
-            {
-                FlandreScarletPlushie_OnHit(target, null, damage, crit, target.immune[proj.owner]);
-                if (crit)
-                {
-                    target.immune[proj.owner] = 0;
-                }
-            }
-
-            // Marisa Kirisame Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
-            {
-                MarisaKirisamePlushie_OnHit(target.Center, crit, target);
-            }
-
-            //Remilia Scarlet Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
-            {
-                RemiliaScarletPlushie_OnHit(damage);
-            }
-
-            // Satori Komeiji Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
-            {
-                SatoriKomeijiPlushie_OnHit(target, null);
-            }
-
-            // Tewi Inaba Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<TewiInaba_Plushie_Item>()))
-            {
-                TewiInabaPlushie_OnHit(target);
-            }
-
-            // Medicine Melancholy Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
-            {
-                MedicineMelancholyPlushie_OnHit(target, null);
-            }
-
-            // Toyosatomimi No Miko Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>())
-                && proj.type != ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
-            {
-                ToyosatomimiNoMikoPlushie_OnHit(target, null, crit);
-            }
-
-            // Chen Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
-            {
-                ChenPlushie_OnHit(target, null);
-            }
-
-            // Ran Yakumo Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
-            {
-                RanYakumoPlushie_OnHit(target, null);
+                plushie.Key.PlushieOnHit(Player, null, proj, target, null, damage, knockBack, crit, plushie.Value);
             }
         }
 
         // --------- Triggers on PVP --------- //
         public override void OnHitPvp(Item item, Player target, int damage, bool crit)
         {
-            // Cirno Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()))
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                CirnoPlushie_OnHit(target, null, crit);
-            }
-
-            // Flandre Scarlet Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
-            {
-                FlandreScarletPlushie_OnHit(null, target, damage, crit, item.useAnimation);
-            }
-
-            // Marisa Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
-            {
-                MarisaKirisamePlushie_OnHit(target.Center, crit, target);
-            }
-
-            //Remilia Scarlet Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
-            {
-                RemiliaScarletPlushie_OnHit(damage);
-            }
-
-            // Satori Komeiji Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
-            {
-                SatoriKomeijiPlushie_OnHit(null, target);
-            }
-
-            // Medicine Melancholy Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
-            {
-                MedicineMelancholyPlushie_OnHit(null, target);
-            }
-
-            // Toyosatomimi No Miko Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>()))
-            {
-                ToyosatomimiNoMikoPlushie_OnHit(null, target, crit);
-            }
-
-            // Chen Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
-            {
-                ChenPlushie_OnHit(null, target);
-            }
-
-            // Ran Yakumo Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
-            {
-                RanYakumoPlushie_OnHit(null, target);
+                plushie.Key.PlushieOnHit(Player, item, null, null, target, damage, 0f, crit, plushie.Value);
             }
         }
         public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
         {
-            // Cirno Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()))
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                CirnoPlushie_OnHit(target, null, crit);
-            }
-
-            // Flandre Scarlet Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<FlandreScarlet_Plushie_Item>()))
-            {
-                FlandreScarletPlushie_OnHit(null, target, damage, crit, target.immuneTime);
-                if (crit)
-                {
-                    target.immuneTime = 0;
-                }
-            }
-
-            // Marisa Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
-            {
-                MarisaKirisamePlushie_OnHit(target.Center, crit, target);
-            }
-
-            //Remilia Scarlet Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Kourindou_RemiliaScarlet_Plushie_Item>()))
-            {
-                RemiliaScarletPlushie_OnHit(damage);
-            }
-
-            // Satori Komeiji Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<SatoriKomeiji_Plushie_Item>()))
-            {
-                SatoriKomeijiPlushie_OnHit(null, target);
-            }
-
-            // Medicine Melancholy Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<MedicineMelancholy_Plushie_Item>()))
-            {
-                MedicineMelancholyPlushie_OnHit(null, target);
-            }
-
-            // Toyosatomimi No Miko Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<ToyosatomimiNoMiko_Plushie_Item>())
-                && proj.type != ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
-            {
-                ToyosatomimiNoMikoPlushie_OnHit(null, target, crit);
-            }
-
-            // Chen Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
-            {
-                ChenPlushie_OnHit(null, target);
-            }
-
-            // Ran Yakumo Plushie Equipped
-            if (EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
-            {
-                RanYakumoPlushie_OnHit(null, target);
+                plushie.Key.PlushieOnHit(Player, null, proj, null, target, damage, 0f, crit, plushie.Value);
             }
         }
 
-        private void CirnoPlushie_OnHit(Player p, NPC n, bool crit)
-        {
-            CirnoPlushie_Attack_Counter++;
-
-            if (CirnoPlushie_Attack_Counter == 9 && (int)Main.rand.Next(0, 10) == 9)
-            {
-                CirnoPlushie_TimesNine = true;
-            }
-
-            if (CirnoPlushie_Attack_Counter >= 9)
-            {
-                CirnoPlushie_Attack_Counter = 0;
-            }
-
-            // Add debuffs to players
-            if (p != null)
-            {
-                p.AddBuff(BuffID.Chilled, 600);
-                p.AddBuff(BuffID.Frostburn, 600);
-                p.AddBuff(BuffID.Slow, 600);
-                if (crit)
-                {
-                    p.AddBuff(BuffID.Frozen, 120);
-                }
-            }
-
-            // Add debuffs to NPCs
-            if (n != null)
-            {
-                n.AddBuff(BuffID.Chilled, 600);
-                n.AddBuff(BuffID.Frostburn, 600);
-                n.AddBuff(BuffID.Slow, 600);
-                if (crit)
-                {
-                    n.AddBuff(BuffID.Frozen, 120);
-                }
-            }
-        }
-
-        private void FlandreScarletPlushie_OnHit(NPC n, Player p, int damage, bool crit, int immune)
-        {
-            if (crit)
-            {
-                Vector2 position = new Vector2(0, 0);
-
-                if (n != null)
-                {
-                    position = n.Center;
-
-                    Projectile.NewProjectile(
-                        Player.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
-                        position,
-                        Vector2.Zero,
-                        ProjectileType<FlandreScarlet_Plushie_Explosion>(),
-                        damage * 2 + 80,
-                        0f,
-                        Main.myPlayer,
-                        n.whoAmI,
-                        immune
-                    );
-                }
-
-                if (p != null)
-                {
-                    position = p.Center;
-
-                    Projectile.NewProjectile(
-                        Player.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
-                        position,
-                        Vector2.Zero,
-                        ProjectileType<FlandreScarlet_Plushie_Explosion>(),
-                        damage * 2 + 80,
-                        0f,
-                        Main.myPlayer,
-                        p.whoAmI + 10000,
-                        immune
-                    );
-                }
-
-                SoundEngine.PlaySound(
-                    SoundID.DD2_ExplosiveTrapExplode with { Volume = .8f, PitchVariance = .1f },
-                    position);
-
-                if (Main.netMode == NetmodeID.MultiplayerClient)
-                {
-                    // Send sound packet for other clients
-                    ModPacket packet = Mod.GetPacket();
-                    packet.Write((byte)KourindouMessageType.PlaySound);
-                    packet.Write((string)"DD2_ExplosiveTrapExplode");
-                    packet.Write((float)0.8f);
-                    packet.Write((float)1f);
-                    packet.Write((int)position.X);
-                    packet.Write((int)position.Y);
-                    packet.Send(-1, Main.myPlayer);
-                }
-            }
-        }
-
-        private void MarisaKirisamePlushie_OnHit(Vector2 position, bool crit, Entity entity)
-        {
-            if (crit)
-            {
-                int star = Projectile.NewProjectile
-                (
-                    Player.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
-                    Player.Center,
-                    Vector2.Normalize(Main.MouseWorld - Player.Center) * 10f,
-                    ProjectileID.StarWrath,
-                    50,
-                    1f,
-                    Main.myPlayer,
-                    1f
-                );
-
-                Main.projectile[star].hide = true;
-                Main.projectile[star].netUpdate = true;
-            }
-        }
-
-        private void RemiliaScarletPlushie_OnHit(int damage)
-        {
-            if (Player.statLife < Player.statLifeMax2)
-            {
-                int healAmount = (int)Math.Ceiling((double)((damage * 0.05) < Player.statLifeMax2 - Player.statLife ? (int)(damage * 0.05) : Player.statLifeMax2 - Player.statLife));
-                Player.statLife += healAmount;
-                Player.HealEffect(healAmount, true);
-            }
-        }
-
-        private void SatoriKomeijiPlushie_OnHit(NPC n, Player p)
-        {
-            if (n != null)
-            {
-                n.AddBuff(BuffID.CursedInferno, 600);
-                n.AddBuff(BuffID.Confused, 600);
-                n.AddBuff(BuffID.Ichor, 600);
-            }
-
-            if (p != null)
-            {
-                p.AddBuff(BuffID.CursedInferno, 600);
-                p.AddBuff(BuffID.Confused, 600);
-                p.AddBuff(BuffID.Ichor, 600);
-            }
-        }
-
-        private void TewiInabaPlushie_OnHit(NPC n)
-        {
-            if ((int)Main.rand.Next(0, 5) == 0 && n.life <= 0)
-            {
-                n.NPCLoot();
-            }
-        }
-
-        private void MedicineMelancholyPlushie_OnHit(NPC n, Player p)
-        {
-            if (n != null)
-            {
-                if ((int)Main.rand.Next(0, 100) < 12)
-                {
-                    n.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
-                }
-                n.AddBuff(BuffID.Poisoned, 600);
-            }
-
-            if (p != null)
-            {
-                if ((int)Main.rand.Next(0, 100) < 12)
-                {
-                    p.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
-                }
-                p.AddBuff(BuffID.Poisoned, 300);
-            }
-        }
-
-        private void ToyosatomimiNoMikoPlushie_OnHit(NPC n, Player p, bool crit)
-        {
-            Vector2 SpawnPosition = Vector2.Zero;
-            if (n != null)
-            {
-                SpawnPosition = n.Center;
-            }
-            if (p != null)
-            {
-                SpawnPosition = p.Center;
-            }
-
-            Projectile.NewProjectile(
-                Player.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
-                SpawnPosition,
-                Vector2.Zero,
-                ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>(),
-                Player.HeldItem.damage,
-                Player.HeldItem.knockBack,
-                Main.myPlayer,
-                0f,
-                crit ? 1f : 0f
-            );
-        }
-
-        private void ChenPlushie_OnHit(NPC n, Player p)
-        {
-            if (n != null && n.life <= 0 && !n.friendly && n.lifeMax > 5)
-            {
-                // On kill gain rapid healing, well fed and 25 health
-                Player.AddBuff(BuffID.RapidHealing, 720);
-                Player.AddBuff(BuffID.WellFed, 720);
-                Player.statLife += 25;
-                Player.HealEffect(25, true);
-            }
-
-            if (p != null && (p.statLife <= 0 || p.dead))
-            {
-                // On kill gain rapid healing, well fed and 25 health
-                Player.AddBuff(BuffID.RapidHealing, 720);
-                Player.AddBuff(BuffID.WellFed, 720);
-                Player.statLife += 25;
-                Player.HealEffect(25, true);
-            }
-        }
-
-        private void RanYakumoPlushie_OnHit(NPC n, Player p)
-        {
-            if (n != null && n.life <= 0 && !n.friendly && n.lifeMax > 5)
-            {
-                // Increase kill counter
-                if (RanPlushie_Stacks < 8)
-                {
-                    RanPlushie_EnemieKillCounter++;
-                }
-
-                // Increase stacks
-                if (RanPlushie_EnemieKillCounter >= 10 && RanPlushie_Stacks < 8)
-                {
-                    RanPlushie_Stacks++;
-                    RanPlushie_EnemieKillCounter = 0;
-
-                    if (Main.netMode == NetmodeID.MultiplayerClient)
-                    {
-                        ModPacket packet = Mod.GetPacket();
-                        packet.Write((byte)KourindouMessageType.RanPlushieStacks);
-                        packet.Write((byte)Main.myPlayer);
-                        packet.Write((byte)RanPlushie_Stacks);
-                        packet.Send(-1, Main.myPlayer);
-                    }
-                }
-            }
-
-            if (p != null && (p.statLife <= 0 || p.dead))
-            {
-                // Increase kill counter
-                if (RanPlushie_Stacks < 8)
-                {
-                    RanPlushie_EnemieKillCounter++;
-                }
-
-                // Increase stacks
-                if (RanPlushie_EnemieKillCounter >= 10 && RanPlushie_Stacks < 8)
-                {
-                    RanPlushie_Stacks++;
-                    RanPlushie_EnemieKillCounter = 0;
-
-                    if (Main.netMode == NetmodeID.MultiplayerClient)
-                    {
-                        ModPacket packet = Mod.GetPacket();
-                        packet.Write((byte)KourindouMessageType.RanPlushieStacks);
-                        packet.Write((byte)Main.myPlayer);
-                        packet.Write((byte)RanPlushie_Stacks);
-                        packet.Send(-1, Main.myPlayer);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region OnHitME
         public override void OnHitByNPC(NPC npc, int damage, bool crit)
         {
-            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()))
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                TenshiHinanawiPlushie_OnHitBy(damage);
+                plushie.Key.PlushieOnHitBy(Player, null, npc, damage, crit, plushie.Value);
             }
         }
 
         public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
         {
-            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()))
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                TenshiHinanawiPlushie_OnHitBy(damage);
+                plushie.Key.PlushieOnHitBy(Player, proj, null, damage, crit, plushie.Value);
             }
         }
-
-        private void TenshiHinanawiPlushie_OnHitBy(int damage)
-        {
-            TenshiPlushie_Damage = damage;
-            TenshiPlushie_Revenge = true;
-        }
-        #endregion
 
         #region ModifyHit
         // --------- Hits this player does on NPC --------- //
         public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
         {
-            // Cirno Plushie every 9th hit has 9% chance to deal 9 times dmg
-            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()) && CirnoPlushie_TimesNine)
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                damage *= 9;
-                CirnoPlushie_TimesNine = false;
-            }
-
-            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
-            if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
-            {
-                if (item.CountsAsClass(DamageClass.Melee) || item.CountsAsClass(DamageClass.Ranged) || item.CountsAsClass(DamageClass.Throwing))
-                {
-                    damage = 0;
-                }
+                plushie.Key.PlushieModifyHit(Player, item, null, target, null, ref damage, ref knockback, ref crit, plushie.Value);
             }
 
             // Shion Yorigami random damage increase on NPC hits 0.1% chance
@@ -943,20 +444,9 @@ namespace Kourindou
         }
         public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            // Cirno Plushie every 9th hit has 9% chance to deal 9 times dmg
-            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()) && CirnoPlushie_TimesNine)
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                damage *= 9;
-                CirnoPlushie_TimesNine = false;
-            }
-
-            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
-            if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
-            {
-                if (proj.CountsAsClass(DamageClass.Melee) || proj.CountsAsClass(DamageClass.Ranged) || proj.CountsAsClass(DamageClass.Throwing) || proj.minion)
-                {
-                    damage = 0;
-                }
+                plushie.Key.PlushieModifyHit(Player, null, proj, target, null, ref damage, ref knockback, ref crit, plushie.Value);
             }
 
             // Shion Yorigami random damage increase on NPC hits 0.1% chance
@@ -992,11 +482,10 @@ namespace Kourindou
         // --------- Hits on OTHER player --------- //
         public override void ModifyHitPvp(Item item, Player target, ref int damage, ref bool crit)
         {
-            // Cirno Plushie every 9th hit has 9% chance to deal 9 times dmg
-            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()) && CirnoPlushie_TimesNine)
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                damage *= 9;
-                CirnoPlushie_TimesNine = false;
+                float knockback = 0f;
+                plushie.Key.PlushieModifyHit(Player, item, null, null, target, ref damage, ref knockback, ref crit, plushie.Value);
             }
 
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
@@ -1029,11 +518,10 @@ namespace Kourindou
         }
         public override void ModifyHitPvpWithProj(Projectile proj, Player target, ref int damage, ref bool crit)
         {
-            // Cirno Plushie every 9th hit has 9% chance to deal 9 times dmg
-            if (EquippedPlushies.Contains(ItemType<Cirno_Plushie_Item>()) && CirnoPlushie_TimesNine)
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                damage *= 9;
-                CirnoPlushie_TimesNine = false;
+                float knockback = 0f;
+                plushie.Key.PlushieModifyHit(Player, null, proj, null, target, ref damage, ref knockback, ref crit, plushie.Value);
             }
 
             // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
@@ -1093,35 +581,17 @@ namespace Kourindou
         // --------- Player got hurt --------- //
         public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
         {
-            if (EquippedPlushies.Contains(ItemType<Chen_Plushie_Item>()))
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                Player.AddBuff(BuffID.ShadowDodge, 180);
+                plushie.Key.PlushieHurt(Player, pvp, quiet, damage, hitDirection, crit, cooldownCounter, plushie.Value);
             }
         }
 
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
-            // Kaguya or Mokou Plushie Equipped [Mortality]
-            if (EquippedPlushies.Contains(ItemType<KaguyaHouraisan_Plushie_Item>()) || EquippedPlushies.Contains(ItemType<FujiwaraNoMokou_Plushie_Item>()))
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                if (Player.HasBuff(BuffType<DeBuff_Mortality>()))
-                {
-                    return true;
-                }
-                else
-                {
-                    Player.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
-                    Player.statLife += Player.statLifeMax2;
-                    Player.HealEffect(Player.statLifeMax2, true);
-
-                    if (EquippedPlushies.Contains(ItemType<FujiwaraNoMokou_Plushie_Item>()))
-                    {
-                        Player.AddBuff(BuffID.Wrath, 4140);
-                        Player.AddBuff(BuffID.Inferno, 4140);
-                    }
-
-                    return false;
-                }
+                return plushie.Key.PlushiePreKill(Player, damage, hitDirection, pvp, ref playSound, ref genGore, ref damageSource, plushie.Value);
             }
 
             return true;
@@ -1129,28 +599,17 @@ namespace Kourindou
 
         public override void ModifyWeaponCrit(Item item, ref float crit)
         {
-            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()))
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                crit = 4f;
+                plushie.Key.PlushieModifyWeaponCrit(Player, item, ref crit, plushie.Value);
             }
         }
 
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
         {
-            // Reset Ran's counter and stacks when the player dies
-            if (EquippedPlushies.Contains(ItemType<RanYakumo_Plushie_Item>()))
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                RanPlushie_EnemieKillCounter = 0;
-                RanPlushie_Stacks = 0;
-
-                if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
-                {
-                    ModPacket packet = Mod.GetPacket();
-                    packet.Write((byte)KourindouMessageType.RanPlushieStacks);
-                    packet.Write((byte)Main.myPlayer);
-                    packet.Write((byte)RanPlushie_Stacks);
-                    packet.Send(-1, Main.myPlayer);
-                }
+                plushie.Key.PlushieKill(Player, damage, hitDirection, pvp, damageSource, plushie.Value);
             }
         }
 
@@ -1167,18 +626,6 @@ namespace Kourindou
                 }
 
                 Player.lifeRegen -= damagePerSecond * (DebuffMedicineMelancholyStacks + 1) * (Player.HasBuff(BuffID.Venom) ? 2 : 1);
-            }
-        }
-
-        public override void PostUpdateEquips()
-        {
-            // Post plushie effects for non-multiplier based stats
-            foreach (int i in EquippedPlushies)
-            {
-                if (new Item(i).ModItem is PlushieItem plushie)
-                {
-                    plushie.PlushiePostUpdateEquips(Player);
-                }
             }
         }
 

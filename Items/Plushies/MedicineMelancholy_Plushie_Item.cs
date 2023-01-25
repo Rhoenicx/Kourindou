@@ -6,6 +6,7 @@ using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
+using Kourindou.Buffs;
 
 namespace Kourindou.Items.Plushies
 {
@@ -15,6 +16,11 @@ namespace Kourindou.Items.Plushies
         {
             DisplayName.SetDefault("Medicine Melancholy Plushie");
             Tooltip.SetDefault("A young doll youkai that lives on the Nameless Hill. She can harness the poison of anything");
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "Every hit has a 12% chance to inflict a stackable poison debuff. Also gain poison immunity";
         }
 
         public override void SetDefaults()
@@ -52,24 +58,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase hp regen by 1 point
-            player.lifeRegen += 1;
-
-            // Increase all damage by 5 percent
-            player.GetDamage(DamageClass.Generic) += 0.05f;
-
-            // Immunity to poison debuff
-            player.buffImmune[BuffID.Poisoned] = true;
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Every hit has a 12% chance to inflict a stackable poison debuff. Also gain poison immunity";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -84,6 +72,39 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase hp regen by 1 point
+            player.lifeRegen += 1;
+
+            // Increase all damage by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // Immunity to poison debuff
+            player.buffImmune[BuffID.Poisoned] = true;
+        }
+
+        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        {
+            if (npc != null)
+            {
+                if ((int)Main.rand.Next(0, 100) < 12)
+                {
+                    npc.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
+                }
+                npc.AddBuff(BuffID.Poisoned, 600);
+            }
+
+            if (player != null)
+            {
+                if ((int)Main.rand.Next(0, 100) < 12)
+                {
+                    player.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
+                }
+                player.AddBuff(BuffID.Poisoned, 300);
+            }
         }
     }
 }

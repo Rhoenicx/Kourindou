@@ -6,6 +6,8 @@ using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
+using Kourindou.Buffs;
+using Terraria.DataStructures;
 
 namespace Kourindou.Items.Plushies
 {
@@ -15,6 +17,12 @@ namespace Kourindou.Items.Plushies
         {
             DisplayName.SetDefault("Fujiwara No Mokou Plushie");
             Tooltip.SetDefault("The bamboo forest's guide. Rumor has it that she runs a yakitori stand");
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "When killed heal all your HP and gain inferno and wrath, 60 second cooldown \r\n" +
+                    "+25% damage, +25% melee damage, +10% melee crit, -15% damage taken";
         }
 
         public override void SetDefaults()
@@ -52,8 +60,20 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemID.Fireblossom, 8)
+                .AddIngredient(ItemType<RedFabric>(), 3)
+                .AddIngredient(ItemType<SilverFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 3)
+                .AddIngredient(ItemType<RedThread>(), 3)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase damage by 25 percent
             player.GetDamage(DamageClass.Generic) += 0.25f;
@@ -72,24 +92,21 @@ namespace Kourindou.Items.Plushies
 
             // When you get damage that should kill you, heal for maxhp and get mortality debuff
         }
-        
-        public override string AddEffectTooltip()
-        {
-            return "When killed heal all your HP and gain inferno and wrath, 60 second cooldown \r\n" +
-                    "+25% damage, +25% melee damage, +10% melee crit, -15% damage taken";
-        }
 
-        public override void AddRecipes()
+        public override bool PlushiePreKill(Player myPlayer, double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, int amountEquipped)
         {
-            CreateRecipe(1)
-                .AddIngredient(ItemID.Fireblossom, 8)
-                .AddIngredient(ItemType<RedFabric>(), 3)
-                .AddIngredient(ItemType<SilverFabric>(), 2)
-                .AddIngredient(ItemID.Silk, 3)
-                .AddIngredient(ItemType<RedThread>(), 3)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
+            if (myPlayer.HasBuff(BuffType<DeBuff_Mortality>()))
+            {
+                return true;
+            }
+
+            myPlayer.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
+            myPlayer.statLife += myPlayer.statLifeMax2;
+            myPlayer.HealEffect(myPlayer.statLifeMax2, true);
+            myPlayer.AddBuff(BuffID.Wrath, 4140);
+            myPlayer.AddBuff(BuffID.Inferno, 4140);
+
+            return false;
         }
     }
 }

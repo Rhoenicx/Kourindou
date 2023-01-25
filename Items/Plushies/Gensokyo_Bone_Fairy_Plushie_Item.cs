@@ -17,6 +17,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Bone fairies become friendly";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,19 +57,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            if (Kourindou.GensokyoLoaded)
-            {
-                player.npcTypeNoAggro[Kourindou.Gensokyo_Fairy_Bone_Type] = true;
-            }
-        }
-        public override string AddEffectTooltip()
-        {
-            return "Bone fairies become friendly";
-        }
-
         public override void AddRecipes()
         {
             if (Kourindou.GensokyoLoaded)
@@ -81,6 +73,24 @@ namespace Kourindou.Items.Plushies
                     .AddTile(TileType<SewingMachine_Tile>())
                     .Register();
             }
+        }
+
+        public override void PlushieUpdateEquips(Player player)
+        {
+            if (Kourindou.GensokyoLoaded)
+            {
+                player.npcTypeNoAggro[Kourindou.Gensokyo_Fairy_Bone_Type] = true;
+            }
+        }
+
+        public override bool PlushieCanbeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot)
+        {
+            if (Kourindou.GensokyoLoaded)
+            {
+                return npc.type != Kourindou.Gensokyo_Fairy_Bone_Type;
+            }
+
+            return base.PlushieCanbeHitByNPC(myPlayer, npc, ref cooldownSlot);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,6 +16,11 @@ namespace Kourindou.Items.Plushies
         {
             DisplayName.SetDefault("Remilia Scarlet Plushie Kourindou ver.");
             Tooltip.SetDefault("The Scarlet Devil herself. The new outfit suits her");
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "You heal for 5% of all damage done! +25% damage";
         }
 
         public override void SetDefaults()
@@ -52,23 +58,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase damage by 25 percent
-            player.GetDamage(DamageClass.Generic) += 0.25f;
-
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-
-            // All damage heals for 5% 
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "You heal for 5% of all damage done! +25% damage";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -83,6 +72,27 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 25 percent
+            player.GetDamage(DamageClass.Generic) += 0.25f;
+
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // All damage heals for 5% 
+        }
+
+        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        {
+            if (myPlayer.statLife < myPlayer.statLifeMax2)
+            {
+                int healAmount = (int)Math.Ceiling((double)((damage * 0.05) < myPlayer.statLifeMax2 - myPlayer.statLife ? (int)(damage * 0.05) : myPlayer.statLifeMax2 - myPlayer.statLife));
+                myPlayer.statLife += healAmount;
+                myPlayer.HealEffect(healAmount, true);
+            }
         }
     }
 }

@@ -1,7 +1,10 @@
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using Kourindou.Projectiles.Plushies.PlushieEffects;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
@@ -15,6 +18,11 @@ namespace Kourindou.Items.Plushies
         {
             DisplayName.SetDefault("Flandre Scarlet Plushie");
             Tooltip.SetDefault("The ultimate basement lurker. The scarlet sky has since tempted her presence outside the mansion"); 
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "Critical hits explode! +50% damage, +10% crit";
         }
 
         public override void SetDefaults()
@@ -52,26 +60,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase damage by 25 percent
-            player.GetDamage(DamageClass.Generic) += 0.50f;
-
-            // Increase Life regen by +1 
-            player.lifeRegen += 1;
-
-            // Increase crit by 10 percent
-            player.GetCritChance(DamageClass.Generic) += 10;
-
-            // Crit hits explode
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Critical hits explode! +50% damage, +10% crit";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -85,6 +73,93 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 25 percent
+            player.GetDamage(DamageClass.Generic) += 0.50f;
+
+            // Increase Life regen by +1 
+            player.lifeRegen += 1;
+
+            // Increase crit by 10 percent
+            player.GetCritChance(DamageClass.Generic) += 10;
+
+            // Crit hits explode
+        }
+
+        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        {
+            if (crit)
+            {
+                Vector2 position = Vector2.Zero;
+
+                if (npc != null)
+                {
+                    int immune = item != null ? item.useAnimation : npc.immune[myPlayer.whoAmI];
+
+                    position = npc.Center;
+
+                    Projectile.NewProjectile(
+                        Item.GetSource_Accessory(Item),
+                        position,
+                        Vector2.Zero,
+                        ProjectileType<FlandreScarlet_Plushie_Explosion>(),
+                        damage * 2 + 80,
+                        0f,
+                        Main.myPlayer,
+                        npc.whoAmI,
+                        immune
+                    );
+
+                    if (proj != null)
+                    {
+                        npc.immune[myPlayer.whoAmI] = 0;
+                    }
+                }
+
+                if (player != null)
+                {
+                    int immune = item != null ? item.useAnimation : player.immuneTime;
+
+                    position = player.Center;
+
+                    Projectile.NewProjectile(
+                        myPlayer.GetSource_Accessory(Item),
+                        position,
+                        Vector2.Zero,
+                        ProjectileType<FlandreScarlet_Plushie_Explosion>(),
+                        damage * 2 + 80,
+                        0f,
+                        Main.myPlayer,
+                        myPlayer.whoAmI + 10000,
+                        immune
+                    );
+
+                    if (proj != null)
+                    {
+                        player.immuneTime = 0;
+                    }
+                }
+
+                SoundEngine.PlaySound(
+                    SoundID.DD2_ExplosiveTrapExplode with { Volume = .8f, PitchVariance = .1f },
+                    position);
+
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    // Send sound packet for other clients
+                    ModPacket packet = Mod.GetPacket();
+                    packet.Write((byte)KourindouMessageType.PlaySound);
+                    packet.Write((string)"DD2_ExplosiveTrapExplode");
+                    packet.Write((float)0.8f);
+                    packet.Write((float)1f);
+                    packet.Write((int)position.X);
+                    packet.Write((int)position.Y);
+                    packet.Send(-1, Main.myPlayer);
+                }
+            }
         }
     }
 }

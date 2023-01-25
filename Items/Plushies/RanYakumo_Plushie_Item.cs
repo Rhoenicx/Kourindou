@@ -10,6 +10,7 @@ using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
+using Terraria.DataStructures;
 
 namespace Kourindou.Items.Plushies
 {
@@ -19,6 +20,11 @@ namespace Kourindou.Items.Plushies
         {
             DisplayName.SetDefault("Ran Yakumo Plushie");
             Tooltip.SetDefault("");
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "Every 10 enemies defeated increases max HP, damage and movement speed by 5% until death\r\n" + "Stacks up to 8 times. Increases max HP, damage and movement speed by 10%";
         }
 
         public override void SetDefaults()
@@ -56,8 +62,23 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+				.AddIngredient(ItemType<BlueFabric>(), 1)
+                .AddIngredient(ItemType<BrownFabric>(), 1)
+                .AddIngredient(ItemType<YellowFabric>(), 1)
+                .AddIngredient(ItemID.Silk, 3)
+				.AddIngredient(ItemType<BlueFabric>(), 1)
+                .AddIngredient(ItemType<BrownThread>(), 1)
+                .AddIngredient(ItemType<YellowThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increased minion damage by 10 percent + Stacks
             player.GetDamage(DamageClass.Generic) += 0.10f + (0.05f * player.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks);
@@ -75,31 +96,54 @@ namespace Kourindou.Items.Plushies
             }
         }
 
-        public override void PlushiePostUpdateEquips(Player player)
+        public override void PlushiePostUpdateEquips(Player player, int amountEquipped)
         {
             // Increase player's max hp by 10% + Stacks
             player.statLifeMax2 = (int)Math.Floor((double)player.statLifeMax2 * (1.1 + (0.05 * player.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks)));
         }
 
-        public override string AddEffectTooltip()
+        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
         {
-            return "Every 10 enemies defeated increases max HP, damage and movement speed by 5% until death\r\n" + "Stacks up to 8 times. Increases max HP, damage and movement speed by 10%";
+            if ((npc != null && npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
+                || (player != null && (player.statLife <= 0 || player.dead)))
+            {
+                // Increase kill counter
+                if (myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks < 8)
+                {
+                    myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_EnemieKillCounter++;
+                }
+
+                // Increase stacks
+                if (myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_EnemieKillCounter >= 10 && myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks < 8)
+                {
+                    myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks++;
+                    myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_EnemieKillCounter = 0;
+
+                    if (Main.netMode == NetmodeID.MultiplayerClient)
+                    {
+                        ModPacket packet = Mod.GetPacket();
+                        packet.Write((byte)KourindouMessageType.RanPlushieStacks);
+                        packet.Write((byte)Main.myPlayer);
+                        packet.Write((byte)myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks);
+                        packet.Send(-1, Main.myPlayer);
+                    }
+                }
+            }
         }
 
-        public override void AddRecipes()
+        public override void PlushieKill(Player myPlayer, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource, int amountEquipped)
         {
-            CreateRecipe(1)
-				.AddIngredient(ItemType<BlueFabric>(), 1)
-                .AddIngredient(ItemType<BrownFabric>(), 1)
-                .AddIngredient(ItemType<YellowFabric>(), 1)
-                .AddIngredient(ItemID.Silk, 3)
-				.AddIngredient(ItemType<BlueFabric>(), 1)
-                .AddIngredient(ItemType<BrownThread>(), 1)
-                .AddIngredient(ItemType<YellowThread>(), 1)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
+            myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_EnemieKillCounter = 0;
+            myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks = 0;
+
+            if (Main.myPlayer == myPlayer.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModPacket packet = Mod.GetPacket();
+                packet.Write((byte)KourindouMessageType.RanPlushieStacks);
+                packet.Write((byte)Main.myPlayer);
+                packet.Write((byte)myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks);
+                packet.Send(-1, Main.myPlayer);
+            }
         }
     }
 }

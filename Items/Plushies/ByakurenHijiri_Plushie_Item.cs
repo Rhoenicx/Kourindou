@@ -18,6 +18,12 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("A Buddhist nun and magician. Currently, she's then Myouren Temple's head priest"); 
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Increases HP by 25%. Increases melee damage by 100%, but decrease all other damage by 50% \r\n"
+                    + "Multiply knockback by 3. Doubles melee crit damage, but can no longer receive critrate buffs";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -53,8 +59,21 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlackFabric>(), 2)
+                .AddIngredient(ItemType<BrownFabric>(), 2)
+                .AddIngredient(ItemType<PurpleFabric>(), 1)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemType<BrownThread>(), 2)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase Life regen by +1 
             player.lifeRegen += 1;
@@ -68,8 +87,7 @@ namespace Kourindou.Items.Plushies
             // Increase max HP by 25%
             player.statLifeMax2 = (int)Math.Floor((double)player.statLifeMax2 * 1.25);
         }
-
-        public override void PlushiePostUpdateEquips(Player player)
+        public override void PlushiePostUpdateEquips(Player player, int amountEquipped)
         {
             // Set critrate to 0, generic has 4% as default
             player.GetCritChance(DamageClass.Default) = 0f;
@@ -80,24 +98,9 @@ namespace Kourindou.Items.Plushies
             player.GetCritChance(DamageClass.MagicSummonHybrid) = 0f;
         }
 
-        public override string AddEffectTooltip()
+        public override void PlushieModifyWeaponCrit(Player myPlayer, Item item, ref float crit, int amountEquipped)
         {
-            return "Increases HP by 25%. Increases melee damage by 100%, but decrease all other damage by 50% \r\n"
-                    + "Multiply knockback by 3. Doubles melee crit damage, but can no longer receive critrate buffs";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<BlackFabric>(), 2)
-                .AddIngredient(ItemType<BrownFabric>(), 2)
-                .AddIngredient(ItemType<PurpleFabric>(), 1)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemType<BrownThread>(), 2)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
+            crit = 4f;
         }
     }
 }

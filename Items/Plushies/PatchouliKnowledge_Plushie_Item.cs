@@ -17,6 +17,12 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The magician of the scarlet mansion");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Doubled magic damage but non-magic attacks deal no damage and movement speed is halved\r\n" +
+                    "+30% magic crit, -50% mana cost";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,8 +58,24 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemID.Book, 1)
+                .AddIngredient(ItemType<PinkFabric>(), 2)
+                .AddIngredient(ItemType<PurpleFabric>(), 1)
+                .AddIngredient(ItemType<VioletFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 1)
+                .AddIngredient(ItemID.PinkThread, 1)
+                .AddIngredient(ItemType<PurpleThread>(), 1)
+                .AddIngredient(ItemType<VioletThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase magic crit rate by 30 percent
             player.GetCritChance(DamageClass.Magic) += 30;
@@ -62,7 +84,7 @@ namespace Kourindou.Items.Plushies
             player.manaCost -= 0.50f;
         }
 
-        public override void PlushiePostUpdateEquips(Player player)
+        public override void PlushiePostUpdateEquips(Player player, int amountEquipped)
         {
             // Increase Magic damage by 2 times
             player.GetDamage(DamageClass.Magic) *= 2.00f;
@@ -86,27 +108,13 @@ namespace Kourindou.Items.Plushies
             }
         }
 
-        public override string AddEffectTooltip()
+        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
         {
-            return "Doubled magic damage but non-magic attacks deal no damage and movement speed is halved\r\n" +
-                    "+30% magic crit, -50% mana cost";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemID.Book, 1)
-                .AddIngredient(ItemType<PinkFabric>(), 2)
-                .AddIngredient(ItemType<PurpleFabric>(), 1)
-                .AddIngredient(ItemType<VioletFabric>(), 2)
-                .AddIngredient(ItemID.Silk, 1)
-                .AddIngredient(ItemID.PinkThread, 1)
-                .AddIngredient(ItemType<PurpleThread>(), 1)
-                .AddIngredient(ItemType<VioletThread>(), 1)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
+            if ((item != null && (item.CountsAsClass(DamageClass.Melee) || item.CountsAsClass(DamageClass.Ranged) || item.CountsAsClass(DamageClass.Throwing)))
+                || (proj != null && (proj.CountsAsClass(DamageClass.Melee) || proj.CountsAsClass(DamageClass.Ranged) || proj.CountsAsClass(DamageClass.Throwing) || proj.minion)))
+            {
+                damage = 0;
+            }
         }
     }
 }

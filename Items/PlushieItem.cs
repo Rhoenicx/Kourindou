@@ -124,8 +124,6 @@ namespace Kourindou.Items
                         }
                     }
                 }
-
-                PlushieUpdateEquips(player);
             }
 
             base.UpdateAccessory(player, hideVisual);
@@ -216,55 +214,55 @@ namespace Kourindou.Items
         }
 
         // Execute custom effects when this Plushie is equipped
-        public virtual void PlushieUpdateEquips(Player player)
+        public virtual void PlushieUpdateEquips(Player player, int amountEquipped)
         {
 
         }
 
-        public virtual void PlushiePostUpdateEquips(Player player)
+        public virtual void PlushiePostUpdateEquips(Player player, int amountEquipped)
         { 
         
         }
 
-        public virtual void PlushieCanbeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot)
+        public virtual bool PlushieCanbeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot, int amountEquipped)
+        {
+            return true;
+        }
+
+        public virtual void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
         { 
         
         }
 
-        public virtual void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit)
+        public virtual void PlushieOnHitBy(Player myPlayer, Projectile proj, NPC npc, int damage, bool crit, int amountEquipped)
         { 
         
         }
 
-        public virtual void PlushieOnHitBy(Player myPlayer, Projectile proj, NPC npc, int damage, bool crit)
+        public virtual void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
         { 
         
         }
-
-        public virtual void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit)
-        { 
-        
-        }
-        public virtual void PlushieHurt(Player myPlayer, bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
+        public virtual void PlushieHurt(Player myPlayer, bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter, int amountEquipped)
         { 
 
         }
 
-        public virtual void PlushiePreKill(Player myPlayer, double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
-        { 
-        
+        public virtual bool PlushiePreKill(Player myPlayer, double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, int amountEquipped)
+        {
+            return true;
         }
-        public virtual void PlushieModifyWeaponCrit(Player myPlayer, Item item, ref float crit)
-        { 
-        
-        }
-
-        public virtual void PlushieKill(Player myPlayer, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+        public virtual void PlushieModifyWeaponCrit(Player myPlayer, Item item, ref float crit, int amountEquipped)
         { 
         
         }
 
-        public virtual void PlushieUpdateBadLifeRegen(Player myPlayer)
+        public virtual void PlushieKill(Player myPlayer, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource, int amountEquipped)
+        { 
+        
+        }
+
+        public virtual void PlushieUpdateBadLifeRegen(Player myPlayer, int amountEquipped)
         { 
         
         }

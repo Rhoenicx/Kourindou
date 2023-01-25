@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,6 +16,11 @@ namespace Kourindou.Items.Plushies
         {
             DisplayName.SetDefault("Marisa Kirisame Plushie");
             Tooltip.SetDefault("The ordinary human who uses magic");
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "Critical hits shoot a star projectile! +25% magic damage, +15% magic crit, -25% mana cost";
         }
 
         public override void SetDefaults()
@@ -52,8 +58,21 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlackFabric>(), 2)
+                .AddIngredient(ItemType<YellowFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemID.BlackThread, 2)
+                .AddIngredient(ItemType<YellowThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase magic damage by 25 percent
             player.GetDamage(DamageClass.Magic) += 0.25f;
@@ -67,27 +86,28 @@ namespace Kourindou.Items.Plushies
             // Reduced mana cost by 25 percent
             player.manaCost -= 0.25f;
 
-
             // On crit spawns a star projectile that is aimed at the target hit
         }
 
-        public override string AddEffectTooltip()
+        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
         {
-            return "Critical hits shoot a star projectile! +25% magic damage, +15% magic crit, -25% mana cost";
-        }
+            if (crit)
+            {
+                int star = Projectile.NewProjectile
+                (
+                    myPlayer.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
+                    myPlayer.Center,
+                    Vector2.Normalize(Main.MouseWorld - myPlayer.Center) * 10f,
+                    ProjectileID.StarWrath,
+                    50,
+                    1f,
+                    Main.myPlayer,
+                    1f
+                );
 
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<BlackFabric>(), 2)
-                .AddIngredient(ItemType<YellowFabric>(), 2)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemID.BlackThread, 2)
-                .AddIngredient(ItemType<YellowThread>(), 1)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
+                Main.projectile[star].hide = true;
+                Main.projectile[star].netUpdate = true;
+            }
         }
     }
 }

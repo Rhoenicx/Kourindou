@@ -17,6 +17,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The cutest shikigami's shikigami!");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Kills grant 25 HP, well fed and rapid healing for 12 seconds.\r\n" + "When hurt gain shadow dodge for 3 seconds. +25% damage";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,29 +57,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase damage by 25 percent
-            player.GetDamage(DamageClass.Generic) += 0.25f;
-
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-
-            // Increase running speed by 9 mph
-            player.maxRunSpeed += 0.5f;
-
-            // Increase movement speed by 35 percent
-            player.moveSpeed += 0.35f;
-			
-			// On Kill effect handled in player
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Kills grant 25 HP, well fed and rapid healing for 12 seconds.\r\n" + "When hurt gain shadow dodge for 3 seconds. +25% damage";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -87,6 +69,49 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 25 percent
+            player.GetDamage(DamageClass.Generic) += 0.25f;
+
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Increase running speed by 9 mph
+            player.maxRunSpeed += 0.5f;
+
+            // Increase movement speed by 35 percent
+            player.moveSpeed += 0.35f;
+
+            // On Kill effect handled in player
+        }
+
+        public override void PlushieHurt(Player myPlayer, bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter, int amountEquipped)
+        {
+            myPlayer.AddBuff(BuffID.ShadowDodge, 180);
+        }
+
+        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        {
+            if (npc != null && npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
+            {
+                // On kill gain rapid healing, well fed and 25 health
+                myPlayer.AddBuff(BuffID.RapidHealing, 720);
+                myPlayer.AddBuff(BuffID.WellFed, 720);
+                myPlayer.statLife += 25;
+                myPlayer.HealEffect(25, true);
+            }
+
+            if (player != null && (player.statLife <= 0 || player.dead))
+            {
+                // On kill gain rapid healing, well fed and 25 health
+                myPlayer.AddBuff(BuffID.RapidHealing, 720);
+                myPlayer.AddBuff(BuffID.WellFed, 720);
+                myPlayer.statLife += 25;
+                myPlayer.HealEffect(25, true);
+            }
         }
     }
 }

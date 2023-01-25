@@ -17,6 +17,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("A very old rabbit youkai. Despite this, she's childish");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Chance for enemies killed to drop double loot! +20% crit";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,26 +57,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase damage by 5 percent
-            player.GetDamage(DamageClass.Generic) += 0.05f;
-
-            // Increased crit by 20 percent
-            player.GetCritChance(DamageClass.Generic) += 20;
-
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-            
-            // 25 percent chance for all NPC's to drop double loot
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Chance for enemies killed to drop double loot! +20% crit";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -85,6 +70,28 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // Increased crit by 20 percent
+            player.GetCritChance(DamageClass.Generic) += 20;
+
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // 25 percent chance for all NPC's to drop double loot
+        }
+
+        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        {
+            if (npc != null && (int)Main.rand.Next(0, 5) == 0 && npc.life <= 0)
+            {
+                npc.NPCLoot();
+            }
         }
     }
 }

@@ -17,6 +17,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The mistress of the Earth Palace in Former Hell. You can't talk to animals with this, sadly");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "All hits inflict cursed flames, ichor and confusion!";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,23 +57,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase damage by 5 percent
-            player.GetDamage(DamageClass.Generic) += 0.05f;
-
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-            
-            // All Attacks inflict Cursed Flames, Ichor and Confusion
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "All hits inflict cursed flames, ichor and confusion!";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -85,6 +73,34 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // All Attacks inflict Cursed Flames, Ichor and Confusion
+        }
+
+        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        {
+            if (npc != null)
+            {
+                npc.AddBuff(BuffID.CursedInferno, 600);
+                npc.AddBuff(BuffID.Confused, 600);
+                npc.AddBuff(BuffID.Ichor, 600);
+            }
+
+            if (player != null)
+            {
+                player.AddBuff(BuffID.CursedInferno, 600);
+                player.AddBuff(BuffID.Confused, 600);
+                player.AddBuff(BuffID.Ichor, 600);
+            }
         }
     }
 }

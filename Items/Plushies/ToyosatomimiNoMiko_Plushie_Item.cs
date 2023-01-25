@@ -1,9 +1,11 @@
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
+using Kourindou.Projectiles.Plushies.PlushieEffects;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
 
@@ -15,6 +17,11 @@ namespace Kourindou.Items.Plushies
         {
             DisplayName.SetDefault("Toyosatomimi no Miko Plushie");
             Tooltip.SetDefault("");
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "Call a beam of light upon those you've damaged!";
         }
 
         public override void SetDefaults()
@@ -52,24 +59,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-
-            // Increase damage by 5 percent
-            player.GetDamage(DamageClass.Generic) += 0.05f;
-
-            // discount for listening to all people (at once)
-            player.discount = true;
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Call a beam of light upon those you've damaged!";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -84,6 +73,51 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Increase damage by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // discount for listening to all people (at once)
+            player.discount = true;
+        }
+
+        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        {
+            if (proj != null && proj.type == ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
+            {
+                return;
+            }
+
+            Vector2 SpawnPosition = Vector2.Zero;
+            if (npc != null)
+            {
+                SpawnPosition = npc.Center;
+            }
+            if (player != null)
+            {
+                SpawnPosition = player.Center;
+            }
+
+            if (SpawnPosition != Vector2.Zero)
+            {
+                Projectile.NewProjectile(
+                    myPlayer.GetSource_FromThis(),
+                    SpawnPosition,
+                    Vector2.Zero,
+                    ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>(),
+                    myPlayer.HeldItem.damage,
+                    myPlayer.HeldItem.knockBack,
+                    Main.myPlayer,
+                    0f,
+                    crit ? 1f : 0f
+                );
+            }
         }
     }
 }
