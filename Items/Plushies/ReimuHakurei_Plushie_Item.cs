@@ -20,6 +20,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The Hakurei shrine maiden. It's also aimbot if powered");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "All projectiles fired are homing but damage is decreased by 25%";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -55,23 +60,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Reduce damage by 25 Percent
-            player.GetDamage(DamageClass.Generic) -= 0.25f;
-
-            // Increase Life regen by +1 
-            player.lifeRegen += 1;
-
-            // Homing Handled in GlobalProjectile => AI();
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "All projectiles fired are homing but damage is decreased by 25%";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -85,6 +73,17 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Reduce damage by 25 Percent
+            player.GetDamage(DamageClass.Generic) -= 0.25f;
+
+            // Increase Life regen by +1 
+            player.lifeRegen += 1;
+
+            // Homing Handled in GlobalProjectile => AI();
         }
     }
 }

@@ -271,12 +271,6 @@ namespace Kourindou
             // Reset the plushie item slots
             EquippedPlushies.Clear();
 
-            // Suika Ibuki Effect reset scale
-            if (Player.HeldItem.stack > 0 && Player.HeldItem.CountsAsClass(DamageClass.Melee) && (Player.HeldItem.useStyle == ItemUseStyleID.Swing || Player.HeldItem.useStyle == ItemUseStyleID.Thrust))
-            {
-                Player.HeldItem.scale = Player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale;
-            }
-
             // Murasa Effect reset breathMax
             Player.breathMax = 200;
 
@@ -386,6 +380,7 @@ namespace Kourindou
                 plushie.Key.PlushieOnHit(Player, item, null, null, target, damage, 0f, crit, plushie.Value);
             }
         }
+
         public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
@@ -410,7 +405,6 @@ namespace Kourindou
             }
         }
 
-        #region ModifyHit
         // --------- Hits this player does on NPC --------- //
         public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
         {
@@ -418,64 +412,13 @@ namespace Kourindou
             {
                 plushie.Key.PlushieModifyHit(Player, item, null, target, null, ref damage, ref knockback, ref crit, plushie.Value);
             }
-
-            // Shion Yorigami random damage increase on NPC hits 0.1% chance
-            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()) && (int)Main.rand.Next(1, 1000) == 1)
-            {
-                damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
-            }
-
-            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
-            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && item.DamageType == DamageClass.Melee)
-            {
-                if (crit)
-                {
-                    damage *= 2;
-                }
-                knockback *= 3;
-            }
-
-            // Tenshi Hinanawi revenge effect
-            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()) && TenshiPlushie_Revenge)
-            {
-                damage += TenshiPlushie_Damage * 5;
-                TenshiPlushie_Revenge = false;
-            }
         }
+
         public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
                 plushie.Key.PlushieModifyHit(Player, null, proj, target, null, ref damage, ref knockback, ref crit, plushie.Value);
-            }
-
-            // Shion Yorigami random damage increase on NPC hits 0.1% chance
-            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()) && (int)Main.rand.Next(1, 1000) == 1)
-            {
-                damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
-            }
-
-            // Disable crit for Flandre Scarlet Plushie effect
-            if (proj.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
-            {
-                crit = false;
-            }
-
-            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
-            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && proj.DamageType == DamageClass.Melee)
-            {
-                if (crit)
-                {
-                    damage *= 2;
-                }
-                knockback *= 3;
-            }
-
-            // Tenshi Hinanawi revenge effect
-            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()) && TenshiPlushie_Revenge)
-            {
-                damage += TenshiPlushie_Damage * 5;
-                TenshiPlushie_Revenge = false;
             }
         }
 
@@ -487,35 +430,8 @@ namespace Kourindou
                 float knockback = 0f;
                 plushie.Key.PlushieModifyHit(Player, item, null, null, target, ref damage, ref knockback, ref crit, plushie.Value);
             }
-
-            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
-            if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
-            {
-                if (item.CountsAsClass(DamageClass.Melee) || item.CountsAsClass(DamageClass.Ranged) || item.CountsAsClass(DamageClass.Throwing))
-                {
-                    damage = 0;
-                }
-            }
-
-            // Shion Yorigami random damage increase on Player hits 0.1% chance
-            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()) && (int)Main.rand.Next(1, 1000) == 1)
-            {
-                damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
-            }
-
-            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
-            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && item.DamageType == DamageClass.Melee && crit)
-            {
-                damage *= 2;
-            }
-
-            // Tenshi Hinanawi revenge effect
-            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()) && TenshiPlushie_Revenge)
-            {
-                damage += TenshiPlushie_Damage * 5;
-                TenshiPlushie_Revenge = false;
-            }
         }
+
         public override void ModifyHitPvpWithProj(Projectile proj, Player target, ref int damage, ref bool crit)
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
@@ -523,44 +439,8 @@ namespace Kourindou
                 float knockback = 0f;
                 plushie.Key.PlushieModifyHit(Player, null, proj, null, target, ref damage, ref knockback, ref crit, plushie.Value);
             }
-
-            // Hitting an NPC with Patchouli Knowledge Plushie equipped deals no damage except for magic type...
-            if (EquippedPlushies.Contains(ItemType<PatchouliKnowledge_Plushie_Item>()))
-            {
-                if (proj.CountsAsClass(DamageClass.Melee) || proj.CountsAsClass(DamageClass.Ranged) || proj.CountsAsClass(DamageClass.Throwing) || proj.minion)
-                {
-                    damage = 0;
-                }
-            }
-
-            // Shion Yorigami random damage increase on Player hits 0.1% chance
-            if (EquippedPlushies.Contains(ItemType<ShionYorigami_Plushie_Item>()) && (int)Main.rand.Next(1, 1000) == 1)
-            {
-                damage = (int)(damage * Main.rand.NextFloat(1000f, 1000000f));
-            }
-
-            // Disable crit for Flandre Scarlet Plushie effect
-            if (proj.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
-            {
-                crit = false;
-            }
-
-            // Byakuren equipped = melee crits deal 200% DMG and 3 times more knockback
-            if (EquippedPlushies.Contains(ItemType<ByakurenHijiri_Plushie_Item>()) && proj.DamageType == DamageClass.Melee && crit)
-            {
-                damage *= 2;
-            }
-
-            // Tenshi Hinanawi revenge effect
-            if (EquippedPlushies.Contains(ItemType<TenshiHinanawi_Plushie_Item>()) && TenshiPlushie_Revenge)
-            {
-                damage += TenshiPlushie_Damage * 5;
-                TenshiPlushie_Revenge = false;
-            }
         }
-        #endregion
 
-        #region ModifyHitME
         // --------- Hits on THIS player by NPC --------- //
         public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
         {
@@ -569,6 +449,7 @@ namespace Kourindou
                 damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
             }
         }
+
         public override void ModifyHitByProjectile(Projectile proj, ref int damage, ref bool crit)
         {
             if (DebuffMedicineMelancholy)
@@ -576,7 +457,6 @@ namespace Kourindou
                 damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
             }
         }
-        #endregion
 
         // --------- Player got hurt --------- //
         public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
@@ -602,6 +482,14 @@ namespace Kourindou
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
                 plushie.Key.PlushieModifyWeaponCrit(Player, item, ref crit, plushie.Value);
+            }
+        }
+
+        public override void ModifyItemScale(Item item, ref float scale)
+        {
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
+            {
+                plushie.Key.PlushieModifyItemScale(Player, item, ref scale, plushie.Value);
             }
         }
 

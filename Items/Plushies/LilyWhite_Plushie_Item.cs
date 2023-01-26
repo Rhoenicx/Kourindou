@@ -17,6 +17,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("Spring is here!");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "In forest biome gain permanent sunflower buff and greatly increased life regen";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,15 +57,29 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<PinkFabric>(), 3)
+                .AddIngredient(ItemType<YellowFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemType<RedThread>(), 1)
+                .AddIngredient(ItemID.PinkThread, 2)
+                .AddIngredient(ItemType<YellowThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase all damage done by 5%
             player.GetDamage(DamageClass.Generic) += 0.05f;
-            
+
             // Increase life regen by 1 point
             player.lifeRegen += 1;
-            
+
             if (!player.ZoneBeach
                 && !player.ZoneCorrupt
                 && !player.ZoneCrimson
@@ -75,29 +94,9 @@ namespace Kourindou.Items.Plushies
             {
                 player.AddBuff(BuffID.Sunflower, 20);
                 Main.buffNoTimeDisplay[146] = true;
-                
+
                 player.lifeRegen += 10;
             }
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "In forest biome gain permanent sunflower buff and greatly increased life regen";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<PinkFabric>(), 3)
-                .AddIngredient(ItemType<YellowFabric>(), 2)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemType<RedThread>(), 1)
-                .AddIngredient(ItemID.PinkThread, 2)
-                .AddIngredient(ItemType<YellowThread>(), 1)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }

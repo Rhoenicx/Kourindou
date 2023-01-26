@@ -18,6 +18,12 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The alcoholic oni. Her appearance makes you question her age, and whether she should be drinking alcohol");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Melee weapons are twice as big and deal double damage! Also increased falling speed!\r\n" +
+                    "When tipsy: +16 defense, +10% melee crit, -10% damage taken";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -53,47 +59,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase damage by 25 percent
-            player.GetDamage(DamageClass.Generic) += 0.05f;
-
-            // Double melee damage done
-            player.GetDamage(DamageClass.Melee) *= 2.00f;
-
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-
-            // Increase player fall speed
-            player.maxFallSpeed += 100;
-            player.gravity += 0.5f;
-
-            // Held Items are twice as big
-            if (player.HeldItem.stack > 0 && player.HeldItem.DamageType == DamageClass.Melee && (player.HeldItem.useStyle == ItemUseStyleID.Swing || player.HeldItem.useStyle == ItemUseStyleID.Thrust))
-            {   
-                player.HeldItem.scale = player.HeldItem.GetGlobalItem<KourindouGlobalItemInstance>().defaultScale * 2f;
-            }
-
-            if (player.HasBuff(BuffID.Tipsy))
-            {
-                // Increase defense by 16 points (also to counter Tipsy)
-                player.statDefense += 16;
-
-                // Increase melee crit by 10 points
-                player.GetCritChance(DamageClass.Melee) += 10;
-
-                // Decrease incoming damage by 10 percent
-                player.endurance += 0.10f;
-            }
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Melee weapons are twice as big and deal double damage! Also increased falling speed!\r\n" +
-                    "When tipsy: +16 defense, +10% melee crit, -10% damage taken";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -108,6 +73,42 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 25 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // Double melee damage done
+            player.GetDamage(DamageClass.Melee) *= 2.00f;
+
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Increase player fall speed
+            player.maxFallSpeed += 100;
+            player.gravity += 0.5f;
+
+            if (player.HasBuff(BuffID.Tipsy))
+            {
+                // Increase defense by 16 points (also to counter Tipsy)
+                player.statDefense += 16;
+
+                // Increase melee crit by 10 points
+                player.GetCritChance(DamageClass.Melee) += 10;
+
+                // Decrease incoming damage by 10 percent
+                player.endurance += 0.10f;
+            }
+        }
+
+        public override void PlushieModifyItemScale(Player myPlayer, Item item, ref float scale, int amountEquipped)
+        {
+            if (item.DamageType == DamageClass.Melee)
+            {
+                scale *= 2f;
+            }
         }
     }
 }

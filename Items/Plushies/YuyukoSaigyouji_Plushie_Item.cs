@@ -17,6 +17,12 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The princess of the Netherworld");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Increased minion knockback and minion & turret slots. + 25% minion damage\r\n" +
+                    "With active food buff: +25% damage and increased movement speed. Reversed effects when no food buff!";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,8 +58,23 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlackFabric>(), 1)
+                .AddIngredient(ItemType<SkyBlueFabric>(), 3)
+                .AddIngredient(ItemType<PinkFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemType<RedThread>(), 1)
+                .AddIngredient(ItemType<SkyBlueThread>(), 3)
+                .AddIngredient(ItemID.PinkThread, 2)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase minion knockback by 2
             player.GetKnockback(DamageClass.Summon) += 2;
@@ -111,28 +132,6 @@ namespace Kourindou.Items.Plushies
                     player.accRunSpeed = player.maxRunSpeed;
                 }
             }
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Increased minion knockback and minion & turret slots. + 25% minion damage\r\n" +
-                    "With active food buff: +25% damage and increased movement speed. Reversed effects when no food buff!";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<BlackFabric>(), 1)
-                .AddIngredient(ItemType<SkyBlueFabric>(), 3)
-                .AddIngredient(ItemType<PinkFabric>(), 2)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemType<RedThread>(), 1)
-                .AddIngredient(ItemType<SkyBlueThread>(), 3)
-                .AddIngredient(ItemID.PinkThread, 2)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }

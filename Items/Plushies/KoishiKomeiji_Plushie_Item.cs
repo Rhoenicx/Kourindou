@@ -17,6 +17,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("Satori's sister? You can't seem to remember them otherwise...");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Permanent invisibility and reduced aggro, +25% damage";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,27 +57,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase damage by 25 percent
-            player.GetDamage(DamageClass.Generic) += 0.25f;
-
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-
-            // Permanent invisibility buff
-            player.AddBuff(BuffID.Invisibility, 60, true);
-
-            // reduce player aggro
-            player.aggro -= 1500;
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Permanent invisibility and reduced aggro, +25% damage";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -89,6 +73,21 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 25 percent
+            player.GetDamage(DamageClass.Generic) += 0.25f;
+
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Permanent invisibility buff
+            player.AddBuff(BuffID.Invisibility, 60, true);
+
+            // reduce player aggro
+            player.aggro -= 1500;
         }
     }
 }

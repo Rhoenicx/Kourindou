@@ -97,5 +97,14 @@ namespace Kourindou.Items.Plushies
             myPlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage = damage;
             myPlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = true;
         }
+
+        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
+        {
+            if (myPlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge)
+            {
+                damage += myPlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage * 5;
+                myPlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = false;
+            }
+        }
     }
 }

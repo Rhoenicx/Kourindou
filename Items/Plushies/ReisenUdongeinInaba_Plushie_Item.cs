@@ -17,6 +17,12 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The Lunar War deserter. A self-proclaimed Earth rabbit");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "During a blood moon gain a massive stat boost!\r\n" +
+                    "+25% Ranged damage, +20% ranged crit, +15 penetration";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,8 +58,22 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlackFabric>(), 1)
+                .AddIngredient(ItemType<PinkFabric>(), 1)
+                .AddIngredient(ItemType<PurpleFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemID.BlackThread, 1)
+                .AddIngredient(ItemType<PurpleThread>(), 2)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase damage by 5 percent
             player.GetDamage(DamageClass.Generic) += 0.05f;
@@ -100,27 +120,6 @@ namespace Kourindou.Items.Plushies
                 // Permanent NightOwl buff
                 player.AddBuff(BuffID.NightOwl, 60, true);
             }
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "During a blood moon gain a massive stat boost!\r\n" +
-                    "+25% Ranged damage, +20% ranged crit, +15 penetration";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<BlackFabric>(), 1)
-                .AddIngredient(ItemType<PinkFabric>(), 1)
-                .AddIngredient(ItemType<PurpleFabric>(), 2)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemID.BlackThread, 1)
-                .AddIngredient(ItemType<PurpleThread>(), 2)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }

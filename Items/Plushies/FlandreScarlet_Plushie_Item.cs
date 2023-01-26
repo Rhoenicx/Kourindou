@@ -161,5 +161,13 @@ namespace Kourindou.Items.Plushies
                 }
             }
         }
+
+        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
+        {
+            if (proj != null && proj.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
+            {
+                crit = false;
+            }
+        }
     }
 }

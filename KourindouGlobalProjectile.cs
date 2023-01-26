@@ -46,7 +46,7 @@ namespace Kourindou
         {
             //Marisa Plushie Effect
             if (projectile.type == ProjectileID.StarWrath
-                && Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<MarisaKirisame_Plushie_Item>()))
+                && Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Any(kvp => kvp.Key.Type == ItemType<MarisaKirisame_Plushie_Item>()))
             {
                 if (projectile.ai[0] >= 1f)
                 {
@@ -65,7 +65,7 @@ namespace Kourindou
             }
 
             // Reimu Plushie effect - Search for a valid target
-            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<ReimuHakurei_Plushie_Item>())
+            if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Any(kvp => kvp.Key.Type == ItemType<ReimuHakurei_Plushie_Item>())
                 && projectile.owner == Main.myPlayer
                 && ValidForHoming
                 && projectile.active

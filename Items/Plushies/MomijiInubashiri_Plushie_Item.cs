@@ -17,6 +17,12 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The Youkai Mountain's guard dog. Calling her that might get you killed");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Permanent dangersense and hunter buff\r\n" +
+                    "+10 % damage, +25 % melee damage, +10 % melee crit";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,8 +58,21 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlackFabric>(), 2)
+                .AddIngredient(ItemType<RedFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 3)
+                .AddIngredient(ItemID.BlackThread, 1)
+                .AddIngredient(ItemType<RedThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase damage by 10 percent
             player.GetDamage(DamageClass.Generic) += 0.10f;
@@ -70,26 +89,6 @@ namespace Kourindou.Items.Plushies
             // Permanent dangersense and hunter effects
             player.dangerSense = true;
             player.detectCreature = true;
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Permanent dangersense and hunter buff\r\n" +
-                    "+10 % damage, +25 % melee damage, +10 % melee crit";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<BlackFabric>(), 2)
-                .AddIngredient(ItemType<RedFabric>(), 2)
-                .AddIngredient(ItemID.Silk, 3)
-                .AddIngredient(ItemID.BlackThread, 1)
-                .AddIngredient(ItemType<RedThread>(), 1)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }

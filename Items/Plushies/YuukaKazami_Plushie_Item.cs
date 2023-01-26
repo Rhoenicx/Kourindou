@@ -17,6 +17,12 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The flower youkai. She's not actually a flower youkai, but she really likes flowers");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "When Happy!: gain +7 defense, +50 max HP, +20 penetration and doubled movement speed!\r\n" +
+                    "+25% damage, ability to dash";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -50,10 +56,24 @@ namespace Kourindou.Items.Plushies
                 projectileType = ProjectileType<YuukaKazami_Plushie_Projectile>();
             }
             return base.UseItem(player);
+        }  
+
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<LimeFabric>(), 2)
+                .AddIngredient(ItemType<RedFabric>(), 2)
+                .AddIngredient(ItemType<YellowFabric>(), 1)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemType<LimeThread>(), 2)
+                .AddIngredient(ItemType<RedThread>(), 2)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase damage by 25 percent
             player.GetDamage(DamageClass.Generic) += 0.25f;
@@ -90,27 +110,6 @@ namespace Kourindou.Items.Plushies
                     player.accRunSpeed = player.maxRunSpeed;
                 }
             }
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "When Happy!: gain +7 defense, +50 max HP, +20 penetration and doubled movement speed!\r\n" +
-                    "+25% damage, ability to dash";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<LimeFabric>(), 2)
-                .AddIngredient(ItemType<RedFabric>(), 2)
-                .AddIngredient(ItemType<YellowFabric>(), 1)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemType<LimeThread>(), 2)
-                .AddIngredient(ItemType<RedThread>(), 2)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }

@@ -18,6 +18,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The mischief-causing amanojaku. It goes on the ceiling, too!");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Control gravity! +25% damage, +10% crit";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -53,22 +58,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        public override void PlushieUpdateEquips(Player player)
-        {
-            player.GetDamage(DamageClass.Generic) += 0.25f;
-
-            player.lifeRegen += 1;
-
-            player.GetCritChance(DamageClass.Generic) += 10;
-
-            player.gravControl2 = true;
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Control gravity! +25% damage, +10% crit";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -84,6 +73,17 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            player.GetDamage(DamageClass.Generic) += 0.25f;
+
+            player.lifeRegen += 1;
+
+            player.GetCritChance(DamageClass.Generic) += 10;
+
+            player.gravControl2 = true;
         }
     }
 } 

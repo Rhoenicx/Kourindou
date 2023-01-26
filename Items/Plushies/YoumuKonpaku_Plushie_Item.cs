@@ -19,6 +19,12 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("Hakugyokurou's gardener, and Yuyuko's servant");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Summon myon to fight for you!\r\n" +
+                    "+25% damage, +50% melee speed, +15% melee crit, +15 melee penetration";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -54,8 +60,22 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemID.BlackThread, 1)
+                .AddIngredient(ItemType<GreenFabric>(), 3)
+                .AddIngredient(ItemType<SilverFabric>(), 2)
+                .AddIngredient(ItemID.Silk, 1)
+                .AddIngredient(ItemType<SilverThread>(), 2)
+                .AddIngredient(ItemID.GreenThread, 2)
+                .AddIngredient(ItemType<WhiteThread>(), 1)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase damage by 25 percent
             player.GetDamage(DamageClass.Generic) += 0.25f;
@@ -74,7 +94,7 @@ namespace Kourindou.Items.Plushies
 
             // Half Phantom Minion
             bool petProjectileNotSpawned = player.ownedProjectileCounts[ProjectileType<YoumuKonpaku_Plushie_HalfPhantom>()] <= 0;
-            if (petProjectileNotSpawned && player.whoAmI == Main.myPlayer) 
+            if (petProjectileNotSpawned && player.whoAmI == Main.myPlayer)
             {
                 Projectile.NewProjectile(
                     player.GetSource_Accessory(this.Item),
@@ -85,30 +105,9 @@ namespace Kourindou.Items.Plushies
                     5f,
                     Main.myPlayer,
                     0,
-					0
-				);
+                    0
+                );
             }
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Summon myon to fight for you!\r\n" + 
-                    "+25% damage, +50% melee speed, +15% melee crit, +15 melee penetration";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemID.BlackThread, 1)
-                .AddIngredient(ItemType<GreenFabric>(), 3)
-                .AddIngredient(ItemType<SilverFabric>(), 2)
-                .AddIngredient(ItemID.Silk, 1)
-                .AddIngredient(ItemType<SilverThread>(), 2)
-                .AddIngredient(ItemID.GreenThread, 2)
-                .AddIngredient(ItemType<WhiteThread>(), 1)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }

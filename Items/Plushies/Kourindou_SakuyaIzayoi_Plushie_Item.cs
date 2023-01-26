@@ -19,6 +19,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The maid of the scarlet mansion");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Throw 4 knives upon using a weapon. +40% throwing and ranged damage";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -54,25 +59,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase damage by 5 percent
-            player.GetDamage(DamageClass.Generic) += 0.05f;
-
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-
-            // Increase Throwing damage by 40 percent
-            player.GetDamage(DamageClass.Throwing) += 0.40f;
-            player.GetDamage(DamageClass.Ranged) += 0.40f;
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Throw 4 knives upon using a weapon. +40% throwing and ranged damage";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -86,6 +72,19 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Increase Throwing damage by 40 percent
+            player.GetDamage(DamageClass.Throwing) += 0.40f;
+            player.GetDamage(DamageClass.Ranged) += 0.40f;
         }
     }
 }

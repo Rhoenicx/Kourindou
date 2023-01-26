@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -55,7 +56,7 @@ namespace Kourindou
 
         public override void UseAnimation(Item item, Player player)
         {
-			if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Contains(ItemType<Kourindou_SakuyaIzayoi_Plushie_Item>()) && item.damage > 0)
+			if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Any(kvp => kvp.Key.Type == ItemType<Kourindou_SakuyaIzayoi_Plushie_Item>()) && item.damage > 0)
 			{
 				// Spawn 4 knifes on regular attack animations
 				for (int i = 0; i < 4; i++)

@@ -61,8 +61,8 @@ namespace Kourindou.Items.Consumables
             {
                 if (player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Count > 0)
                 {
-                    int[] plushieIDs = player.GetModPlayer<KourindouPlayer>().EquippedPlushies.ToArray();
-                    int FumoColaTurnIntoPlushieID = plushieIDs[Main.rand.Next(plushieIDs.Length)];
+                    PlushieItem[] plushies = player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Keys.ToArray();
+                    int FumoColaTurnIntoPlushieID = plushies[Main.rand.Next(plushies.Length)].Type;
                     player.GetModPlayer<KourindouPlayer>().FumoColaTurnIntoPlushieID = FumoColaTurnIntoPlushieID;
 
                     if (Main.netMode == NetmodeID.MultiplayerClient)

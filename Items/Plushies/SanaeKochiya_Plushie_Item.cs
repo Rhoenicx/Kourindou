@@ -17,6 +17,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The wind god shrine maiden. She doesn't look like Reimu");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Immunity to the mighty winds! +25% damage, +25% crit";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,27 +57,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increased damage by 5 percent
-            player.GetDamage(DamageClass.Generic) += 0.25f;
-
-            // Increase Life regen by +1 
-            player.lifeRegen += 1;
-
-            // Increase Critrate by 25 percent
-            player.GetCritChance(DamageClass.Generic) += 25;
-
-            // Immunity to mighty wind debuff
-            player.buffImmune[BuffID.WindPushed] = true;
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Immunity to the mighty winds! +25% damage, +25% crit";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -86,6 +70,21 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increased damage by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.25f;
+
+            // Increase Life regen by +1 
+            player.lifeRegen += 1;
+
+            // Increase Critrate by 25 percent
+            player.GetCritChance(DamageClass.Generic) += 25;
+
+            // Immunity to mighty wind debuff
+            player.buffImmune[BuffID.WindPushed] = true;
         }
     }
 }

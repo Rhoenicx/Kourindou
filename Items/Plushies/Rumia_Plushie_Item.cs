@@ -17,6 +17,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The youkai of the dusk");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Infinite flying in the dark...";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,31 +57,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase damage by 25 percent
-            player.GetDamage(DamageClass.Generic) += 0.05f;
-
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-
-            // Grant infinite flight time, sneaky thing here: just putting the elapsed flight time back to 1. 
-            // Now only gets applied if the player has the obstructed debuff...
-            if (player.HasBuff(BuffID.Obstructed))
-            {
-                player.wingTime += 1;
-            }
-            
-            // Permanently afflicted with obstructed debuff
-            player.AddBuff(BuffID.Obstructed, 60, false);
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Infinite flying in the dark...";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -96,6 +76,25 @@ namespace Kourindou.Items.Plushies
         public override bool? CanBurnInLava()
         {
             return false;
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 25 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Grant infinite flight time, sneaky thing here: just putting the elapsed flight time back to 1. 
+            // Now only gets applied if the player has the obstructed debuff...
+            if (player.HasBuff(BuffID.Obstructed))
+            {
+                player.wingTime += 1;
+            }
+
+            // Permanently afflicted with obstructed debuff
+            player.AddBuff(BuffID.Obstructed, 60, false);
         }
     }
 }

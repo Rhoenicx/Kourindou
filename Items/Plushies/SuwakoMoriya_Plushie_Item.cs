@@ -18,6 +18,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("One of the Moriya Shrine's gods. Handles the shrine's divine services");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Increased digging speed and increased reach";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -53,8 +58,23 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemID.Frog, 1)
+                .AddIngredient(ItemType<BlueFabric>(), 2)
+                .AddIngredient(ItemType<YellowFabric>(), 3)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemType<BlueThread>(), 2)
+                .AddIngredient(ItemID.GreenThread, 2)
+                .AddIngredient(ItemType<YellowThread>(), 2)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase life regen by 1 point
             player.lifeRegen += 1;
@@ -71,27 +91,6 @@ namespace Kourindou.Items.Plushies
                 Player.tileRangeX += 10;
                 Player.tileRangeY += 10;
             }
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Increased digging speed and increased reach";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemID.Frog, 1)
-                .AddIngredient(ItemType<BlueFabric>(), 2)
-                .AddIngredient(ItemType<YellowFabric>(), 3)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemType<BlueThread>(), 2)
-                .AddIngredient(ItemID.GreenThread, 2)
-                .AddIngredient(ItemType<YellowThread>(), 2)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }

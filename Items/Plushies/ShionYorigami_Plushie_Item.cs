@@ -1,3 +1,4 @@
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,6 +16,12 @@ namespace Kourindou.Items.Plushies
         {
             DisplayName.SetDefault("Shion Yorigami Plushie");
             Tooltip.SetDefault("A poverty god. It doesn't seem to take your money, though...");
+        }
+
+        public override string AddEffectTooltip()
+        {
+            return "Small chance to instantly kill the enemy hit!\r\n" +
+                    "-25% damage, -100% crit";
         }
 
         public override void SetDefaults()
@@ -52,26 +59,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Decrease damage by 25 percent
-            player.GetDamage(DamageClass.Generic) -= 0.25f;
-
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-
-            // Reduce crit chance by 100 percent
-            player.GetCritChance(DamageClass.Generic) -= 100f;
-
-            // Random dmg increase is handled in GlobalNPC.
-        }
-        public override string AddEffectTooltip()
-        {
-            return "Small chance to instantly kill the enemy hit!\r\n" + 
-                    "-25% damage, -100% crit";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -85,6 +72,26 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Decrease damage by 25 percent
+            player.GetDamage(DamageClass.Generic) -= 0.25f;
+
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
+
+            // Reduce crit chance by 100 percent
+            player.GetCritChance(DamageClass.Generic) -= 100f;
+        }
+
+        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
+        {
+            if ((int)Main.rand.Next(0, 1000) == 0)
+            {
+                damage = Math.Abs((int)(damage * Main.rand.NextFloat(1000f, 1000000f)));
+            }
         }
     }
 }

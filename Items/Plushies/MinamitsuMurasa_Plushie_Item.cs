@@ -17,6 +17,12 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("A phantom, and the Palanquin Ship's captain");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Ability to swim, doubled breath and permanent fishron mount speed buff\r\n" +
+                    "+10% damage, when in water: +10% damage, +5% crit and increased hp regen";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,8 +58,23 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlackFabric>(), 2)
+                .AddIngredient(ItemType<BlueFabric>(), 2)
+                .AddIngredient(ItemType<YellowFabric>(), 1)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemID.BlackThread, 2)
+                .AddIngredient(ItemType<BlueThread>(), 2)
+                .AddIngredient(ItemType<RedThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase damage by 10 percent
             player.GetDamage(DamageClass.Generic) += 0.10f;
@@ -88,28 +109,6 @@ namespace Kourindou.Items.Plushies
                 //Increase life regen by 5 points
                 player.lifeRegen += 5;
             }
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Ability to swim, doubled breath and permanent fishron mount speed buff\r\n" + 
-                    "+10% damage, when in water: +10% damage, +5% crit and increased hp regen";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<BlackFabric>(), 2)
-                .AddIngredient(ItemType<BlueFabric>(), 2)
-                .AddIngredient(ItemType<YellowFabric>(), 1)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemID.BlackThread, 2)
-                .AddIngredient(ItemType<BlueThread>(), 2)
-                .AddIngredient(ItemType<RedThread>(), 1)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }

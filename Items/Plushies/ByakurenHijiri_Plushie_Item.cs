@@ -87,6 +87,7 @@ namespace Kourindou.Items.Plushies
             // Increase max HP by 25%
             player.statLifeMax2 = (int)Math.Floor((double)player.statLifeMax2 * 1.25);
         }
+
         public override void PlushiePostUpdateEquips(Player player, int amountEquipped)
         {
             // Set critrate to 0, generic has 4% as default
@@ -96,6 +97,15 @@ namespace Kourindou.Items.Plushies
             player.GetCritChance(DamageClass.Ranged) = 0f;
             player.GetCritChance(DamageClass.Summon) = 0f;
             player.GetCritChance(DamageClass.MagicSummonHybrid) = 0f;
+        }
+
+        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
+        {
+            if (crit)
+            {
+                damage *= 2;
+            }
+            knockback *= 3;
         }
 
         public override void PlushieModifyWeaponCrit(Player myPlayer, Item item, ref float crit, int amountEquipped)

@@ -22,6 +22,12 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The mastermind gap youkai. Perhaps this doll borrows part of her power");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Teleport to the mouse cursor using skill button\r\n" +
+                    "+15% damage, +50 penetration";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -57,8 +63,23 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<SilverFabric>(), 2)
+                .AddIngredient(ItemType<YellowFabric>(), 2)
+                .AddIngredient(ItemType<PurpleFabric>(), 1)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemType<RedThread>(), 1)
+                .AddIngredient(ItemType<PurpleThread>(), 1)
+                .AddIngredient(ItemType<SilverThread>(), 2)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase damage by 5 percent
             player.GetDamage(DamageClass.Generic) += 0.15f;
@@ -80,7 +101,7 @@ namespace Kourindou.Items.Plushies
                     Vector2 destination = new Vector2(Main.MouseWorld.X - player.width / 2f, Main.MouseWorld.Y);
 
                     // Inverted gravity support
-                    if ((int) player.gravDir == 1)
+                    if ((int)player.gravDir == 1)
                     {
                         destination.Y -= player.height;
                     }
@@ -90,7 +111,7 @@ namespace Kourindou.Items.Plushies
                     {
                         // Check if the destination is inside solid blocks
                         if (!Collision.SolidCollision(destination, player.width, player.height))
-                        {   
+                        {
                             // Teleport player
                             player.Teleport(destination, 1, 0);
 
@@ -98,8 +119,8 @@ namespace Kourindou.Items.Plushies
                             if (player.HasBuff(BuffID.ChaosState))
                             {
                                 player.Hurt(
-                                    (int)Main.rand.Next(0,2) == 0 ? PlayerDeathReason.ByCustomReason(player.name + " played with the boundaries too much") :
-                                        PlayerDeathReason.ByCustomReason(player.name + " breached the boundary between life and death"), 
+                                    (int)Main.rand.Next(0, 2) == 0 ? PlayerDeathReason.ByCustomReason(player.name + " played with the boundaries too much") :
+                                        PlayerDeathReason.ByCustomReason(player.name + " breached the boundary between life and death"),
                                     (int)Math.Ceiling(((player.statLifeMax2 * 0.1) / (1 - player.endurance) + (Main.expertMode ? player.statDefense * 0.75 : player.statDefense * 0.5))),
                                     0,
                                     false,
@@ -127,28 +148,6 @@ namespace Kourindou.Items.Plushies
                     }
                 }
             }
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Teleport to the mouse cursor using skill button\r\n" +
-                    "+15% damage, +50 penetration";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<SilverFabric>(), 2)
-                .AddIngredient(ItemType<YellowFabric>(), 2)
-                .AddIngredient(ItemType<PurpleFabric>(), 1)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemType<RedThread>(), 1)
-                .AddIngredient(ItemType<PurpleThread>(), 1)
-                .AddIngredient(ItemType<SilverThread>(), 2)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }

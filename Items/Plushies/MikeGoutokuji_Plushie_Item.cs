@@ -17,6 +17,12 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("A maneki-neko whose powers do not fully work. She can attract money or people, but not both");
         }
 
+
+        public override string AddEffectTooltip()
+        {
+            return "Increases pickup range of coins and hitting enemies sometimes drop coins!";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,8 +58,22 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemID.PlatinumCoin, 1)
+                .AddIngredient(ItemType<OrangeFabric>(), 2)
+                .AddIngredient(ItemType<YellowFabric>(), 1)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemType<OrangeThread>(), 2)
+                .AddIngredient(ItemType<YellowThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 1)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase damage by 5 percent
             player.GetDamage(DamageClass.Generic) += 0.05f;
@@ -70,26 +90,6 @@ namespace Kourindou.Items.Plushies
             // Tremendously increase luck, since luck is a hidden stat don't display this on the effect xD
             player.luckMaximumCap += 5.00f;
             player.luck += 5.00f;
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Increases pickup range of coins and hitting enemies sometimes drop coins!";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemID.PlatinumCoin, 1)
-                .AddIngredient(ItemType<OrangeFabric>(), 2)
-                .AddIngredient(ItemType<YellowFabric>(), 1)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemType<OrangeThread>(), 2)
-                .AddIngredient(ItemType<YellowThread>(), 1)
-                .AddIngredient(ItemType<WhiteThread>(), 1)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }

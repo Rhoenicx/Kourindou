@@ -252,7 +252,13 @@ namespace Kourindou.Items
         {
             return true;
         }
+
         public virtual void PlushieModifyWeaponCrit(Player myPlayer, Item item, ref float crit, int amountEquipped)
+        { 
+        
+        }
+
+        public virtual void PlushieModifyItemScale(Player myPlayer, Item item, ref float scale, int amountEquipped)
         { 
         
         }
@@ -266,7 +272,5 @@ namespace Kourindou.Items
         { 
         
         }
-
-
     }
 }

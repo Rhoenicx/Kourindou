@@ -17,6 +17,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("The genius of the Moon");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "+10 HP regen, +50 max HP, +10% arrow damage, +25% damage, reduced potion cooldown";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,8 +57,21 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<BlueFabric>(), 2)
+                .AddIngredient(ItemType<RedFabric>(), 2)
+                .AddIngredient(ItemType<SilverFabric>(), 2)
+                .AddIngredient(ItemType<BlueThread>(), 1)
+                .AddIngredient(ItemType<RedThread>(), 1)
+                .AddIngredient(ItemType<SilverThread>(), 3)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase damage by 25 percent
             player.GetDamage(DamageClass.Generic) += 0.25f;
@@ -71,25 +89,6 @@ namespace Kourindou.Items.Plushies
             player.potionDelayTime = (int)((double)player.potionDelayTime * 0.75);
             player.restorationDelayTime = (int)((double)player.restorationDelayTime * 0.75);
             player.mushroomDelayTime = (int)((double)player.mushroomDelayTime * 0.75);
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "+10 HP regen, +50 max HP, +10% arrow damage, +25% damage, reduced potion cooldown";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<BlueFabric>(), 2)
-                .AddIngredient(ItemType<RedFabric>(), 2)
-                .AddIngredient(ItemType<SilverFabric>(), 2)
-                .AddIngredient(ItemType<BlueThread>(), 1)
-                .AddIngredient(ItemType<RedThread>(), 1)
-                .AddIngredient(ItemType<SilverThread>(), 3)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }

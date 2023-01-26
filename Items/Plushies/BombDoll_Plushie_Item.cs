@@ -52,11 +52,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        public override void PlushieUpdateEquips(Player player)
-        {
-            
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -78,5 +73,10 @@ namespace Kourindou.Items.Plushies
 		{
 			return false;
 		}
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+
+        }
     }
 } 

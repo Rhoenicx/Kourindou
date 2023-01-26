@@ -53,16 +53,6 @@ namespace Kourindou.Items.Plushies
             }
             return base.UseItem(player);
         }
-
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player) 
-        {
-            // Increase damage by 39 percent [placeholder]
-            player.GetDamage(DamageClass.Generic) += 0.39f;
-
-            // Increase damage reduction by 39 percent [placeholder]
-            player.endurance += 0.39f;
-        }
         
         public override void AddRecipes()
         {
@@ -77,6 +67,15 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 39 percent [placeholder]
+            player.GetDamage(DamageClass.Generic) += 0.39f;
+
+            // Increase damage reduction by 39 percent [placeholder]
+            player.endurance += 0.39f;
         }
     }
 }

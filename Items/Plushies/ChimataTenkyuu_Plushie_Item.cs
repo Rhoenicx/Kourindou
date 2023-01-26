@@ -51,13 +51,7 @@ namespace Kourindou.Items.Plushies
             }
             return base.UseItem(player);
         }
-
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-
-        }
-        
+    
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -69,6 +63,11 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+
         }
     }
 }

@@ -73,7 +73,7 @@ namespace Kourindou.Items.Plushies
                 .Register();
         }
 
-        public override void PlushieUpdateEquips(Player player)
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             if (Kourindou.GensokyoLoaded)
             {
@@ -81,14 +81,14 @@ namespace Kourindou.Items.Plushies
             }
         }
 
-        public override bool PlushieCanbeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot)
+        public override bool PlushieCanbeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot, int amountEquipped)
         {
             if (Kourindou.GensokyoLoaded)
             {
                 return npc.type != Kourindou.Gensokyo_Fairy_Lava_Type;
             }
 
-            return base.PlushieCanbeHitByNPC(myPlayer, npc, ref cooldownSlot);
+            return base.PlushieCanbeHitByNPC(myPlayer, npc, ref cooldownSlot, amountEquipped);
         }
     }
 }

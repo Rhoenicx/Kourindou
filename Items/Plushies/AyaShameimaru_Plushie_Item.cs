@@ -20,6 +20,11 @@ namespace Kourindou.Items.Plushies
             ArmorIDs.Wing.Sets.Stats[Item.wingSlot] = new WingStats(240, 7f, 2.0f);
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Functions as wings";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -55,21 +60,6 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
-        {
-            // Increase damage by 5 percent
-            player.GetDamage(DamageClass.Generic) += 0.05f;
-
-            // Increase life regen by 1 point
-            player.lifeRegen += 1;
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Functions as wings";
-        }
-
         public override void AddRecipes()
         {
             CreateRecipe(1)
@@ -91,6 +81,15 @@ namespace Kourindou.Items.Plushies
             ascentWhenRising = 0.25f;
             maxCanAscendMultiplier = 1f;
             maxAscentMultiplier = 3f;
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase damage by 5 percent
+            player.GetDamage(DamageClass.Generic) += 0.05f;
+
+            // Increase life regen by 1 point
+            player.lifeRegen += 1;
         }
     }
 }

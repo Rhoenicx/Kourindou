@@ -17,6 +17,11 @@ namespace Kourindou.Items.Plushies
             Tooltip.SetDefault("A mountain hermit. Her hair buns are very cute");
         }
 
+        public override string AddEffectTooltip()
+        {
+            return "Greatly increases life regen, gain immunity to most debuffs and increases minion slots";
+        }
+
         public override void SetDefaults()
         {
             // Information
@@ -52,8 +57,23 @@ namespace Kourindou.Items.Plushies
             return base.UseItem(player);
         }
 
-        // This only executes when plushie power mode is 2
-        public override void PlushieUpdateEquips(Player player)
+        public override void AddRecipes()
+        {
+            CreateRecipe(1)
+                .AddIngredient(ItemType<GreenFabric>(), 1)
+                .AddIngredient(ItemType<PinkFabric>(), 2)
+                .AddIngredient(ItemType<RedFabric>(), 1)
+                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemID.GreenThread, 1)
+                .AddIngredient(ItemID.PinkThread, 2)
+                .AddIngredient(ItemType<RedThread>(), 1)
+                .AddIngredient(ItemType<WhiteThread>(), 2)
+                .AddRecipeGroup("Kourindou:Stuffing", 5)
+                .AddTile(TileType<SewingMachine_Tile>())
+                .Register();
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
             // Increase life regen by 10 points
             player.lifeRegen += 10;
@@ -73,27 +93,6 @@ namespace Kourindou.Items.Plushies
             player.buffImmune[BuffID.Bleeding] = true;
             player.buffImmune[BuffID.Burning] = true;
             player.buffImmune[BuffID.Obstructed] = true;
-        }
-        
-        public override string AddEffectTooltip()
-        {
-            return "Greatly increases life regen, gain immunity to most debuffs and increases minion slots";
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemType<GreenFabric>(), 1)
-                .AddIngredient(ItemType<PinkFabric>(), 2)
-                .AddIngredient(ItemType<RedFabric>(), 1)
-                .AddIngredient(ItemID.Silk, 2)
-                .AddIngredient(ItemID.GreenThread, 1)
-                .AddIngredient(ItemID.PinkThread, 2)
-                .AddIngredient(ItemType<RedThread>(), 1)
-                .AddIngredient(ItemType<WhiteThread>(), 2)
-                .AddRecipeGroup("Kourindou:Stuffing", 5)
-                .AddTile(TileType<SewingMachine_Tile>())
-                .Register();
         }
     }
 }
