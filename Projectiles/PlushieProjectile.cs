@@ -15,7 +15,7 @@ namespace Kourindou.Projectiles
     public abstract class PlushieProjectile : ModProjectile
     {	
 		// Constants
-		protected Vector2 gravity = new Vector2(0f, 10f);
+		protected Vector2 gravity = new(0f, 10f);
 		protected const float defaultMagnitudeX = 0.005f;
 		protected const float defaultMagnitudeY = 0.01f;
 
@@ -34,13 +34,13 @@ namespace Kourindou.Projectiles
 		// Dirt and Water mechanic
 		public byte DirtAmount
 		{
-			get { return (byte)(plushieDirtWater >> 8); }
-			set { plushieDirtWater = (short)((value * 256) + (byte)(plushieDirtWater >> 8)); }
+			get { return (byte)(PlushieDirtWater >> 8); }
+			set { PlushieDirtWater = (short)((value * 256) + (byte)(PlushieDirtWater >> 8)); }
 		}
 		public byte WaterAmount
 		{
-			get { return (byte)(plushieDirtWater); }
-			set { plushieDirtWater = (short)(value + (plushieDirtWater >> 8) * 256); }
+			get { return (byte)(PlushieDirtWater); }
+			set { PlushieDirtWater = (short)(value + (PlushieDirtWater >> 8) * 256); }
 		}
 
 		// AI & LocalAI
@@ -50,19 +50,19 @@ namespace Kourindou.Projectiles
 			set => Projectile.ai[0] = value;
 		}
 
-		public short plushieDirtWater
+		public short PlushieDirtWater
 		{
 			get => (short)Projectile.ai[1];
 			set => Projectile.ai[1] = value;
 		} 
 
-		public float magnitudeX
+		public float MagnitudeX
 		{
 			get => Projectile.localAI[0];
 			set => Projectile.localAI[0] = value;
 		}
 
-		public float magnitudeY
+		public float MagnitudeY
 		{
 			get => Projectile.localAI[1];
 			set => Projectile.localAI[1] = value;
@@ -120,16 +120,16 @@ namespace Kourindou.Projectiles
 		{
 			if (JustSpawned)
 			{
-				magnitudeX = defaultMagnitudeX;
-				magnitudeY = defaultMagnitudeY;
+				MagnitudeX = defaultMagnitudeX;
+				MagnitudeY = defaultMagnitudeY;
 				JustSpawned = false;
 			}
 
 			Projectile.damage = 0;
 
 			// Change projectile velocity towards gravity vector based on magnitude and LERP
-			Projectile.velocity.X = MathHelper.Lerp(Projectile.velocity.X, gravity.X, magnitudeX);
-			Projectile.velocity.Y = MathHelper.Lerp(Projectile.velocity.Y, gravity.Y, magnitudeY);
+			Projectile.velocity.X = MathHelper.Lerp(Projectile.velocity.X, gravity.X, MagnitudeX);
+			Projectile.velocity.Y = MathHelper.Lerp(Projectile.velocity.Y, gravity.Y, MagnitudeY);
 
 			// Projectile rotation based on distance travelled on X axis
 			Projectile.rotation += MathHelper.ToRadians(Projectile.velocity.X) * 2f;
@@ -137,11 +137,11 @@ namespace Kourindou.Projectiles
 			// Check if the Plushie is NOT changing Y position => laying on the ground so reduce X speed
 			if (Vector2.Distance(new Vector2(0f, Projectile.position.Y), new Vector2(0f, Projectile.oldPos[4].Y)) < 0.25f)
 			{
-				magnitudeX += 0.0025f;
+				MagnitudeX += 0.0025f;
 			}
 			else
 			{
-				magnitudeX = defaultMagnitudeX;
+				MagnitudeX = defaultMagnitudeX;
 			}
 
 			if (Timer == 0)
@@ -175,7 +175,7 @@ namespace Kourindou.Projectiles
 							Projectile.netUpdate = true;
 						}
 
-						Rectangle hitbox = new Rectangle();
+						Rectangle hitbox;
 
 						if (KourindouGlobalItem.meleeHitbox[player.whoAmI].HasValue && player.itemAnimation > 0)
 						{
@@ -227,7 +227,7 @@ namespace Kourindou.Projectiles
 			{
 				if (CanPlacePlushie() && WorldGen.PlaceObject(plushiePlaceTileX, plushiePlaceTileY, plushieTile))
 				{
-					KourindouWorld.SetPlushieDirtWater(plushiePlaceTileX, plushiePlaceTileY - 1, plushieDirtWater);
+					KourindouWorld.SetPlushieDirtWater(plushiePlaceTileX, plushiePlaceTileY - 1, PlushieDirtWater);
 
 					if (Main.netMode == NetmodeID.Server)
 					{
@@ -236,7 +236,7 @@ namespace Kourindou.Projectiles
 						packet.Write((int) plushiePlaceTileX);
 						packet.Write((int) plushiePlaceTileY);
 						packet.Write((int) plushieTile);
-						packet.Write((short) plushieDirtWater);
+						packet.Write((short) PlushieDirtWater);
 						packet.Send(-1, Main.myPlayer);
 					}
 				}
@@ -251,7 +251,7 @@ namespace Kourindou.Projectiles
 
 					if (Main.item[itemSlot].ModItem is PlushieItem plushie)
 					{
-						plushie.plushieDirtWater = plushieDirtWater;
+						plushie.PlushieDirtWater = PlushieDirtWater;
 					}
 
 					if (Main.netMode == NetmodeID.Server)
@@ -259,7 +259,7 @@ namespace Kourindou.Projectiles
 						ModPacket packet = Mod.GetPacket();
 						packet.Write((byte) KourindouMessageType.PlushieItemNetUpdate);
 						packet.Write((int) itemSlot);
-						packet.Write((short) plushieDirtWater);
+						packet.Write((short) PlushieDirtWater);
 						packet.Send(-1, Main.myPlayer);
 					}
 				}
@@ -268,14 +268,14 @@ namespace Kourindou.Projectiles
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			magnitudeX = reader.ReadSingle();
-			magnitudeY = reader.ReadSingle();
+			MagnitudeX = reader.ReadSingle();
+			MagnitudeY = reader.ReadSingle();
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.Write(magnitudeX);
-			writer.Write(magnitudeY);
+			writer.Write(MagnitudeX);
+			writer.Write(MagnitudeY);
 		}
 
 		public void OnHitNPC(NPC target)
@@ -336,7 +336,7 @@ namespace Kourindou.Projectiles
 				&& Framing.GetTileSafely(tileX, tileY).HasTile
 				&& Main.tileSolid[Framing.GetTileSafely(tileX, tileY).TileType]
 				&& !Framing.GetTileSafely(tileX, tileY).IsHalfBlock
-				&& checkTiles(Framing.GetTileSafely(tileX, tileY - 1), Framing.GetTileSafely(tileX, tileY - 2)))
+				&& CheckTiles(Framing.GetTileSafely(tileX, tileY - 1), Framing.GetTileSafely(tileX, tileY - 2)))
 			{
 				bool leftOK = false;
 				bool rightOK = false;
@@ -346,7 +346,7 @@ namespace Kourindou.Projectiles
 					&& Framing.GetTileSafely(tileX - 1, tileY).HasTile
 					&& Main.tileSolid[Framing.GetTileSafely(tileX - 1, tileY).TileType]
 					&& !Framing.GetTileSafely(tileX - 1, tileY).IsHalfBlock
-					&& checkTiles(Framing.GetTileSafely(tileX - 1, tileY - 1), Framing.GetTileSafely(tileX -1, tileY - 2)))
+					&& CheckTiles(Framing.GetTileSafely(tileX - 1, tileY - 1), Framing.GetTileSafely(tileX -1, tileY - 2)))
 				{
 					leftOK = true;
 				}
@@ -356,7 +356,7 @@ namespace Kourindou.Projectiles
 					&& Framing.GetTileSafely(tileX + 1, tileY).HasTile
 					&& Main.tileSolid[Framing.GetTileSafely(tileX + 1, tileY).TileType]
 					&& !Framing.GetTileSafely(tileX + 1, tileY).IsHalfBlock
-					&& checkTiles(Framing.GetTileSafely(tileX + 1, tileY - 1), Framing.GetTileSafely(tileX + 1, tileY - 2)))
+					&& CheckTiles(Framing.GetTileSafely(tileX + 1, tileY - 1), Framing.GetTileSafely(tileX + 1, tileY - 2)))
 				{
 					rightOK = true;
 				}
@@ -390,7 +390,7 @@ namespace Kourindou.Projectiles
 			return true;
 		}
 
-		public bool checkTiles(Tile tile1, Tile tile2)
+		public static bool CheckTiles(Tile tile1, Tile tile2)
 		{
 			if (tile1.HasTile || tile2.HasTile ||
 				tile1.TileType > 0 || tile2.TileType > 0 ||

@@ -25,7 +25,7 @@ namespace Kourindou.Tiles.Plushies
             if (item.ModItem is PlushieItem plushieItem)
             {
                 // Add entry to PlushieTiles locally
-                KourindouWorld.SetPlushieDirtWater(i, j - 1, plushieItem.plushieDirtWater);
+                KourindouWorld.SetPlushieDirtWater(i, j - 1, plushieItem.PlushieDirtWater);
                 
                 // If playing in multiplayer, also inform other parties of the placement
                 if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -34,7 +34,7 @@ namespace Kourindou.Tiles.Plushies
                     packet.Write((byte) KourindouMessageType.SetPlushieDirtWater);
                     packet.Write((int) i);
                     packet.Write((int) j - 1);
-                    packet.Write((short) plushieItem.plushieDirtWater);
+                    packet.Write((short) plushieItem.PlushieDirtWater);
                     packet.Send(-1, Main.myPlayer);
                 }
             }
@@ -65,7 +65,7 @@ namespace Kourindou.Tiles.Plushies
         {
             if (soundName != "")
             {
-                Vector2 soundPosition = new Vector2(i * 16, j * 16);
+                Vector2 soundPosition = new(i * 16, j * 16);
                 float soundVolume = 0.3f;
                 float pitchVariance = 0f;
 
@@ -98,13 +98,13 @@ namespace Kourindou.Tiles.Plushies
             {
                 int itemSlot = Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 48, plushieItem);
 
-                short plushieDirtWater = 0;
+                short PlushieDirtWater = 0;
 
                 // Update the variable in the newly created item
                 if (Main.item[itemSlot].ModItem is PlushieItem plushie)
                 {
-                    plushieDirtWater = KourindouWorld.GetPlushieDirtWater(i, j, true);
-                    plushie.plushieDirtWater = plushieDirtWater;
+                    PlushieDirtWater = KourindouWorld.GetPlushieDirtWater(i, j, true);
+                    plushie.PlushieDirtWater = PlushieDirtWater;
                 }
 
                 // If the tile is broken on the server also send a message to other parties
@@ -113,7 +113,7 @@ namespace Kourindou.Tiles.Plushies
                     ModPacket packet = Mod.GetPacket();
                     packet.Write((byte)KourindouMessageType.PlushieItemNetUpdate);
                     packet.Write((int)itemSlot);
-                    packet.Write((short)plushieDirtWater);
+                    packet.Write((short)PlushieDirtWater);
                     packet.Send(-1, Main.myPlayer);
                 }
             }

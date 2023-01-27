@@ -22,7 +22,7 @@ namespace Kourindou
     public class KourindouWorld : ModSystem
     {
         // Plushie Dirt and wet mechanic saving
-        public static Dictionary<long, short> plushieTiles = new Dictionary<long, short>();
+        public static Dictionary<long, short> plushieTiles = new();
 
         // Cotton Plants
         public static int CottonPlants = 0;
@@ -34,7 +34,7 @@ namespace Kourindou
 
         public override void SaveWorldData(TagCompound tag)
         {
-            List<string> plushieTileList = new List<string>();
+            List<string> plushieTileList = new();
             foreach (KeyValuePair<long, short> pt in plushieTiles)
             {
                 plushieTileList.Add(pt.Key.ToString() + "/" + pt.Value.ToString());

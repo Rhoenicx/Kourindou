@@ -356,6 +356,66 @@ namespace Kourindou
             return hit;
         }
 
+        public override bool? CanHitNPC(Item item, NPC target)
+        {
+            bool? hit = base.CanHitNPC(item, target);
+
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
+            {
+                if (plushie.Key.PlushieCanHit(Player, item, null, target, null, plushie.Value) == false)
+                {
+                    hit = false;
+                }
+            }
+
+            return hit;
+        }
+
+        public override bool? CanHitNPCWithProj(Projectile proj, NPC target)
+        {
+            bool? hit = base.CanHitNPCWithProj(proj, target);
+
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
+            {
+                if (plushie.Key.PlushieCanHit(Player, null, proj, target, null, plushie.Value) == false)
+                {
+                    hit = false;
+                }
+            }
+
+            return hit;
+        }
+
+        public override bool CanHitPvp(Item item, Player target)
+        {
+            bool hit = base.CanHitPvp(item, target);
+
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
+            {
+                if (plushie.Key.PlushieCanHit(Player, item, null, null, target, plushie.Value) == false)
+                {
+                    hit = false;
+                }
+            }
+
+            return hit;
+        }
+
+        public override bool CanHitPvpWithProj(Projectile proj, Player target)
+        {
+            bool hit = base.CanHitPvpWithProj(proj, target);
+
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
+            {
+                if (plushie.Key.PlushieCanHit(Player, null, proj, null, target, plushie.Value) == false)
+                {
+                    hit = false;
+                }
+            }
+
+            return hit;
+        }
+
         // --------- Triggers on PVE --------- //
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {

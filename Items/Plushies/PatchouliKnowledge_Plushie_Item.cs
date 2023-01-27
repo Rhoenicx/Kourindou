@@ -108,13 +108,15 @@ namespace Kourindou.Items.Plushies
             }
         }
 
-        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
+        public override bool? PlushieCanHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int amountEquipped)
         {
             if ((item != null && (item.CountsAsClass(DamageClass.Melee) || item.CountsAsClass(DamageClass.Ranged) || item.CountsAsClass(DamageClass.Throwing)))
                 || (proj != null && (proj.CountsAsClass(DamageClass.Melee) || proj.CountsAsClass(DamageClass.Ranged) || proj.CountsAsClass(DamageClass.Throwing) || proj.minion)))
             {
-                damage = 0;
+                return false;
             }
+
+            return base.PlushieCanHit(myPlayer, item, proj, npc, player, amountEquipped);
         }
     }
 }

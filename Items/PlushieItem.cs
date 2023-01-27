@@ -17,7 +17,7 @@ namespace Kourindou.Items
 {
     public abstract class PlushieItem : ModItem
     {
-        public short plushieDirtWater
+        public short PlushieDirtWater
         {
             get { return (short)((DirtAmount << 8) + WaterAmount); }
             set { DirtAmount = (byte)(value >> 8); WaterAmount = (byte)(value & 255); }
@@ -31,12 +31,12 @@ namespace Kourindou.Items
 
         public override void SaveData(TagCompound tag)
         {
-            tag.Add("plushieDirtWater", plushieDirtWater);
+            tag.Add("PlushieDirtWater", PlushieDirtWater);
         }
 
         public override void LoadData(TagCompound tag)
         {
-            plushieDirtWater = tag.GetShort("plushieDirtWater");
+            PlushieDirtWater = tag.GetShort("PlushieDirtWater");
         }
 
         // Re-center item texture
@@ -70,17 +70,17 @@ namespace Kourindou.Items
             }
             else
             {
-                TooltipLine EffectLine = new TooltipLine(Mod, "PlushieEffect", "Effect: " + AddEffectTooltip());
+                TooltipLine EffectLine = new(Mod, "PlushieEffect", "Effect: " + AddEffectTooltip());
                 EffectLine.OverrideColor = new Color(255, 255, 0);
 
                 // Add Custom line "Can be Thrown using Right mouse button"
-                TooltipLine line = new TooltipLine(Mod, "CanBeThrown", "Right Click: Throw plushie");
+                TooltipLine line = new(Mod, "CanBeThrown", "Right Click: Throw plushie");
                 line.OverrideColor = new Color(255, 255, 0);
 
                 for (int index = 0; index < tooltips.Count; ++index)
                 {
                     if (tooltips[index].Name == "SpecialPrice")
-                    { 
+                    {
                         tooltips.Insert(index, EffectLine);
                         break;
                     }
@@ -135,7 +135,7 @@ namespace Kourindou.Items
         {
             if (!modded)
             {
-                return false;   
+                return false;
             }
 
             if (slot != GetInstance<PlushieEquipSlot>().Type)
@@ -149,7 +149,6 @@ namespace Kourindou.Items
         // Prevent the player from putting this accessory in the tinkerer slot
         public override bool? PrefixChance(int pre, UnifiedRandom rand)
         {
-            pre = -3;
             return false;
         }
 
@@ -177,7 +176,7 @@ namespace Kourindou.Items
                         Item.knockBack,
                         player.whoAmI,
                         30f,
-                        plushieDirtWater);
+                        PlushieDirtWater);
                 }
                 // Multiplayer
                 else
@@ -205,12 +204,12 @@ namespace Kourindou.Items
 
         public override void NetSend(BinaryWriter writer)
         {
-            writer.Write(plushieDirtWater);
+            writer.Write(PlushieDirtWater);
         }
 
         public override void NetReceive(BinaryReader reader)
         {
-            plushieDirtWater = reader.ReadInt16();
+            PlushieDirtWater = reader.ReadInt16();
         }
 
         // Execute custom effects when this Plushie is equipped
@@ -220,11 +219,16 @@ namespace Kourindou.Items
         }
 
         public virtual void PlushiePostUpdateEquips(Player player, int amountEquipped)
-        { 
-        
+        {
+
         }
 
         public virtual bool PlushieCanbeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot, int amountEquipped)
+        {
+            return true;
+        }
+
+        public virtual bool? PlushieCanHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int amountEquipped)
         {
             return true;
         }

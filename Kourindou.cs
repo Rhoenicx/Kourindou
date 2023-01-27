@@ -486,7 +486,7 @@ namespace Kourindou
                 case KourindouMessageType.PlushieItemNetUpdate:
                 {
                     int itemSlot = reader.ReadInt32();
-                    short plushieDirtWater = reader.ReadInt16();
+                    short PlushieDirtWater = reader.ReadInt16();
 
                     Item item = Main.item[itemSlot];
 
@@ -494,7 +494,7 @@ namespace Kourindou
                     {   
                         if (item.ModItem is PlushieItem plushie)
                         {
-                            plushie.plushieDirtWater = plushieDirtWater;
+                            plushie.PlushieDirtWater = PlushieDirtWater;
                         }
                     }
                     break;
@@ -505,10 +505,10 @@ namespace Kourindou
                     int plushiePlaceTileX = reader.ReadInt32();
                     int plushiePlaceTileY = reader.ReadInt32();
                     int plushieTile = reader.ReadInt32();
-                    short plushieDirtWater = reader.ReadInt16();
+                    short PlushieDirtWater = reader.ReadInt16();
 
                     WorldGen.PlaceObject(plushiePlaceTileX, plushiePlaceTileY, plushieTile);
-                    KourindouWorld.SetPlushieDirtWater(plushiePlaceTileX, plushiePlaceTileY - 1, plushieDirtWater);
+                    KourindouWorld.SetPlushieDirtWater(plushiePlaceTileX, plushiePlaceTileY - 1, PlushieDirtWater);
                     break;
                 }
 
@@ -516,9 +516,9 @@ namespace Kourindou
                 {
                     int i = reader.ReadInt32();
                     int j = reader.ReadInt32();
-                    short plushieDirtWater = reader.ReadInt16();
+                    short PlushieDirtWater = reader.ReadInt16();
 
-                    KourindouWorld.SetPlushieDirtWater(i, j, plushieDirtWater);
+                    KourindouWorld.SetPlushieDirtWater(i, j, PlushieDirtWater);
 
                     if (Main.netMode == NetmodeID.Server)
                     {
@@ -526,7 +526,7 @@ namespace Kourindou
                         packet.Write((byte) KourindouMessageType.SetPlushieDirtWater);
                         packet.Write((int) i);
                         packet.Write((int) j);
-                        packet.Write((int) plushieDirtWater);
+                        packet.Write((int) PlushieDirtWater);
                         packet.Send(-1, whoAmI);
                     }
                     break;
