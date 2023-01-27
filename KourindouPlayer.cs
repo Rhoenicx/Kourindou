@@ -39,7 +39,7 @@ namespace Kourindou
         public bool plushiePower;
 
         // Item ID of the plushie slot item
-        public Dictionary<PlushieItem, int> EquippedPlushies = new Dictionary<PlushieItem, int>();
+        public Dictionary<PlushieItem, int> EquippedPlushies = new();
 
         // Reimu plushie maximum homing distance
         public float ReimuPlushieMaxDistance = 500f;
@@ -85,7 +85,7 @@ namespace Kourindou
         public int DebuffMedicineMelancholyStacks;
 
         // Cooldown
-        public Dictionary<int, Dictionary<int, CooldownTimes>> Cooldowns = new Dictionary<int, Dictionary<int, CooldownTimes>>();
+        public Dictionary<int, Dictionary<int, CooldownTimes>> Cooldowns = new();
         public float CooldownTimeMultiplier;
         public int CooldownTimeAdditive;
 
@@ -550,7 +550,7 @@ namespace Kourindou
         public override bool PreItemCheck()
         {
             // player is not holding a multiuse weapon
-            if (!(Player.HeldItem.ModItem is MultiUseItem item))
+            if (Player.HeldItem.ModItem is not MultiUseItem item)
             {
                 // return, we don't have a multiuse weapon
                 return base.PreItemCheck();
@@ -658,10 +658,10 @@ namespace Kourindou
                 }
 
                 Player.compositeFrontArm = new Player.CompositeArmData(true, progress <= FumoCola.OpeningProgress ? Player.CompositeArmStretchAmount.ThreeQuarters : Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -FrontArmAngle));
-                Player.compositeBackArm = new Player.CompositeArmData(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -BackArmAngle));
-
-                Player.compositeBackArm.enabled = true;
-                Player.compositeFrontArm.enabled = progress > FumoCola.DrinkProgress;
+                Player.compositeBackArm = new Player.CompositeArmData(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -BackArmAngle))
+                {
+                    enabled = progress > FumoCola.DrinkProgress
+                };
             }
         }
 
@@ -711,7 +711,7 @@ namespace Kourindou
                 return false;
             }
 
-            if (checkItem.ModItem is PlushieItem plushie)
+            if (checkItem.ModItem is PlushieItem)
             {
                 return true;
             }
@@ -731,7 +731,7 @@ namespace Kourindou
                 return false;
             }
 
-            if (item.ModItem is PlushieItem plushie)
+            if (item.ModItem is PlushieItem)
             {
                 return true;
             }
@@ -771,7 +771,6 @@ namespace Kourindou
         protected override void Draw(ref PlayerDrawSet drawInfo)
         {
             Player player = drawInfo.drawPlayer;
-            Item item = player.HeldItem;
 
             if (player.GetModPlayer<KourindouPlayer>().FumoColaAnimationTimer > 0)
             {
@@ -783,7 +782,7 @@ namespace Kourindou
                 int drawY = (int)(drawInfo.Position.Y - Main.screenPosition.Y + player.height - player.bodyFrame.Height + 4);
                 Vector2 position = new Vector2(drawX, drawY) + player.bodyPosition + drawInfo.bodyVect;
 
-                Vector2 offset = new Vector2(10, 14);
+                Vector2 offset = new(10f, 14f);
                 SpriteEffects spriteEffects = SpriteEffects.None;
                 float rotation = 0f;
                 float Opacity = 1f;

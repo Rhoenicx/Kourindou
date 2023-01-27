@@ -43,7 +43,7 @@ namespace Kourindou.Items.Furniture
             CreateRecipe(1)
                 .AddRecipeGroup("IronBar", 8)
                 .AddRecipeGroup("Wood", 12)
-                .AddTile(16) //Anvil
+                .AddTile(TileID.Anvils)
                 .Register();
         }
     }
