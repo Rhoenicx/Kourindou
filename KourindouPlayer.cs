@@ -657,10 +657,14 @@ namespace Kourindou
                     BackArmAngle += 50f;
                 }
 
-                Player.compositeFrontArm = new Player.CompositeArmData(true, progress <= FumoCola.OpeningProgress ? Player.CompositeArmStretchAmount.ThreeQuarters : Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -FrontArmAngle));
-                Player.compositeBackArm = new Player.CompositeArmData(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -BackArmAngle))
+                Player.compositeFrontArm = new Player.CompositeArmData(true, progress <= FumoCola.OpeningProgress ? Player.CompositeArmStretchAmount.ThreeQuarters : Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -FrontArmAngle))
                 {
                     enabled = progress > FumoCola.DrinkProgress
+                };
+
+                Player.compositeBackArm = new Player.CompositeArmData(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(Player.direction * -BackArmAngle))
+                {
+                    enabled = true
                 };
             }
         }
