@@ -19,8 +19,8 @@ namespace Kourindou.Items.Plushies
 
         public override string AddEffectTooltip()
         {
-            return "Doubled magic damage but non-magic attacks deal no damage and movement speed is halved\r\n" +
-                    "+30% magic crit, -50% mana cost";
+            return "Doubled magic damage but non-magic attacks deal no damage\r\n" +
+                    "Movement speed is halved, +30% magic crit, -50% mana cost";
         }
 
         public override void SetDefaults()
