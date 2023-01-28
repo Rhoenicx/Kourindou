@@ -138,7 +138,9 @@ namespace Kourindou.Items
                 return false;
             }
 
-            if (slot != GetInstance<PlushieEquipSlot>().Type)
+            if (slot != GetInstance<PlushieEquipSlot>().Type
+                && slot != GetInstance<PlushieEquipSlot2>().Type
+                && slot != GetInstance<PlushieEquipSlot3>().Type)
             {
                 return false;
             }
