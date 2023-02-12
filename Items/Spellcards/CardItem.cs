@@ -30,10 +30,10 @@ namespace Kourindou.Items.Spellcards
         public abstract float Angle { get; set; }
 
         // UseTime that this card adds to the catalyst
-        public abstract int AddUseTime { get; set; }
+        public abstract float AddUseTime { get; set; }
 
         // Cooldown that this card adds to the catalyst
-        public abstract int AddCooldown { get; set; }
+        public abstract float AddCooldown { get; set; }
 
         // Spread that this card adds to the catalyst
         public abstract float AddSpread { get; set; }
