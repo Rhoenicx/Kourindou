@@ -71,6 +71,7 @@ namespace Kourindou
             Instance = this;
         }
 
+        #region GensokyoMod
         // Gensokyo Mod Instance
         public static Mod Gensokyo;
         public static bool GensokyoLoaded;
@@ -103,11 +104,13 @@ namespace Kourindou
         public static int Gensokyo_Fairy_Stone_Type;
         public static int Gensokyo_Fairy_Sunflower_Type;
         public static int Gensokyo_Fairy_Thorn_Type;
+        #endregion
 
+        #region HairLoader
         // Hairloader Mod Instance
         public static Mod HairLoader;
         public static bool HairLoaderLoaded;
-
+        #endregion
         // Load
         public override void Load()
         {
@@ -124,6 +127,8 @@ namespace Kourindou
 
             FabricItems = new HashSet<int>();
             ThreadItems = new HashSet<int>();
+
+            KourindouSpellcardSystem.Load();
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
@@ -155,6 +160,8 @@ namespace Kourindou
 
             FabricItems = null;
             ThreadItems = null;
+
+            KourindouSpellcardSystem.Unload();
 
             //code that has to be run on clients only!
             if (!Main.dedServ)

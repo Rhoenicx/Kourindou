@@ -18,4 +18,11 @@
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\tModLoader\tModLoader.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Items\Spellcards\Formations\" />
+    <Folder Include="Items\Spellcards\Multicasts\" />
+    <Folder Include="Items\Spellcards\Modifiers\" />
+    <Folder Include="Items\Spellcards\Projectiles\" />
+    <Folder Include="Items\Spellcards\Trajectories\" />
+  </ItemGroup>
 </Project>
