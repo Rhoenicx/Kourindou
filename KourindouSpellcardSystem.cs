@@ -26,38 +26,33 @@ using System.Dynamic;
 namespace Kourindou
 {
     // Individual card's info
+    public class Card
+    {
+        public byte Group { get; set; }
+        public short Spell { get; set; }
+    }
+
     public class CardInfo
     { 
         public byte Group { get; set; }
         public short Spell { get; set; }
         public float Strength { get; set; }
-        public float Angle { get; set; }
-        public float AddUseTime { get; set; }
-        public float AddCooldown { get; set; }
-        public float AddSpread { get; set; }
         public bool IsRandomCard { get; set; }
     }
 
     // Cast block info
-    public class CastBlockInfo
+    public class CastBlock
     {
         public int Repeat { get; set; }
-        public int TotalCastDelay { get; set; }
+        public int Delay { get; set; }
         public List<CardInfo> CardInfo { get; set;}
     }
 
     // Cast Info
-    public class CastInfo
-    {
-        public int MaxUseTime { get; set; }
-        public List<CastBlockInfo> Blocks { get; set; }
-    }
-
-    // Casts
     public class Cast
     {
-        public int Cooldown { get; set; }
-        public List<CastInfo> Casts { get; set; }
+        public bool MustGoOnCooldown { get; set; }
+        public List<CastBlock> Blocks { get; set; }
     }
 
     public class KourindouSpellcardSystem
@@ -92,305 +87,316 @@ namespace Kourindou
             return false;
         }
 
-        public static CardItem GetCardItem(byte group, short spell)
+        public static CardInfo GetCardInfo(Card card)
         {
-            if (CardItems.ContainsKey(group) && CardItems[group].ContainsKey(spell))
+            if (CardItems.ContainsKey(card.Group) && CardItems[card.Group].ContainsKey(card.Spell))
             {
-                return CardItems[group][spell];
+                return CardItems[card.Group][card.Spell].GetCardInfo();
             }
 
             return null;
         }
 
-        // Create the casting blocks and return it as a list
-        public static Cast GenerateCasts(List<CardInfo> cardInfo, bool shuffle = false, int castAmount = 1)
+        public static CardInfo GetCardInfo(byte Group, short Spell)
         {
-            // 1 - Apply wrap-around: Cards placed on the end without a projectile gets moved to the front
-            ApplyWrapAround(ref cardInfo);
-
-            // 2 - First iteration to create the possible casts from the placed cards
-            Cast cast = ApplyFirstCastIteration(cardInfo, castAmount, shuffle);
-
-            foreach (CastInfo _castInfo in cast.Casts)
+            if (CardItems.ContainsKey(Group) && CardItems[Group].ContainsKey(Spell))
             {
-                // 3 apply the multiplication card group
-                _castInfo.Blocks[0].CardInfo = ApplyMultiplicationGroup(_castInfo.Blocks[0].CardInfo);
-                
-                // 4 apply potential random spells
-                _castInfo.Blocks[0].CardInfo = ApplySpecialRandomSpell(_castInfo.Blocks[0].CardInfo);
-
-                // 5 apply potential multiplication cards added in step 4
-                _castInfo.Blocks[0].CardInfo = ApplyMultiplicationGroup(_castInfo.Blocks[0].CardInfo);
-
-                _castInfo.Blocks = ApplySecondCastIteration(_castInfo.Blocks[0].CardInfo);
+                return CardItems[Group][Spell].GetCardInfo();
             }
 
-            return cast;
+            return null;
         }
 
-        // 1 - Wrap around fix
-        public static void ApplyWrapAround(ref List<CardInfo> cardInfo)
-        {
-            int Amount = 0;
-
-            // Search for cards that need to be wrapped-around
-            for (int i = cardInfo.Count - 1; i > 0; i--)
+        public static void ShuffleCards(ref List<Card> CatalystCards)
+        { 
+            int c = CatalystCards.Count;
+            while (c > 1)
             {
-                // If we find a projectile we should stop counting
-                if (cardInfo[i].Group == (byte)Groups.Projectile)
+                c--;
+                int r = Main.rand.Next(0, c + 1);
+                Card value = CatalystCards[r];
+                CatalystCards[r] = CatalystCards[c];
+                CatalystCards[c] = value;
+            }
+        }
+
+        public static void ShuffleCards(ref List<CardInfo> Cards)
+        {
+            int c = Cards.Count;
+            while (c > 1)
+            {
+                c--;
+                int r = Main.rand.Next(0, c + 1);
+                CardInfo value = Cards[r];
+                Cards[r] = Cards[c];
+                Cards[c] = value;
+            }
+        }
+
+        public static List<CardInfo> CardToCardInfo(List<Card> Cards)
+        {
+            List<CardInfo> CardInfo = new();
+            foreach (Card c in Cards)
+            {
+                if (CardItems.ContainsKey(c.Group) && CardItems[c.Group].ContainsKey(c.Spell))
+                {
+                    CardInfo.Add(CardItems[c.Group][c.Spell].GetCardInfo());
+                }
+            }
+            return CardInfo;
+        }
+
+        public static Cast GenerateCasts(List<CardInfo> Cards, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool shuffle = false, List<Card> AlwaysCastCards = null)
+        {
+            // Here we generate the cast info which is passed to the execution part
+            // => If this catalyst is a shuffle, the cards should already be shuffled.
+
+            // Cast List for storing the Cast blocks
+            List<Cast> Casts = new();
+
+            List<CardInfo> CardWrapReady = Cards;
+            if (shuffle)
+            {
+                ShuffleCards(ref CardWrapReady);
+            }
+            CardWrapReady.RemoveRange(CatalystStartIndex, Cards.Count - CatalystStartIndex);
+
+            // Variables needed for loops
+            int CurrentCast = 0;
+            int CurrentBlock = 0;
+            int Index = CatalystStartIndex;
+
+            int Triggers = 0;
+            bool TriggerActive = false;
+
+            int MulticastAmount = 0;
+
+            int ExtraCardsInserted = 0;
+            CardInfo InsertThisCardWrapAround = null;
+            bool IsWrappingAround = false;
+
+            int CatalystEndIndex = 0;
+
+            // Start Casting
+            while (Index < Cards.Count)
+            {
+                if (Casts.ElementAtOrDefault(CurrentCast) == null)
+                {
+                    Casts.Add(new Cast());
+                    if (AlwaysCastCards != null && AlwaysCastCards.Count > 0)
+                    {
+                        for (int i = 0; i < AlwaysCastCards.Count; i++)
+                        {
+                            Cards.Insert(Index, GetCardInfo(AlwaysCastCards[i]));
+                            ExtraCardsInserted++;
+                        }
+                        continue;
+                    }
+                }
+
+                if (Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock) == null)
+                {
+                    Casts[CurrentCast].Blocks.Add(new CastBlock());
+                }
+
+                switch ((Groups)Cards[Index].Group)
+                {
+                    case Groups.Projectile:
+                        {
+                            if (Triggers > 0)
+                            {
+                                Triggers--;
+                                TriggerActive = true;
+                                Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                            }
+                            else
+                            {
+                                TriggerActive = false;
+
+                                if (MulticastAmount > 0)
+                                {
+                                    MulticastAmount--;
+                                    Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                                    CurrentBlock++;
+                                }
+                                else
+                                {
+                                    Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                                    CurrentCast++;
+                                }
+                            }
+                        }
+                        break;
+
+                    case Groups.Multicast:
+                        {
+                            if (TriggerActive)
+                            {
+                                Triggers += (int)Math.Ceiling(Cards[Index].Strength) - 1;
+                            }
+                            else
+                            {
+                                for (int i = 1; i < (int)Math.Ceiling(Cards[Index].Strength); i++)
+                                {
+                                    if (Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock + i) == null)
+                                    {
+                                        Casts[CurrentCast].Blocks.Add(new CastBlock());
+                                    }
+
+                                    Casts[CurrentCast].Blocks[CurrentBlock + i] = Casts[CurrentCast].Blocks[CurrentBlock];
+                                }
+
+                                MulticastAmount += (int)Math.Ceiling(Cards[Index].Strength) - 1;
+                            }
+                        }
+                        break;
+
+                    case Groups.Trigger:
+                        {
+                            if (TriggerActive)
+                            {
+                                Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                            }
+
+                            Triggers += (int)Math.Ceiling(Cards[Index].Strength);
+                        }
+                        break;
+
+                    case Groups.Repeat:
+                        {
+                            if (TriggerActive)
+                            {
+                                Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                            }
+                            else
+                            {
+                                Casts[CurrentCast].Blocks[CurrentBlock].Repeat += (int)Math.Ceiling(Cards[Index].Strength);
+                            }
+                        }
+                        break;
+
+                    case Groups.CastDelay:
+                        {
+                            if (TriggerActive)
+                            {
+                                Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                            }
+                            else
+                            {
+                                Casts[CurrentCast].Blocks[CurrentBlock].Delay += (int)Math.Ceiling(Cards[Index].Strength);
+                            }
+                        }
+                        break;
+
+                    case Groups.Multiplication:
+                        {
+                            if (Index + 1 >= Cards.Count)
+                            {
+                                InsertThisCardWrapAround = Cards[Index];
+                            }
+                            else
+                            { 
+                                switch ((Groups)Cards[Index + 1].Group)
+                                {
+                                    case Groups.Projectile:
+                                    case Groups.Special:
+                                    case Groups.Multicast:
+                                        {
+                                            // Insert new cards if they are projectiles or special variants
+                                            for (int y = 1; y < (int)Cards[Index].Strength; y++)
+                                            {
+                                                Cards.Insert(Index + 1, Cards[Index + 1]);
+                                                ExtraCardsInserted++;
+                                            }
+                                        }
+                                        break;
+
+                                    case Groups.Multiplication:
+                                        {
+                                            // Do nothing, we don't want to chain multiplication cards
+                                        }
+                                        break;
+
+                                    default:
+                                        {
+                                            Cards[Index + 1].Strength *= Cards[Index].Strength;
+                                        }
+                                        break;
+                                }
+                            }
+                            Cards[Index].Strength = 1f;
+                        }
+                        break;
+
+                    case Groups.Special:
+                        {
+                            if (TriggerActive)
+                            {
+                                Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                            }
+                            else
+                            {
+                                if (Cards[Index].Spell == (byte)Special.RandomCard)
+                                {
+                                    Cards[Index] = GetRandomCard(Cards[Index]);
+                                    Index--;
+                                }
+                            }
+                        }
+                        break;
+                }
+
+                // Check for unended casts, need to wrap around
+
+                if (Index == Cards.Count - 1 && !IsWrappingAround)
+                {
+                    if (TriggerActive || Triggers > 0 || MulticastAmount > 0 || CurrentCast < CatalystCastAmount)
+                    {
+                        // Add the wrap-around cards now!
+                        foreach (CardInfo cardInfo in CardWrapReady)
+                        {
+                            Cards.Add(cardInfo);
+                        }
+
+                        CatalystEndIndex = Index - ExtraCardsInserted;
+                        IsWrappingAround = true;
+                    }
+                }
+
+                if (Index == Cards.Count - 1 && IsWrappingAround)
                 {
                     break;
                 }
 
-                Amount++;
+                Index++;
             }
 
-            if (Amount > 0) 
+            // After creating the casts set the ending point minus the cards inserted
+            if (!IsWrappingAround)
             {
-                List<CardInfo> InsertFront = new();
-
-                for (int i = cardInfo.Count - 1; i > cardInfo.Count - 1 - Amount; i--)
-                {
-                    InsertFront.Add(cardInfo[i]);
-                    cardInfo.RemoveAt(i);
-                }
-
-                for (int i = InsertFront.Count - 1; i >= 0; i--)
-                {
-                    cardInfo.Insert(0, InsertFront[i]);
-                }
+                CatalystEndIndex = Index - ExtraCardsInserted;
             }
-        }
-        
-        // 2 - First iteration: create the cast [0]
-        public static Cast ApplyFirstCastIteration(List<CardInfo> cardInfo, int castAmount, bool shuffle)
-        {
-            // New variables
-            Cast cast = new();
-            int CurrentCast = 0;
-            int MultiCastNeedsProjectile = 0;
-            int TriggerNeedsProjectile = 0;
-
-            if (!shuffle)
-            {
-                // Determine the cast breakpoints
-                for (int i = 0; i < cardInfo.Count; i++)
-                {
-                    // Create a new Cast with the current cast number
-                    if (cast.Casts.ElementAtOrDefault(CurrentCast) == null)
-                    {
-                        cast.Casts.Add(new());
-                    }
-
-                    // Create a new Casting Block if there is none 
-                    if (cast.Casts[CurrentCast].Blocks.ElementAtOrDefault(0) == null)
-                    {
-                        cast.Casts[CurrentCast].Blocks.Add(new());
-                    }
-
-                    // Add the card to the current cast
-                    cast.Casts[CurrentCast].Blocks[0].CardInfo.Add(cardInfo[i]);
-
-                    // Determine if we need to advance to the next cast
-                    switch (cardInfo[i].Group)
-                    {
-                        case (byte)Groups.Multicast:
-                            {
-                                MultiCastNeedsProjectile += (int)cardInfo[i].Strength;
-                            }
-                            break;
-
-                        case (byte)Groups.Trigger:
-                            {
-                                TriggerNeedsProjectile += (int)cardInfo[i].Strength;
-                            }
-                            break;
-
-                        case (byte)Groups.Projectile:
-                            {
-                                if (TriggerNeedsProjectile > 0)
-                                {
-                                    // Reduce needed projectile for triggers
-                                    TriggerNeedsProjectile--;
-                                }
-                                else if (MultiCastNeedsProjectile > 0)
-                                {
-                                    // Reduce needed projectile for multicasts
-                                    MultiCastNeedsProjectile--;
-                                }
-                                else
-                                {
-                                    // Increase to the next cast
-                                    CurrentCast++;
-                                }
-                            }
-                            break;
-                    }
-                }
-
-            }
-            else
-            {
-                for (int y = 0; y < castAmount; y++)
-                {
-                    bool BreakLoopI = false;
-
-                    for (int i = Main.rand.Next(0, cardInfo.Count); i < cardInfo.Count; i++)
-                    {
-                        // Create a new Cast with the current cast number
-                        if (cast.Casts.ElementAtOrDefault(CurrentCast) == null)
-                        {
-                            cast.Casts.Add(new());
-                        }
-
-                        // Create a new Casting Block if there is none 
-                        if (cast.Casts[CurrentCast].Blocks.ElementAtOrDefault(0) == null)
-                        {
-                            cast.Casts[CurrentCast].Blocks.Add(new());
-                        }
-
-                        // Add the card to the current cast
-                        cast.Casts[CurrentCast].Blocks[0].CardInfo.Add(cardInfo[i]);
-
-                        // Determine if we need to advance to the next cast
-                        switch (cardInfo[i].Group)
-                        {
-                            case (byte)Groups.Multicast:
-                                {
-                                    MultiCastNeedsProjectile += (int)cardInfo[i].Strength;
-                                }
-                                break;
-
-                            case (byte)Groups.Trigger:
-                                {
-                                    TriggerNeedsProjectile += (int)cardInfo[i].Strength;
-                                }
-                                break;
-
-                            case (byte)Groups.Projectile:
-                                {
-                                    if (TriggerNeedsProjectile > 0)
-                                    {
-                                        // Reduce needed projectile for triggers
-                                        TriggerNeedsProjectile--;
-                                    }
-                                    else if (MultiCastNeedsProjectile > 0)
-                                    {
-                                        // Reduce needed projectile for multicasts
-                                        MultiCastNeedsProjectile--;
-                                    }
-                                    else
-                                    {
-                                        // Increase to the next cast
-                                        BreakLoopI = true;
-                                    }
-                                }
-                                break;
-                        }
-
-                        if (BreakLoopI)
-                        {
-                            CurrentCast++;
-                            break;
-                        }
-                    }
-                }
-            }
-            return cast;
-        }
-
-        // 3 & 5 - Multiply cards
-        public static List<CardInfo> ApplyMultiplicationGroup(List<CardInfo> cardInfo)
-        {
-            bool MultiplicationsFound = true;
-            while (MultiplicationsFound)
-            {
-                bool Found = false;
-                int Index = 0;
-                float MultiplicationValue = 0;
-
-                for (int i = 0; i < cardInfo.Count; i++)
-                {
-                    if (cardInfo[i].Group == (byte)Groups.Multiplication)
-                    {
-                        Found = true;
-                        Index = i;
-                        MultiplicationValue = cardInfo[i].Strength;
-                        break;
-                    }
-
-                    // Prevent infinite loop
-                    if (i == cardInfo.Count - 1)
-                    {
-                        MultiplicationsFound = false;
-                    }
-                }
-
-                if (cardInfo.ElementAtOrDefault(Index + 1) == null)
-                {
-                    continue;
-                }
-
-                if (Found)
-                {
-                    for (int i = 1; i < Math.Ceiling(MultiplicationValue); i++)
-                    {
-                        cardInfo.Insert(Index + 1, cardInfo[Index + 1]);
-                    }
-
-                    cardInfo.RemoveAt(Index);
-                }
-            }
-
-            return cardInfo;
-        }
-
-        // 4 - Replace Random Spells
-        public static List<CardInfo> ApplySpecialRandomSpell(List<CardInfo> cardInfo)
-        {
-            for (int i = 0; i < cardInfo.Count; i++)
-            {
-                if (cardInfo[i].IsRandomCard)
-                {
-                    byte NewGroup = (cardInfo[i].Group == (byte)Groups.Special && cardInfo[i].Spell == (byte)Special.RandomCard) ? GetRandomGroup() : cardInfo[i].Group;
-                    short NewSpell = GetRandomSpell(NewGroup);
-
-                    CardItem item = GetCardItem(NewGroup, NewSpell);
-                    if (item != null)
-                    {
-                        cardInfo[i] = item.GetCardInfo();
-                    }
-                    else
-                    {
-                        cardInfo.RemoveAt(i);
-                        i--;
-                    }
-                }
-            }
-
-            return cardInfo;
-        }
-
-        // 5 - Second iteration: create the cast blocks
-        public static List<CastBlockInfo> ApplySecondCastIteration(List<CardInfo> cardInfo)
-        {
-            List<CastBlockInfo> castBlockInfo = new();
-
-            int CurrentBlock = 0;
-            int MultiCastNeedsProjectile = 0;
-            bool TriggerActive = false;
-            int TriggerNeedsProjectile = 0;
-
-            for (int i = 0; i < cardInfo.Count; i++)
-            {
-
-            }
-
-            return castBlockInfo;
         }
 
         #region Random
-        public static byte GetRandomGroup() 
+        public static CardInfo GetRandomCard(CardInfo _cardInfo)
+        {
+            if (_cardInfo.IsRandomCard)
+            {
+                byte NewGroup = (_cardInfo.Group == (byte)Groups.Special && _cardInfo.Spell == (byte)Special.RandomCard) ? GetRandomGroup() : _cardInfo.Group;
+                short NewSpell = GetRandomSpell(NewGroup);
+
+                CardInfo info = GetCardInfo(_cardInfo.Group, _cardInfo.Spell);
+                if (info != null)
+                {
+                    _cardInfo = info;
+                }
+            }
+
+            return _cardInfo;
+        }
+
+        public static byte GetRandomGroup()
         {
             bool Valid = false;
             byte NewGroup = (byte)Groups.Projectile;
@@ -670,7 +676,11 @@ namespace Kourindou
             MultiplyBy2,
             MultiplyBy3,
             MultiplyBy4,
-            MultiplyBy5
+            MultiplyBy5,
+            DivideBy2,
+            DivideBy3,
+            DivideBy4,
+            DivideBy5
         }
         #endregion
     }
