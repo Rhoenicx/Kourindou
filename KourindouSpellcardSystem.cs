@@ -416,88 +416,90 @@ namespace Kourindou
 
                     case Groups.Multiplication:
                         {
-                            if (!IsCatalyst)
+                            if (TriggerActive)
                             {
-                                break;
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
                             }
-
-                            // Multiplication is at the end of the catalyst
-                            if (Index >= Cards.Count - 1)
-                            {
-                                InsertThisCardWrapAround = Cards[Index];
-                            }
-                            // Multiplication card is not on the end
                             else
                             {
-                                // Check if there is a not empty card after the multiplication
-                                for (int i = Index + 1; i < Cards.Count; i++)
+                                // Multiplication is at the end of the catalyst
+                                if (Index >= Cards.Count - 1)
                                 {
-                                    if (Cards[i].Group != (byte)Groups.Empty)
+                                    InsertThisCardWrapAround = Cards[Index];
+                                }
+                                // Multiplication card is not on the end
+                                else
+                                {
+                                    // Check if there is a not empty card after the multiplication
+                                    for (int i = Index + 1; i < Cards.Count; i++)
                                     {
-                                        switch ((Groups)Cards[i].Group)
+                                        if (Cards[i].Group != (byte)Groups.Empty)
                                         {
-                                            case Groups.Projectile:
-                                            case Groups.Special:
-                                            case Groups.Multicast:
-                                                {
-                                                    // Insert new cards if they are projectile, special or multicast variants
-                                                    for (int y = 1; y < (int)Cards[Index].Strength; y++)
+                                            switch ((Groups)Cards[i].Group)
+                                            {
+                                                case Groups.Projectile:
+                                                case Groups.Special:
+                                                case Groups.Multicast:
                                                     {
-                                                        Cards.Insert(i, Cards[i]);
-                                                        Cards[i + 1].IsInsertedCard = true;
+                                                        // Insert new cards if they are projectile, special or multicast variants
+                                                        for (int y = 1; y < (int)Cards[Index].Strength; y++)
+                                                        {
+                                                            Cards.Insert(i, Cards[i]);
+                                                            Cards[i + 1].IsInsertedCard = true;
+                                                        }
                                                     }
-                                                }
-                                                break;
+                                                    break;
 
-                                            case Groups.Multiplication:
-                                                {
-                                                    Cards[i].Strength *= Cards[Index].Strength;
-                                                    if (Cards[i].Strength > 5f)
+                                                case Groups.Multiplication:
                                                     {
-                                                        Cards[i].Strength = 5f;
+                                                        Cards[i].Strength *= Cards[Index].Strength;
+                                                        if (Cards[i].Strength > 5f)
+                                                        {
+                                                            Cards[i].Strength = 5f;
+                                                        }
                                                     }
-                                                }
-                                                break;
+                                                    break;
 
-                                            case Groups.CatalystModifier:
-                                                {
-                                                    switch ((CatalystModifierVariant)Cards[i].Variant)
+                                                case Groups.CatalystModifier:
                                                     {
-                                                        case CatalystModifierVariant.ReduceCooldownPercent:
-                                                        case CatalystModifierVariant.ReduceRechargePercent:
-                                                            {
-                                                                Cards[i].Strength = (float)Math.Pow(Cards[i].Strength, Cards[Index].Strength);
-                                                            }
-                                                            break;
+                                                        switch ((CatalystModifierVariant)Cards[i].Variant)
+                                                        {
+                                                            case CatalystModifierVariant.ReduceCooldownPercent:
+                                                            case CatalystModifierVariant.ReduceRechargePercent:
+                                                                {
+                                                                    Cards[i].Strength = (float)Math.Pow(Cards[i].Strength, Cards[Index].Strength);
+                                                                }
+                                                                break;
 
-                                                        default:
-                                                            {
-                                                                Cards[i].Strength *= Cards[Index].Strength;
-                                                            }
-                                                            break;
+                                                            default:
+                                                                {
+                                                                    Cards[i].Strength *= Cards[Index].Strength;
+                                                                }
+                                                                break;
 
+                                                        }
                                                     }
-                                                }
-                                                break;
+                                                    break;
 
-                                            default:
-                                                {
-                                                    Cards[i].Strength *= Cards[Index].Strength;
-                                                }
-                                                break;
+                                                default:
+                                                    {
+                                                        Cards[i].Strength *= Cards[Index].Strength;
+                                                    }
+                                                    break;
+                                            }
+
+                                            // Stop the for loop because this card has executed its effect
+                                            break;
                                         }
-
-                                        // Stop the for loop because this card has executed its effect
-                                        break;
-                                    }
-                                    // Check if the search has ended to the last card of catalyst
-                                    else if (i == Cards.Count - 1)
-                                    {
-                                        InsertThisCardWrapAround = Cards[Index];
+                                        // Check if the search has ended to the last card of catalyst
+                                        else if (i == Cards.Count - 1)
+                                        {
+                                            InsertThisCardWrapAround = Cards[Index];
+                                        }
                                     }
                                 }
                             }
-                            Cards[Index].Strength = 1f;
+                            CastUnEnded++;
                         }
                         break;
 
@@ -532,8 +534,8 @@ namespace Kourindou
                                 case CatalystModifierVariant.ReduceRechargePercent:
                                     {
                                         if (!TriggerActive && IsCatalyst)
-                                        { 
-
+                                        {
+                                            CastProperties.RechargeTimePercentage *= Cards[Index].Strength;
                                         }
                                     }
                                     break;
@@ -922,28 +924,28 @@ namespace Kourindou
 
             // Duplicates projectile and add spread, like a shotgun
             // Variant 1
-            DoubleScatter,
-            TripleScatter,
-            QuadrupleScatter,
-            QuintupleScatter,
-            RandomScatter,
+            DoubleScatter, // 2
+            TripleScatter, // 3
+            QuadrupleScatter, // 4
+            QuintupleScatter, // 5
+            RandomScatter, // one of above
 
             // Duplicates projectile and place them side-by-side
             // Variant 2
-            DoubleFork,
-            TripleFork,
-            QuadrupleFork,
-            QuintupleFork,
-            RandomFork,
+            DoubleFork, // 2
+            TripleFork, // 3
+            QuadrupleFork, // 4
+            QuintupleFork, // 5
+            RandomFork, // one of above
 
             // Duplicates projectile and cast it in a circle around the player
             // Variant 3
-            Quadragon,
-            Pentagon,
-            Hexagon,
-            Heptagon,
-            Octagon,
-            Randagon
+            Quadragon, // 4
+            Pentagon, // 5
+            Hexagon, // 6
+            Heptagon, // 7
+            Octagon, // 8
+            Randagon // one of above
         }
 
         public enum FormationVariant : byte
@@ -973,58 +975,54 @@ namespace Kourindou
         public enum ProjectileModifier : byte
         {
             // Changes speed over time
-            Acceleration,
-            Deceleration,
+            Acceleration, // +0.1f
+            Deceleration, // -0.1f
         
             // Change base speed
-            SpeedUp,
-            SpeedDown,
-            Stationary,
-        
-            // Change base spread
-            SpreadUp,
-            SpreadDown,
-            AccurateAF,
-        
-            // Alter the position where the projectiles are spawned
-            DistantCast,
-            TeleportCast,
-            ReverseCast,
-        
-            // Change the amount of tile bounces this projectile can do
-            BounceUp,
-            BounceDown,
-            FallingFlat,
-        
-            // Change penetration stats
-            PenetrationUp,
-            PenetrationDown,
-            PenetrationZero,
-            PenetrationAll,
-        
-            // Change gravity 
+            SpeedUp, // +1f
+            SpeedDown, // -1f
+            Stationary, // 0f
+
+            // Change base spread - not including wand spread, if negative it does counter wand spread
+            SpreadUp, //+5
+            SpreadDown, // >= 5 ? -5 :  
+            AccurateAF, // 0
+
+            // Change the amount of tile bounces this projectile can do - Strength=Amount
+            BounceUp, //+1
+            BounceDown, //-1
+            FallingFlat, //0
+            TerribleIdea, // infinite bounces
+
+            // Change penetration stats - Strength=Amount
+            PenetrationUp, //+1
+            PenetrationDown, // > 1 : -1
+            PenetrationZero, //0
+            PenetrationAll, //-1
+
+            // Change gravity - Strength=ON(1)/Off(0) 
             Gravity,
             NoGravity,
             AntiGravity,
         
-            // Change homing
+            // Change homing 
             Homing,
             RotateToEnemy,
-        
-            // Tile collision
+
+            // Tile collision - Strength=ON(1)/Off(0) 
             Ghosting,
             Collide,
-        
+
             // Lifetime
-            LifetimeUp,
-            LifetimeDown,
+            LifetimeUp, // 50f (percent)
+            LifetimeDown, // 50f (percent)
             Instant,
         
             // Rotation
-            RotateLeft90,
-            RotateRight90,
-            RotateLeft45,
-            RotateRight45,
+            RotateLeft90, // -90f
+            RotateRight90, // -90f
+            RotateLeft45, // -45f
+            RotateRight45, // 45f
         
             // Random
             RandomProjectileModifier
@@ -1034,39 +1032,44 @@ namespace Kourindou
         {
             // reduces cooldown percentage-based
             // Variant 1
-            ReduceCooldown10Percent,
-            ReduceCooldown25Percent,
-            ReduceCooldown50Percent,
-            RandomCooldownPrecent,
+            ReduceCooldown10Percent, // 0.9f
+            ReduceCooldown25Percent, // 0.75f
+            ReduceCooldown50Percent, // 0.5f
+            RandomCooldownPrecent, // one of above
 
             // reduces recharge percentage-based
             // Variant 2
-            ReduceRecharge10Percent,
-            ReduceRecharge25Percent,
-            ReduceRecharge50Percent,
-            RandomRechargePrecent,
+            ReduceRecharge10Percent, // 0.9f
+            ReduceRecharge25Percent, // 0.75f
+            ReduceRecharge50Percent, // 0.5f
+            RandomRechargePrecent, // one of above
 
             // Eliminates waiting time
             // Variant 0
-            EliminateCooldown,
-            EliminateRecharge,
+            EliminateCooldown, //cooldown=0
+            EliminateRecharge, //recharge=0
         
             // Repeats
             // Variant 3
-            Repeat2,
-            Repeat3,
-            Repeat4,
-            Repeat5,
-            RepeatRandom,
+            Repeat2, //2
+            Repeat3, //3
+            Repeat4, //4
+            Repeat5, //5
+            RepeatRandom, //one of above
 
-            // Delays
+            // Delays in ticks
             // Variant 4
-            DelayCastBy1,
-            DelayCastBy2,
-            DelayCastBy3,
-            DelayCastBy4,
-            DelayCastBy5,
-            DelayCastRandom
+            DelayCastBy1, //60
+            DelayCastBy2, //120
+            DelayCastBy3, //180
+            DelayCastBy4, //240
+            DelayCastBy5, //300
+            DelayCastRandom, //one of above
+
+            // Position where the projectiles are spawned
+            DistantCast, // distance
+            TeleportCast, // On/Off
+            ReverseCast // long distance + 180 degrees rotated
         }
 
         public enum CatalystModifierVariant : byte
@@ -1098,7 +1101,8 @@ namespace Kourindou
         
         public enum Trigger : byte
         {
-            Timeout,
+            ProjectileKill,
+            OnTileCollide,
             Timer
         }
         
