@@ -243,6 +243,8 @@ namespace Kourindou
                 CrossModContent.SetupHairLoader(HairLoader, this);
             }
 
+            KourindouSpellcardSystem.PostSetupContent();
+
             // Swap vanilla textures
             if (!Main.dedServ)
             {

@@ -1,80 +1,105 @@
 ﻿using System;
-using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
-using ReLogic.Content;
-using ReLogic;
 using Terraria;
-using Terraria.Chat;
-using Terraria.Audio;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.GameInput;
-using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
-using Terraria.ModLoader.Default;
-using Terraria.GameContent;
-using static Terraria.ModLoader.ModContent;
 using Kourindou.Items.Spellcards;
-using System.Text.RegularExpressions;
 using static Kourindou.KourindouSpellcardSystem;
-using System.Dynamic;
 
 namespace Kourindou
 {
-    // Individual card's info
+    // Individual card, this is how the cards will look like when they get passed around on the network
     public class Card
     {
-        public byte Group { get; set; }
-        public short Spell { get; set; }
+        public byte Group { get; set; } = (byte)Groups.Empty;
+        public byte Spell { get; set; } = 0;
     }
 
     public class CardInfo
-    { 
-        public byte Group { get; set; }
-        public short Spell { get; set; }
-        public float Strength { get; set; }
-        public bool IsRandomCard { get; set; }
+    {
+        public byte Group { get; set; } = (byte)Groups.Empty;
+        public byte Spell { get; set; } = 0;
+        public float Strength { get; set; } = 1f;
+        public byte Variant { get; set; } = 0;
+        public int AddUseTime { get; set; } = 0;
+        public int AddCooldown { get; set; } = 0;
+        public int AddRecharge { get; set; } = 0;
+        public float AddSpread { get; set; } = 0f;
+        public float FixedAngle { get; set; } = 0;
+        public bool IsRandomCard { get; set; } = false;
+        public bool IsInsertedCard { get; set; } = false;
     }
 
     // Cast block info
     public class CastBlock
     {
-        public int Repeat { get; set; }
-        public int Delay { get; set; }
-        public List<CardInfo> CardInfo { get; set;}
+        public int Repeat { get; set; } = 0;
+        public int Delay { get; set; } = 0;
+        public List<CardInfo> CardInfo { get; set; }
     }
 
-    // Cast Info
+    // CastInfo 
+    public class CastInfo
+    {
+        public List<CastBlock> Blocks { get; set; }
+    }
+
+    // Cast Properties
     public class Cast
     {
-        public bool MustGoOnCooldown { get; set; }
-        public List<CastBlock> Blocks { get; set; }
+        // Catalyst stats after cast
+        public bool MustGoOnCooldown { get; set; } = false;
+        public bool FailedToCast { get; set; } = false;
+        public int NextCastStartIndex { get; set; } = 0;
+
+        // Cooldown after everything has fired => Catalyst reset time
+        public bool CooldownOverride { get; set; } = false;
+        public int CooldownTime { get; set; } = 0;
+        public float CooldownTimePercentage { get; set; } = 1f;
+
+        // Recharge time between casts
+        public bool RechargeOverride { get; set; } = false;
+        public int RechargeTime { get; set; } = 0;
+        public float RechargeTimePercentage { get; set; } = 1f;
+
+        // Additional UseTime, might be handy?
+        public int AddUseTime { get; set; } = 0;
+
+        // Minimum time the catalyst needs to be used
+        // for repeats+cast delays
+        public int MinimumUseTime { get; set; } = 0;
+
+        // The actual cast info
+        public List<CastInfo> Casts { get; set; }
     }
 
     public class KourindouSpellcardSystem
     {
-        private static Dictionary<byte, Dictionary<short, CardItem>> CardItems = new();
-
+        private static Dictionary<byte, Dictionary<byte, CardItem>> CardItems = new();
+        private static Dictionary<int, Card> EntireCardPool = new();
         public static void Load()
         {
             CardItems = new();
+            EntireCardPool = new();
         }
 
         public static void Unload()
         {
             CardItems.Clear();
             CardItems = null;
+            EntireCardPool.Clear();
+            EntireCardPool = null;
         }
 
-        public static bool AddCardItem(byte group, short spell, CardItem cardItem)
+        public static void PostSetupContent()
+        {
+            SetupEntireCardPool();
+        }
+
+        public static bool AddCardItem(byte group, byte spell, CardItem cardItem)
         {
             if (!CardItems.ContainsKey(group))
             {
-                CardItems.Add(group, new Dictionary<short, CardItem>());
+                CardItems.Add(group, new Dictionary<byte, CardItem>());
             }
 
             if (!CardItems[group].ContainsKey(spell))
@@ -97,7 +122,7 @@ namespace Kourindou
             return null;
         }
 
-        public static CardInfo GetCardInfo(byte Group, short Spell)
+        public static CardInfo GetCardInfo(byte Group, byte Spell)
         {
             if (CardItems.ContainsKey(Group) && CardItems[Group].ContainsKey(Spell))
             {
@@ -107,53 +132,111 @@ namespace Kourindou
             return null;
         }
 
-        public static void ShuffleCards(ref List<Card> CatalystCards)
-        { 
-            int c = CatalystCards.Count;
-            while (c > 1)
+        public static void SetupEntireCardPool()
+        {
+            int Index = 0;
+            foreach (byte b in CardItems.Keys)
             {
-                c--;
-                int r = Main.rand.Next(0, c + 1);
-                Card value = CatalystCards[r];
-                CatalystCards[r] = CatalystCards[c];
-                CatalystCards[c] = value;
+                foreach (byte s in CardItems[b].Keys)
+                {
+                    EntireCardPool.Add(Index, new Card() { Group = b, Spell = s });
+                    Index++;
+                }
             }
         }
 
-        public static void ShuffleCards(ref List<CardInfo> Cards)
+        public static void ShuffleCards(ref List<Card> CatalystCards)
         {
-            int c = Cards.Count;
+            // Create a new Dictionary to store the cards that are not empty cards
+            Dictionary<int, Card> Cards = new();
+            for (int i = 0; i < CatalystCards.Count; i++)
+            {
+                if (CatalystCards[i].Group != (byte)Groups.Empty)
+                {
+                    Cards.Add(i, CatalystCards[i]);
+                }
+            }
+
+            // Create list of the keys that we can shuffle
+            List<int> Keys = new List<int>(Cards.Keys);
+
+            // Now shuffle the dictionary values using the list with keys
+            int c = Keys.Count;
             while (c > 1)
             {
                 c--;
                 int r = Main.rand.Next(0, c + 1);
-                CardInfo value = Cards[r];
-                Cards[r] = Cards[c];
-                Cards[c] = value;
+                Card value = Cards[Keys[r]];
+                Cards[Keys[r]] = Cards[Keys[c]];
+                Cards[Keys[c]] = value;
+            }
+
+            // put the shuffled values back into the Card list
+            foreach (int i in Cards.Keys)
+            {
+                CatalystCards[i] = Cards[i];
+            }
+        }
+
+        public static void ShuffleCards(ref List<CardInfo> CardInfos)
+        {
+            // Create a new Dictionary to store the cards that are not empty cards
+            Dictionary<int, CardInfo> Cards = new();
+            for (int i = 0; i < CardInfos.Count; i++)
+            {
+                if (CardInfos[i].Group != (byte)Groups.Empty)
+                {
+                    Cards.Add(i, CardInfos[i]);
+                }
+            }
+
+            // Create list of the keys that we can shuffle
+            List<int> Keys = new List<int>(Cards.Keys);
+
+            // Now shuffle the dictionary values using the list with keys
+            int c = Keys.Count;
+            while (c > 1)
+            {
+                c--;
+                int r = Main.rand.Next(0, c + 1);
+                CardInfo value = Cards[Keys[r]];
+                Cards[Keys[r]] = Cards[Keys[c]];
+                Cards[Keys[c]] = value;
+            }
+
+            // put the shuffled values back into the Card list
+            foreach (int i in Cards.Keys)
+            {
+                CardInfos[i] = Cards[i];
             }
         }
 
         public static List<CardInfo> CardToCardInfo(List<Card> Cards)
         {
-            List<CardInfo> CardInfo = new();
+            List<CardInfo> _CardInfo = new();
             foreach (Card c in Cards)
             {
-                if (CardItems.ContainsKey(c.Group) && CardItems[c.Group].ContainsKey(c.Spell))
+                if (c.Group != (byte)Groups.Empty && CardItems.ContainsKey(c.Group) && CardItems[c.Group].ContainsKey(c.Spell))
                 {
-                    CardInfo.Add(CardItems[c.Group][c.Spell].GetCardInfo());
+                    _CardInfo.Add(CardItems[c.Group][c.Spell].GetCardInfo());
+                }
+                else
+                {
+                    _CardInfo.Add(new CardInfo());
                 }
             }
-            return CardInfo;
+            return _CardInfo;
         }
 
-        public static Cast GenerateCasts(List<CardInfo> Cards, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool shuffle = false, List<Card> AlwaysCastCards = null)
+        public static Cast GenerateCast(List<CardInfo> Cards, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool shuffle = false, Card AlwaysCastCard = null)
         {
             // Here we generate the cast info which is passed to the execution part
             // => If this catalyst is a shuffle, the cards should already be shuffled.
 
             // Cast List for storing the Cast blocks
-            List<Cast> Casts = new();
+            Cast CastProperties = new();
 
+            // Save wrap-around cards
             List<CardInfo> CardWrapReady = Cards;
             if (shuffle)
             {
@@ -161,53 +244,111 @@ namespace Kourindou
             }
             CardWrapReady.RemoveRange(CatalystStartIndex, Cards.Count - CatalystStartIndex);
 
-            // Variables needed for loops
-            int CurrentCast = 0;
-            int CurrentBlock = 0;
+            // Check the AlwaysCastCard
+            CardInfo AlwaysCastCardInfo = new CardInfo() { Group = (byte)Groups.Empty };
+            if (AlwaysCastCard != null && AlwaysCastCard.Group != (byte)Groups.Empty)
+            {
+                AlwaysCastCardInfo = GetCardInfo(AlwaysCastCard);
+                AlwaysCastCardInfo.IsInsertedCard = true;
+            }
+
+            // --- Variables needed for loops ---
+
+            // The start index of this cast
             int Index = CatalystStartIndex;
 
+            // Current cast and block, set to zero
+            int CurrentCast = 0;
+            int CurrentBlock = 0;
+
+            // Triggers
             int Triggers = 0;
             bool TriggerActive = false;
 
+            // Multicasts
             int MulticastAmount = 0;
 
-            int ExtraCardsInserted = 0;
-            CardInfo InsertThisCardWrapAround = null;
+            // Amount of additional inserted cards counter, 
+            // used to determine end index for a next cast
+            int InsertedCards = 0;
+
+            // Card that needs to be inserted to the beginning of a wrap around
+            // used for cards that require cards after it to work
+            CardInfo InsertThisCardWrapAround = new CardInfo();
+
+            // If we currently are wrapping around
             bool IsWrappingAround = false;
 
-            int CatalystEndIndex = 0;
+            // Check if there is an unended cast
+            int CastUnEnded = 0;
 
-            // Start Casting
-            while (Index < Cards.Count)
+            // Save the amount of slots on the catalyst
+            int TypicalCatalystCardAmount = Cards.Count;
+
+            // --- Start Casting ---
+            while (Index < Cards.Count && CurrentCast < CatalystCastAmount)
             {
-                if (Casts.ElementAtOrDefault(CurrentCast) == null)
+                // Create a new cast, for when the catalyst has multiple casts
+                if (CastProperties.Casts.ElementAtOrDefault(CurrentCast) == null)
                 {
-                    Casts.Add(new Cast());
-                    if (AlwaysCastCards != null && AlwaysCastCards.Count > 0)
+                    CastProperties.Casts.Add(new CastInfo());
+                    // If this catalyst has a Always-Cast insert it
+                    if (AlwaysCastCardInfo.Group != (byte)Groups.Empty)
                     {
-                        for (int i = 0; i < AlwaysCastCards.Count; i++)
+                        switch ((Groups)AlwaysCastCardInfo.Group)
                         {
-                            Cards.Insert(Index, GetCardInfo(AlwaysCastCards[i]));
-                            ExtraCardsInserted++;
+                            // Projectiles end casts, we don't want this to happen with a multicast
+                            // so increase the multicast amount instead.
+                            case Groups.Projectile:
+                                {
+                                    MulticastAmount++;
+                                }
+                                break;
+
+                            // if the always cast is a multicast, set the multicast amount
+                            case Groups.Multicast:
+                                {
+                                    MulticastAmount += (int)Math.Ceiling(AlwaysCastCardInfo.Strength) - 1;
+                                }
+                                break;
                         }
+
+                        // Insert the card
+                        Cards.Insert(Index, AlwaysCastCardInfo);
+
+                        // Since we have inserted a card, we should use continue here,
+                        // we want the catalyst to execute this index again.
                         continue;
                     }
                 }
 
-                if (Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock) == null)
+                if (CastProperties.Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock) == null)
                 {
-                    Casts[CurrentCast].Blocks.Add(new CastBlock());
+                    CastProperties.Casts[CurrentCast].Blocks.Add(new CastBlock());
+                }
+
+                // Count the amount of cards encoutered that have been inserted,
+                // This is to determine the ending index for the next cast.
+                if (!IsWrappingAround && Cards[Index].IsInsertedCard)
+                {
+                    InsertedCards++;
                 }
 
                 switch ((Groups)Cards[Index].Group)
                 {
+                    case Groups.Empty:
+                        {
+                            // Do nothing
+                        }
+                        break;
+
                     case Groups.Projectile:
                         {
                             if (Triggers > 0)
                             {
                                 Triggers--;
                                 TriggerActive = true;
-                                Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
                             }
                             else
                             {
@@ -216,13 +357,21 @@ namespace Kourindou
                                 if (MulticastAmount > 0)
                                 {
                                     MulticastAmount--;
-                                    Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
                                     CurrentBlock++;
                                 }
                                 else
                                 {
-                                    Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
                                     CurrentCast++;
+
+                                    // If the DiggingBolt is the last card on the catalyst, nullify cooldown
+                                    if (CurrentCast == CatalystCastAmount && Cards[Index].Spell == (byte)Projectile.DiggingBolt)
+                                    {
+                                        CastProperties.CooldownOverride = true;
+                                    }
+
+                                    CastUnEnded = 0;
                                 }
                             }
                         }
@@ -238,12 +387,12 @@ namespace Kourindou
                             {
                                 for (int i = 1; i < (int)Math.Ceiling(Cards[Index].Strength); i++)
                                 {
-                                    if (Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock + i) == null)
+                                    if (CastProperties.Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock + i) == null)
                                     {
-                                        Casts[CurrentCast].Blocks.Add(new CastBlock());
+                                        CastProperties.Casts[CurrentCast].Blocks.Add(new CastBlock());
                                     }
 
-                                    Casts[CurrentCast].Blocks[CurrentBlock + i] = Casts[CurrentCast].Blocks[CurrentBlock];
+                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock + i] = CastProperties.Casts[CurrentCast].Blocks[CurrentBlock];
                                 }
 
                                 MulticastAmount += (int)Math.Ceiling(Cards[Index].Strength) - 1;
@@ -255,254 +404,497 @@ namespace Kourindou
                         {
                             if (TriggerActive)
                             {
-                                Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
                             }
 
-                            Triggers += (int)Math.Ceiling(Cards[Index].Strength);
-                        }
-                        break;
-
-                    case Groups.Repeat:
-                        {
-                            if (TriggerActive)
+                            if (!IsWrappingAround)
                             {
-                                Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
-                            }
-                            else
-                            {
-                                Casts[CurrentCast].Blocks[CurrentBlock].Repeat += (int)Math.Ceiling(Cards[Index].Strength);
-                            }
-                        }
-                        break;
-
-                    case Groups.CastDelay:
-                        {
-                            if (TriggerActive)
-                            {
-                                Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
-                            }
-                            else
-                            {
-                                Casts[CurrentCast].Blocks[CurrentBlock].Delay += (int)Math.Ceiling(Cards[Index].Strength);
+                                Triggers += (int)Math.Ceiling(Cards[Index].Strength);
                             }
                         }
                         break;
 
                     case Groups.Multiplication:
                         {
-                            if (Index + 1 >= Cards.Count)
+                            if (!IsCatalyst)
+                            {
+                                break;
+                            }
+
+                            // Multiplication is at the end of the catalyst
+                            if (Index >= Cards.Count - 1)
                             {
                                 InsertThisCardWrapAround = Cards[Index];
                             }
+                            // Multiplication card is not on the end
                             else
-                            { 
-                                switch ((Groups)Cards[Index + 1].Group)
+                            {
+                                // Check if there is a not empty card after the multiplication
+                                for (int i = Index + 1; i < Cards.Count; i++)
                                 {
-                                    case Groups.Projectile:
-                                    case Groups.Special:
-                                    case Groups.Multicast:
+                                    if (Cards[i].Group != (byte)Groups.Empty)
+                                    {
+                                        switch ((Groups)Cards[i].Group)
                                         {
-                                            // Insert new cards if they are projectiles or special variants
-                                            for (int y = 1; y < (int)Cards[Index].Strength; y++)
-                                            {
-                                                Cards.Insert(Index + 1, Cards[Index + 1]);
-                                                ExtraCardsInserted++;
-                                            }
-                                        }
-                                        break;
+                                            case Groups.Projectile:
+                                            case Groups.Special:
+                                            case Groups.Multicast:
+                                                {
+                                                    // Insert new cards if they are projectile, special or multicast variants
+                                                    for (int y = 1; y < (int)Cards[Index].Strength; y++)
+                                                    {
+                                                        Cards.Insert(i, Cards[i]);
+                                                        Cards[i + 1].IsInsertedCard = true;
+                                                    }
+                                                }
+                                                break;
 
-                                    case Groups.Multiplication:
-                                        {
-                                            // Do nothing, we don't want to chain multiplication cards
-                                        }
-                                        break;
+                                            case Groups.Multiplication:
+                                                {
+                                                    Cards[i].Strength *= Cards[Index].Strength;
+                                                    if (Cards[i].Strength > 5f)
+                                                    {
+                                                        Cards[i].Strength = 5f;
+                                                    }
+                                                }
+                                                break;
 
-                                    default:
-                                        {
-                                            Cards[Index + 1].Strength *= Cards[Index].Strength;
+                                            case Groups.CatalystModifier:
+                                                {
+                                                    switch ((CatalystModifierVariant)Cards[i].Variant)
+                                                    {
+                                                        case CatalystModifierVariant.ReduceCooldownPercent:
+                                                        case CatalystModifierVariant.ReduceRechargePercent:
+                                                            {
+                                                                Cards[i].Strength = (float)Math.Pow(Cards[i].Strength, Cards[Index].Strength);
+                                                            }
+                                                            break;
+
+                                                        default:
+                                                            {
+                                                                Cards[i].Strength *= Cards[Index].Strength;
+                                                            }
+                                                            break;
+
+                                                    }
+                                                }
+                                                break;
+
+                                            default:
+                                                {
+                                                    Cards[i].Strength *= Cards[Index].Strength;
+                                                }
+                                                break;
                                         }
+
+                                        // Stop the for loop because this card has executed its effect
                                         break;
+                                    }
+                                    // Check if the search has ended to the last card of catalyst
+                                    else if (i == Cards.Count - 1)
+                                    {
+                                        InsertThisCardWrapAround = Cards[Index];
+                                    }
                                 }
                             }
                             Cards[Index].Strength = 1f;
                         }
                         break;
 
+                    case Groups.CatalystModifier:
+                        {
+                            switch ((CatalystModifierVariant)Cards[Index].Variant)
+                            {
+                                case CatalystModifierVariant.None:
+                                    {
+                                        if (!IsCatalyst)
+                                        {
+                                            break;
+                                        }
+
+                                        switch ((CatalystModifier)Cards[Index].Spell)
+                                        {
+                                            case CatalystModifier.EliminateCooldown:
+                                                {
+                                                    CastProperties.CooldownOverride = true;
+                                                }
+                                                break;
+
+                                            case CatalystModifier.EliminateRecharge:
+                                                {
+                                                    CastProperties.RechargeOverride = true;
+                                                }
+                                                break;
+                                        }
+                                    }
+                                    break;
+
+                                case CatalystModifierVariant.ReduceRechargePercent:
+                                    {
+                                        if (!TriggerActive && IsCatalyst)
+                                        { 
+
+                                        }
+                                    }
+                                    break;
+
+                                case CatalystModifierVariant.ReduceCooldownPercent:
+                                    {
+                                        if (!TriggerActive && IsCatalyst)
+                                        {
+                                            CastProperties.CooldownTimePercentage *= Cards[Index].Strength;
+                                        }
+                                    }
+                                    break;
+
+                                case CatalystModifierVariant.Repeat:
+                                    {
+                                        if (TriggerActive)
+                                        {
+                                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                                        }
+                                        else
+                                        {
+                                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Repeat += (int)Math.Ceiling(Cards[Index].Strength);
+                                        }
+                                    }
+                                    break;
+
+                                case CatalystModifierVariant.Delay: 
+                                    {
+                                        if (TriggerActive)
+                                        {
+                                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                                        }
+                                        else
+                                        {
+                                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Delay += (int)Math.Ceiling(Cards[Index].Strength);
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                        break;
+                    
                     case Groups.Special:
                         {
                             if (TriggerActive)
                             {
-                                Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
                             }
                             else
                             {
-                                if (Cards[Index].Spell == (byte)Special.RandomCard)
+                                switch ((Special)Cards[Index].Spell)
                                 {
-                                    Cards[Index] = GetRandomCard(Cards[Index]);
-                                    Index--;
+                                    case Special.RandomCard:
+                                        {
+                                            Cards[Index] = GetRandomCard(Cards[Index]);
+                                            continue;
+                                        }
+
+                                    case Special.CastEverything:
+                                        {
+                                            if (IsCatalyst)
+                                            {
+                                                CatalystCastAmount = 1000;
+                                            }
+                                        }
+                                        break;
                                 }
                             }
+                            break;
+                        }
+                        
+
+                    default:
+                        {
+                            CastUnEnded++;
+                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardInfo.Add(Cards[Index]);
                         }
                         break;
                 }
 
-                // Check for unended casts, need to wrap around
-
-                if (Index == Cards.Count - 1 && !IsWrappingAround)
+                if (Cards[Index].Group != (byte)Groups.Empty)
                 {
-                    if (TriggerActive || Triggers > 0 || MulticastAmount > 0 || CurrentCast < CatalystCastAmount)
+                    if (!CastProperties.CooldownOverride)
                     {
-                        // Add the wrap-around cards now!
-                        foreach (CardInfo cardInfo in CardWrapReady)
-                        {
-                            Cards.Add(cardInfo);
-                        }
-
-                        CatalystEndIndex = Index - ExtraCardsInserted;
-                        IsWrappingAround = true;
+                        CastProperties.CooldownTime += Cards[Index].AddCooldown;
                     }
+                    if (!CastProperties.RechargeOverride)
+                    {
+                        CastProperties.RechargeTime += Cards[Index].AddRecharge;
+                    }
+
+                    CastProperties.RechargeTime += Cards[Index].AddUseTime;
                 }
 
-                if (Index == Cards.Count - 1 && IsWrappingAround)
+                // Check if we need to wrap around:
+                // => If we are on the last card and are currently not wrapping-around
+                //    - Check if there are trigger active -> Yes Wrap Around
+                //    - Check if a Multicast is active -> Yes Wrap Around
+                //    - Check if a Cast is currently not ended -> Yes Wrap Around
+                if (IsCatalyst)
                 {
-                    break;
+                    if (!IsWrappingAround && Index == Cards.Count - 1)
+                    {
+                        if (TriggerActive || Triggers > 0 || MulticastAmount > 0 || CastUnEnded > 0)
+                        {
+                            // Add the previously saved Multiplication card
+                            if (InsertThisCardWrapAround.Group != (byte)Groups.Empty)
+                            {
+                                Cards.Add(InsertThisCardWrapAround);
+                            }
+
+                            // Now add the wrap-around cards
+                            foreach (CardInfo cardInfo in CardWrapReady)
+                            {
+                                Cards.Add(cardInfo);
+                            }
+
+                            // Since we are wrapping-around, the catalyst needs to go on cooldown
+                            CastProperties.MustGoOnCooldown = true;
+
+                            // Save the end index
+                            CastProperties.NextCastStartIndex = Index - InsertedCards;
+
+                            // Make it so that this catalyst cannot fire more in wrap-around if it has multiple casts
+                            CatalystCastAmount = CurrentCast + 1;
+
+                            // If there is a trigger active, finish it. But we cannot start new ones during wrap-around.
+                            if (TriggerActive)
+                            {
+                                Triggers = 0;
+                            }
+
+                            // Wrapping around is true
+                            IsWrappingAround = true;
+                        }
+                    }
+                    else if (IsWrappingAround && Index == Cards.Count - 1)
+                    {
+                        break;
+                    }
                 }
 
                 Index++;
             }
 
-            // After creating the casts set the ending point minus the cards inserted
-            if (!IsWrappingAround)
+            #region AfterGeneration
+            // Execute catalyst specific properties
+            if (IsCatalyst)
             {
-                CatalystEndIndex = Index - ExtraCardsInserted;
-            }
-        }
+                // Determine the start index of the next potential cast
+                CastProperties.NextCastStartIndex = Index - InsertedCards;
+                
+                // If the catalyst is not set on cooldown yet by the wrap-around,
+                // check right now if we're done
+                if (!CastProperties.MustGoOnCooldown)
+                {
+                    // Just in case check if this position is beyond the typical amount of cards
+                    if (CastProperties.NextCastStartIndex >= TypicalCatalystCardAmount)
+                    {
+                        CastProperties.MustGoOnCooldown = true;
+                    }
+                    
+                    // if its within the cards on the catalyst, 
+                    // check if there are cards for the next cast
+                    else
+                    {
+                        // Check if there are cards that can be fired next time
+                        bool Valid = false;
+                        for (int i = Index; i<Cards.Count; i++)
+                        {
+                            if (Cards[i].Group != (byte) Groups.Empty)
+                            {
+                                Valid = true;
+                                break;
+                            }
+                        }
 
+                        // No cards found => cooldown
+                        if (!Valid)
+                        {
+                            CastProperties.MustGoOnCooldown = true;
+                        }
+                    }
+                }
+                
+                // Reset the start position for the next cast
+                if (CastProperties.MustGoOnCooldown)
+                {
+                    CastProperties.NextCastStartIndex = 0;
+                }
+                
+                // If an recharge or cooldown override has been executed:
+                // Set the recharge or cooldown to zero.
+                if (CastProperties.CooldownOverride)
+                {
+                    CastProperties.CooldownTime = 0;
+                }
+
+                if (CastProperties.RechargeOverride)
+                {
+                    CastProperties.RechargeTime = 0;
+                }
+            }
+            else
+            {
+                // GenerateCast not run by a catalyst,
+                // this must be a projectile with a trigger
+                // projectiles don't have cooldowns, they simply die
+                CastProperties.MustGoOnCooldown = true;
+                CastProperties.NextCastStartIndex = 0;
+            }
+
+            // Remove CastInfo and CastBlocks which don't have projectiles.
+            for (int _CastInfo = CastProperties.Casts.Count; _CastInfo >= 0; _CastInfo--)
+            {
+                for (int _CastBlock = CastProperties.Casts[_CastInfo].Blocks.Count; _CastBlock >= 0; _CastBlock++)
+                {
+                    // Remove CastBlocks if it has no projectile
+                    if (!CastProperties.Casts[_CastInfo].Blocks[_CastBlock].CardInfo.Any(_CardInfo => _CardInfo.Group == (byte)Groups.Projectile && _CardInfo.Spell != (byte)Projectile.MyOwnProjectileInstance))
+                    {
+                        CastProperties.Casts[_CastInfo].Blocks.RemoveAt(_CastBlock);
+                    }
+                }
+            
+                // Remove CastInfo if there are no CastBlocks anymore
+                if (CastProperties.Casts[_CastInfo].Blocks.Count <= 0)
+                {
+                    CastProperties.Casts.RemoveAt(_CastInfo);
+                }
+            }
+            
+            // Check if we have something we can cast, if not the cast fails.
+            if (CastProperties.Casts.Count <= 0)
+            {
+                CastProperties.FailedToCast = true;
+            }
+        
+            // Determine the MinimumUseTime
+            foreach (CastInfo _CastInfo in CastProperties.Casts)
+            {
+                foreach (CastBlock _CastBlock in _CastInfo.Blocks)
+                {
+                    if (_CastBlock.Repeat * _CastBlock.Delay > CastProperties.MinimumUseTime)
+                    {
+                        CastProperties.MinimumUseTime = _CastBlock.Repeat * _CastBlock.Delay;
+                    }
+                }
+            }
+            #endregion
+            // Cast properties done!
+            return CastProperties;
+        }
+        
         #region Random
         public static CardInfo GetRandomCard(CardInfo _cardInfo)
         {
             if (_cardInfo.IsRandomCard)
             {
-                byte NewGroup = (_cardInfo.Group == (byte)Groups.Special && _cardInfo.Spell == (byte)Special.RandomCard) ? GetRandomGroup() : _cardInfo.Group;
-                short NewSpell = GetRandomSpell(NewGroup);
-
-                CardInfo info = GetCardInfo(_cardInfo.Group, _cardInfo.Spell);
-                if (info != null)
+                if (_cardInfo.Group == (byte)Groups.Special && _cardInfo.Spell == (byte)Special.RandomCard)
                 {
-                    _cardInfo = info;
+                    // Grab a random card from the card pool
+                    bool Valid = false;
+                    while (!Valid)
+                    {
+                        int CardNumber = Main.rand.Next(0, EntireCardPool.Count);
+                        _cardInfo = GetCardInfo(EntireCardPool[CardNumber]);
+                        if (!_cardInfo.IsRandomCard)
+                        { 
+                            Valid = true;
+                        }
+                    }
+                }
+                else
+                {
+                    // Get a random card in the same group and which has the same variant
+                    CardInfo info = GetCardInfo(_cardInfo.Group, GetRandomSpell(_cardInfo));
+                    if (info != null)
+                    {
+                        return info;
+                    }
                 }
             }
-
+        
             return _cardInfo;
         }
 
-        public static byte GetRandomGroup()
-        {
-            bool Valid = false;
-            byte NewGroup = (byte)Groups.Projectile;
-
-            while (!Valid)
-            {
-                NewGroup = (byte)Main.rand.Next(0, Enum.GetNames(typeof(Groups)).Length);
-                if (NewGroup != (byte)Groups.Special)
-                {
-                    Valid = true;
-                }
-            }
-
-            return NewGroup;
-        }
-
-        public static short GetRandomSpell(byte Group)
+        public static byte GetRandomSpell(CardInfo _cardInfo)
         {
             // Invalid new spell
-            short NewSpell = -1;
+            byte NewSpell = 0;
             bool Valid = false;
-
-            // Check if the given group exists in CardItems
-            if (!CardItems.ContainsKey(Group))
-            {
-                return NewSpell;
-            }
-
+        
             while (!Valid)
             {
-                switch ((Groups)Group)
+                switch ((Groups)_cardInfo.Group)
                 {
                     case Groups.Projectile:
                         {
-                            NewSpell = (short)Main.rand.Next(0, Enum.GetNames(typeof(Formation)).Length);
+                            NewSpell = (byte)Main.rand.Next(0, Enum.GetNames(typeof(Formation)).Length);
                         }
                         break;
                     case Groups.Formation:
                         {
-                            NewSpell = (short)Main.rand.Next(0, Enum.GetNames(typeof(Formation)).Length);
+                            NewSpell = (byte)Main.rand.Next(0, Enum.GetNames(typeof(Formation)).Length);
                         }
                         break;
                     case Groups.Trajectory:
                         {
-                            NewSpell = (short)Main.rand.Next(0, Enum.GetNames(typeof(Trajectory)).Length);
+                            NewSpell = (byte)Main.rand.Next(0, Enum.GetNames(typeof(Trajectory)).Length);
                         }
                         break;
                     case Groups.ProjectileModifier:
                         {
-                            NewSpell = (short)Main.rand.Next(0, Enum.GetNames(typeof(ProjectileModifier)).Length);
+                            NewSpell = (byte)Main.rand.Next(0, Enum.GetNames(typeof(ProjectileModifier)).Length);
                         }
                         break;
                     case Groups.CatalystModifier:
                         {
-                            NewSpell = (short)Main.rand.Next(0, Enum.GetNames(typeof(CatalystModifier)).Length);
+                            NewSpell = (byte)Main.rand.Next(0, Enum.GetNames(typeof(CatalystModifier)).Length);
                         }
                         break;
                     case Groups.Element:
                         {
-                            NewSpell = (short)Main.rand.Next(0, Enum.GetNames(typeof(Element)).Length);
+                            NewSpell = (byte)Main.rand.Next(0, Enum.GetNames(typeof(Element)).Length);
                         }
                         break;
                     case Groups.Multicast:
                         {
-                            NewSpell = (short)Main.rand.Next(0, Enum.GetNames(typeof(Multicast)).Length);
+                            NewSpell = (byte)Main.rand.Next(0, Enum.GetNames(typeof(Multicast)).Length);
                         }
                         break;
                     case Groups.Trigger:
                         {
-                            NewSpell = (short)Main.rand.Next(0, Enum.GetNames(typeof(Trigger)).Length);
-                        }
-                        break;
-                    case Groups.Repeat:
-                        {
-                            NewSpell = (short)Main.rand.Next(0, Enum.GetNames(typeof(Repeat)).Length);
-                        }
-                        break;
-                    case Groups.CastDelay:
-                        {
-                            NewSpell = (short)Main.rand.Next(0, Enum.GetNames(typeof(CastDelay)).Length);
+                            NewSpell = (byte)Main.rand.Next(0, Enum.GetNames(typeof(Trigger)).Length);
                         }
                         break;
                     case Groups.Multiplication:
                         {
-                            NewSpell = (short)Main.rand.Next(0, Enum.GetNames(typeof(Multiplication)).Length);
+                            NewSpell = (byte)Main.rand.Next(0, Enum.GetNames(typeof(Multiplication)).Length);
                         }
                         break;
-                    default: 
+                    default:
                         {
                             return NewSpell;
-                        } 
+                        }
                 }
-
-                if (!CardItems[Group][NewSpell].IsRandomCard)
+        
+                if (!GetCardInfo(_cardInfo.Group, NewSpell).IsRandomCard && (GetCardInfo(_cardInfo.Group, NewSpell).Variant == _cardInfo.Variant || _cardInfo.Variant == 0))
                 {
                     Valid = true;
                 }
             }
-
+        
             return NewSpell;
         }
         #endregion
-
+        
         #region Enumerators
         public enum Groups : byte
         {
+            Empty,
             Projectile,
             Formation,
             Trajectory,
@@ -511,24 +903,25 @@ namespace Kourindou
             Element,
             Multicast,
             Trigger,
-            Repeat,
-            CastDelay,
             Multiplication,
             Special
         }
-
-        public enum Projectile
-        { 
+        
+        public enum Projectile : byte
+        {
             Shot,
+            DiggingBolt,
             MyOwnProjectileInstance
         }
-
-        public enum Formation
+        
+        public enum Formation : byte
         {
             // Default straight line
+            // Variant 0
             Straight,
 
             // Duplicates projectile and add spread, like a shotgun
+            // Variant 1
             DoubleScatter,
             TripleScatter,
             QuadrupleScatter,
@@ -536,6 +929,7 @@ namespace Kourindou
             RandomScatter,
 
             // Duplicates projectile and place them side-by-side
+            // Variant 2
             DoubleFork,
             TripleFork,
             QuadrupleFork,
@@ -543,6 +937,7 @@ namespace Kourindou
             RandomFork,
 
             // Duplicates projectile and cast it in a circle around the player
+            // Variant 3
             Quadragon,
             Pentagon,
             Hexagon,
@@ -551,7 +946,15 @@ namespace Kourindou
             Randagon
         }
 
-        public enum Trajectory
+        public enum FormationVariant : byte
+        { 
+            None,
+            Scatter,
+            Fork,
+            SomethingGon
+        }
+        
+        public enum Trajectory : byte
         {
             ArcLeft,
             ArcRight,
@@ -563,72 +966,119 @@ namespace Kourindou
             Spiral,
             Boomerang,
             Aiming,
-            Daedalus
+            Daedalus,
+            RandomTrajectory
         }
-
-        public enum ProjectileModifier
+        
+        public enum ProjectileModifier : byte
         {
             // Changes speed over time
             Acceleration,
             Deceleration,
-
+        
             // Change base speed
             SpeedUp,
             SpeedDown,
             Stationary,
-
+        
             // Change base spread
             SpreadUp,
             SpreadDown,
             AccurateAF,
-
+        
             // Alter the position where the projectiles are spawned
             DistantCast,
             TeleportCast,
             ReverseCast,
-
+        
             // Change the amount of tile bounces this projectile can do
             BounceUp,
             BounceDown,
             FallingFlat,
-
+        
             // Change penetration stats
             PenetrationUp,
             PenetrationDown,
             PenetrationZero,
             PenetrationAll,
-
+        
             // Change gravity 
             Gravity,
             NoGravity,
             AntiGravity,
-
+        
             // Change homing
             Homing,
             RotateToEnemy,
-
+        
             // Tile collision
             Ghosting,
             Collide,
-
+        
             // Lifetime
-            LifetimeUp, 
+            LifetimeUp,
             LifetimeDown,
             Instant,
-
+        
             // Rotation
             RotateLeft90,
             RotateRight90,
             RotateLeft45,
             RotateRight45,
-        }
-
-        public enum CatalystModifier
-        { 
         
+            // Random
+            RandomProjectileModifier
+        }
+        
+        public enum CatalystModifier : byte
+        {
+            // reduces cooldown percentage-based
+            // Variant 1
+            ReduceCooldown10Percent,
+            ReduceCooldown25Percent,
+            ReduceCooldown50Percent,
+            RandomCooldownPrecent,
+
+            // reduces recharge percentage-based
+            // Variant 2
+            ReduceRecharge10Percent,
+            ReduceRecharge25Percent,
+            ReduceRecharge50Percent,
+            RandomRechargePrecent,
+
+            // Eliminates waiting time
+            // Variant 0
+            EliminateCooldown,
+            EliminateRecharge,
+        
+            // Repeats
+            // Variant 3
+            Repeat2,
+            Repeat3,
+            Repeat4,
+            Repeat5,
+            RepeatRandom,
+
+            // Delays
+            // Variant 4
+            DelayCastBy1,
+            DelayCastBy2,
+            DelayCastBy3,
+            DelayCastBy4,
+            DelayCastBy5,
+            DelayCastRandom
         }
 
-        public enum Element
+        public enum CatalystModifierVariant : byte
+        { 
+            None,
+            ReduceCooldownPercent,
+            ReduceRechargePercent,
+            Repeat,
+            Delay
+        }
+        
+        public enum Element : byte
         {
             Sun,
             Moon,
@@ -638,40 +1088,27 @@ namespace Kourindou
             Metal,
             Earth
         }
-
-        public enum Multicast
+        
+        public enum Multicast : byte
         {
-
+            DoubleSpell,
+            TrippleSpell,
+            QuadrupleSpell
         }
-
-        public enum Trigger
+        
+        public enum Trigger : byte
         {
-
+            Timeout,
+            Timer
         }
-
-        public enum Special
-        { 
+        
+        public enum Special : byte
+        {
+            CastEverything,
             RandomCard
         }
-
-        public enum Repeat
-        { 
-            Repeat2, 
-            Repeat3, 
-            Repeat4, 
-            Repeat5
-        }
-
-        public enum CastDelay
-        {
-            DelayCastBy1,
-            DelayCastBy2,
-            DelayCastBy3,
-            DelayCastBy4,
-            DelayCastBy5,
-        }
-
-        public enum Multiplication
+        
+        public enum Multiplication : byte
         {
             MultiplyBy2,
             MultiplyBy3,
@@ -680,7 +1117,8 @@ namespace Kourindou
             DivideBy2,
             DivideBy3,
             DivideBy4,
-            DivideBy5
+            DivideBy5,
+            MultiplyDivideRandom
         }
         #endregion
     }

@@ -21,25 +21,31 @@ namespace Kourindou.Items.Spellcards
         public abstract byte Group { get; set; }
 
         // Spell of this card
-        public abstract short Spell { get; set; }
+        public abstract byte Spell { get; set; }
 
         // Strength of this card, used for things like the amount of projectile in a formation
         public abstract float Strength { get; set; }
 
+        // Card variant
+        public abstract byte Variant { get; set; }
+
         // If this card needs to be replaced by another card
         public abstract bool IsRandomCard { get; set; }
 
-        // Angle of this card, used for formation scatter angles
-        public abstract float FixedAngle { get; set; }
-
         // UseTime that this card adds to the catalyst
-        public abstract float AddUseTime { get; set; }
+        public abstract int AddUseTime { get; set; }
 
         // Cooldown that this card adds to the catalyst
-        public abstract float AddCooldown { get; set; }
+        public abstract int AddCooldown { get; set; }
+
+        // Recharge that this card adds to the catalyst
+        public abstract int AddRecharge { get; set; }
 
         // Spread that this card adds to the catalyst
         public abstract float AddSpread { get; set; }
+
+        // Angle of this card, used for formation scatter angles
+        public abstract float FixedAngle { get; set; }
 
         public override void Load()
         {
@@ -55,7 +61,14 @@ namespace Kourindou.Items.Spellcards
                 Group = Group,
                 Spell = Spell,
                 Strength = Strength,
-                IsRandomCard = IsRandomCard
+                Variant = Variant,
+                AddUseTime = AddUseTime,
+                AddCooldown = AddCooldown,
+                AddRecharge = AddRecharge,
+                AddSpread = AddSpread,
+                FixedAngle = FixedAngle,
+                IsRandomCard = IsRandomCard,
+                IsInsertedCard = false
             };
         }
     }
