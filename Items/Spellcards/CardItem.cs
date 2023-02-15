@@ -1,75 +1,73 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.GameContent;
-using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
-using Terraria.Utilities;
-using static Terraria.ModLoader.ModContent;
+using static Kourindou.KourindouSpellcardSystem;
 
 namespace Kourindou.Items.Spellcards
 {
     public abstract class CardItem : ModItem
     {
         // Group of this card
-        public abstract byte Group { get; set; }
+        public abstract byte Group { get; } //= (byte)Groups.Empty;
 
         // Spell of this card
-        public abstract byte Spell { get; set; }
+        public abstract byte Spell { get; } //= 0;
+
+        // Variant of this card
+        public abstract byte Variant { get; }
 
         // Strength of this card, used for things like the amount of projectile in a formation
-        public abstract float Strength { get; set; }
-
-        // Card variant
-        public abstract byte Variant { get; set; }
-
-        // If this card needs to be replaced by another card
-        public abstract bool IsRandomCard { get; set; }
+        public abstract float Strength { get; set; } //= 1f;
 
         // UseTime that this card adds to the catalyst
-        public abstract int AddUseTime { get; set; }
+        public abstract int AddUseTime { get; set; } //= 0;
 
         // Cooldown that this card adds to the catalyst
-        public abstract int AddCooldown { get; set; }
+        public abstract int AddCooldown { get; set; } //= 0;
 
         // Recharge that this card adds to the catalyst
-        public abstract int AddRecharge { get; set; }
+        public abstract int AddRecharge { get; set; } //= 0;
 
         // Spread that this card adds to the catalyst
-        public abstract float AddSpread { get; set; }
+        public abstract float AddSpread { get; set; } //= 0f;
 
         // Angle of this card, used for formation scatter angles
-        public abstract float FixedAngle { get; set; }
+        public abstract float FixedAngle { get; set; } //= 0f
+
+        // If this card needs to be replaced by another card
+        public abstract bool IsRandomCard { get; set; } //= false;
+
+        // If this card is a cunsumable card
+        public abstract bool IsConsumable { get; set; } //= false;
+
+        // If this card needs a projectile to work
+        public abstract bool NeedsProjectileCard { get; set; } //= false;
+
+        // If this card has been inserted
+        public bool IsInsertedCard { get; set; } = false;
+
+        // Position of this card on the catalyst slots
+        public int SlotPosition { get; set; } = -1;
 
         public override void Load()
         {
-            // When loading the mod add this Item
-            KourindouSpellcardSystem.AddCardItem(Group, Spell, this);
+            // When loading this card, register it!
+            RegisterCardItem(Group, Spell, this.Type);
             base.Load();
         }
 
-        public CardInfo GetCardInfo()
+        public virtual void ApplyMultiplication(float input)
         {
-            return new CardInfo()
-            {
-                Group = Group,
-                Spell = Spell,
-                Strength = Strength,
-                Variant = Variant,
-                AddUseTime = AddUseTime,
-                AddCooldown = AddCooldown,
-                AddRecharge = AddRecharge,
-                AddSpread = AddSpread,
-                FixedAngle = FixedAngle,
-                IsRandomCard = IsRandomCard,
-                IsInsertedCard = false
-            };
+            // The input is the multiplication amount, so should be 2f to 5f
+            Strength *= input;
+            AddUseTime = (int)Math.Ceiling(this.AddUseTime * input);
+            AddCooldown = (int)Math.Ceiling(this.AddCooldown * input);
+            AddRecharge = (int)Math.Ceiling(this.AddRecharge * input);
+            AddSpread *= input;
+        }
+
+        public virtual byte ApplyRandomCard()
+        {
+            return 255;
         }
     }
 }
