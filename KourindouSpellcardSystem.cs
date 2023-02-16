@@ -1,7 +1,5 @@
 ﻿// TODO
-// => Convert CardInfo to regular CardItems
 // => DiggingBolt nullify cooldown effect when last projectile => Move to actual cast code, keep track which projectile card has fired last
-// => Consumable cards
 
 using System;
 using System.Linq;
@@ -59,6 +57,9 @@ namespace Kourindou
         // Minimum time the catalyst needs to be used
         // for repeats+cast delays
         public int MinimumUseTime { get; set; } = 0;
+
+        // Chance to not consume cards
+        public float ChanceNoConsumeCard = 0f;
 
         // The actual cast info
         public List<CastInfo> Casts { get; set; }
@@ -201,6 +202,8 @@ namespace Kourindou
             if (AlwaysCastCard != null && AlwaysCastCard.Group != (byte)Groups.Empty)
             {
                 AlwaysCastCard.IsInsertedCard = true;
+                AlwaysCastCard.AddCooldown = 0;
+                AlwaysCastCard.AddRecharge = 0;
             }
 
             // --- Variables needed for loops ---
@@ -227,7 +230,7 @@ namespace Kourindou
             // used for cards that require cards after it to work
             CardItem InsertThisCardWrapAround = GetCardItem((byte)Groups.Empty, 0);
 
-            // If we currently are wrapping around
+            // If we are currently wrapping around
             bool IsWrappingAround = false;
 
             // Check if there is an unended cast
@@ -236,6 +239,10 @@ namespace Kourindou
             // Save the amount of slots on the catalyst
             int TypicalCatalystCardAmount = Cards.Count;
 
+            // Amount of cards where cooldown or recharge need to be ignored
+            int NoCooldownCardAmount = 0;
+            int NoRechargeCardAmount = 0;
+
             // --- Start Casting ---
             while (Index < Cards.Count && CurrentCast < CatalystCastAmount)
             {
@@ -243,24 +250,27 @@ namespace Kourindou
                 if (CastProperties.Casts.ElementAtOrDefault(CurrentCast) == null)
                 {
                     CastProperties.Casts.Add(new CastInfo());
-                    // If this catalyst has a Always-Cast insert it
+
+                    // If this catalyst has a Always-Cast insert the card to the front of this cast
                     if (AlwaysCastCard.Group != (byte)Groups.Empty)
                     {
                         if (AlwaysCastCard.Group == (byte)Groups.Projectile)
                         {
-                            // Projectiles end casts, we don't want this to happen with a projectile as alwayscast
+                            // Projectiles end casts, we don't want this to happen with a projectile as Always-Cast
+                            // Increase the multicast amount by 1 so it continues after this projectile.
                             MulticastAmount++;
                         }
 
-                        // Insert the card
+                        // Insert the card to the front
                         Cards.Insert(Index, AlwaysCastCard);
 
                         // Since we have inserted a card, we should use continue here,
-                        // we want the catalyst to execute this index again.
+                        // we want the catalyst to execute this index again (has the new card now).
                         continue;
                     }
                 }
 
+                // Create a new castblock
                 if (CastProperties.Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock) == null)
                 {
                     CastProperties.Casts[CurrentCast].Blocks.Add(new CastBlock());
@@ -273,16 +283,12 @@ namespace Kourindou
                     InsertedCards++;
                 }
 
-                // Get random values for random cards
+                // Replace this random card with a new one
                 if (Cards[Index].IsRandomCard)
                 {
-                    byte NewSpell = Cards[Index].ApplyRandomCard();
-                    if (NewSpell != 255)
-                    {
-                        int pos = Cards[Index].SlotPosition;
-                        Cards[Index] = GetCardItem(Cards[Index].Group, NewSpell);
-                        Cards[Index].SlotPosition = pos;
-                    }
+                    int pos = Cards[Index].SlotPosition;
+                    Cards[Index] = GetRandomCard(Cards[Index]);
+                    Cards[Index].SlotPosition = pos;
                 }
 
                 switch ((Groups)Cards[Index].Group)
@@ -295,9 +301,10 @@ namespace Kourindou
 
                     case Groups.Projectile:
                         {
+                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
+
                             if (Triggers > 0)
                             {
-                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
                                 Triggers--;
                                 TriggerActive = true;
                             }
@@ -307,14 +314,13 @@ namespace Kourindou
 
                                 if (MulticastAmount > 0)
                                 {
-                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
                                     MulticastAmount--;
                                     CurrentBlock++;
                                 }
                                 else
                                 {
-                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
                                     CurrentCast++;
+                                    CurrentBlock = 0;
                                     CastUnEnded = 0;
                                 }
                             }
@@ -325,21 +331,19 @@ namespace Kourindou
                         {
                             if (TriggerActive)
                             {
-                                Triggers += (int)Math.Ceiling(Cards[Index].Strength) - 1;
+                                Triggers += (int)Cards[Index].GetValue() - 1;
                             }
                             else
                             {
-                                for (int i = 1; i < (int)Math.Ceiling(Cards[Index].Strength); i++)
+                                for (int i = 1; i < (int)Cards[Index].GetValue(); i++)
                                 {
                                     if (CastProperties.Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock + i) == null)
                                     {
-                                        CastProperties.Casts[CurrentCast].Blocks.Add(new CastBlock());
+                                        CastProperties.Casts[CurrentCast].Blocks.Add(CastProperties.Casts[CurrentCast].Blocks[CurrentBlock]);
                                     }
-
-                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock + i] = CastProperties.Casts[CurrentCast].Blocks[CurrentBlock];
                                 }
 
-                                MulticastAmount += (int)Math.Ceiling(Cards[Index].Strength) - 1;
+                                MulticastAmount += (int)Cards[Index].GetValue() - 1;
                             }
                         }
                         break;
@@ -354,7 +358,7 @@ namespace Kourindou
                             // No trigger active: During wrap-around we do not want to add triggers.
                             else if (!IsWrappingAround)
                             {
-                                Triggers += (int)Math.Ceiling(Cards[Index].Strength);
+                                Triggers += (int)Cards[Index].GetValue();
                             }
                         }
                         break;
@@ -385,9 +389,9 @@ namespace Kourindou
                                         {
                                             // The card encountered is a random card
                                             bool consume = Cards[i].IsConsumable;
-                                            int stack = Cards[i].SlotPosition;
+                                            int stack = Cards[i].Item.stack;
                                             int pos = Cards[i].SlotPosition;
-                                            if (Cards[i].Group == (byte)Groups.Special && Cards[i].Spell == (byte)Special.RandomCard)
+                                            if (Cards[i].IsRandomCard)
                                             {
                                                 Cards[i] = GetRandomCard(Cards[i]);
                                                 Cards[i].SlotPosition = pos;
@@ -401,9 +405,9 @@ namespace Kourindou
                                                 case Groups.Multicast:
                                                     {
                                                         // If the cards found are of the type: Projectile, Special or Multicast:
-                                                        // We cannot apply multiplication effects with the strength property.
+                                                        // We cannot apply multiplication effects with the amount property.
                                                         // Insert a copy of the same card instead
-                                                        for (int y = 1; y < (int)Cards[Index].Strength; y++)
+                                                        for (int y = 1; y < (int)Cards[Index].GetValue(); y++)
                                                         {
                                                             if (consume && stack-- <= 0)
                                                             {
@@ -425,56 +429,26 @@ namespace Kourindou
                                                         }
                                                     }
                                                     break;
-                                                /*
-                                                case Groups.Multiplication:
-                                                    {
-                                                        Cards[i].Strength *= Cards[Index].Strength;
-                                                        if (Cards[i].Strength > 5f)
-                                                        {
-                                                            Cards[i].Strength = 5f;
-                                                        }
-                                                    }
-                                                    break;
 
-                                                case Groups.CatalystModifier:
-                                                    {
-                                                        switch ((CatalystModifierVariant)Cards[i].Variant)
-                                                        {
-                                                            case CatalystModifierVariant.ReduceCooldownPercent:
-                                                            case CatalystModifierVariant.ReduceRechargePercent:
-                                                                {
-                                                                    Cards[i].Strength = (float)Math.Pow(Cards[i].Strength, Cards[Index].Strength);
-                                                                }
-                                                                break;
-
-                                                            default:
-                                                                {
-                                                                    Cards[i].Strength *= Cards[Index].Strength;
-                                                                }
-                                                                break;
-
-                                                        }
-                                                    }
-                                                    break;
-                                                */
                                                 default:
                                                     {
-                                                        float strength = Cards[Index].Strength;
+                                                        // Index = The multiplication card here, get its value (the amount of multiplications)
+                                                        float amount = Cards[Index].GetValue();
 
                                                         if (consume)
                                                         {
-                                                            if ((int)strength > stack)
+                                                            if ((int)Math.Ceiling(amount) > stack)
                                                             {
-                                                                strength = (float)stack;
+                                                                amount = (float)stack;
                                                             }
 
-                                                            for (int y = 1; y < (int)strength; y++)
+                                                            for (int y = 1; y < (int)amount; y++)
                                                             {
                                                                 CastProperties.ConsumedCards.Add(Cards[i].SlotPosition);
                                                             }
                                                         }
 
-                                                        Cards[i].ApplyMultiplication(strength);
+                                                        Cards[i].ApplyMultiplication(amount);
                                                     }
                                                     break;
                                             }
@@ -504,7 +478,31 @@ namespace Kourindou
                             {
                                 switch ((CatalystModifierVariant)Cards[Index].Variant)
                                 {
-                                    case CatalystModifierVariant.None:
+                                    case CatalystModifierVariant.ReduceRechargePercent:
+                                        {
+                                            CastProperties.RechargeTimePercentage *= Cards[Index].GetValue();
+                                        }
+                                        break;
+
+                                    case CatalystModifierVariant.ReduceCooldownPercent:
+                                        {
+                                            CastProperties.CooldownTimePercentage *= Cards[Index].GetValue();
+                                        }
+                                        break;
+
+                                    case CatalystModifierVariant.Repeat:
+                                        {
+                                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Repeat += (int)Math.Ceiling(Cards[Index].GetValue());
+                                        }
+                                        break;
+
+                                    case CatalystModifierVariant.Delay:
+                                        {
+                                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Delay += (int)Math.Ceiling(Cards[Index].GetValue());
+                                        }
+                                        break;
+
+                                    case CatalystModifierVariant.Special:
                                         {
                                             switch ((CatalystModifier)Cards[Index].Spell)
                                             {
@@ -519,6 +517,26 @@ namespace Kourindou
                                                         CastProperties.RechargeOverride = true;
                                                     }
                                                     break;
+
+                                                case CatalystModifier.NextCardNoCooldown:
+                                                    {
+                                                        CastProperties.CooldownTime += Cards[Index].AddCooldown;
+                                                        NoCooldownCardAmount += (int)Cards[Index].GetValue();
+                                                    }
+                                                    break;
+                                                case CatalystModifier.NextCardNoRecharge:
+                                                    {
+                                                        CastProperties.RechargeTime += Cards[Index].AddRecharge;
+                                                        NoRechargeCardAmount += (int)Cards[Index].GetValue();
+                                                    }
+                                                    break;
+
+                                                case CatalystModifier.ChanceNoConsume:
+                                                    {
+                                                        CastProperties.ChanceNoConsumeCard += Cards[Index].GetValue();
+                                                    }
+                                                    break;
+
                                                 default:
                                                     {
                                                         // failsafe
@@ -529,37 +547,9 @@ namespace Kourindou
                                         }
                                         break;
 
-                                    case CatalystModifierVariant.ReduceRechargePercent:
-                                        {
-                                            CastProperties.RechargeTimePercentage *= Cards[Index].Strength;
-                                        }
-                                        break;
-
-                                    case CatalystModifierVariant.ReduceCooldownPercent:
-                                        {
-                                            // Notes:   [CooldownTimePercentage] is by default 1f
-                                            //          [ReduceCooldownPercent] 10% card has 0.9f
-                                            //
-                                            //          Multiplications on percent cards should be quadratic
-                                            //          Math.Pow(0.5f, 2) => 0.25f
-                                            CastProperties.CooldownTimePercentage *= Cards[Index].Strength;
-                                        }
-                                        break;
-
-                                    case CatalystModifierVariant.Repeat:
-                                        {
-                                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Repeat += (int)Math.Ceiling(Cards[Index].Strength);
-                                        }
-                                        break;
-
-                                    case CatalystModifierVariant.Delay:
-                                        {
-                                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Delay += (int)Math.Ceiling(Cards[Index].Strength);
-                                        }
-                                        break;
                                     default:
                                         {
-                                            //failsafe
+                                            // Just variant 0 => add it
                                             CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
                                         }
                                         break;
@@ -578,14 +568,6 @@ namespace Kourindou
                             {
                                 switch ((Special)Cards[Index].Spell)
                                 {
-                                    case Special.RandomCard:
-                                        {
-                                            int pos = Cards[Index].SlotPosition;
-                                            Cards[Index] = GetRandomCard(Cards[Index]);
-                                            Cards[Index].SlotPosition = pos;
-                                            continue;
-                                        }
-
                                     case Special.CastEverything:
                                         {
                                             CatalystCastAmount = 100;
@@ -611,14 +593,38 @@ namespace Kourindou
                         break;
                 }
 
-                // Apply the card's Cooldown, Recharge and Use times
-                CastProperties.CooldownTime += Cards[Index].AddCooldown;
-                CastProperties.RechargeTime += Cards[Index].AddRecharge;
-                CastProperties.AddUseTime += Cards[Index].AddUseTime;
-
                 // Catalyst only, does not work on projectiles
                 if (IsCatalyst)
                 {
+                    // Apply the card's Cooldown, Recharge and Use times
+                    if (Cards[Index].Group != (byte)Groups.Empty)
+                    {
+                        // Cooldown
+                        if (NoCooldownCardAmount <= 0)
+                        {
+                            CastProperties.CooldownTime += Cards[Index].AddCooldown;
+                        }
+                        else if (Cards[Index].Group != (byte)Groups.CatalystModifier && Cards[Index].Spell != (byte)CatalystModifier.NextCardNoCooldown)
+                        {
+                            NoCooldownCardAmount -= (int)Math.Ceiling(Cards[Index].Amount);
+                            NoCooldownCardAmount = NoCooldownCardAmount < 0 ? 0 : NoCooldownCardAmount;
+                        }
+
+                        // Recharge
+                        if (NoRechargeCardAmount <= 0)
+                        {
+                            CastProperties.RechargeTime += Cards[Index].AddRecharge;
+                        }
+                        else if (Cards[Index].Group != (byte)Groups.CatalystModifier && Cards[Index].Spell != (byte)CatalystModifier.NextCardNoRecharge)
+                        {
+                            NoRechargeCardAmount -= (int)Math.Ceiling(Cards[Index].Amount);
+                            NoRechargeCardAmount = NoRechargeCardAmount < 0 ? 0 : NoRechargeCardAmount;
+                        }
+
+                        // UseTime
+                        CastProperties.AddUseTime += Cards[Index].AddUseTime;
+                    }
+
                     // Increase UnEnded if this card needs a projectile to work
                     // The cast is 'Unended' which means it can trigger a wrap-around.
                     if (Cards[Index].NeedsProjectileCard)
@@ -627,7 +633,7 @@ namespace Kourindou
                     }
 
                     // If this card is a consumable save the consumption
-                    if (!Cards[Index].IsInsertedCard && Cards[Index].IsConsumable)
+                    if (Cards[Index].IsConsumable)
                     {
                         CastProperties.ConsumedCards.Add(Cards[Index].SlotPosition);
                     }
@@ -640,6 +646,8 @@ namespace Kourindou
                             // Add the previously saved card which needs another card to work
                             if (InsertThisCardWrapAround.Group != (byte)Groups.Empty)
                             {
+                                InsertThisCardWrapAround.AddRecharge = 0;
+                                InsertThisCardWrapAround.AddCooldown = 0;
                                 Cards.Add(InsertThisCardWrapAround);
                             }
 
@@ -756,7 +764,6 @@ namespace Kourindou
             if (CastProperties.Casts.Count <= 0)
             {
                 CastProperties.FailedToCast = true;
-                CastProperties.ConsumedCards.Clear();
             }
 
             // Determine the MinimumUseTime
@@ -778,11 +785,11 @@ namespace Kourindou
             return CastProperties;
         }
 
-        public static void ConsumedCards(ref List<CardItem> Cards, List<int> Consumed)
+        public static void ConsumedCards(ref List<CardItem> Cards, List<int> Consumed, float chance)
         {
             foreach (int i in Consumed)
             {
-                if (i >= 0 && i < Cards.Count && Cards[i].IsConsumable && !Cards[i].IsInsertedCard)
+                if (i >= 0 && i < Cards.Count && Cards[i].IsConsumable && !Cards[i].IsInsertedCard && Main.rand.NextFloat(0f, 1f) > chance)
                 {
                     if (Cards[i].Item.stack > 1)
                     {
@@ -796,27 +803,32 @@ namespace Kourindou
             }
         }
 
-        #region Random
         public static CardItem GetRandomCard(CardItem ToBeReplacedCard)
         {
-            if (ToBeReplacedCard.Group == (byte)Groups.Special && ToBeReplacedCard.Spell == (byte)Special.RandomCard)
+            int RetryCounter = 0;
+            while (RetryCounter > 1000)
             {
-                int RetryCounter = 0;
-                while (RetryCounter > 1000)
+                if (ToBeReplacedCard.Group == (byte)Groups.Special && ToBeReplacedCard.Spell == (byte)Special.RandomCard)
                 {
                     CardItem NewCard = GetCardItem(EntireCardPool[Main.rand.Next(0, EntireCardPool.Count)]);
                     if (NewCard != null && NewCard.Group != (byte)Groups.Special && NewCard.Spell != (byte)Special.RandomCard)
                     {
                         return NewCard;
                     }
-
-                    RetryCounter++;
                 }
+                else
+                {
+                    CardItem NewCard = GetCardItem(ToBeReplacedCard.Group, (byte)ToBeReplacedCard.GetValue());
+                    if (NewCard != null && NewCard.Spell != ToBeReplacedCard.Spell)
+                    {
+                        return NewCard;
+                    }
+                }
+                RetryCounter++;
             }
 
             return ToBeReplacedCard;
         }
-        #endregion
 
         #region Enumerators
         public enum Groups : byte
@@ -840,264 +852,269 @@ namespace Kourindou
             DiggingBolt,
             MyOwnProjectileInstance
         }
-
-        public enum Formation : byte
-        {
-            // Default straight line
-            // Variant 0
-            Straight,
-            ForwardAndSide,
-
-            // Duplicates projectile and add spread, like a shotgun
-            // Variant 1
-            DoubleScatter, // 2
-            TripleScatter, // 3
-            QuadrupleScatter, // 4
-            QuintupleScatter, // 5
-            RandomScatter, // Main.rand.Next(2, 6); (is not random card)
-
-            // Duplicates projectile and place them side-by-side
-            // Variant 2
-            DoubleFork, // 2
-            TripleFork, // 3
-            QuadrupleFork, // 4
-            QuintupleFork, // 5
-            RandomFork, // Main.rand.Next(2, 6); (is not random card)
-
-            // Duplicates projectile and cast it in a circle around the player
-            // Variant 3
-            Quadragon, // 4
-            Pentagon, // 5
-            Hexagon, // 6
-            Heptagon, // 7
-            Octagon, // 8
-            Randagon // Main.rand.Next(4, 9); (is not random card)
-        }
-
-        public enum FormationVariant : byte
-        {
-            None,
-            Scatter,
-            Fork,
-            SomethingGon
-        }
-
-        public enum Trajectory : byte
-        {
-            ArcLeft,
-            ArcRight,
-            ZigZag,
-            PingPong,
-            Snake,
-            Uncontrolled,
-            Orbit,
-            Spiral,
-            Boomerang,
-            Aiming,
-            Daedalus,
-            RandomTrajectory
-        }
-
-        public enum ProjectileModifier : byte
-        {
-            // Acceleration
-            Acceleration, // 1f (percent)
-            Deceleration, // 1f (percent)
-
-            // Speed
-            IncreaseSpeed, // 1f (percent)
-            DecreaseSpeed, // 1f (percent)
-            Stationary, // 0f
-
-            // Spread - not including wand spread, if negative it does counter wand spread
-            DecreaseSpread, //-30f
-            IncreaseSpread, // +30f
-            AccurateAF, // set to 0
-
-            // Tile bounces
-            BounceUp, //+1
-            BounceDown, //-1
-            FallingFlat, //0
-            TerribleIdea, // Infinite bounces
-
-            // Penetration stats
-            PenetrationUp, //+1
-            PenetrationDown, // > 1 : -1
-            PenetrationZero, //0
-            PenetrationAll, //-1
-
-            // Gravity
-            Gravity,
-            NoGravity,
-            AntiGravity,
-
-            // Homing 
-            Homing,
-            RotateToEnemy,
-
-            // Tile collision - Strength=ON(1)/Off(0) 
-            Ghosting,
-            Collide,
-            Phasing,
-
-            // Lifetime
-            LifetimeUp, // 0.5f
-            LifetimeDown, // -0.5f
-            InstantKill, // set to 0
-
-            // Knockback
-            IncreaseKnockback,
-            DecreaseKnockback,
-            NoKnockback,
-
-            // Rotation
-            RotateLeft90, // -90f
-            RotateRight90, // -90f
-            RotateLeft45, // -45f
-            RotateRight45, // 45f
-            RotateLeft22_5, // -22.5f
-            RotateRight22_5, // 22.5f
-            RandomRotation,
-
-            // Size
-            Snowball, // Projectile increase in size the longer it travels
-            IncreaseSize, // 0.25f - Saki effect
-            DecreaseSize, // -0.25f
-
-            // Confined
-            BounceOnScreenEdge, // Projectile bounces at the side of the screen
-            WarpScreenEdges, // Yukari Screen border
-
-            // Seija
-            VectorReversal, // reverses velocity, also flips team
-
-            // Cirno
-            Shatter,
-
-            // Keiki
-            ProjectileEater,
-
-            // Patchouli
-            MagicCircleAura,
-
-            // Suwako
-            ChanceExploding,
-
-            // Other
-            AngryBullets,
-
-            // Random
-            RandomProjectileModifier
-        }
-
-        public enum CatalystModifier : byte
-        {
-            // Position where the projectiles are spawned
-            DistantCast, // distance
-            TeleportCast, // On/Off
-            ReverseCast, // long distance + 180 degrees rotated
-
-            // Eliminates waiting time
-            // Variant 0
-            EliminateCooldown, //cooldown=0
-            EliminateRecharge, //recharge=0
-            NextCardNoCooldown, //TODO
-            NextCardNoRecharge, //TODO
-            ChanceNoConsume, //TODO
-
-            // reduces cooldown percentage-based (Clownpiece - Life-Burning torch)
-            // Variant 1
-            ReduceCooldown10Percent, // 0.9f
-            ReduceCooldown25Percent, // 0.75f
-            ReduceCooldown50Percent, // 0.5f
-            RandomCooldownPrecent, // Main.rand.NextFloat();
-
-            // reduces recharge percentage-based
-            // Variant 2
-            ReduceRecharge10Percent, // 0.9f
-            ReduceRecharge25Percent, // 0.75f
-            ReduceRecharge50Percent, // 0.5f
-            RandomRechargePrecent, // Main.rand.NextFloat();
-
-            // Repeats
-            // Variant 3
-            Repeat2, //2
-            Repeat3, //3
-            Repeat4, //4
-            Repeat5, //5
-            RepeatRandom, // Main.rand.Next();
-
-            // Delays in ticks
-            // Variant 4
-            DelayCastBy1, //60
-            DelayCastBy2, //120
-            DelayCastBy3, //180
-            DelayCastBy4, //240
-            DelayCastBy5, //300
-            DelayCastRandom // Main.rand.Next();
-        }
-
-        public enum CatalystModifierVariant : byte
-        {
-            None,
-            ReduceCooldownPercent,
-            ReduceRechargePercent,
-            Repeat,
-            Delay
-        }
-
-        public enum Element : byte
-        {
-            // Patchouli's elements
-            Sun,
-            Moon,
-            Fire,
-            Water,
-            Wood,
-            Metal,
-            Earth,
-
-            // Global additional elements
-            Electricity,
-            Frost,
-            MightyWind
-        }
-
-        public enum Multicast : byte
-        {
-            DoubleSpell,
-            TrippleSpell,
-            QuadrupleSpell
-        }
-
-        public enum Trigger : byte
-        {
-            ProjectileKill,
-            OnTileCollide,
-            Timer1,
-            Timer2,
-            Timer3,
-            Timer4,
-            Timer5
-        }
-
-        public enum Special : byte
-        {
-            CastEverything,
-            RandomCard
-        }
-
-        public enum Multiplication : byte
-        {
-            MultiplyBy2,
-            MultiplyBy3,
-            MultiplyBy4,
-            MultiplyBy5,
-            DivideBy2,
-            DivideBy3,
-            DivideBy4,
-            DivideBy5,
-            MultiplyDivideRandom // Main.rand.Next();
+        // actual value from card
+        public enum Formation : byte                                                                    // GETVALUE
+        {                                                                                               // 
+            // Default straight line                                                                    // 
+            Straight,                                                                                   // 1f (Cannot be multiplied)
+            ForwardAndSide,                                                                             // 1f (Cannot be multiplied)
+                                                                                                        // 
+                                                                                                        // Duplicates projectile and add spread, like a shotgun                                     // 
+            DoubleScatter, // 2                                                                         // 2f * AMOUNT
+            TripleScatter, // 3                                                                         // 3f * AMOUNT
+            QuadrupleScatter, // 4                                                                      // 4f * AMOUNT
+            QuintupleScatter, // 5                                                                      // 5f * AMOUNT
+            RandomScatter,                                                                              // Main.rand.Next(2, 6) * AMOUNT
+                                                                                                        // 
+                                                                                                        // Duplicates projectile and place them side-by-side                                        // 
+            DoubleFork, // 2                                                                            // 2f * AMOUNT
+            TripleFork, // 3                                                                            // 3f * AMOUNT
+            QuadrupleFork, // 4                                                                         // 4f * AMOUNT
+            QuintupleFork, // 5                                                                         // 5f * AMOUNT
+            RandomFork,                                                                                 // Main.rand.Next(2, 6) * AMOUNT
+                                                                                                        // 
+                                                                                                        // Duplicates projectile and cast it in a circle around the player                          // 
+            Quadragon, // 4                                                                             // 4f * AMOUNT
+            Pentagon, // 5                                                                              // 5f * AMOUNT
+            Hexagon, // 6                                                                               // 6f * AMOUNT
+            Heptagon, // 7                                                                              // 7f * AMOUNT
+            Octagon, // 8                                                                               // 8f * AMOUNT
+            Randagon // Main.rand.Next(4, 9); (is not random card)                                      // Main.rand.Next(2, 9) * AMOUNT
+        }                                                                                               // 
+                                                                                                        // 
+        public enum FormationVariant : byte                                                             // 
+        {                                                                                               // 
+            None,                                                                                       // 
+            Scatter,                                                                                    // 
+            Fork,                                                                                       // 
+            SomethingGon                                                                                // 
+        }                                                                                               // 
+                                                                                                        // 
+        public enum Trajectory : byte                                                                   // 
+        {                                                                                               // 
+            ArcLeft,                                                                                    // 1f * AMOUNT
+            ArcRight,                                                                                   // 1f * AMOUNT
+            ZigZag,                                                                                     // 1f * AMOUNT
+            PingPong,                                                                                   // 1f * AMOUNT
+            Snake,                                                                                      // 1f * AMOUNT
+            Uncontrolled,                                                                               // 1f * AMOUNT
+            Orbit,                                                                                      // 1f * AMOUNT
+            Spiral,                                                                                     // 1f * AMOUNT
+            Boomerang,                                                                                  // 1f * AMOUNT
+            Aiming,                                                                                     // 1f * AMOUNT
+            Daedalus,                                                                                   // 1f * AMOUNT
+            RandomTrajectory                                                                            // 1f * AMOUNT
+        }                                                                                               // 
+                                                                                                        // 
+        public enum ProjectileModifier : byte                                                           // 
+        {                                                                                               // 
+            // Acceleration => Amount of percent of base speed added each second                        // 
+            Acceleration, // 1f (percent)                                                               // 0.1f * AMOUNT
+            Deceleration, // 1f (percent)                                                               // 0.1f * AMOUNT
+                                                                                                        //
+            // Acceleration Multipier => Amount of percent current speed is changed                     //
+            AccelerationMultiplier,                                                                     // 0.1f * AMOUNT
+            DecelerationMultiplier,                                                                     // 0.1f * AMOUNT
+                                                                                                        //
+            // Speed => Increases base speed by a percentage                                            // 
+            IncreaseSpeed, // 1f (percent)                                                              // 0.1f * AMOUNT
+            DecreaseSpeed, // 1f (percent)                                                              // 0.1f * AMOUNT
+            Stationary, // 0f                                                                           // Set base speed to 0f
+                                                                                                        //
+            // Tile bounces                                                                             // 
+            BounceUp, //+1                                                                              // 
+            BounceDown, //-1                                                                            // 
+            FallingFlat, //0                                                                            // 
+            TerribleIdea, // Infinite bounces                                                           // 
+                                                                                                        // 
+            // Penetration stats                                                                        // 
+            PenetrationUp, //+1                                                                         // 
+            PenetrationDown, // > 1 : -1                                                                // 
+            PenetrationZero, //0                                                                        // 
+            PenetrationAll, //-1                                                                        // 
+                                                                                                        // 
+            // Gravity                                                                                  // 
+            Gravity,                                                                                    // 
+            NoGravity,                                                                                  // 
+            AntiGravity,                                                                                // 
+                                                                                                        // 
+            // Homing                                                                                   // 
+            Homing,                                                                                     // 
+            RotateToEnemy,                                                                              // 
+                                                                                                        // 
+            // Tile collision                                                                           // 
+            Ghosting,                                                                                   // 
+            Collide,                                                                                    // 
+            Phasing,                                                                                    // 
+                                                                                                        // 
+            // Lifetime                                                                                 // 
+            LifetimeUp, // 0.5f                                                                         // 
+            LifetimeDown, // -0.5f                                                                      // 
+            InstantKill, // set to 0                                                                    // 
+                                                                                                        // 
+            // Knockback                                                                                // 
+            IncreaseKnockback,                                                                          // 
+            DecreaseKnockback,                                                                          // 
+            NoKnockback,                                                                                // 
+                                                                                                        // 
+                                                                                                        // Rotation                                                                                 // 
+            RotateLeft90, // -90f                                                                       // 
+            RotateRight90, // -90f                                                                      // 
+            RotateLeft45, // -45f                                                                       // 
+            RotateRight45, // 45f                                                                       // 
+            RotateLeft22_5, // -22.5f                                                                   // 
+            RotateRight22_5, // 22.5f                                                                   // 
+            RandomRotation,                                                                             // 
+                                                                                                        // 
+            // Size                                                                                     // 
+            Snowball, // Projectile increase in size the longer it travels                              // 
+            IncreaseSize, // 0.25f - Saki effect                                                        // 
+            DecreaseSize, // -0.25f                                                                     // 
+                                                                                                        // 
+            // Confined                                                                                 // 
+            BounceOnScreenEdge, // Projectile bounces at the side of the screen                         // Return 1f
+            WarpScreenEdges, // Yukari Screen border                                                    // Return 1f
+                                                                                                        // 
+            // Seija                                                                                    // 
+            VectorReversal, // reverses velocity, also flips team                                       // Return 1f
+                                                                                                        // 
+            // Cirno                                                                                    // 
+            Shatter,                                                                                    // 
+                                                                                                        // 
+            // Keiki                                                                                    // 
+            ProjectileEater,                                                                            // 
+                                                                                                        // 
+            // Patchouli                                                                                // 
+            MagicCircleAura,                                                                            // 
+                                                                                                        // 
+            // Suwako                                                                                   // 
+            ChanceExploding,                                                                            //
+                                                                                                        //
+            // Hina                                                                                     //
+            PoisonBullets,                                                                              // 
+                                                                                                        //
+            // Other                                                                                    // 
+            AngryBullets,                                                                               // 
+                                                                                                        // 
+            // Random                                                                                   // 
+            RandomProjectileModifier                                                                    // 
+        }                                                                                               // 
+                                                                                                        // 
+        public enum CatalystModifier : byte                                                             // 
+        {                                                                                               //
+            // Spread - Reduces spread on the wand                                                      //
+            DecreaseSpread, //-30f                                                                      // 
+            IncreaseSpread, // +30f                                                                     // 
+            AccurateAF, // no spread for this castblock                                                 //
+                                                                                                        //
+            // Position where the projectiles are spawned                                               // 
+            DistantCast,                                                                                // 128f * AMOUNT
+            TeleportCast,                                                                               // Cast => OnCursor
+            ReverseCast,                                                                                // Cast => Far away + rotated
+                                                                                                        // 
+            // reduces cooldown percentage-based (Clownpiece - Life-Burning torch)                      // 
+            // Variant 1                                                                                // 
+            ReduceCooldown10Percent, // 0.9f                                                            // 0.90f ^ AMOUNT
+            ReduceCooldown25Percent, // 0.75f                                                           // 0.75f ^ AMOUNT
+            ReduceCooldown50Percent, // 0.5f                                                            // 0.50f ^ AMOUNT
+            RandomCooldownPrecent, // Main.rand.NextFloat();                                            // Main.rand.NextFloat(0.5, 1.0) ^ AMOUNT
+                                                                                                        // 
+            // reduces recharge percentage-based                                                        // 
+            // Variant 2                                                                                // 
+            ReduceRecharge10Percent, // 0.9f                                                            // 0.90f ^ AMOUNT
+            ReduceRecharge25Percent, // 0.75f                                                           // 0.75f ^ AMOUNT
+            ReduceRecharge50Percent, // 0.5f                                                            // 0.50f ^ AMOUNT
+            RandomRechargePrecent, // Main.rand.NextFloat();                                            // Main.rand.NextFloat(0.5, 1.0) ^ AMOUNT
+                                                                                                        // 
+            // Repeats                                                                                  // 
+            // Variant 3                                                                                // 
+            Repeat2, //2                                                                                // 2f
+            Repeat3, //3                                                                                // 3f
+            Repeat4, //4                                                                                // 4f
+            Repeat5, //5                                                                                // 5f
+            RepeatRandom, // Main.rand.Next();                                                          // Main.rand.NextFloat(2, 6)
+                                                                                                        // 
+            // Delays in ticks                                                                          // 
+            // Variant 4                                                                                // 
+            DelayCastBy1, //60                                                                          // 
+            DelayCastBy2, //120                                                                         // 
+            DelayCastBy3, //180                                                                         // 
+            DelayCastBy4, //240                                                                         // 
+            DelayCastBy5, //300                                                                         // 
+            DelayCastRandom, // Main.rand.Next();                                                       // 
+                                                                                                        //
+            // Eliminates waiting time                                                                  // 
+            // Variant 5                                                                                // 
+            EliminateCooldown, //cooldown=0                                                             // Cast => CooldownOverride
+            EliminateRecharge, //recharge=0                                                             // Cast => RechargeOverride
+            NextCardNoCooldown,                                                                         // 1f * AMOUNT
+            NextCardNoRecharge,                                                                         // 1f * AMOUNT
+            ChanceNoConsume,                                                                            // 0.075f * AMOUNT
+                                                                                                        //
+        }                                                                                               // 
+                                                                                                        // 
+        public enum CatalystModifierVariant : byte                                                      // 
+        {                                                                                               // 
+            None,                                                                                       // 
+            ReduceCooldownPercent,                                                                      // 
+            ReduceRechargePercent,                                                                      // 
+            Repeat,                                                                                     // 
+            Delay,                                                                                      //
+            Special                                                                                     // 
+        }                                                                                               // 
+                                                                                                        // 
+        public enum Element : byte                                                                      // 
+        {                                                                                               // 
+            // Patchouli's elements                                                                     // 
+            Sun,                                                                                        // 
+            Moon,                                                                                       // 
+            Fire,                                                                                       // 
+            Water,                                                                                      // 
+            Wood,                                                                                       // 
+            Metal,                                                                                      // 
+            Earth,                                                                                      // 
+                                                                                                        // 
+                                                                                                        // Global additional elements                                                               // 
+            Electricity,                                                                                // 
+            Frost,                                                                                      // 
+            MightyWind                                                                                  // 
+        }                                                                                               // 
+                                                                                                        // 
+        public enum Multicast : byte                                                                    // 
+        {                                                                                               // 
+            DoubleSpell,                                                                                // 2f
+            TrippleSpell,                                                                               // 3f
+            QuadrupleSpell                                                                              // 4f
+        }                                                                                               // 
+                                                                                                        // 
+        public enum Trigger : byte                                                                      // 
+        {                                                                                               // 
+            ProjectileKill,                                                                             // 
+            OnTileCollide,                                                                              // 
+            Timer1,                                                                                     // 1f
+            Timer2,                                                                                     // 2f
+            Timer3,                                                                                     // 3f
+            Timer4,                                                                                     // 4f
+            Timer5                                                                                      // 5f
+        }                                                                                               // 
+                                                                                                        // 
+        public enum Special : byte                                                                      // 
+        {                                                                                               // 
+            CastEverything,                                                                             // 1f
+            RandomCard                                                                                  // 1f
+        }                                                                                               // 
+                                                                                                        // 
+        public enum Multiplication : byte                                                               // 
+        {                                                                                               // 
+            MultiplyBy2,                                                                                // 2f   
+            MultiplyBy3,                                                                                // 3f   
+            MultiplyBy4,                                                                                // 4f   
+            MultiplyBy5,                                                                                // 5f   
+            DivideBy2,                                                                                  // 0.5f 
+            DivideBy3,                                                                                  // 0.33f
+            DivideBy4,                                                                                  // 0.25f
+            DivideBy5,                                                                                  // 0.20f
+            MultiplyDivideRandom                                                                        // Main.rand.NextFloat(0.2f, 5f);      
         }
         #endregion
     }

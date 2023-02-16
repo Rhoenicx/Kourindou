@@ -1,4 +1,8 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 using static Kourindou.KourindouSpellcardSystem;
 
@@ -7,67 +11,80 @@ namespace Kourindou.Items.Spellcards
     public abstract class CardItem : ModItem
     {
         // Group of this card
-        public abstract byte Group { get; } //= (byte)Groups.Empty;
+        public byte Group; //= (byte)Groups.Empty;
 
         // Spell of this card
-        public abstract byte Spell { get; } //= 0;
+        public byte Spell; //= 0;
 
         // Variant of this card
-        public abstract byte Variant { get; }
+        public byte Variant; //= 0;
 
-        // Strength of this card, used for things like the amount of projectile in a formation
-        public abstract float Strength { get; set; } //= 1f;
+        // Amount of times this card has been duplicated.
+        public float Amount; //= 1f;
 
         // UseTime that this card adds to the catalyst
-        public abstract int AddUseTime { get; set; } //= 0;
+        public int AddUseTime; //= 0;
 
         // Cooldown that this card adds to the catalyst
-        public abstract int AddCooldown { get; set; } //= 0;
+        public int AddCooldown; //= 0;
 
         // Recharge that this card adds to the catalyst
-        public abstract int AddRecharge { get; set; } //= 0;
+        public int AddRecharge; //= 0;
 
         // Spread that this card adds to the catalyst
-        public abstract float AddSpread { get; set; } //= 0f;
+        public float AddSpread; //= 0f;
 
         // Angle of this card, used for formation scatter angles
-        public abstract float FixedAngle { get; set; } //= 0f
+        public float FixedAngle; //= 0f
 
         // If this card needs to be replaced by another card
-        public abstract bool IsRandomCard { get; set; } //= false;
+        // EXCLUSIVE FOR CARDS THAT NEEDS TO BE REPLACED!!!
+        // NOT FOR RANDOM VALUES!!! => ADD THOSE IN GETCARDVALUE()
+        public bool IsRandomCard; //= false;
 
         // If this card is a cunsumable card
-        public abstract bool IsConsumable { get; set; } //= false;
+        public bool IsConsumable; //= false;
 
         // If this card needs a projectile to work
-        public abstract bool NeedsProjectileCard { get; set; } //= false;
+        public bool NeedsProjectileCard; //= false;
 
         // If this card has been inserted
-        public bool IsInsertedCard { get; set; } = false;
+        public bool IsInsertedCard;
 
         // Position of this card on the catalyst slots
-        public int SlotPosition { get; set; } = -1;
+        public int SlotPosition;
 
-        public override void Load()
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            // When loading this card, register it!
-            RegisterCardItem(Group, Spell, this.Type);
-            base.Load();
+            Texture2D texture = TextureAssets.Item[Item.type].Value;
+
+            spriteBatch.Draw(
+                texture,
+                Item.Center - Main.screenPosition,
+                texture.Bounds,
+                lightColor,
+                rotation,
+                texture.Size() * 0.5f,
+                scale,
+                SpriteEffects.None,
+                0);
+
+            return false;
         }
 
         public virtual void ApplyMultiplication(float input)
         {
             // The input is the multiplication amount, so should be 2f to 5f
-            Strength *= input;
+            Amount *= input;
             AddUseTime = (int)Math.Ceiling(this.AddUseTime * input);
             AddCooldown = (int)Math.Ceiling(this.AddCooldown * input);
             AddRecharge = (int)Math.Ceiling(this.AddRecharge * input);
             AddSpread *= input;
         }
 
-        public virtual byte ApplyRandomCard()
+        public virtual float GetValue()
         {
-            return 255;
+            return 1f * Amount;
         }
     }
 }

@@ -22,6 +22,12 @@
     <Folder Include="Items\Spellcards\Formations\" />
     <Folder Include="Items\Spellcards\Multicasts\" />
     <Folder Include="Items\Spellcards\Modifiers\" />
+    <Folder Include="Items\Spellcards\CatalystModifiers\" />
+    <Folder Include="Items\Spellcards\Elements\" />
+    <Folder Include="Items\Spellcards\Multiplications\" />
+    <Folder Include="Items\Spellcards\Special\" />
+    <Folder Include="Items\Spellcards\Triggers\" />
+    <Folder Include="Items\Spellcards\ProjectileModifiers\" />
     <Folder Include="Items\Spellcards\Projectiles\" />
     <Folder Include="Items\Spellcards\Trajectories\" />
   </ItemGroup>
