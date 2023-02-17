@@ -24,6 +24,7 @@ namespace Kourindou
     {
         public int Repeat { get; set; } = 0;
         public int Delay { get; set; } = 0;
+        public int InitialDelay { get; set; } = 0;
         public List<CardItem> CardItems { get; set; }
     }
 
@@ -191,12 +192,12 @@ namespace Kourindou
             Cast CastProperties = new();
 
             // Save wrap-around cards
-            List<CardItem> CardWrapReady = Cards;
+            List<CardItem> CardsWrapReady = Cards;
             if (Shuffle)
             {
-                ShuffleCardItems(ref CardWrapReady);
+                ShuffleCardItems(ref CardsWrapReady);
             }
-            CardWrapReady.RemoveRange(CatalystStartIndex, Cards.Count - CatalystStartIndex);
+            CardsWrapReady.RemoveRange(CatalystStartIndex, Cards.Count - CatalystStartIndex);
 
             // Check the AlwaysCastCards
             if (AlwaysCastCard != null && AlwaysCastCard.Group != (byte)Groups.Empty)
@@ -222,13 +223,12 @@ namespace Kourindou
             // Multicasts
             int MulticastAmount = 0;
 
+            // Multiplication
+            float Multiplications = 0;
+
             // Amount of additional inserted cards counter, 
             // used to determine end index for a next cast
             int InsertedCards = 0;
-
-            // Card that needs to be inserted to the beginning of a wrap around
-            // used for cards that require cards after it to work
-            CardItem InsertThisCardWrapAround = GetCardItem((byte)Groups.Empty, 0);
 
             // If we are currently wrapping around
             bool IsWrappingAround = false;
@@ -283,12 +283,75 @@ namespace Kourindou
                     InsertedCards++;
                 }
 
+                // Multiply this card if needed
+                if (Cards[Index].Group != (byte)Groups.Empty && Multiplications > 0f)
+                {
+                    // Save some comsume stats of this card
+                    bool consume = Cards[Index].IsConsumable;
+                    int stack = Cards[Index].Item.stack;
+
+                    // Now try to apply the multiplication effect
+                    switch ((Groups)Cards[Index].Group)
+                    {
+                        case Groups.Projectile:
+                        case Groups.Special:
+                        case Groups.Multicast:
+                            {
+                                // If the cards found are of the type: Projectile, Special or Multicast:
+                                // We cannot apply multiplication effects with the amount property.
+                                // Insert a copy of the same card instead
+                                for (int y = 1; y < (int)Math.Ceiling(Multiplications); y++)
+                                {
+                                    if (consume && stack-- <= 0)
+                                    {
+                                        break;
+                                    }
+
+                                    // Insert the same card after this one,
+                                    // if the location where this card needs to be placed is empty
+                                    if (Cards.ElementAtOrDefault(Index + y) == null)
+                                    {
+                                        // Add the card instead
+                                        Cards.Add(Cards[Index]);
+                                    }
+                                    else
+                                    {
+                                        // Otherwise insert the card
+                                        Cards.Insert(Index + y, Cards[Index]);
+                                    }
+
+                                    Cards[Index + y].IsInsertedCard = true;
+                                }
+                            }
+                            break;
+
+                        default:
+                            {
+                                if (consume)
+                                {
+                                    if ((int)Math.Ceiling(Multiplications) > stack)
+                                    {
+                                        Multiplications = (float)stack;
+                                    }
+
+                                    for (int y = 1; y < (int)Multiplications; y++)
+                                    {
+                                        CastProperties.ConsumedCards.Add(Cards[Index].SlotPosition);
+                                    }
+                                }
+
+                                Cards[Index].ApplyMultiplication(Multiplications);
+                            }
+                            break;
+                    }
+
+                    Multiplications = 0f;
+                }
+
                 // Replace this random card with a new one
                 if (Cards[Index].IsRandomCard)
                 {
-                    int pos = Cards[Index].SlotPosition;
                     Cards[Index] = GetRandomCard(Cards[Index]);
-                    Cards[Index].SlotPosition = pos;
                 }
 
                 switch ((Groups)Cards[Index].Group)
@@ -373,97 +436,7 @@ namespace Kourindou
                             // Otherwise execute its effect on next card
                             else
                             {
-                                // Multiplication is at the end of the catalyst's slots/cards
-                                if (Index >= Cards.Count - 1)
-                                {
-                                    InsertThisCardWrapAround = Cards[Index];
-                                }
-                                // Multiplication card is not on the end
-                                else
-                                {
-                                    // Check again if its the last card
-                                    for (int i = Index + 1; i < Cards.Count; i++)
-                                    {
-                                        // If the Card is not empty try to apply multiplication effect to it
-                                        if (Cards[i].Group != (byte)Groups.Empty)
-                                        {
-                                            // The card encountered is a random card
-                                            bool consume = Cards[i].IsConsumable;
-                                            int stack = Cards[i].Item.stack;
-                                            int pos = Cards[i].SlotPosition;
-                                            if (Cards[i].IsRandomCard)
-                                            {
-                                                Cards[i] = GetRandomCard(Cards[i]);
-                                                Cards[i].SlotPosition = pos;
-                                            }
-
-                                            // Now try to apply the multiplication effect
-                                            switch ((Groups)Cards[i].Group)
-                                            {
-                                                case Groups.Projectile:
-                                                case Groups.Special:
-                                                case Groups.Multicast:
-                                                    {
-                                                        // If the cards found are of the type: Projectile, Special or Multicast:
-                                                        // We cannot apply multiplication effects with the amount property.
-                                                        // Insert a copy of the same card instead
-                                                        for (int y = 1; y < (int)Cards[Index].GetValue(); y++)
-                                                        {
-                                                            if (consume && stack-- <= 0)
-                                                            {
-                                                                break;
-                                                            }
-
-                                                            if (consume)
-                                                            {
-                                                                CastProperties.ConsumedCards.Add(pos);
-                                                            }
-
-                                                            // Insert a copy of the card on the same index,
-                                                            // the original one will get moved +1 index
-                                                            Cards.Insert(i, (CardItem)Cards[i].Item.Clone().ModItem);
-
-                                                            // Although the copy has been placed on the same index,
-                                                            // we can now safely alter the 'inserted' card
-                                                            Cards[i + 1].IsInsertedCard = true;
-                                                        }
-                                                    }
-                                                    break;
-
-                                                default:
-                                                    {
-                                                        // Index = The multiplication card here, get its value (the amount of multiplications)
-                                                        float amount = Cards[Index].GetValue();
-
-                                                        if (consume)
-                                                        {
-                                                            if ((int)Math.Ceiling(amount) > stack)
-                                                            {
-                                                                amount = (float)stack;
-                                                            }
-
-                                                            for (int y = 1; y < (int)amount; y++)
-                                                            {
-                                                                CastProperties.ConsumedCards.Add(Cards[i].SlotPosition);
-                                                            }
-                                                        }
-
-                                                        Cards[i].ApplyMultiplication(amount);
-                                                    }
-                                                    break;
-                                            }
-
-                                            // Stop the for loop because this card has executed its effect
-                                            break;
-                                        }
-                                        // Check if the search has ended to the last card of the catalyst,
-                                        // In this case 
-                                        else if (i == Cards.Count - 1)
-                                        {
-                                            InsertThisCardWrapAround = Cards[Index];
-                                        }
-                                    }
-                                }
+                                Multiplications += Cards[Index].GetValue();
                             }
                         }
                         break;
@@ -600,25 +573,41 @@ namespace Kourindou
                     if (Cards[Index].Group != (byte)Groups.Empty)
                     {
                         // Cooldown
-                        if (NoCooldownCardAmount <= 0)
+                        if (NoCooldownCardAmount <= 0 || (Cards[Index].Group == (byte)Groups.CatalystModifier && Cards[Index].Spell == (byte)CatalystModifier.NextCardNoCooldown))
                         {
                             CastProperties.CooldownTime += Cards[Index].AddCooldown;
                         }
-                        else if (Cards[Index].Group != (byte)Groups.CatalystModifier && Cards[Index].Spell != (byte)CatalystModifier.NextCardNoCooldown)
+                        else
                         {
-                            NoCooldownCardAmount -= (int)Math.Ceiling(Cards[Index].Amount);
-                            NoCooldownCardAmount = NoCooldownCardAmount < 0 ? 0 : NoCooldownCardAmount;
+                            if (NoCooldownCardAmount >= (int)Math.Ceiling(Cards[Index].Amount))
+                            {
+                                NoCooldownCardAmount -= (int)Math.Ceiling(Cards[Index].Amount);
+                            }
+                            else
+                            {
+                                int Apply = (int)Math.Ceiling(Cards[Index].Amount) - NoCooldownCardAmount;
+                                CastProperties.CooldownTime += ((int)(Cards[Index].AddCooldown / Cards[Index].Amount) * Apply);
+                                NoCooldownCardAmount = 0;
+                            }
                         }
 
                         // Recharge
-                        if (NoRechargeCardAmount <= 0)
+                        if (NoRechargeCardAmount <= 0 || (Cards[Index].Group == (byte)Groups.CatalystModifier && Cards[Index].Spell == (byte)CatalystModifier.NextCardNoRecharge))
                         {
                             CastProperties.RechargeTime += Cards[Index].AddRecharge;
                         }
-                        else if (Cards[Index].Group != (byte)Groups.CatalystModifier && Cards[Index].Spell != (byte)CatalystModifier.NextCardNoRecharge)
+                        else
                         {
-                            NoRechargeCardAmount -= (int)Math.Ceiling(Cards[Index].Amount);
-                            NoRechargeCardAmount = NoRechargeCardAmount < 0 ? 0 : NoRechargeCardAmount;
+                            if (NoRechargeCardAmount >= (int)Math.Ceiling(Cards[Index].Amount))
+                            {
+                                NoRechargeCardAmount -= (int)Math.Ceiling(Cards[Index].Amount);
+                            }
+                            else
+                            {
+                                int Apply = (int)Math.Ceiling(Cards[Index].Amount) - NoRechargeCardAmount;
+                                CastProperties.RechargeTime += ((int)(Cards[Index].AddRecharge / Cards[Index].Amount) * Apply);
+                                NoRechargeCardAmount = 0;
+                            }
                         }
 
                         // UseTime
@@ -638,40 +627,31 @@ namespace Kourindou
                         CastProperties.ConsumedCards.Add(Cards[Index].SlotPosition);
                     }
 
-                    if (!IsWrappingAround)
+                    // Check if a wrap-around is needed
+                    if (!IsWrappingAround && Index == Cards.Count - 1 && (TriggerActive || Triggers > 0 || MulticastAmount > 0 || CastUnEnded > 0))
                     {
-                        // Check if a wrap-around is needed
-                        if (Index == Cards.Count - 1 && (TriggerActive || Triggers > 0 || MulticastAmount > 0 || CastUnEnded > 0))
+                        // Now add the wrap-around cards
+                        for (int i = 0; i < CardsWrapReady.Count; i++)
                         {
-                            // Add the previously saved card which needs another card to work
-                            if (InsertThisCardWrapAround.Group != (byte)Groups.Empty)
-                            {
-                                InsertThisCardWrapAround.AddRecharge = 0;
-                                InsertThisCardWrapAround.AddCooldown = 0;
-                                Cards.Add(InsertThisCardWrapAround);
-                            }
-
-                            // Now add the wrap-around cards
-                            for (int i = 0; i < CardWrapReady.Count; i++)
-                            {
-                                Cards.Add(CardWrapReady[i]);
-                            }
-
-                            // Since we are wrapping-around, the catalyst needs to go on cooldown
-                            CastProperties.MustGoOnCooldown = true;
-
-                            // Make it so that this catalyst cannot fire more in wrap-around if it has multiple casts
-                            CatalystCastAmount = CurrentCast + 1;
-
-                            // If there is a trigger active, finish it. But we cannot start new ones during wrap-around.
-                            if (TriggerActive)
-                            {
-                                Triggers = 0;
-                            }
-
-                            // Wrapping around is true
-                            IsWrappingAround = true;
+                            Cards.Add(CardsWrapReady[i]);
                         }
+
+                        // Since the only way we're wrapping-around is because the 
+                        // end of the cards on the catalyst has been reached,
+                        // the catalyst needs to go on cooldown
+                        CastProperties.MustGoOnCooldown = true;
+
+                        // Make it so that this catalyst cannot fire more in wrap-around if it has multiple casts
+                        CatalystCastAmount = CurrentCast + 1;
+
+                        // If there is a trigger active, finish it. But we cannot start new ones during wrap-around.
+                        if (TriggerActive)
+                        {
+                            Triggers = 0;
+                        }
+
+                        // Wrapping around is true
+                        IsWrappingAround = true;
                     }
                 }
                 Index++;
@@ -680,7 +660,7 @@ namespace Kourindou
             // Determine the start index of the next potential cast
             CastProperties.NextCastStartIndex = Index - InsertedCards;
 
-            // If the catalyst is not set on cooldown yet by the wrap-around,
+            // If the catalyst is not set on cooldown by the wrap-around,
             // check right now if we're done
             if (!CastProperties.MustGoOnCooldown)
             {
@@ -806,28 +786,39 @@ namespace Kourindou
         public static CardItem GetRandomCard(CardItem ToBeReplacedCard)
         {
             int RetryCounter = 0;
-            while (RetryCounter > 1000)
+            bool Valid = false;
+            CardItem NewCard = GetCardItem((byte)Groups.Empty, 0);
+
+            while (RetryCounter < 1000 || !Valid)
             {
                 if (ToBeReplacedCard.Group == (byte)Groups.Special && ToBeReplacedCard.Spell == (byte)Special.RandomCard)
                 {
-                    CardItem NewCard = GetCardItem(EntireCardPool[Main.rand.Next(0, EntireCardPool.Count)]);
+                    NewCard = GetCardItem(EntireCardPool[Main.rand.Next(0, EntireCardPool.Count)]);
                     if (NewCard != null && NewCard.Group != (byte)Groups.Special && NewCard.Spell != (byte)Special.RandomCard)
                     {
-                        return NewCard;
+                        Valid = true;
                     }
                 }
                 else
                 {
-                    CardItem NewCard = GetCardItem(ToBeReplacedCard.Group, (byte)ToBeReplacedCard.GetValue());
+                    NewCard = GetCardItem(ToBeReplacedCard.Group, (byte)ToBeReplacedCard.GetValue());
                     if (NewCard != null && NewCard.Spell != ToBeReplacedCard.Spell)
                     {
-                        return NewCard;
+                        Valid = true;
                     }
                 }
                 RetryCounter++;
             }
 
-            return ToBeReplacedCard;
+            if (Valid)
+            {
+                NewCard.Amount = ToBeReplacedCard.Amount;
+                NewCard.IsConsumable = ToBeReplacedCard.IsConsumable;
+                NewCard.IsInsertedCard = ToBeReplacedCard.IsInsertedCard;
+                NewCard.SlotPosition = ToBeReplacedCard.SlotPosition;
+            }
+
+            return NewCard;
         }
 
         #region Enumerators
@@ -852,19 +843,19 @@ namespace Kourindou
             DiggingBolt,
             MyOwnProjectileInstance
         }
-        // actual value from card
+
         public enum Formation : byte                                                                    // GETVALUE
         {                                                                                               // 
             // Default straight line                                                                    // 
             Straight,                                                                                   // 1f (Cannot be multiplied)
             ForwardAndSide,                                                                             // 1f (Cannot be multiplied)
-                                                                                                        // 
+            OnlySides,                                                                                  // 
                                                                                                         // Duplicates projectile and add spread, like a shotgun                                     // 
             DoubleScatter, // 2                                                                         // 2f * AMOUNT
             TripleScatter, // 3                                                                         // 3f * AMOUNT
             QuadrupleScatter, // 4                                                                      // 4f * AMOUNT
             QuintupleScatter, // 5                                                                      // 5f * AMOUNT
-            RandomScatter,                                                                              // Main.rand.Next(2, 6) * AMOUNT
+            Shotgun,                                                                                    // Main.rand.Next(2, 6) * AMOUNT
                                                                                                         // 
                                                                                                         // Duplicates projectile and place them side-by-side                                        // 
             DoubleFork, // 2                                                                            // 2f * AMOUNT
@@ -938,21 +929,21 @@ namespace Kourindou
             NoGravity,                                                                                  // 
             AntiGravity,                                                                                // 
                                                                                                         // 
-            // Homing                                                                                   // 
+                                                                                                        // Homing                                                                                   // 
             Homing,                                                                                     // 
             RotateToEnemy,                                                                              // 
                                                                                                         // 
-            // Tile collision                                                                           // 
+                                                                                                        // Tile collision                                                                           // 
             Ghosting,                                                                                   // 
             Collide,                                                                                    // 
             Phasing,                                                                                    // 
                                                                                                         // 
-            // Lifetime                                                                                 // 
+                                                                                                        // Lifetime                                                                                 // 
             LifetimeUp, // 0.5f                                                                         // 
             LifetimeDown, // -0.5f                                                                      // 
             InstantKill, // set to 0                                                                    // 
-                                                                                                        // 
-            // Knockback                                                                                // 
+                         // 
+                         // Knockback                                                                                // 
             IncreaseKnockback,                                                                          // 
             DecreaseKnockback,                                                                          // 
             NoKnockback,                                                                                // 
@@ -966,37 +957,38 @@ namespace Kourindou
             RotateRight22_5, // 22.5f                                                                   // 
             RandomRotation,                                                                             // 
                                                                                                         // 
-            // Size                                                                                     // 
+                                                                                                        // Size                                                                                     // 
             Snowball, // Projectile increase in size the longer it travels                              // 
             IncreaseSize, // 0.25f - Saki effect                                                        // 
             DecreaseSize, // -0.25f                                                                     // 
-                                                                                                        // 
-            // Confined                                                                                 // 
+                          // 
+                          // Confined                                                                                 // 
             BounceOnScreenEdge, // Projectile bounces at the side of the screen                         // Return 1f
             WarpScreenEdges, // Yukari Screen border                                                    // Return 1f
-                                                                                                        // 
-            // Seija                                                                                    // 
+                             // 
+                             // Seija                                                                                    // 
             VectorReversal, // reverses velocity, also flips team                                       // Return 1f
-                                                                                                        // 
-            // Cirno                                                                                    // 
+                            // 
+                            // Cirno                                                                                    // 
             Shatter,                                                                                    // 
                                                                                                         // 
-            // Keiki                                                                                    // 
+                                                                                                        // Keiki                                                                                    // 
             ProjectileEater,                                                                            // 
                                                                                                         // 
-            // Patchouli                                                                                // 
+                                                                                                        // Patchouli                                                                                // 
             MagicCircleAura,                                                                            // 
                                                                                                         // 
-            // Suwako                                                                                   // 
+                                                                                                        // Suwako                                                                                   // 
             ChanceExploding,                                                                            //
                                                                                                         //
-            // Hina                                                                                     //
+                                                                                                        // Hina                                                                                     //
             PoisonBullets,                                                                              // 
                                                                                                         //
-            // Other                                                                                    // 
-            AngryBullets,                                                                               // 
-                                                                                                        // 
-            // Random                                                                                   // 
+                                                                                                        // Other                                                                                    // 
+            AngryBullets,                                                                               // also hostile
+            Luminescence,                                                                               // Light intensity
+                                                                                                        //
+                                                                                                        // Random                                                                                   // 
             RandomProjectileModifier                                                                    // 
         }                                                                                               // 
                                                                                                         // 
@@ -1006,45 +998,45 @@ namespace Kourindou
             DecreaseSpread, //-30f                                                                      // 
             IncreaseSpread, // +30f                                                                     // 
             AccurateAF, // no spread for this castblock                                                 //
-                                                                                                        //
-            // Position where the projectiles are spawned                                               // 
+                        //
+                        // Position where the projectiles are spawned                                               // 
             DistantCast,                                                                                // 128f * AMOUNT
             TeleportCast,                                                                               // Cast => OnCursor
             ReverseCast,                                                                                // Cast => Far away + rotated
                                                                                                         // 
-            // reduces cooldown percentage-based (Clownpiece - Life-Burning torch)                      // 
-            // Variant 1                                                                                // 
+                                                                                                        // reduces cooldown percentage-based (Clownpiece - Life-Burning torch)                      // 
+                                                                                                        // Variant 1                                                                                // 
             ReduceCooldown10Percent, // 0.9f                                                            // 0.90f ^ AMOUNT
             ReduceCooldown25Percent, // 0.75f                                                           // 0.75f ^ AMOUNT
             ReduceCooldown50Percent, // 0.5f                                                            // 0.50f ^ AMOUNT
             RandomCooldownPrecent, // Main.rand.NextFloat();                                            // Main.rand.NextFloat(0.5, 1.0) ^ AMOUNT
-                                                                                                        // 
-            // reduces recharge percentage-based                                                        // 
-            // Variant 2                                                                                // 
+                                   // 
+                                   // reduces recharge percentage-based                                                        // 
+                                   // Variant 2                                                                                // 
             ReduceRecharge10Percent, // 0.9f                                                            // 0.90f ^ AMOUNT
             ReduceRecharge25Percent, // 0.75f                                                           // 0.75f ^ AMOUNT
             ReduceRecharge50Percent, // 0.5f                                                            // 0.50f ^ AMOUNT
             RandomRechargePrecent, // Main.rand.NextFloat();                                            // Main.rand.NextFloat(0.5, 1.0) ^ AMOUNT
-                                                                                                        // 
-            // Repeats                                                                                  // 
-            // Variant 3                                                                                // 
+                                   // 
+                                   // Repeats                                                                                  // 
+                                   // Variant 3                                                                                // 
             Repeat2, //2                                                                                // 2f
             Repeat3, //3                                                                                // 3f
             Repeat4, //4                                                                                // 4f
             Repeat5, //5                                                                                // 5f
             RepeatRandom, // Main.rand.Next();                                                          // Main.rand.NextFloat(2, 6)
-                                                                                                        // 
-            // Delays in ticks                                                                          // 
-            // Variant 4                                                                                // 
+                          // 
+                          // Delays in ticks                                                                          // 
+                          // Variant 4                                                                                // 
             DelayCastBy1, //60                                                                          // 
             DelayCastBy2, //120                                                                         // 
             DelayCastBy3, //180                                                                         // 
             DelayCastBy4, //240                                                                         // 
             DelayCastBy5, //300                                                                         // 
             DelayCastRandom, // Main.rand.Next();                                                       // 
-                                                                                                        //
-            // Eliminates waiting time                                                                  // 
-            // Variant 5                                                                                // 
+                             //
+                             // Eliminates waiting time                                                                  // 
+                             // Variant 5                                                                                // 
             EliminateCooldown, //cooldown=0                                                             // Cast => CooldownOverride
             EliminateRecharge, //recharge=0                                                             // Cast => RechargeOverride
             NextCardNoCooldown,                                                                         // 1f * AMOUNT

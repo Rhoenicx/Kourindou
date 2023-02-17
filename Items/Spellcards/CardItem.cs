@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
-using static Kourindou.KourindouSpellcardSystem;
+using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou.Items.Spellcards
 {
@@ -54,9 +55,34 @@ namespace Kourindou.Items.Spellcards
         // Position of this card on the catalyst slots
         public int SlotPosition;
 
+        private Asset<Texture2D> BlueCardBack;
+
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
             Texture2D texture = TextureAssets.Item[Item.type].Value;
+            BlueCardBack ??= Request<Texture2D>("Kourindou/Items/Spellcards/_CardBack/BlueCard");
+            float Width = (float)Math.Cos((Item.timeSinceItemSpawned / 60f) * MathHelper.Pi) * texture.Width;
+
+            if (Width < 0f)
+            {
+                Width *= -1;
+                texture = BlueCardBack.Value;
+            }
+
+            int CopyAmount = 5;
+            for (int i = 0; i < CopyAmount; i++)
+            {
+                spriteBatch.Draw(
+                texture,
+                Item.Center - Main.screenPosition + new Vector2(4f, 0f).RotatedBy(MathHelper.ToRadians(Item.timeSinceItemSpawned + (360 / CopyAmount * i))),
+                texture.Bounds,
+                new Color(140, 120, 255, 77),
+                rotation,
+                texture.Size() * 0.5f,
+                new Vector2(Width / texture.Width, 1f),
+                SpriteEffects.None,
+                0);
+            }
 
             spriteBatch.Draw(
                 texture,
@@ -65,9 +91,10 @@ namespace Kourindou.Items.Spellcards
                 lightColor,
                 rotation,
                 texture.Size() * 0.5f,
-                scale,
+                new Vector2(Width / texture.Width, 1f),
                 SpriteEffects.None,
                 0);
+
 
             return false;
         }
