@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
+using ReLogic.Content;
 using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou.Items.Spellcards
@@ -55,18 +55,46 @@ namespace Kourindou.Items.Spellcards
         // Position of this card on the catalyst slots
         public int SlotPosition;
 
+        // Card Colors 
+        protected CardColors CardColor;
+
         private Asset<Texture2D> BlueCardBack;
+        private Asset<Texture2D> BrownCardBack;
+        private Asset<Texture2D> GreenCardBack;
+        private Asset<Texture2D> LightBlueCardBack;
+        private Asset<Texture2D> PurpleCardBack;
+        private Asset<Texture2D> RedCardBack;
+        private Asset<Texture2D> WhiteCardBack;
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
             Texture2D texture = TextureAssets.Item[Item.type].Value;
-            BlueCardBack ??= Request<Texture2D>("Kourindou/Items/Spellcards/_CardBack/BlueCard");
+
+            BlueCardBack ??= Request<Texture2D>("Kourindou/Items/Spellcards/CardBack/BlueCard");
+            BrownCardBack ??= Request<Texture2D>("Kourindou/Items/Spellcards/CardBack/BrownCard");
+            GreenCardBack ??= Request<Texture2D>("Kourindou/Items/Spellcards/CardBack/GreenCard");
+            LightBlueCardBack ??= Request<Texture2D>("Kourindou/Items/Spellcards/CardBack/LightBlueCard");
+            PurpleCardBack ??= Request<Texture2D>("Kourindou/Items/Spellcards/CardBack/PurpleCard");
+            RedCardBack ??= Request<Texture2D>("Kourindou/Items/Spellcards/CardBack/RedCard");
+            WhiteCardBack ??= Request<Texture2D>("Kourindou/Items/Spellcards/CardBack/WhiteCard");
+
             float Width = (float)Math.Cos((Item.timeSinceItemSpawned / 60f) * MathHelper.Pi) * texture.Width;
 
             if (Width < 0f)
             {
                 Width *= -1;
-                texture = BlueCardBack.Value;
+
+                switch (CardColor)
+                {
+                    case CardColors.Blue: texture = BlueCardBack.Value; break;
+                    case CardColors.Brown: texture = BrownCardBack.Value; break;
+                    case CardColors.Green: texture = GreenCardBack.Value; break;
+                    case CardColors.LightBlue: texture = LightBlueCardBack.Value; break;
+                    case CardColors.Purple: texture = PurpleCardBack.Value; break;
+                    case CardColors.Red: texture = RedCardBack.Value; break;
+                    case CardColors.White: texture = WhiteCardBack.Value; break;
+                    default: texture = BlueCardBack.Value; break;
+                }
             }
 
             int CopyAmount = 5;
@@ -95,7 +123,6 @@ namespace Kourindou.Items.Spellcards
                 SpriteEffects.None,
                 0);
 
-
             return false;
         }
 
@@ -112,6 +139,17 @@ namespace Kourindou.Items.Spellcards
         public virtual float GetValue()
         {
             return 1f * Amount;
+        }
+
+        public enum CardColors
+        { 
+            Blue,
+            Brown,
+            Green,
+            LightBlue,
+            Purple,
+            Red,
+            White
         }
     }
 }

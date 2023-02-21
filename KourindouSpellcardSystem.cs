@@ -4,12 +4,14 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Kourindou.Items.Spellcards;
 using static Kourindou.KourindouSpellcardSystem;
 
 namespace Kourindou
 {
+    #region CastProperties
     // Individual card, this is how the cards will look like when they get passed around on the network
     // And how they are saved on the player and catalyst
     public class Card
@@ -25,6 +27,9 @@ namespace Kourindou
         public int Repeat { get; set; } = 0;
         public int Delay { get; set; } = 0;
         public int InitialDelay { get; set; } = 0;
+        public bool TriggerActive { get; set; } = false;
+        public int TriggerAmount { get; set; } = 0;
+        public List<CardItem> TriggerInOrder { get; set; }
         public List<CardItem> CardItems { get; set; }
     }
 
@@ -66,6 +71,34 @@ namespace Kourindou
         public List<CastInfo> Casts { get; set; }
         public List<int> ConsumedCards { get; set; }
     }
+    #endregion
+
+    #region ProjectileProperties
+    public class ProjectileInfo
+    {
+        // Projectile type that needs to be spawned
+        public int Type { get; set; }
+
+        // Catalyst 
+        public Vector2 CastPosition { get; set; }
+        public Vector2 CastVelocity { get; set; }
+        public Vector2 CatalystOffset { get; set; }
+        public float CatalystSpread { get; set; }
+
+        // Altered positions after applying effects/modifiers
+        public Vector2 SpawnPosition { get; set; }
+        public Vector2 SpawnVelocity { get; set; }
+        public float SpawnSpread { get; set; }
+
+        // Applied modifiers to this projectile
+        public List<KeyValuePair<byte, int>> FormationInOrder { get; set; }
+
+        // Stats that need to be send to this projectile.
+        public Dictionary<byte, float> ProjectileModifiers { get; set; }
+        public List<Card> TriggerInOrder { get; set; }
+        public List<Card> TriggerPayload { get; set; }
+    }
+    #endregion
 
     public class KourindouSpellcardSystem
     {
@@ -101,6 +134,17 @@ namespace Kourindou
             }
 
             return false;
+        }
+
+        public static Card GetCard(CardItem item)
+        {
+
+            return GetCard(item.Group, item.Spell);
+        }
+
+        public static Card GetCard(byte _Group, byte _Spell)
+        {
+            return new Card() { Group = _Group, Spell = _Spell };
         }
 
         public static CardItem GetCardItem(Card card)
@@ -225,6 +269,7 @@ namespace Kourindou
 
             // Multiplication
             float Multiplications = 0;
+            CardItem MultiplicationCard = GetCardItem((byte)Groups.Empty, 0);
 
             // Amount of additional inserted cards counter, 
             // used to determine end index for a next cast
@@ -327,20 +372,29 @@ namespace Kourindou
 
                         default:
                             {
-                                if (consume)
+                                if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive && MultiplicationCard.Group != (byte)Groups.Empty)
                                 {
-                                    if ((int)Math.Ceiling(Multiplications) > stack)
+                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(MultiplicationCard);
+                                }
+                                else
+                                {
+                                    if (consume)
                                     {
-                                        Multiplications = (float)stack;
+                                        if ((int)Math.Ceiling(Multiplications) > stack)
+                                        {
+                                            Multiplications = (float)stack;
+                                        }
+
+                                        for (int y = 1; y < (int)Multiplications; y++)
+                                        {
+                                            CastProperties.ConsumedCards.Add(Cards[Index].SlotPosition);
+                                        }
                                     }
 
-                                    for (int y = 1; y < (int)Multiplications; y++)
-                                    {
-                                        CastProperties.ConsumedCards.Add(Cards[Index].SlotPosition);
-                                    }
+                                    Cards[Index].ApplyMultiplication(Multiplications);
                                 }
 
-                                Cards[Index].ApplyMultiplication(Multiplications);
+                                MultiplicationCard = GetCardItem((byte)Groups.Empty, 0);
                             }
                             break;
                     }
@@ -366,14 +420,14 @@ namespace Kourindou
                         {
                             CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
 
-                            if (Triggers > 0)
+                            if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount > 0)
                             {
-                                Triggers--;
-                                TriggerActive = true;
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount--;
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive = true;
                             }
                             else
                             {
-                                TriggerActive = false;
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive = false;
 
                                 if (MulticastAmount > 0)
                                 {
@@ -392,9 +446,9 @@ namespace Kourindou
 
                     case Groups.Multicast:
                         {
-                            if (TriggerActive)
+                            if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
                             {
-                                Triggers += (int)Cards[Index].GetValue() - 1;
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += (int)Cards[Index].GetValue() - 1;
                             }
                             else
                             {
@@ -414,36 +468,33 @@ namespace Kourindou
                     case Groups.Trigger:
                         {
                             // If a trigger is active, this card should get send as payload
-                            if (TriggerActive)
+                            if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
                             {
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += (int)Cards[Index].GetValue();
                                 CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
                             }
                             // No trigger active: During wrap-around we do not want to add triggers.
                             else if (!IsWrappingAround)
                             {
-                                Triggers += (int)Cards[Index].GetValue();
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += (int)Cards[Index].GetValue();
+                                for (int i = 0; i < (int)Cards[Index].GetValue(); i++)
+                                {
+                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerInOrder.Add(Cards[Index]);
+                                }
                             }
                         }
                         break;
 
                     case Groups.Multiplication:
                         {
-                            // If a trigger is active, this card should get send as payload
-                            if (TriggerActive)
-                            {
-                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
-                            }
-                            // Otherwise execute its effect on next card
-                            else
-                            {
-                                Multiplications += Cards[Index].GetValue();
-                            }
+                            Multiplications += Cards[Index].GetValue();
+                            MultiplicationCard = Cards[Index];
                         }
                         break;
 
                     case Groups.CatalystModifier:
                         {
-                            if (TriggerActive)
+                            if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
                             {
                                 CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
                             }
@@ -471,7 +522,14 @@ namespace Kourindou
 
                                     case CatalystModifierVariant.Delay:
                                         {
-                                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Delay += (int)Math.Ceiling(Cards[Index].GetValue());
+                                            if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Repeat > 0)
+                                            {
+                                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Delay += (int)Math.Ceiling(Cards[Index].GetValue());
+                                            }
+                                            else
+                                            {
+                                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].InitialDelay += (int)Math.Ceiling(Cards[Index].GetValue());
+                                            }
                                         }
                                         break;
 
@@ -533,7 +591,7 @@ namespace Kourindou
 
                     case Groups.Special:
                         {
-                            if (TriggerActive)
+                            if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
                             {
                                 CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
                             }
@@ -847,15 +905,16 @@ namespace Kourindou
         public enum Formation : byte                                                                    // GETVALUE
         {                                                                                               // 
             // Default straight line                                                                    // 
-            Straight,                                                                                   // 1f (Cannot be multiplied)
+            OnlyForward,                                                                                // 1f (Cannot be multiplied)
             ForwardAndSide,                                                                             // 1f (Cannot be multiplied)
+            ForwardAndBack,
             OnlySides,                                                                                  // 
                                                                                                         // Duplicates projectile and add spread, like a shotgun                                     // 
             DoubleScatter, // 2                                                                         // 2f * AMOUNT
             TripleScatter, // 3                                                                         // 3f * AMOUNT
             QuadrupleScatter, // 4                                                                      // 4f * AMOUNT
             QuintupleScatter, // 5                                                                      // 5f * AMOUNT
-            Shotgun,                                                                                    // Main.rand.Next(2, 6) * AMOUNT
+            ShotgunScatter,                                                                             // Main.rand.Next(2, 6) * AMOUNT
                                                                                                         // 
                                                                                                         // Duplicates projectile and place them side-by-side                                        // 
             DoubleFork, // 2                                                                            // 2f * AMOUNT
@@ -870,7 +929,9 @@ namespace Kourindou
             Hexagon, // 6                                                                               // 6f * AMOUNT
             Heptagon, // 7                                                                              // 7f * AMOUNT
             Octagon, // 8                                                                               // 8f * AMOUNT
-            Randagon // Main.rand.Next(4, 9); (is not random card)                                      // Main.rand.Next(2, 9) * AMOUNT
+            Randagon, // Main.rand.Next(4, 9); (is not random card)                                     // Main.rand.Next(2, 9) * AMOUNT
+
+            RandomFormation
         }                                                                                               // 
                                                                                                         // 
         public enum FormationVariant : byte                                                             // 
@@ -883,6 +944,7 @@ namespace Kourindou
                                                                                                         // 
         public enum Trajectory : byte                                                                   // 
         {                                                                                               // 
+            Straight,
             ArcLeft,                                                                                    // 1f * AMOUNT
             ArcRight,                                                                                   // 1f * AMOUNT
             ZigZag,                                                                                     // 1f * AMOUNT
@@ -902,29 +964,29 @@ namespace Kourindou
             // Acceleration => Amount of percent of base speed added each second                        // 
             Acceleration, // 1f (percent)                                                               // 0.1f * AMOUNT
             Deceleration, // 1f (percent)                                                               // 0.1f * AMOUNT
-                                                                                                        //
-            // Acceleration Multipier => Amount of percent current speed is changed                     //
+                          //
+                          // Acceleration Multipier => Amount of percent current speed is changed                     //
             AccelerationMultiplier,                                                                     // 0.1f * AMOUNT
             DecelerationMultiplier,                                                                     // 0.1f * AMOUNT
                                                                                                         //
-            // Speed => Increases base speed by a percentage                                            // 
+                                                                                                        // Speed => Increases base speed by a percentage                                            // 
             IncreaseSpeed, // 1f (percent)                                                              // 0.1f * AMOUNT
             DecreaseSpeed, // 1f (percent)                                                              // 0.1f * AMOUNT
             Stationary, // 0f                                                                           // Set base speed to 0f
-                                                                                                        //
-            // Tile bounces                                                                             // 
+                        //
+                        // Tile bounces                                                                             // 
             BounceUp, //+1                                                                              // 
             BounceDown, //-1                                                                            // 
             FallingFlat, //0                                                                            // 
-            TerribleIdea, // Infinite bounces                                                           // 
-                                                                                                        // 
-            // Penetration stats                                                                        // 
+            A_Terrible_Idea, // Infinite bounces                                                         // 
+                          // 
+                          // Penetration stats                                                                        // 
             PenetrationUp, //+1                                                                         // 
             PenetrationDown, // > 1 : -1                                                                // 
             PenetrationZero, //0                                                                        // 
             PenetrationAll, //-1                                                                        // 
-                                                                                                        // 
-            // Gravity                                                                                  // 
+                            // 
+                            // Gravity                                                                                  // 
             Gravity,                                                                                    // 
             NoGravity,                                                                                  // 
             AntiGravity,                                                                                // 
@@ -948,7 +1010,11 @@ namespace Kourindou
             DecreaseKnockback,                                                                          // 
             NoKnockback,                                                                                // 
                                                                                                         // 
-                                                                                                        // Rotation                                                                                 // 
+                                                                                                        // Damage
+            DamageUp,
+            DamageDown,
+
+            // Rotation                                                                                 // 
             RotateLeft90, // -90f                                                                       // 
             RotateRight90, // -90f                                                                      // 
             RotateLeft45, // -45f                                                                       // 
@@ -964,9 +1030,9 @@ namespace Kourindou
                           // 
                           // Confined                                                                                 // 
             BounceOnScreenEdge, // Projectile bounces at the side of the screen                         // Return 1f
-            WarpScreenEdges, // Yukari Screen border                                                    // Return 1f
-                             // 
-                             // Seija                                                                                    // 
+            WarpOnScreenEdge, // Yukari Screen border                                                   // Return 1f
+                              // 
+                              // Seija                                                                                    // 
             VectorReversal, // reverses velocity, also flips team                                       // Return 1f
                             // 
                             // Cirno                                                                                    // 
@@ -979,16 +1045,14 @@ namespace Kourindou
             MagicCircleAura,                                                                            // 
                                                                                                         // 
                                                                                                         // Suwako                                                                                   // 
-            ChanceExploding,                                                                            //
-                                                                                                        //
-                                                                                                        // Hina                                                                                     //
-            PoisonBullets,                                                                              // 
+            Explosion,                                                                                  //
                                                                                                         //
                                                                                                         // Other                                                                                    // 
             AngryBullets,                                                                               // also hostile
             Luminescence,                                                                               // Light intensity
-                                                                                                        //
-                                                                                                        // Random                                                                                   // 
+            CriticalPlus,
+            //
+            // Random                                                                                   // 
             RandomProjectileModifier                                                                    // 
         }                                                                                               // 
                                                                                                         // 
@@ -997,7 +1061,7 @@ namespace Kourindou
             // Spread - Reduces spread on the wand                                                      //
             DecreaseSpread, //-30f                                                                      // 
             IncreaseSpread, // +30f                                                                     // 
-            AccurateAF, // no spread for this castblock                                                 //
+            Sniper, // no spread for this castblock                                                 //
                         //
                         // Position where the projectiles are spawned                                               // 
             DistantCast,                                                                                // 128f * AMOUNT
@@ -1009,17 +1073,18 @@ namespace Kourindou
             ReduceCooldown10Percent, // 0.9f                                                            // 0.90f ^ AMOUNT
             ReduceCooldown25Percent, // 0.75f                                                           // 0.75f ^ AMOUNT
             ReduceCooldown50Percent, // 0.5f                                                            // 0.50f ^ AMOUNT
-            RandomCooldownPrecent, // Main.rand.NextFloat();                                            // Main.rand.NextFloat(0.5, 1.0) ^ AMOUNT
+            RandomCooldownPercent, // Main.rand.NextFloat();                                            // Main.rand.NextFloat(0.5, 1.0) ^ AMOUNT
                                    // 
                                    // reduces recharge percentage-based                                                        // 
                                    // Variant 2                                                                                // 
             ReduceRecharge10Percent, // 0.9f                                                            // 0.90f ^ AMOUNT
             ReduceRecharge25Percent, // 0.75f                                                           // 0.75f ^ AMOUNT
             ReduceRecharge50Percent, // 0.5f                                                            // 0.50f ^ AMOUNT
-            RandomRechargePrecent, // Main.rand.NextFloat();                                            // Main.rand.NextFloat(0.5, 1.0) ^ AMOUNT
+            RandomRechargePercent, // Main.rand.NextFloat();                                            // Main.rand.NextFloat(0.5, 1.0) ^ AMOUNT
                                    // 
                                    // Repeats                                                                                  // 
                                    // Variant 3                                                                                // 
+            Repeat1, //1
             Repeat2, //2                                                                                // 2f
             Repeat3, //3                                                                                // 3f
             Repeat4, //4                                                                                // 4f
@@ -1069,20 +1134,21 @@ namespace Kourindou
                                                                                                         // Global additional elements                                                               // 
             Electricity,                                                                                // 
             Frost,                                                                                      // 
-            MightyWind                                                                                  // 
+            MightyWind,                                                                                 // 
+            Poison,
+            Magic
         }                                                                                               // 
                                                                                                         // 
         public enum Multicast : byte                                                                    // 
         {                                                                                               // 
-            DoubleSpell,                                                                                // 2f
-            TrippleSpell,                                                                               // 3f
-            QuadrupleSpell                                                                              // 4f
+            DoubleCast,                                                                                 // 2f
+            TrippleCast,                                                                                // 3f
+            QuadrupleCast                                                                               // 4f
         }                                                                                               // 
                                                                                                         // 
         public enum Trigger : byte                                                                      // 
         {                                                                                               // 
-            ProjectileKill,                                                                             // 
-            OnTileCollide,                                                                              // 
+            Trigger,                                                                                    // 
             Timer1,                                                                                     // 1f
             Timer2,                                                                                     // 2f
             Timer3,                                                                                     // 3f

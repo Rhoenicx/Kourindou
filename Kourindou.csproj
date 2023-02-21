@@ -8,6 +8,35 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Items\Spellcards\Elements\**" />
+    <Compile Remove="Items\Spellcards\Formations\**" />
+    <Compile Remove="Items\Spellcards\Modifiers\**" />
+    <Compile Remove="Items\Spellcards\Multicasts\**" />
+    <Compile Remove="Items\Spellcards\Multiplications\**" />
+    <Compile Remove="Items\Spellcards\ProjectileModifiers\**" />
+    <Compile Remove="Items\Spellcards\Projectiles\**" />
+    <Compile Remove="Items\Spellcards\Trajectories\**" />
+    <Compile Remove="Items\Spellcards\Triggers\**" />
+    <EmbeddedResource Remove="Items\Spellcards\Elements\**" />
+    <EmbeddedResource Remove="Items\Spellcards\Formations\**" />
+    <EmbeddedResource Remove="Items\Spellcards\Modifiers\**" />
+    <EmbeddedResource Remove="Items\Spellcards\Multicasts\**" />
+    <EmbeddedResource Remove="Items\Spellcards\Multiplications\**" />
+    <EmbeddedResource Remove="Items\Spellcards\ProjectileModifiers\**" />
+    <EmbeddedResource Remove="Items\Spellcards\Projectiles\**" />
+    <EmbeddedResource Remove="Items\Spellcards\Trajectories\**" />
+    <EmbeddedResource Remove="Items\Spellcards\Triggers\**" />
+    <None Remove="Items\Spellcards\Elements\**" />
+    <None Remove="Items\Spellcards\Formations\**" />
+    <None Remove="Items\Spellcards\Modifiers\**" />
+    <None Remove="Items\Spellcards\Multicasts\**" />
+    <None Remove="Items\Spellcards\Multiplications\**" />
+    <None Remove="Items\Spellcards\ProjectileModifiers\**" />
+    <None Remove="Items\Spellcards\Projectiles\**" />
+    <None Remove="Items\Spellcards\Trajectories\**" />
+    <None Remove="Items\Spellcards\Triggers\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
   </ItemGroup>
   <ItemGroup>
@@ -19,16 +48,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Items\Spellcards\Formations\" />
-    <Folder Include="Items\Spellcards\Multicasts\" />
-    <Folder Include="Items\Spellcards\Modifiers\" />
-    <Folder Include="Items\Spellcards\CatalystModifiers\" />
-    <Folder Include="Items\Spellcards\Elements\" />
-    <Folder Include="Items\Spellcards\Multiplications\" />
     <Folder Include="Items\Spellcards\Special\" />
-    <Folder Include="Items\Spellcards\Triggers\" />
-    <Folder Include="Items\Spellcards\ProjectileModifiers\" />
-    <Folder Include="Items\Spellcards\Projectiles\" />
-    <Folder Include="Items\Spellcards\Trajectories\" />
   </ItemGroup>
 </Project>
