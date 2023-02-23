@@ -8,33 +8,12 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Items\Spellcards\Elements\**" />
-    <Compile Remove="Items\Spellcards\Formations\**" />
     <Compile Remove="Items\Spellcards\Modifiers\**" />
-    <Compile Remove="Items\Spellcards\Multicasts\**" />
-    <Compile Remove="Items\Spellcards\Multiplications\**" />
-    <Compile Remove="Items\Spellcards\ProjectileModifiers\**" />
-    <Compile Remove="Items\Spellcards\Projectiles\**" />
-    <Compile Remove="Items\Spellcards\Trajectories\**" />
-    <Compile Remove="Items\Spellcards\Triggers\**" />
-    <EmbeddedResource Remove="Items\Spellcards\Elements\**" />
-    <EmbeddedResource Remove="Items\Spellcards\Formations\**" />
+    <Compile Remove="Items\Spellcards\Special\**" />
     <EmbeddedResource Remove="Items\Spellcards\Modifiers\**" />
-    <EmbeddedResource Remove="Items\Spellcards\Multicasts\**" />
-    <EmbeddedResource Remove="Items\Spellcards\Multiplications\**" />
-    <EmbeddedResource Remove="Items\Spellcards\ProjectileModifiers\**" />
-    <EmbeddedResource Remove="Items\Spellcards\Projectiles\**" />
-    <EmbeddedResource Remove="Items\Spellcards\Trajectories\**" />
-    <EmbeddedResource Remove="Items\Spellcards\Triggers\**" />
-    <None Remove="Items\Spellcards\Elements\**" />
-    <None Remove="Items\Spellcards\Formations\**" />
+    <EmbeddedResource Remove="Items\Spellcards\Special\**" />
     <None Remove="Items\Spellcards\Modifiers\**" />
-    <None Remove="Items\Spellcards\Multicasts\**" />
-    <None Remove="Items\Spellcards\Multiplications\**" />
-    <None Remove="Items\Spellcards\ProjectileModifiers\**" />
-    <None Remove="Items\Spellcards\Projectiles\**" />
-    <None Remove="Items\Spellcards\Trajectories\**" />
-    <None Remove="Items\Spellcards\Triggers\**" />
+    <None Remove="Items\Spellcards\Special\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
@@ -48,6 +27,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Items\Spellcards\Special\" />
+    <Folder Include="Gores\" />
+    <Folder Include="Items\Placables\" />
+    <Folder Include="Items\Spellcards\Projectiles\" />
   </ItemGroup>
 </Project>

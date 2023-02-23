@@ -1142,7 +1142,7 @@ namespace Kourindou
         public enum Multicast : byte                                                                    // 
         {                                                                                               // 
             DoubleCast,                                                                                 // 2f
-            TrippleCast,                                                                                // 3f
+            TripleCast,                                                                                // 3f
             QuadrupleCast                                                                               // 4f
         }                                                                                               // 
                                                                                                         // 
