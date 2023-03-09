@@ -29,14 +29,15 @@ namespace Kourindou
         public int InitialDelay { get; set; } = 0;
         public bool TriggerActive { get; set; } = false;
         public int TriggerAmount { get; set; } = 0;
-        public List<CardItem> TriggerInOrder { get; set; }
-        public List<CardItem> CardItems { get; set; }
+        public List<CardItem> TriggerInOrder { get; set; } = new List<CardItem>();
+        public List<CardItem> CardItems { get; set; } = new List<CardItem>();
+        public bool IsDisabled { get; set; } = false;
     }
 
     // CastInfo 
     public class CastInfo
     {
-        public List<CastBlock> Blocks { get; set; }
+        public List<CastBlock> Blocks { get; set; } = new List<CastBlock>();
     }
 
     // Cast Properties
@@ -68,8 +69,8 @@ namespace Kourindou
         public float ChanceNoConsumeCard = 0f;
 
         // The actual cast info
-        public List<CastInfo> Casts { get; set; }
-        public List<int> ConsumedCards { get; set; }
+        public List<CastInfo> Casts { get; set; } = new List<CastInfo>();
+        public List<int> ConsumedCards { get; set; } = new List<int>();
     }
     #endregion
 
@@ -94,7 +95,7 @@ namespace Kourindou
         public List<KeyValuePair<byte, int>> FormationInOrder { get; set; }
 
         // Stats that need to be send to this projectile.
-        public Dictionary<byte, float> ProjectileModifiers { get; set; }
+        public Dictionary<byte, float> ProjectileStats { get; set; }
         public List<Card> TriggerInOrder { get; set; }
         public List<Card> TriggerPayload { get; set; }
     }
@@ -102,13 +103,13 @@ namespace Kourindou
 
     public class KourindouSpellcardSystem
     {
-        private static Dictionary<byte, Dictionary<byte, int>> CardTable = new();
-        private static List<Card> EntireCardPool = new();
+        private static Dictionary<byte, Dictionary<byte, int>> CardTable = new Dictionary<byte, Dictionary<byte, int>>();
+        private static List<Card> EntireCardPool = new List<Card>();
 
         public static void Load()
         {
-            CardTable = new();
-            EntireCardPool = new();
+            CardTable ??= new Dictionary<byte, Dictionary<byte, int>>();
+            EntireCardPool ??= new List<Card>();
         }
 
         public static void Unload()
@@ -121,6 +122,9 @@ namespace Kourindou
 
         public static bool RegisterCardItem(byte group, byte spell, int CardItemID)
         {
+            CardTable ??= new Dictionary<byte, Dictionary<byte, int>>();
+            EntireCardPool ??= new List<Card>();
+
             if (!CardTable.ContainsKey(group))
             {
                 CardTable.Add(group, new Dictionary<byte, int>());
@@ -149,13 +153,15 @@ namespace Kourindou
 
         public static CardItem GetCardItem(Card card)
         {
+            Main.NewText("contains key " + CardTable.ContainsKey(card.Group));
 
-            if (CardTable.ContainsKey(card.Group)
+            if (card != null && CardTable.ContainsKey(card.Group)
                 && CardTable[card.Group].ContainsKey(card.Spell)
                 && new Item(CardTable[card.Group][card.Spell]).ModItem is CardItem item)
             {
                 return item;
             }
+
             return null;
         }
 
@@ -202,6 +208,8 @@ namespace Kourindou
             List<CardItem> CardItemList = new();
             for (int i = 0; i < Cards.Count; i++)
             {
+                Main.NewText(Cards[i].Group + " - "+ Cards[i].Spell);
+
                 CardItem item = GetCardItem(Cards[i].Group, Cards[i].Spell);
                 if (item != null)
                 {
@@ -221,16 +229,20 @@ namespace Kourindou
             }
         }
 
-        public static Cast GenerateCast(List<Card> Cards, Card AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool Shuffle = false)
+        public static Cast GenerateCast(List<Card> Cards, Card AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool Shuffle = false, bool IsVisualized = false)
         {
-            return GenerateCast(CardToCardItemList(Cards), GetCardItem(AlwaysCastCard), IsCatalyst, CatalystStartIndex, CatalystCastAmount, Shuffle);
+            Main.NewText("Card count = " + Cards.Count);
+
+            return GenerateCast(CardToCardItemList(Cards), GetCardItem(AlwaysCastCard), IsCatalyst, CatalystStartIndex, CatalystCastAmount, Shuffle, IsVisualized);
         }
 
-        public static Cast GenerateCast(List<CardItem> Cards, CardItem AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool Shuffle = false)
+        public static Cast GenerateCast(List<CardItem> Cards, CardItem AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool Shuffle = false, bool IsVisualized = false)
         {
             // Here we generate the cast info which is passed to the execution part
             // => If this catalyst is a shuffle, the cards should first be shuffled.
             // => Be sure to use SetSlotPositions BEFORE casting and/or shuffling!!!
+
+            Main.NewText("Card count = " + Cards.Count);
 
             // Cast List for storing the Cast blocks
             Cast CastProperties = new();
@@ -243,10 +255,20 @@ namespace Kourindou
             }
             CardsWrapReady.RemoveRange(CatalystStartIndex, Cards.Count - CatalystStartIndex);
 
-            // Check the AlwaysCastCards
+            // Mark the cards as wrap-around when the visualization is active
+            if (IsVisualized)
+            {
+                foreach (CardItem item in CardsWrapReady)
+                {
+                    item.IsWrapped = true;
+                }
+            }
+
+            // Setup the AlwaysCastCards
             if (AlwaysCastCard != null && AlwaysCastCard.Group != (byte)Groups.Empty)
             {
                 AlwaysCastCard.IsInsertedCard = true;
+                AlwaysCastCard.IsAlwaysCast = true;
                 AlwaysCastCard.AddCooldown = 0;
                 AlwaysCastCard.AddRecharge = 0;
             }
@@ -297,7 +319,7 @@ namespace Kourindou
                     CastProperties.Casts.Add(new CastInfo());
 
                     // If this catalyst has a Always-Cast insert the card to the front of this cast
-                    if (AlwaysCastCard.Group != (byte)Groups.Empty)
+                    if (AlwaysCastCard != null && AlwaysCastCard.Group != (byte)Groups.Empty)
                     {
                         if (AlwaysCastCard.Group == (byte)Groups.Projectile)
                         {
@@ -319,13 +341,6 @@ namespace Kourindou
                 if (CastProperties.Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock) == null)
                 {
                     CastProperties.Casts[CurrentCast].Blocks.Add(new CastBlock());
-                }
-
-                // Count the amount of cards encountered that have been inserted,
-                // This is to determine the ending index for the next cast.
-                if (!IsWrappingAround && Cards[Index].IsInsertedCard)
-                {
-                    InsertedCards++;
                 }
 
                 // Multiply this card if needed
@@ -408,6 +423,19 @@ namespace Kourindou
                     Cards[Index] = GetRandomCard(Cards[Index]);
                 }
 
+                // If visualization in enabled mark this card as a payload card
+                if (IsVisualized && CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
+                {
+                    Cards[Index].IsPayload = true;
+                }
+
+                // Count the amount of cards encountered that have been inserted,
+                // This is to determine the ending index for the next cast.
+                if (!IsWrappingAround && Cards[Index].IsInsertedCard)
+                {
+                    InsertedCards++;
+                }
+
                 switch ((Groups)Cards[Index].Group)
                 {
                     case Groups.Empty:
@@ -457,6 +485,15 @@ namespace Kourindou
                                     if (CastProperties.Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock + i) == null)
                                     {
                                         CastProperties.Casts[CurrentCast].Blocks.Add(CastProperties.Casts[CurrentCast].Blocks[CurrentBlock]);
+
+                                        // When the visualization setting is enabled, like in the UI mark the copied cards
+                                        if (IsVisualized)
+                                        {
+                                            foreach (CardItem item in CastProperties.Casts[CurrentCast].Blocks[CurrentBlock + i].CardItems)
+                                            {
+                                                item.IsMulticasted = true;
+                                            }
+                                        }
                                     }
                                 }
 
@@ -769,24 +806,42 @@ namespace Kourindou
                 CastProperties.RechargeTime = 0;
             }
 
+            Main.NewText(CastProperties.Casts.Any());
+
             // Remove CastInfo and CastBlocks which don't have projectiles.
-            for (int _CastInfo = CastProperties.Casts.Count; _CastInfo >= 0; _CastInfo--)
+            for (int _CastInfo = CastProperties.Casts.Count - 1; _CastInfo >= 0; _CastInfo--)
             {
-                for (int _CastBlock = CastProperties.Casts[_CastInfo].Blocks.Count; _CastBlock >= 0; _CastBlock++)
+                
+
+                for (int _CastBlock = CastProperties.Casts[_CastInfo].Blocks.Count - 1; _CastBlock >= 0; _CastBlock--)
                 {
                     // Remove CastBlocks if it has no projectile that can be fired by the catalyst
                     if (IsCatalyst)
                     {
                         if (!CastProperties.Casts[_CastInfo].Blocks[_CastBlock].CardItems.Any(_CardItem => _CardItem.Group == (byte)Groups.Projectile && _CardItem.Spell != (byte)Projectile.MyOwnProjectileInstance))
                         {
-                            CastProperties.Casts[_CastInfo].Blocks.RemoveAt(_CastBlock);
+                            if (IsVisualized)
+                            {
+                                CastProperties.Casts[_CastInfo].Blocks[_CastBlock].IsDisabled = true;
+                            }
+                            else
+                            {
+                                CastProperties.Casts[_CastInfo].Blocks.RemoveAt(_CastBlock);
+                            }
                         }
                     }
                     else
                     {
                         if (!CastProperties.Casts[_CastInfo].Blocks[_CastBlock].CardItems.Any(_CardItem => _CardItem.Group == (byte)Groups.Projectile))
                         {
-                            CastProperties.Casts[_CastInfo].Blocks.RemoveAt(_CastBlock);
+                            if (IsVisualized)
+                            {
+                                CastProperties.Casts[_CastInfo].Blocks[_CastBlock].IsDisabled = true;
+                            }
+                            else
+                            {
+                                CastProperties.Casts[_CastInfo].Blocks.RemoveAt(_CastBlock);
+                            }
                         }
                     }
                 }
@@ -799,10 +854,27 @@ namespace Kourindou
             }
 
             // Check if we have something we can cast, if not the cast fails.
-            if (CastProperties.Casts.Count <= 0)
+            if (IsVisualized)
             {
                 CastProperties.FailedToCast = true;
+
+                foreach (CastInfo info in CastProperties.Casts)
+                {
+                    if (info.Blocks.Any(_block => !_block.IsDisabled))
+                    {
+                        CastProperties.FailedToCast = false;
+                        break;
+                    }
+                }
             }
+            else
+            {
+                if (CastProperties.Casts.Count <= 0)
+                {
+                    CastProperties.FailedToCast = true;
+                }
+            }
+
 
             // Determine the MinimumUseTime
             if (!CastProperties.FailedToCast)
@@ -811,9 +883,9 @@ namespace Kourindou
                 {
                     foreach (CastBlock _CastBlock in _CastInfo.Blocks)
                     {
-                        if (_CastBlock.Repeat * _CastBlock.Delay > CastProperties.MinimumUseTime)
+                        if ((_CastBlock.Repeat * _CastBlock.Delay) + _CastBlock.InitialDelay > CastProperties.MinimumUseTime)
                         {
-                            CastProperties.MinimumUseTime = _CastBlock.Repeat * _CastBlock.Delay;
+                            CastProperties.MinimumUseTime = (_CastBlock.Repeat * _CastBlock.Delay) + _CastBlock.InitialDelay;
                         }
                     }
                 }
@@ -847,12 +919,12 @@ namespace Kourindou
             bool Valid = false;
             CardItem NewCard = GetCardItem((byte)Groups.Empty, 0);
 
-            while (RetryCounter < 1000 || !Valid)
+            while (RetryCounter < 1000 && !Valid)
             {
                 if (ToBeReplacedCard.Group == (byte)Groups.Special && ToBeReplacedCard.Spell == (byte)Special.RandomCard)
                 {
                     NewCard = GetCardItem(EntireCardPool[Main.rand.Next(0, EntireCardPool.Count)]);
-                    if (NewCard != null && NewCard.Group != (byte)Groups.Special && NewCard.Spell != (byte)Special.RandomCard)
+                    if (NewCard != null && !NewCard.IsRandomCard && NewCard.Group != (byte)Groups.Special && NewCard.Spell != (byte)Special.RandomCard)
                     {
                         Valid = true;
                     }
@@ -860,7 +932,7 @@ namespace Kourindou
                 else
                 {
                     NewCard = GetCardItem(ToBeReplacedCard.Group, (byte)ToBeReplacedCard.GetValue());
-                    if (NewCard != null && NewCard.Spell != ToBeReplacedCard.Spell)
+                    if (NewCard != null && !NewCard.IsRandomCard && NewCard.Spell != ToBeReplacedCard.Spell)
                     {
                         Valid = true;
                     }
@@ -874,12 +946,16 @@ namespace Kourindou
                 NewCard.IsConsumable = ToBeReplacedCard.IsConsumable;
                 NewCard.IsInsertedCard = ToBeReplacedCard.IsInsertedCard;
                 NewCard.SlotPosition = ToBeReplacedCard.SlotPosition;
+                NewCard.IsWrapped = ToBeReplacedCard.IsWrapped;
+                NewCard.IsPayload = ToBeReplacedCard.IsPayload;
+                NewCard.IsMulticasted = ToBeReplacedCard.IsMulticasted;
             }
 
             return NewCard;
         }
 
         #region Enumerators
+        #region Card_Types
         public enum Groups : byte
         {
             Empty,
@@ -897,8 +973,8 @@ namespace Kourindou
 
         public enum Projectile : byte
         {
-            Shot,
-            DiggingBolt,
+            ShotBlue,
+            //DiggingBolt,
             MyOwnProjectileInstance
         }
 
@@ -955,7 +1031,7 @@ namespace Kourindou
             Spiral,                                                                                     // 1f * AMOUNT
             Boomerang,                                                                                  // 1f * AMOUNT
             Aiming,                                                                                     // 1f * AMOUNT
-            Daedalus,                                                                                   // 1f * AMOUNT
+            Daedalus, //TODO: needs to be a formation                                                   // 1f * AMOUNT
             RandomTrajectory                                                                            // 1f * AMOUNT
         }                                                                                               // 
                                                                                                         // 
@@ -979,8 +1055,8 @@ namespace Kourindou
             BounceDown, //-1                                                                            // 
             FallingFlat, //0                                                                            // 
             A_Terrible_Idea, // Infinite bounces                                                         // 
-                          // 
-                          // Penetration stats                                                                        // 
+                             // 
+                             // Penetration stats                                                                        // 
             PenetrationUp, //+1                                                                         // 
             PenetrationDown, // > 1 : -1                                                                // 
             PenetrationZero, //0                                                                        // 
@@ -1062,8 +1138,8 @@ namespace Kourindou
             DecreaseSpread, //-30f                                                                      // 
             IncreaseSpread, // +30f                                                                     // 
             Sniper, // no spread for this castblock                                                 //
-                        //
-                        // Position where the projectiles are spawned                                               // 
+                    //
+                    // Position where the projectiles are spawned                                               // 
             DistantCast,                                                                                // 128f * AMOUNT
             TeleportCast,                                                                               // Cast => OnCursor
             ReverseCast,                                                                                // Cast => Far away + rotated
@@ -1174,6 +1250,61 @@ namespace Kourindou
             DivideBy5,                                                                                  // 0.20f
             MultiplyDivideRandom                                                                        // Main.rand.NextFloat(0.2f, 5f);      
         }
+        #endregion
+
+        #region Projectile_Stats
+        public enum ProjectileStats : byte
+        {
+            // Trajectories
+            StraightTrigger,
+            ArcLeftAmount,
+            ArcRightAmount,
+            ZigZagAmount,
+            PingPongAmount,
+            SnakeAmount,
+            UncontrolledAmount,
+            OrbitAmount,
+            SpiralAmount,
+            BoomerangAmount,
+            AimingAmount,
+
+            // Modifiers
+            AccelerationAmount,                                 //
+            AccelerationMultiplierAmount,                       //
+            SpeedAmount,                                        // => One Time SET
+            SpeedNone,                                          // => One Time SET
+            BounceAmount,                                       //
+            BounceNone,                                         //
+            BounceInfinite,                                     //
+            PenetrationAmount,                                  // => One Time SET in Defaults
+            PenetrationNone,                                    // => One Time SET in Defaults
+            PenetrationInfinite,                                // => One Time SET in Defaults
+            GravityAmount,                                      //
+            HomingEnabled,                                      //
+            RotateToEnemyEnabled,                               //
+            CollisionEnabled,                                   // => One Time SET in Defaults
+            PhasingEnabled,                                     //
+            LifeTimeAmount,                                     // => One Time SET in Defaults
+            LifeTimeNone,                                       // => One Time SET in Defaults
+            KnockbackAmount,                                    // => One Time SET in Defaults
+            KnockbackNone,                                      // => One Time SET in Defaults
+            DamageAmount,                                       // => One Time SET in Defaults
+            RotationAmount,                                     // => One Time SET
+            SnowballEnabled,                                    //
+            SizeAmount,                                         // => One Time SET in Defaults
+            OnScreenEdgeType,                                   //
+            VectorReversalEnabled,                              // => One Time SET
+            ShatterEnabled,                                     //
+            ProjectileEaterEnabled,                             //
+            MagicCircleAuraEnabled,                             //
+            ExplosionEnabled,                                   //
+            HostileOrFriendly,                                  // => One Time SET in Defaults
+            LuminescenceEnabled,                                //
+            CritrateAmount,                                     // => One Time SET in Defaults
+            ElementType                                         //
+        }
+
+        #endregion
         #endregion
     }
 }

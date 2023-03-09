@@ -11,6 +11,8 @@ namespace Kourindou.Items.Spellcards
 {
     public abstract class CardItem : ModItem
     {
+        //----- Card properties -----//
+
         // Group of this card
         public byte Group; //= (byte)Groups.Empty;
 
@@ -49,14 +51,32 @@ namespace Kourindou.Items.Spellcards
         // If this card needs a projectile to work
         public bool NeedsProjectileCard; //= false;
 
+        // Card Colors 
+        protected CardColors CardColor;
+
+
+        //----- Casting properties -----//
+
         // If this card has been inserted
         public bool IsInsertedCard;
+
+        // If this card is currently contained in a wrap-around action
+        public bool IsWrapped;
+
+        // If this card is an always-cast card
+        public bool IsAlwaysCast;
+
+        // If this card is currently considered as payload for a trigger
+        public bool IsPayload;
+
+        // If this card has been copied for an multi-cast operation
+        public bool IsMulticasted;
 
         // Position of this card on the catalyst slots
         public int SlotPosition;
 
-        // Card Colors 
-        protected CardColors CardColor;
+
+        //----- Card Textures -----//
 
         private Asset<Texture2D> BlueCardBack;
         private Asset<Texture2D> BrownCardBack;
