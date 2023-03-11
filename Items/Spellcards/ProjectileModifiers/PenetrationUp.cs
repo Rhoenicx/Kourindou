@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
 {
     public class PenetrationUp : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.PenetrationUp, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Penetration Up");
             Tooltip.SetDefault("");
         }

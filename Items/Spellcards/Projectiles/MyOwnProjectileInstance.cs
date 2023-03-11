@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Projectiles
 {
     public class MyOwnProjectileInstance : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Projectile, (byte)KourindouSpellcardSystem.Projectile.MyOwnProjectileInstance, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("My Own Projectile Instance");
             Tooltip.SetDefault("");
         }

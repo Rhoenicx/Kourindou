@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Triggers
 {
     public class Timer3 : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trigger, (byte)Trigger.Timer3, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Timer 3");
             Tooltip.SetDefault("");
         }
@@ -45,6 +41,11 @@ namespace Kourindou.Items.Spellcards.Triggers
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override float GetValue()
+        {
+            return 180f * Amount;
         }
     }
 }

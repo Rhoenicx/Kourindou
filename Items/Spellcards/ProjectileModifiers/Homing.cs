@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
 {
     public class Homing : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.Homing, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Homing");
             Tooltip.SetDefault("");
         }

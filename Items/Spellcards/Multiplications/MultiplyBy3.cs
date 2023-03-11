@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 using Terraria.ID;
 using static Kourindou.KourindouSpellcardSystem;
 
@@ -6,15 +7,11 @@ namespace Kourindou.Items.Spellcards.Multiplications
 {
     public class MultiplyBy3 : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Multiplication, (byte)Multiplication.MultiplyBy3, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Multiply by 3");
             Tooltip.SetDefault("");
         }
@@ -45,6 +42,22 @@ namespace Kourindou.Items.Spellcards.Multiplications
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override void ApplyMultiplication(float input)
+        {
+            // The input is the multiplication amount, so should be 2f to 5f
+            float value = Amount * input > 5f ? 5f : Amount * input;
+            Amount *= value;
+            AddUseTime = (int)Math.Ceiling(this.AddUseTime * value);
+            AddCooldown = (int)Math.Ceiling(this.AddCooldown * value);
+            AddRecharge = (int)Math.Ceiling(this.AddRecharge * value);
+            AddSpread *= value;
+        }
+
+        public override float GetValue()
+        {
+            return 3f * Amount;
         }
     }
 }

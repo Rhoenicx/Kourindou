@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
 {
     public class TeleportCast : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.TeleportCast, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Teleport Cast");
             Tooltip.SetDefault("");
         }

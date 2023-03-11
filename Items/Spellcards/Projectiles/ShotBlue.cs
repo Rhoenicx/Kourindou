@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Projectiles
 {
     public class ShotBlue : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Projectile, (byte)KourindouSpellcardSystem.Projectile.ShotBlue, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Blue Shot");
             Tooltip.SetDefault("");
         }

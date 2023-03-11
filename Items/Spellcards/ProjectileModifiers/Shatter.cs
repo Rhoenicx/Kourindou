@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
 {
     public class Shatter : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.Shatter, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Shatter");
             Tooltip.SetDefault("");
         }

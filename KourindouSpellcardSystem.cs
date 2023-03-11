@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Kourindou.Items.Spellcards;
 using static Kourindou.KourindouSpellcardSystem;
+using Terraria.ID;
 
 namespace Kourindou
 {
@@ -24,6 +25,27 @@ namespace Kourindou
     // Cast block info
     public class CastBlock
     {
+        public CastBlock(CastBlock castBlock = null)
+        {
+            if (castBlock != null)
+            { 
+                this.Repeat = castBlock.Repeat;
+                this.Delay = castBlock.Delay;
+                this.InitialDelay = castBlock.InitialDelay;
+                this.TriggerActive = castBlock.TriggerActive;
+                this.TriggerAmount = castBlock.TriggerAmount;
+                for (int i = 0; i < castBlock.TriggerInOrder.Count; i++)
+                {
+                    this.TriggerInOrder.Add(GetCardItem(castBlock.CardItems[i].Group, castBlock.CardItems[i].Spell).Copy(castBlock.CardItems[i]));
+                }
+                for (int i = 0; i < castBlock.CardItems.Count; i++)
+                {
+                    this.CardItems.Add(GetCardItem(castBlock.CardItems[i].Group, castBlock.CardItems[i].Spell).Copy(castBlock.CardItems[i]));
+                }
+                this.IsDisabled = castBlock.IsDisabled;
+            }
+        }
+
         public int Repeat { get; set; } = 0;
         public int Delay { get; set; } = 0;
         public int InitialDelay { get; set; } = 0;
@@ -133,6 +155,11 @@ namespace Kourindou
             if (!CardTable[group].ContainsKey(spell))
             {
                 CardTable[group].Add(spell, CardItemID);
+                if (CardItemID == 0)
+                {
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Camera);
+                }
+
                 EntireCardPool.Add(new Card() { Group = group, Spell = spell });
                 return true;
             }
@@ -142,7 +169,6 @@ namespace Kourindou
 
         public static Card GetCard(CardItem item)
         {
-
             return GetCard(item.Group, item.Spell);
         }
 
@@ -153,8 +179,6 @@ namespace Kourindou
 
         public static CardItem GetCardItem(Card card)
         {
-            Main.NewText("contains key " + CardTable.ContainsKey(card.Group));
-
             if (card != null && CardTable.ContainsKey(card.Group)
                 && CardTable[card.Group].ContainsKey(card.Spell)
                 && new Item(CardTable[card.Group][card.Spell]).ModItem is CardItem item)
@@ -208,8 +232,6 @@ namespace Kourindou
             List<CardItem> CardItemList = new();
             for (int i = 0; i < Cards.Count; i++)
             {
-                Main.NewText(Cards[i].Group + " - "+ Cards[i].Spell);
-
                 CardItem item = GetCardItem(Cards[i].Group, Cards[i].Spell);
                 if (item != null)
                 {
@@ -231,8 +253,6 @@ namespace Kourindou
 
         public static Cast GenerateCast(List<Card> Cards, Card AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool Shuffle = false, bool IsVisualized = false)
         {
-            Main.NewText("Card count = " + Cards.Count);
-
             return GenerateCast(CardToCardItemList(Cards), GetCardItem(AlwaysCastCard), IsCatalyst, CatalystStartIndex, CatalystCastAmount, Shuffle, IsVisualized);
         }
 
@@ -242,13 +262,16 @@ namespace Kourindou
             // => If this catalyst is a shuffle, the cards should first be shuffled.
             // => Be sure to use SetSlotPositions BEFORE casting and/or shuffling!!!
 
-            Main.NewText("Card count = " + Cards.Count);
-
             // Cast List for storing the Cast blocks
             Cast CastProperties = new();
 
             // Save wrap-around cards
-            List<CardItem> CardsWrapReady = Cards;
+            List<CardItem> CardsWrapReady = new();
+            for (int i = 0; i < Cards.Count; i++)
+            {
+                CardsWrapReady.Add(GetCardItem(Cards[i].Group, Cards[i].Spell).Copy(Cards[i]));
+            }
+
             if (Shuffle)
             {
                 ShuffleCardItems(ref CardsWrapReady);
@@ -329,7 +352,7 @@ namespace Kourindou
                         }
 
                         // Insert the card to the front
-                        Cards.Insert(Index, AlwaysCastCard);
+                        Cards.Insert(Index, GetCardItem(AlwaysCastCard.Group, AlwaysCastCard.Spell).Copy(AlwaysCastCard));
 
                         // Since we have inserted a card, we should use continue here,
                         // we want the catalyst to execute this index again (has the new card now).
@@ -372,12 +395,12 @@ namespace Kourindou
                                     if (Cards.ElementAtOrDefault(Index + y) == null)
                                     {
                                         // Add the card instead
-                                        Cards.Add(Cards[Index]);
+                                        Cards.Add(GetCardItem(Cards[Index].Group, Cards[Index].Spell).Copy(Cards[Index]));
                                     }
                                     else
                                     {
                                         // Otherwise insert the card
-                                        Cards.Insert(Index + y, Cards[Index]);
+                                        Cards.Insert(Index + y, GetCardItem(Cards[Index].Group, Cards[Index].Spell).Copy(Cards[Index]));
                                     }
 
                                     Cards[Index + y].IsInsertedCard = true;
@@ -476,20 +499,21 @@ namespace Kourindou
                         {
                             if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
                             {
-                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += (int)Cards[Index].GetValue() - 1;
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += (int)Math.Ceiling(Cards[Index].GetValue()) - 1;
+                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
                             }
                             else
                             {
-                                for (int i = 1; i < (int)Cards[Index].GetValue(); i++)
+                                for (int i = 1; i < (int)Math.Ceiling(Cards[Index].GetValue()); i++)
                                 {
-                                    if (CastProperties.Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock + i) == null)
+                                    if (CastProperties.Casts[CurrentCast].Blocks.ElementAtOrDefault(CurrentBlock + MulticastAmount + i) == null)
                                     {
-                                        CastProperties.Casts[CurrentCast].Blocks.Add(CastProperties.Casts[CurrentCast].Blocks[CurrentBlock]);
+                                        CastProperties.Casts[CurrentCast].Blocks.Add(new CastBlock(CastProperties.Casts[CurrentCast].Blocks[CurrentBlock]));
 
                                         // When the visualization setting is enabled, like in the UI mark the copied cards
                                         if (IsVisualized)
                                         {
-                                            foreach (CardItem item in CastProperties.Casts[CurrentCast].Blocks[CurrentBlock + i].CardItems)
+                                            foreach (CardItem item in CastProperties.Casts[CurrentCast].Blocks[CurrentBlock + MulticastAmount + i].CardItems)
                                             {
                                                 item.IsMulticasted = true;
                                             }
@@ -726,10 +750,7 @@ namespace Kourindou
                     if (!IsWrappingAround && Index == Cards.Count - 1 && (TriggerActive || Triggers > 0 || MulticastAmount > 0 || CastUnEnded > 0))
                     {
                         // Now add the wrap-around cards
-                        for (int i = 0; i < CardsWrapReady.Count; i++)
-                        {
-                            Cards.Add(CardsWrapReady[i]);
-                        }
+                        Cards.AddRange(CardsWrapReady);
 
                         // Since the only way we're wrapping-around is because the 
                         // end of the cards on the catalyst has been reached,
@@ -806,13 +827,9 @@ namespace Kourindou
                 CastProperties.RechargeTime = 0;
             }
 
-            Main.NewText(CastProperties.Casts.Any());
-
             // Remove CastInfo and CastBlocks which don't have projectiles.
             for (int _CastInfo = CastProperties.Casts.Count - 1; _CastInfo >= 0; _CastInfo--)
             {
-                
-
                 for (int _CastBlock = CastProperties.Casts[_CastInfo].Blocks.Count - 1; _CastBlock >= 0; _CastBlock--)
                 {
                     // Remove CastBlocks if it has no projectile that can be fired by the catalyst

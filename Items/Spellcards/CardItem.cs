@@ -146,6 +146,31 @@ namespace Kourindou.Items.Spellcards
             return false;
         }
 
+        public CardItem Copy(CardItem oldCard)
+        {
+            this.Group = oldCard.Group;
+            this.Spell = oldCard.Spell;
+            this.Variant = oldCard.Variant;
+            this.Amount = oldCard.Amount;
+            this.AddUseTime = oldCard.AddUseTime;
+            this.AddCooldown = oldCard.AddCooldown;
+            this.AddRecharge = oldCard.AddRecharge;
+            this.AddSpread = oldCard.AddSpread;
+            this.FixedAngle = oldCard.FixedAngle;
+            this.IsRandomCard = oldCard.IsRandomCard;
+            this.IsConsumable = oldCard.IsConsumable;
+            this.NeedsProjectileCard = oldCard.NeedsProjectileCard;
+            this.CardColor = oldCard.CardColor;
+            this.IsInsertedCard = oldCard.IsInsertedCard;
+            this.IsWrapped = oldCard.IsWrapped;
+            this.IsAlwaysCast = oldCard.IsAlwaysCast;
+            this.IsPayload = oldCard.IsPayload;
+            this.IsMulticasted = oldCard.IsMulticasted;
+            this.SlotPosition = oldCard.SlotPosition;
+
+            return this;
+        }
+
         public virtual void ApplyMultiplication(float input)
         {
             // The input is the multiplication amount, so should be 2f to 5f

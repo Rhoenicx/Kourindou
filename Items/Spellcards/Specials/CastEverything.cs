@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Specials
 {
     public class CastEverything : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Special, (byte)Special.CastEverything, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Cast everything");
             Tooltip.SetDefault("");
         }

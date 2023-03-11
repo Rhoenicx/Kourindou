@@ -8,15 +8,11 @@ namespace Kourindou.Items.Spellcards.Empty
 {
     public class EmptyCard : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Empty, 0, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Empty Spellcard");
             Tooltip.SetDefault("You shouldn't have this you CHEATER!");
         }

@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Trajectories
 {
     public class Daedalus : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.Daedalus, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Daedalus");
             Tooltip.SetDefault("");
         }

@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
 {
     public class Repeat4 : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.Repeat4, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Repeat 4");
             Tooltip.SetDefault("");
         }

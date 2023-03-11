@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Formations
 {
     public class DoubleFork : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.DoubleFork, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Double Fork");
             Tooltip.SetDefault("");
         }
@@ -45,6 +41,11 @@ namespace Kourindou.Items.Spellcards.Formations
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override float GetValue()
+        {
+            return 2f * Amount;
         }
     }
 }

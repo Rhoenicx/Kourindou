@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 using Terraria.ID;
 using static Kourindou.KourindouSpellcardSystem;
 
@@ -6,15 +7,11 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
 {
     public class AccelerationMultiplier : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.AccelerationMultiplier, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Acceleration Multiplier");
             Tooltip.SetDefault("");
         }
@@ -45,6 +42,11 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override float GetValue()
+        {
+            return (float)Math.Pow(1.25f, Amount);
         }
     }
 }

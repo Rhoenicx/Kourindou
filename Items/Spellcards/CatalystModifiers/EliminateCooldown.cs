@@ -8,15 +8,11 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
 {
     public class EliminateCooldown : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.EliminateCooldown, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Eliminate Cooldown");
             Tooltip.SetDefault("");
         }

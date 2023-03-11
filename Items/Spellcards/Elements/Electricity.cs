@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Elements
 {
     public class Electricity : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Element, (byte)Element.Electricity, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Electricity");
             Tooltip.SetDefault("");
         }

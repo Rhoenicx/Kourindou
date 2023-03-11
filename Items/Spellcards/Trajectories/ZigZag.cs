@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Trajectories
 {
     public class ZigZag : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.ZigZag, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Zig-Zag");
             Tooltip.SetDefault("");
         }

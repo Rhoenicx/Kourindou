@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Trajectories
 {
     public class RandomTrajectory : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.RandomTrajectory, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Random trajectory");
             Tooltip.SetDefault("");
         }

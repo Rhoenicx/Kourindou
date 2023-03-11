@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Elements
 {
     public class Fire : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Element, (byte)Element.Fire, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Fire");
             Tooltip.SetDefault("");
         }

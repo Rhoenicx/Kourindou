@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Multicasts
 {
     public class TripleCast : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Multicast, (byte)Multicast.TripleCast, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Triple Cast");
             Tooltip.SetDefault("");
         }
@@ -45,6 +41,10 @@ namespace Kourindou.Items.Spellcards.Multicasts
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+        public override float GetValue()
+        {
+            return 3f * Amount;
         }
     }
 }

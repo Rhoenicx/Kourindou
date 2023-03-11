@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Formations
 {
     public class Randagon : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.Randagon, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Randagon");
             Tooltip.SetDefault("");
         }
@@ -45,6 +41,10 @@ namespace Kourindou.Items.Spellcards.Formations
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+        public override float GetValue()
+        {
+            return Main.rand.Next(2, 9) * Amount;
         }
     }
 }

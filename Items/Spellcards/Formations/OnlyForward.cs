@@ -6,15 +6,11 @@ namespace Kourindou.Items.Spellcards.Formations
 {
     public class OnlyForward : CardItem
     {
-        public override void Load()
+        public override void SetStaticDefaults()
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.OnlyForward, Type);
-            base.Load();
-        }
-
-        public override void SetStaticDefaults()
-        {
+            
             DisplayName.SetDefault("Only Forward");
             Tooltip.SetDefault("");
         }
