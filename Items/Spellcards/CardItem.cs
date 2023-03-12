@@ -6,6 +6,7 @@ using Terraria.GameContent;
 using Terraria.ModLoader;
 using ReLogic.Content;
 using static Terraria.ModLoader.ModContent;
+using static Kourindou.KourindouSpellcardSystem;
 
 namespace Kourindou.Items.Spellcards
 {
@@ -14,70 +15,63 @@ namespace Kourindou.Items.Spellcards
         //----- Card properties -----//
 
         // Group of this card
-        public byte Group; //= (byte)Groups.Empty;
+        public byte Group = (byte)Groups.Empty;
 
         // Spell of this card
-        public byte Spell; //= 0;
+        public byte Spell = 0;
 
         // Variant of this card
-        public byte Variant; //= 0;
+        public byte Variant = 0;
 
         // Amount of times this card has been duplicated.
-        public float Amount; //= 1f;
+        public float Amount = 1f;
 
         // UseTime that this card adds to the catalyst
-        public int AddUseTime; //= 0;
+        public int AddUseTime = 0;
 
         // Cooldown that this card adds to the catalyst
-        public int AddCooldown; //= 0;
+        public int AddCooldown = 0;
 
         // Recharge that this card adds to the catalyst
-        public int AddRecharge; //= 0;
+        public int AddRecharge = 0;
 
         // Spread that this card adds to the catalyst
-        public float AddSpread; //= 0f;
+        public float AddSpread = 0f;
 
         // Angle of this card, used for formation scatter angles
-        public float FixedAngle; //= 0f
+        public float FixedAngle = 0f;
 
         // If this card needs to be replaced by another card
-        // EXCLUSIVE FOR CARDS THAT NEEDS TO BE REPLACED!!!
-        // NOT FOR RANDOM VALUES!!! => ADD THOSE IN GETCARDVALUE()
-        public bool IsRandomCard; //= false;
+        public bool IsRandomCard = false;
 
         // If this card is a cunsumable card
-        public bool IsConsumable; //= false;
+        public bool IsConsumable = false;
 
         // If this card needs a projectile to work
-        public bool NeedsProjectileCard; //= false;
-
-        // Card Colors 
-        protected CardColors CardColor;
-
+        public bool NeedsProjectileCard = false;
 
         //----- Casting properties -----//
 
         // If this card has been inserted
-        public bool IsInsertedCard;
+        public bool IsInsertedCard = false;
 
         // If this card is currently contained in a wrap-around action
-        public bool IsWrapped;
+        public bool IsWrapped = false;
 
         // If this card is an always-cast card
-        public bool IsAlwaysCast;
+        public bool IsAlwaysCast = false;
 
         // If this card is currently considered as payload for a trigger
-        public bool IsPayload;
+        public bool IsPayload = false;
 
         // If this card has been copied for an multi-cast operation
-        public bool IsMulticasted;
+        public bool IsMulticasted = false;
 
         // Position of this card on the catalyst slots
-        public int SlotPosition;
-
+        public int SlotPosition = 0;
 
         //----- Card Textures -----//
-
+        protected CardColors CardColor = 0;
         private Asset<Texture2D> BlueCardBack;
         private Asset<Texture2D> BrownCardBack;
         private Asset<Texture2D> GreenCardBack;
@@ -85,6 +79,11 @@ namespace Kourindou.Items.Spellcards
         private Asset<Texture2D> PurpleCardBack;
         private Asset<Texture2D> RedCardBack;
         private Asset<Texture2D> WhiteCardBack;
+
+        public CardItem()
+        { 
+            
+        }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
@@ -146,29 +145,31 @@ namespace Kourindou.Items.Spellcards
             return false;
         }
 
-        public CardItem Copy(CardItem oldCard)
+        public CardItem Clone()
         {
-            this.Group = oldCard.Group;
-            this.Spell = oldCard.Spell;
-            this.Variant = oldCard.Variant;
-            this.Amount = oldCard.Amount;
-            this.AddUseTime = oldCard.AddUseTime;
-            this.AddCooldown = oldCard.AddCooldown;
-            this.AddRecharge = oldCard.AddRecharge;
-            this.AddSpread = oldCard.AddSpread;
-            this.FixedAngle = oldCard.FixedAngle;
-            this.IsRandomCard = oldCard.IsRandomCard;
-            this.IsConsumable = oldCard.IsConsumable;
-            this.NeedsProjectileCard = oldCard.NeedsProjectileCard;
-            this.CardColor = oldCard.CardColor;
-            this.IsInsertedCard = oldCard.IsInsertedCard;
-            this.IsWrapped = oldCard.IsWrapped;
-            this.IsAlwaysCast = oldCard.IsAlwaysCast;
-            this.IsPayload = oldCard.IsPayload;
-            this.IsMulticasted = oldCard.IsMulticasted;
-            this.SlotPosition = oldCard.SlotPosition;
+            CardItem clone = (CardItem)new Item(Type).ModItem;
 
-            return this;
+            clone.Group = this.Group;
+            clone.Spell = this.Spell;
+            clone.Variant = this.Variant;
+            clone.Amount = this.Amount;
+            clone.AddUseTime = this.AddUseTime;
+            clone.AddCooldown = this.AddCooldown;
+            clone.AddRecharge = this.AddRecharge;
+            clone.AddSpread = this.AddSpread;
+            clone.FixedAngle = this.FixedAngle;
+            clone.IsRandomCard = this.IsRandomCard;
+            clone.IsConsumable = this.IsConsumable;
+            clone.NeedsProjectileCard = this.NeedsProjectileCard;
+            clone.CardColor = this.CardColor;
+            clone.IsInsertedCard = this.IsInsertedCard;
+            clone.IsWrapped = this.IsWrapped;
+            clone.IsAlwaysCast = this.IsAlwaysCast;
+            clone.IsPayload = this.IsPayload;
+            clone.IsMulticasted = this.IsMulticasted;
+            clone.SlotPosition = this.SlotPosition;
+
+            return clone;
         }
 
         public virtual void ApplyMultiplication(float input)

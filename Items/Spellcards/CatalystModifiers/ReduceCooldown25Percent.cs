@@ -21,7 +21,7 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             // Defaults of this card
             Group = (byte)Groups.CatalystModifier;
             Spell = (byte)CatalystModifier.ReduceCooldown25Percent;
-            Variant = 0;
+            Variant = (byte)CatalystModifierVariant.ReduceCooldownPercent;
             Amount = 1f;
             AddUseTime = 0;
             AddCooldown = 0;

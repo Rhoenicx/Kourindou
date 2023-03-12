@@ -22,7 +22,7 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             // Defaults of this card
             Group = (byte)Groups.CatalystModifier;
             Spell = (byte)CatalystModifier.EliminateCooldown;
-            Variant = 0;
+            Variant = (byte)CatalystModifierVariant.Special;
             Amount = 1f;
             AddUseTime = 0;
             AddCooldown = 0;

@@ -64,15 +64,12 @@ namespace Kourindou.Items.Catalysts
 
             SetSlotPositions(ref CatalystCards);
 
-            ShuffleCardItems(ref CatalystCards);
-
             Cast cast = GenerateCast(
                 CatalystCards, 
                 GetCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.Snowball), 
                 true, 
                 0, 
-                2, 
-                true,
+                2,
                 true
             );
 

@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 using Terraria.ID;
 using static Kourindou.KourindouSpellcardSystem;
 
@@ -20,7 +21,7 @@ namespace Kourindou.Items.Spellcards.Formations
             // Defaults of this card
             Group = (byte)Groups.Formation;
             Spell = (byte)Formation.RandomFormation;
-            Variant = 0;
+            Variant = (byte)FormationVariant.None;
             Amount = 1f;
             AddUseTime = 0;
             AddCooldown = 0;
@@ -41,6 +42,11 @@ namespace Kourindou.Items.Spellcards.Formations
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override float GetValue()
+        {
+            return Main.rand.Next(0, Enum.GetNames(typeof(Formation)).Length);
         }
     }
 }

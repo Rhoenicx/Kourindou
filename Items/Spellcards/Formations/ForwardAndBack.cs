@@ -20,7 +20,7 @@ namespace Kourindou.Items.Spellcards.Formations
             // Defaults of this card
             Group = (byte)Groups.Formation;
             Spell = (byte)Formation.ForwardAndBack;
-            Variant = 0;
+            Variant = (byte)FormationVariant.None;
             Amount = 1f;
             AddUseTime = 0;
             AddCooldown = 0;

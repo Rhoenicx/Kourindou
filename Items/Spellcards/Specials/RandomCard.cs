@@ -27,7 +27,7 @@ namespace Kourindou.Items.Spellcards.Specials
             AddRecharge = 0;
             AddSpread = 0f;
             FixedAngle = 0f;
-            IsRandomCard = false;
+            IsRandomCard = true;
             IsConsumable = false;
             NeedsProjectileCard = false;
 
