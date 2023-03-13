@@ -9,19 +9,13 @@ using Terraria;
 using Kourindou.Items.Spellcards;
 using static Kourindou.KourindouSpellcardSystem;
 using Terraria.ID;
+using Kourindou.Items.Spellcards.Empty;
 
 namespace Kourindou
 {
     #region CastProperties
     // Individual card, this is how the cards will look like when they get passed around on the network
     // And how they are saved on the player and catalyst
-    public class Card
-    {
-        public byte Group { get; set; } = (byte)Groups.Empty;
-        public byte Spell { get; set; } = 0;
-        public short Amount { get; set; } = 1;
-    }
-
     // Cast block info
     public class CastBlock
     {
@@ -118,20 +112,20 @@ namespace Kourindou
 
         // Stats that need to be send to this projectile.
         public Dictionary<byte, float> ProjectileStats { get; set; }
-        public List<Card> TriggerInOrder { get; set; }
-        public List<Card> TriggerPayload { get; set; }
+        public List<CardItem> TriggerInOrder { get; set; }
+        public List<CardItem> TriggerPayload { get; set; }
     }
     #endregion
 
     public class KourindouSpellcardSystem
     {
         private static Dictionary<byte, Dictionary<byte, int>> CardTable = new Dictionary<byte, Dictionary<byte, int>>();
-        private static List<Card> EntireCardPool = new List<Card>();
+        private static List<byte[]> EntireCardPool = new List<byte[]>();
 
         public static void Load()
         {
             CardTable ??= new Dictionary<byte, Dictionary<byte, int>>();
-            EntireCardPool ??= new List<Card>();
+            EntireCardPool ??= new List<byte[]>();
         }
 
         public static void Unload()
@@ -142,56 +136,51 @@ namespace Kourindou
             EntireCardPool = null;
         }
 
-        public static bool RegisterCardItem(byte group, byte spell, int CardItemID)
+        public static bool RegisterCardItem(byte Group, byte Spell, int CardItemID)
         {
             CardTable ??= new Dictionary<byte, Dictionary<byte, int>>();
-            EntireCardPool ??= new List<Card>();
+            EntireCardPool ??= new List<byte[]>();
 
-            if (!CardTable.ContainsKey(group))
+            if (!CardTable.ContainsKey(Group))
             {
-                CardTable.Add(group, new Dictionary<byte, int>());
+                CardTable.Add(Group, new Dictionary<byte, int>());
             }
 
-            if (!CardTable[group].ContainsKey(spell))
+            if (!CardTable[Group].ContainsKey(Spell))
             {
-                CardTable[group].Add(spell, CardItemID);
+                CardTable[Group].Add(Spell, CardItemID);
                 if (CardItemID == 0)
                 {
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Camera);
                 }
 
-                EntireCardPool.Add(new Card() { Group = group, Spell = spell });
+                EntireCardPool.Add(new byte[2] { Group, Spell });
                 return true;
             }
 
             return false;
         }
 
-        public static Card GetCard(CardItem item)
+        public static CardItem GetCardItem(byte _Group, byte _Spell, int Stack = 0)
         {
-            return GetCard(item.Group, item.Spell);
-        }
-
-        public static Card GetCard(byte _Group, byte _Spell)
-        {
-            return new Card() { Group = _Group, Spell = _Spell };
-        }
-
-        public static CardItem GetCardItem(Card card)
-        {
-            if (card != null && CardTable.ContainsKey(card.Group)
-                && CardTable[card.Group].ContainsKey(card.Spell)
-                && new Item(CardTable[card.Group][card.Spell]).ModItem is CardItem item)
+            if (CardTable.ContainsKey(_Group)
+                && CardTable[_Group].ContainsKey(_Spell)
+                && new Item(CardTable[_Group][_Spell]).ModItem is CardItem item)
             {
+                // Only if there is a stack given assign it as a consumable card.
+                if (Stack > 0 && item.IsConsumable)
+                {
+                    item.Item.stack = Stack;
+                }
+                else
+                {
+                    item.IsConsumable = false;
+                }
+
                 return item;
             }
 
-            return null;
-        }
-
-        public static CardItem GetCardItem(byte _Group, byte _Spell)
-        {
-            return GetCardItem(new Card() { Group = _Group, Spell = _Spell });
+            return new EmptyCard();
         }
 
         public static void ShuffleCardItems(ref List<CardItem> CardItemList)
@@ -227,33 +216,12 @@ namespace Kourindou
             }
         }
 
-        public static List<CardItem> CardToCardItemList(List<Card> Cards)
-        {
-            List<CardItem> CardItemList = new();
-            for (int i = 0; i < Cards.Count; i++)
-            {
-                CardItem item = GetCardItem(Cards[i].Group, Cards[i].Spell);
-                if (item != null)
-                {
-                    item.Item.stack = Cards[i].Amount;
-                    CardItemList.Add(item);
-                }
-            }
-
-            return CardItemList;
-        }
-
         public static void SetSlotPositions(ref List<CardItem> Cards)
         {
             for (int i = 0; i < Cards.Count; i++)
             {
                 Cards[i].SlotPosition = i;
             }
-        }
-
-        public static Cast GenerateCast(List<Card> InputCards, Card AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool IsVisualized = false)
-        {
-            return GenerateCast(CardToCardItemList(InputCards), GetCardItem(AlwaysCastCard), IsCatalyst, CatalystStartIndex, CatalystCastAmount, IsVisualized);
         }
 
         public static Cast GenerateCast(List<CardItem> InputCards, CardItem AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool IsVisualized = false)
@@ -920,7 +888,7 @@ namespace Kourindou
                     }
                     else
                     {
-                        Cards[i] = GetCardItem(new Card() { Group = (byte)Groups.Empty, Spell = 0 });
+                        Cards[i] = GetCardItem((byte)Groups.Empty, 0);
                     }
                 }
             }
@@ -936,7 +904,8 @@ namespace Kourindou
             {
                 if (ToBeReplacedCard.Group == (byte)Groups.Special && ToBeReplacedCard.Spell == (byte)Special.RandomCard)
                 {
-                    NewCard = GetCardItem(EntireCardPool[Main.rand.Next(0, EntireCardPool.Count)]);
+                    byte[] GroupSpellPair = EntireCardPool[Main.rand.Next(0, EntireCardPool.Count)];
+                    NewCard = GetCardItem(GroupSpellPair[0], GroupSpellPair[1]);
                     if (NewCard != null && !NewCard.IsRandomCard && NewCard.Group != (byte)Groups.Special && NewCard.Spell != (byte)Special.RandomCard)
                     {
                         Valid = true;
@@ -956,6 +925,7 @@ namespace Kourindou
             if (Valid)
             {
                 NewCard.Amount = ToBeReplacedCard.Amount;
+                NewCard.Item.stack = ToBeReplacedCard.Item.stack;
                 NewCard.IsConsumable = ToBeReplacedCard.IsConsumable;
                 NewCard.IsInsertedCard = ToBeReplacedCard.IsInsertedCard;
                 NewCard.SlotPosition = ToBeReplacedCard.SlotPosition;

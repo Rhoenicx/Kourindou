@@ -5,11 +5,49 @@ using static Terraria.ModLoader.ModContent;
 using static Kourindou.KourindouSpellcardSystem;
 using System.Collections.Generic;
 using Kourindou.Items.Spellcards;
+using Terraria.ModLoader.IO;
+using Kourindou.Items.Spellcards.Empty;
 
 namespace Kourindou.Items.Catalysts
 {
     public class Catalyst : ModItem
     {
+        // Cards that are placed on this Catalyst
+        public int CardSlotAmount;
+        public List<CardItem> CardsOnCatalyst = new List<CardItem>();
+
+        public override void SaveData(TagCompound tag)
+        {
+            // Save the maximum amount of cards
+            tag.Add("CardSlotAmount", CardSlotAmount);
+
+            // Save the Card list
+            tag.Add("CardsOnCatalystCount", CardsOnCatalyst.Count);
+            for (int i = 0; i < CardsOnCatalyst.Count; i++)
+            {
+                tag.Add("Card[" + i + "].Group", CardsOnCatalyst[i].Group);
+                tag.Add("Card[" + i + "].Spell", CardsOnCatalyst[i].Spell);
+                tag.Add("Card[" + i + "].Stack", CardsOnCatalyst[i].Item.stack);
+            }
+        }
+
+        public override void LoadData(TagCompound tag)
+        {
+            // Load the maximum amount of cards
+            CardSlotAmount = tag.GetInt("CardSlotAmount");
+
+            // Load the card list
+            int count = tag.GetInt("CardsOnCatalystCount");
+            CardsOnCatalyst.Clear();
+            for (int i = 0; i < count; i++)
+            {
+                byte Group = tag.GetByte("Card[" + i + "].Group");
+                byte Spell = tag.GetByte("Card[" + i + "].Spell");
+                int Stack = tag.GetInt("Card[" + i + "].Stack");
+
+                CardsOnCatalyst.Add(GetCardItem(Group, Spell, Stack));
+            }
+        }
 
         public override void SetStaticDefaults()
         {
@@ -33,34 +71,38 @@ namespace Kourindou.Items.Catalysts
             Item.useAnimation = 15;
             Item.autoReuse = false;
             Item.useTurn = true;
+
+            // Cards
+            CardSlotAmount = 5;
+            CardsOnCatalyst = new List<CardItem> ( new EmptyCard[CardSlotAmount] );
         }
 
         public override bool CanUseItem(Player player)
         {
-            List<CardItem> CatalystCards = CardToCardItemList(new List<Card>
+            List<CardItem> CatalystCards = new List<CardItem>()
             {
-/* 00 */        new Card() { Group = (byte)Groups.ProjectileModifier, Spell = (byte)ProjectileModifier.Acceleration },
-/* 01 */        new Card() { Group = (byte)Groups.Trigger, Spell = (byte)Trigger.Trigger },
-/* 02 */        new Card() { Group = (byte)Groups.Empty, Spell = 0 },
-/* 03 */        new Card() { Group = (byte)Groups.Multicast, Spell = (byte)Multicast.DoubleCast },
-/* 04 */        new Card() { Group = (byte)Groups.Multicast, Spell = (byte)Multicast.DoubleCast },
-/* 05 */        new Card() { Group = (byte)Groups.Empty, Spell = 0 },
-/* 06 */        new Card() { Group = (byte)Groups.Formation, Spell = (byte)Formation.Octagon },
-/* 07 */        new Card() { Group = (byte)Groups.Projectile, Spell = (byte)KourindouSpellcardSystem.Projectile.ShotBlue },
-/* 08 */        new Card() { Group = (byte)Groups.Projectile, Spell = (byte)KourindouSpellcardSystem.Projectile.ShotBlue },
-/* 09 */        new Card() { Group = (byte)Groups.ProjectileModifier, Spell = (byte)ProjectileModifier.Explosion },
-/* 10 */        new Card() { Group = (byte)Groups.Projectile, Spell = (byte)KourindouSpellcardSystem.Projectile.ShotBlue },
-/* 11 */        new Card() { Group = (byte)Groups.Projectile, Spell = (byte)KourindouSpellcardSystem.Projectile.ShotBlue },
-/* 12 */        new Card() { Group = (byte)Groups.Empty, Spell = 0 },
-/* 13 */        new Card() { Group = (byte)Groups.Empty, Spell = 0 },
-/* 14 */        new Card() { Group = (byte)Groups.ProjectileModifier, Spell = (byte)ProjectileModifier.BounceDown },
-/* 15 */        new Card() { Group = (byte)Groups.Projectile, Spell = (byte)KourindouSpellcardSystem.Projectile.ShotBlue },
-/* 16 */        new Card() { Group = (byte)Groups.ProjectileModifier, Spell = (byte)ProjectileModifier.LifetimeUp },
-/* 17 */        new Card() { Group = (byte)Groups.Projectile, Spell = (byte)KourindouSpellcardSystem.Projectile.ShotBlue },
-/* 18 */        new Card() { Group = (byte)Groups.Empty, Spell = 0 },
-/* 19 */        new Card() { Group = (byte)Groups.Projectile, Spell = (byte)KourindouSpellcardSystem.Projectile.ShotBlue },
-/* 20 */        new Card() { Group = (byte)Groups.Empty, Spell = 0 },
-            });
+/* 00 */        GetCardItem((byte)Groups.ProjectileModifier,    (byte)ProjectileModifier.Acceleration               ),
+/* 01 */        GetCardItem((byte)Groups.Trigger,               (byte)Trigger.Trigger                               ),
+/* 02 */        GetCardItem((byte)Groups.Empty,                 0                                                   ),
+/* 03 */        GetCardItem((byte)Groups.Multicast,             (byte)Multicast.DoubleCast                          ),
+/* 04 */        GetCardItem((byte)Groups.Multicast,             (byte)Multicast.DoubleCast                          ),
+/* 05 */        GetCardItem((byte)Groups.Empty,                 0                                                   ),
+/* 06 */        GetCardItem((byte)Groups.Formation,             (byte)Formation.Octagon                             ),
+/* 07 */        GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
+/* 08 */        GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
+/* 09 */        GetCardItem((byte)Groups.ProjectileModifier,    (byte)ProjectileModifier.Explosion                  ),
+/* 10 */        GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
+/* 11 */        GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
+/* 12 */        GetCardItem((byte)Groups.Empty,                 0                                                   ),
+/* 13 */        GetCardItem((byte)Groups.Empty,                 0                                                   ),
+/* 14 */        GetCardItem((byte)Groups.ProjectileModifier,    (byte)ProjectileModifier.BounceDown                 ),
+/* 15 */        GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
+/* 16 */        GetCardItem((byte)Groups.ProjectileModifier,    (byte)ProjectileModifier.LifetimeUp                 ),
+/* 17 */        GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
+/* 18 */        GetCardItem((byte)Groups.Empty,                 0                                                   ),
+/* 19 */        GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
+/* 20 */        GetCardItem((byte)Groups.Empty,                 0                                                   ),
+            };
 
             SetSlotPositions(ref CatalystCards);
 
@@ -115,5 +157,6 @@ namespace Kourindou.Items.Catalysts
 
             return !cast.FailedToCast;
         }
+
     }
 }
