@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using System;
+using System.Linq;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -13,39 +15,56 @@ namespace Kourindou.Items.Catalysts
     public class Catalyst : ModItem
     {
         // Cards that are placed on this Catalyst
-        public int CardSlotAmount;
-        public List<CardItem> CardsOnCatalyst = new List<CardItem>();
+        public int CardSlotAmount = 1;
+        public List<CardItem> CardItemsOnCatalyst = new List<CardItem>();
+
+        public override ModItem Clone(Item newEntity)
+        {
+            if (newEntity.ModItem is Catalyst newCatalyst)
+            {
+                newCatalyst.CardItemsOnCatalyst = new List<CardItem>(CardItemsOnCatalyst);
+            }
+
+            return base.Clone(newEntity);
+        }
 
         public override void SaveData(TagCompound tag)
         {
-            // Save the maximum amount of cards
             tag.Add("CardSlotAmount", CardSlotAmount);
 
-            // Save the Card list
-            tag.Add("CardsOnCatalystCount", CardsOnCatalyst.Count);
-            for (int i = 0; i < CardsOnCatalyst.Count; i++)
+            for (int i = 0; i < CardSlotAmount; i++)
             {
-                tag.Add("Card[" + i + "].Group", CardsOnCatalyst[i].Group);
-                tag.Add("Card[" + i + "].Spell", CardsOnCatalyst[i].Spell);
-                tag.Add("Card[" + i + "].Stack", CardsOnCatalyst[i].Item.stack);
+                if (CardItemsOnCatalyst.ElementAtOrDefault(i) == null)
+                {
+                    CardItemsOnCatalyst.Insert(i, GetCardItem((byte)Groups.Empty, 0));
+                }
+
+                tag.Add("Card[" + i + "].Group", CardItemsOnCatalyst[i].Group);
+                tag.Add("Card[" + i + "].Spell", CardItemsOnCatalyst[i].Spell);
+                tag.Add("Card[" + i + "].Stack", CardItemsOnCatalyst[i].Item.stack);
+            
+                Kourindou.Instance.Logger.Debug("SaveData - " + i + " - " + CardItemsOnCatalyst[i].Item.Name);
             }
         }
 
         public override void LoadData(TagCompound tag)
         {
-            // Load the maximum amount of cards
+            // Load the amount of cards this catalyst may hold
             CardSlotAmount = tag.GetInt("CardSlotAmount");
 
-            // Load the card list
-            int count = tag.GetInt("CardsOnCatalystCount");
-            CardsOnCatalyst.Clear();
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < CardSlotAmount; i++)
             {
+                if (CardItemsOnCatalyst.ElementAtOrDefault(i) == null)
+                {
+                    CardItemsOnCatalyst.Insert(i, GetCardItem((byte)Groups.Empty, 0));
+                }
+
                 byte Group = tag.GetByte("Card[" + i + "].Group");
                 byte Spell = tag.GetByte("Card[" + i + "].Spell");
                 int Stack = tag.GetInt("Card[" + i + "].Stack");
 
-                CardsOnCatalyst.Add(GetCardItem(Group, Spell, Stack));
+                CardItemsOnCatalyst[i] = GetCardItem(Group, Spell, Stack);
+                Kourindou.Instance.Logger.Debug("LoadData - " + i + " - " + CardItemsOnCatalyst[i].Item.Name);              
             }
         }
 
@@ -73,12 +92,23 @@ namespace Kourindou.Items.Catalysts
             Item.useTurn = true;
 
             // Cards
-            CardSlotAmount = 5;
-            CardsOnCatalyst = new List<CardItem> ( new EmptyCard[CardSlotAmount] );
+            CardSlotAmount = 1;
+
+            // Base Cards
+            for (int i = 0; i < CardSlotAmount; i++)
+            {
+                if (CardItemsOnCatalyst.ElementAtOrDefault(i) == null)
+                {
+                    CardItemsOnCatalyst.Insert(i, GetCardItem((byte)Groups.Empty, 0));
+                }
+            }
         }
 
         public override bool CanUseItem(Player player)
         {
+            CardItemsOnCatalyst[1] = GetCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.Acceleration);
+            return false;
+
             List<CardItem> CatalystCards = new List<CardItem>()
             {
 /* 00 */        GetCardItem((byte)Groups.ProjectileModifier,    (byte)ProjectileModifier.Acceleration               ),
