@@ -17,7 +17,7 @@ namespace Kourindou.Items.Spellcards.Empty
             Tooltip.SetDefault("You shouldn't have this you CHEATER!");
         }
 
-        public override void SetDefaults()
+        public override void SetCardDefaults()
         {
             // Defaults of this card
             Group = (byte)Groups.Empty;

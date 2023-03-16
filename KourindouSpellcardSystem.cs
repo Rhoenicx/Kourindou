@@ -10,6 +10,7 @@ using Kourindou.Items.Spellcards;
 using static Kourindou.KourindouSpellcardSystem;
 using Terraria.ID;
 using Kourindou.Items.Spellcards.Empty;
+using Terraria.ModLoader;
 
 namespace Kourindou
 {
@@ -30,11 +31,11 @@ namespace Kourindou
                 this.TriggerAmount = castBlock.TriggerAmount;
                 for (int i = 0; i < castBlock.TriggerInOrder.Count; i++)
                 {
-                    this.TriggerInOrder.Add(castBlock.CardItems[i].Clone());
+                    this.TriggerInOrder.Add((CardItem)castBlock.CardItems[i].Item.Clone().ModItem);
                 }
                 for (int i = 0; i < castBlock.CardItems.Count; i++)
                 {
-                    this.CardItems.Add(castBlock.CardItems[i].Clone());
+                    this.CardItems.Add((CardItem)castBlock.CardItems[i].Item.Clone().ModItem);
                 }
                 this.IsDisabled = castBlock.IsDisabled;
             }
@@ -359,12 +360,12 @@ namespace Kourindou
                                     if (Cards.ElementAtOrDefault(Index + y) == null)
                                     {
                                         // Add the card instead
-                                        Cards.Add(Cards[Index].Clone());
+                                        Cards.Add((CardItem)Cards[Index].Item.Clone().ModItem);
                                     }
                                     else
                                     {
                                         // Otherwise insert the card
-                                        Cards.Insert(Index + y, Cards[Index].Clone());
+                                        Cards.Insert(Index + y, (CardItem)Cards[Index].Item.Clone().ModItem);
                                     }
 
                                     Cards[Index + y].IsInsertedCard = true;

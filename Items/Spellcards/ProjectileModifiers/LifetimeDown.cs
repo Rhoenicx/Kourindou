@@ -16,7 +16,7 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             Tooltip.SetDefault("");
         }
 
-        public override void SetDefaults()
+        public override void SetCardDefaults()
         {
             // Defaults of this card
             Group = (byte)Groups.ProjectileModifier;

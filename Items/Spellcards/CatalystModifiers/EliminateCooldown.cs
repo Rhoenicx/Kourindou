@@ -17,7 +17,7 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             Tooltip.SetDefault("");
         }
 
-        public override void SetDefaults()
+        public override void SetCardDefaults()
         {
             // Defaults of this card
             Group = (byte)Groups.CatalystModifier;

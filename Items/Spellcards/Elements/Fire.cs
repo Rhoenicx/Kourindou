@@ -15,7 +15,7 @@ namespace Kourindou.Items.Spellcards.Elements
             Tooltip.SetDefault("");
         }
 
-        public override void SetDefaults()
+        public override void SetCardDefaults()
         {
             // Defaults of this card
             Group = (byte)Groups.Element;

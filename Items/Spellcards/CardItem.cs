@@ -145,31 +145,45 @@ namespace Kourindou.Items.Spellcards
             return false;
         }
 
-        public CardItem Clone()
+        public override ModItem Clone(Item newEntity)
         {
-            CardItem clone = (CardItem)new Item(Type).ModItem;
+            if (newEntity.ModItem is CardItem clone)
+            {
+                clone.Group = this.Group;
+                clone.Spell = this.Spell;
+                clone.Variant = this.Variant;
+                clone.Amount = this.Amount;
+                clone.AddUseTime = this.AddUseTime;
+                clone.AddCooldown = this.AddCooldown;
+                clone.AddRecharge = this.AddRecharge;
+                clone.AddSpread = this.AddSpread;
+                clone.FixedAngle = this.FixedAngle;
+                clone.IsRandomCard = this.IsRandomCard;
+                clone.IsConsumable = this.IsConsumable;
+                clone.NeedsProjectileCard = this.NeedsProjectileCard;
+                clone.CardColor = this.CardColor;
+                clone.IsInsertedCard = this.IsInsertedCard;
+                clone.IsWrapped = this.IsWrapped;
+                clone.IsAlwaysCast = this.IsAlwaysCast;
+                clone.IsPayload = this.IsPayload;
+                clone.IsMulticasted = this.IsMulticasted;
+                clone.SlotPosition = this.SlotPosition;
+            }
 
-            clone.Group = this.Group;
-            clone.Spell = this.Spell;
-            clone.Variant = this.Variant;
-            clone.Amount = this.Amount;
-            clone.AddUseTime = this.AddUseTime;
-            clone.AddCooldown = this.AddCooldown;
-            clone.AddRecharge = this.AddRecharge;
-            clone.AddSpread = this.AddSpread;
-            clone.FixedAngle = this.FixedAngle;
-            clone.IsRandomCard = this.IsRandomCard;
-            clone.IsConsumable = this.IsConsumable;
-            clone.NeedsProjectileCard = this.NeedsProjectileCard;
-            clone.CardColor = this.CardColor;
-            clone.IsInsertedCard = this.IsInsertedCard;
-            clone.IsWrapped = this.IsWrapped;
-            clone.IsAlwaysCast = this.IsAlwaysCast;
-            clone.IsPayload = this.IsPayload;
-            clone.IsMulticasted = this.IsMulticasted;
-            clone.SlotPosition = this.SlotPosition;
+            return base.Clone(newEntity);
+        }
 
-            return clone;
+        public abstract void SetCardDefaults();
+
+        public override void SetDefaults()
+        {
+            SetCardDefaults();
+
+            IsInsertedCard = false;
+            IsAlwaysCast = false;
+            IsWrapped = false;
+            IsPayload = false;
+            IsMulticasted = false;
         }
 
         public virtual void ApplyMultiplication(float input)
