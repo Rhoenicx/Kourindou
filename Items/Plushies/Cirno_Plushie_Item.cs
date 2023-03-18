@@ -19,7 +19,7 @@ namespace Kourindou.Items.Plushies
 
         public override string AddEffectTooltip()
         {
-            return "Every 9th hit has 9% chance to deal 9 times damage! +25% damage, -17% damage taken";
+            return "Every hit has 9% chance to deal 9 times damage! +25% damage, -17% damage taken";
         }
 
         public override void SetDefaults()
@@ -85,18 +85,6 @@ namespace Kourindou.Items.Plushies
 
         public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
         {
-            myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_Attack_Counter++;
-
-            if (myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_Attack_Counter == 9 && (int)Main.rand.Next(0, 10) == 9)
-            {
-                myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_TimesNine = true;
-            }
-
-            if (myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_Attack_Counter >= 9)
-            {
-                myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_Attack_Counter = 0;
-            }
-
             if (player != null)
             {
                 player.AddBuff(BuffID.Chilled, 600);
@@ -123,10 +111,9 @@ namespace Kourindou.Items.Plushies
 
         public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
         {
-            if (myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_TimesNine)
+            if ((int)Main.rand.Next(0, 12) == 9)
             {
                 damage *= 9;
-                myPlayer.GetModPlayer<KourindouPlayer>().CirnoPlushie_TimesNine = false;
             }
         }
     }

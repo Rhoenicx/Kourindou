@@ -46,10 +46,6 @@ namespace Kourindou
         // Reimu plushie maximum homing distance
         public float ReimuPlushieMaxDistance = 500f;
 
-        // Cirno Plushie Effect Attack Counter
-        public byte CirnoPlushie_Attack_Counter;
-        public bool CirnoPlushie_TimesNine;
-
         // Ran Plushie kill and stack counter
         public byte RanPlushie_EnemieKillCounter;
         public byte RanPlushie_Stacks;
@@ -102,8 +98,6 @@ namespace Kourindou
         public override void SaveData(TagCompound tag)
         {
             tag.Add("plushiePowerMode", plushiePower);
-            tag.Add("cirnoPlushieAttackCounter", CirnoPlushie_Attack_Counter);
-            tag.Add("cirnoPlushieTimesNine", CirnoPlushie_TimesNine);
             tag.Add("fumoColaBuffStacks", FumoColaBuffStacks);
             tag.Add("ranPlushieStacks", RanPlushie_Stacks);
         }
@@ -111,8 +105,6 @@ namespace Kourindou
         public override void LoadData(TagCompound tag)
         {
             plushiePower = tag.GetBool("plushiePowerMode");
-            CirnoPlushie_Attack_Counter = tag.GetByte("cirnoPlushieAttackCounter");
-            CirnoPlushie_TimesNine = tag.GetBool("cirnoPlushieTimesNine");
             FumoColaBuffStacks = tag.GetInt("fumoColaBuffStacks");
             RanPlushie_Stacks = tag.GetByte("ranPlushieStacks");
         }
