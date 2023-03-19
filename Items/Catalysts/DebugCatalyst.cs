@@ -30,11 +30,15 @@ namespace Kourindou.Items.Catalysts
             Item.height = 28;
 
             // Usage and Animation
-            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.autoReuse = true;
+            Item.useTurn = true;
+            Item.noUseGraphic = false;
             Item.useTime = 15;
             Item.useAnimation = 15;
-            Item.autoReuse = false;
-            Item.useTurn = true;
+
+            // Shoot
+            Item.shoot = ProjectileID.Bullet;
 
             // Catalyst base properties
             CastAmount = 1;
@@ -42,6 +46,8 @@ namespace Kourindou.Items.Catalysts
             HasAlwaysCastCard = false;
             AlwaysCastCard = GetCardItem((byte)Groups.Empty, 0);
             ShufflingCatalyst = false;
+            BaseRecharge = 10;
+            BaseCooldown = 300;
         }
     }
 }

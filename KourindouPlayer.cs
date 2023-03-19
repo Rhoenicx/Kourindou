@@ -28,12 +28,6 @@ using Kourindou.Projectiles.Plushies.PlushieEffects;
 
 namespace Kourindou
 {
-    public class CooldownTimes
-    {
-        public int CurrentTime { get; set; }
-        public int MaximumTime { get; set; }
-    }
-
     public class KourindouPlayer : ModPlayer
     {
         //--------------------------------------------------------------------------------
@@ -58,21 +52,8 @@ namespace Kourindou
         public bool TenshiPlushie_Revenge;
         public int TenshiPlushie_Damage;
 
-        // Hotkeys
-        public int keyTimer;
+        // Yukari Plushie effect
         public bool SkillKeyPressed;
-        public bool SkillKeyHeld;
-        public bool SkillKeyReleased;
-        public bool UltimateKeyPressed;
-        public bool UltimateKeyHeld;
-        public bool UltimateKeyReleased;
-
-        public bool UsedAttack;
-        public int AttackID;
-        public int AttackCounter;
-
-        public int OldAttackID;
-        public int OldAttackCounter;
 
         // Items
         public int FumoColaTurnIntoPlushieID = -1;
@@ -82,14 +63,14 @@ namespace Kourindou
         // Half Phantom pet active
         public bool HalfPhantomPet;
 
+
+
         // Buffs
         public bool DebuffMedicineMelancholy;
         public int DebuffMedicineMelancholyStacks;
 
-        // Cooldown
-        public Dictionary<int, Dictionary<int, CooldownTimes>> Cooldowns = new();
-        public float CooldownTimeMultiplier;
-        public int CooldownTimeAdditive;
+        // Catalyst
+        public Dictionary<int, int[]> CatalystCooldown = new();
 
         // Weapons
         // public Dictionary<int, int> CrescentMoonStaffFlames = new Dictionary<int, int>();
@@ -193,71 +174,6 @@ namespace Kourindou
             {
                 SkillKeyPressed = Kourindou.SkillKey.JustPressed;
             }
-
-            if (Player.HeldItem.ModItem is MultiUseItem item)
-            {
-                List<string> SkillKeys = Kourindou.SkillKey.GetAssignedKeys();
-                List<string> UltimateKeys = Kourindou.UltimateKey.GetAssignedKeys();
-
-                if (SkillKeys.Count == 0 && UltimateKeys.Count == 0)
-                {
-                    return;
-                }
-
-                if (item.HasSkill(Player)
-                    && item.HasUltimate(Player)
-                    && SkillKeys.Count > 0
-                    && UltimateKeys.Count > 0
-                    && SkillKeys[0] == UltimateKeys[0])
-                {
-                    // Skill is activated by clicking the assigned button
-                    // Ultimate is activated by holding the button for 1.5 seconds (90 ticks)
-                    if (Kourindou.SkillKey.JustReleased && keyTimer < 60)
-                    {
-                        SkillKeyPressed = true;
-                    }
-                    else if (Kourindou.SkillKey.JustReleased && keyTimer >= 60)
-                    {
-                        UltimateKeyPressed = true;
-                    }
-
-                    // When held down increase the timer
-                    if (Kourindou.SkillKey.Current)
-                    {
-                        keyTimer++;
-                    }
-
-                    // When the button is released or no longer pressed, reset the timer
-                    if (Kourindou.SkillKey.JustReleased || !Kourindou.UltimateKey.Current)
-                    {
-                        keyTimer = 0;
-                    }
-                }
-                else
-                {
-                    if (item.HasSkill(Player))
-                    {
-                        if (Kourindou.SkillKey.JustPressed) SkillKeyPressed = true;
-                        SkillKeyHeld = Kourindou.SkillKey.Current;
-                        if (Kourindou.SkillKey.JustReleased) SkillKeyReleased = true;
-                    }
-
-                    if (item.HasUltimate(Player))
-                    {
-                        if (Kourindou.UltimateKey.JustPressed) UltimateKeyPressed = true;
-                        UltimateKeyHeld = Kourindou.UltimateKey.Current;
-                        if (Kourindou.UltimateKey.JustReleased) UltimateKeyReleased = true;
-                    }
-                }
-
-                if (Player.HeldItem.ModItem.AltFunctionUse(Player))
-                {
-                    Player.controlUseItem = true;
-                    Player.altFunctionUse = 1;
-                }
-            }
-
-            base.ProcessTriggers(triggersSet);
         }
 
         public override void PreUpdate()
@@ -265,7 +181,20 @@ namespace Kourindou
             if (FumoColaAnimationTimer > 0)
             {
                 FumoColaAnimationTimer--;
-            }            
+            }
+
+            foreach (int[] array in CatalystCooldown.Values)
+            {
+                // Reduce times
+                if (array[0] > 0)
+                {
+                    array[0]--;
+                }
+                else if (array[1] > 0)
+                {
+                    array[1]--;
+                }
+            }
         }
 
         public override void ResetEffects()
@@ -279,30 +208,6 @@ namespace Kourindou
             // Reset buff timer visibility
             Main.buffNoTimeDisplay[146] = false;
 
-            CooldownTimeMultiplier = 1f;
-            CooldownTimeAdditive = 0;
-
-            //            // Crescent Moon Staff - Check the projectiles in the dictionary, if they are wrong remove them
-            //            if (Player.whoAmI == Main.myPlayer)
-            //            {
-            //                List<int> removeKey = new List<int>();
-            //                foreach (KeyValuePair<int, int> pair in CrescentMoonStaffFlames)
-            //                {
-            //                    Projectile proj = Main.projectile[pair.Value];
-            //                    if (!proj.active
-            //                    || proj.owner != Player.whoAmI
-            //                    || proj.type != ProjectileType<CrescentMoonStaffFlame>()
-            //                    || pair.Key != (int)proj.ai[1])
-            //                    {
-            //                        removeKey.Add(pair.Key);
-            //                    }
-            //                }
-            //                foreach (int i in removeKey)
-            //                {
-            //                    CrescentMoonStaffFlames.Remove(i);
-            //                }
-            //            }
-
             // Reset Medicine's debuff
             DebuffMedicineMelancholy = false;
 
@@ -312,7 +217,7 @@ namespace Kourindou
             }
 
             // Reset FumoCola fields
-            if (FumoColaTurnIntoPlushieID != -1 
+            if (FumoColaTurnIntoPlushieID != -1
                 && (FumoColaAnimationTimer == 0
                 || Player.itemAnimation == 0
                 || !Player.ItemAnimationActive))
@@ -579,116 +484,29 @@ namespace Kourindou
             }
         }
 
-        public bool OnCooldown(int itemID, int AttackID)
+        public bool OnCooldown(int ID)
         {
-            if (Cooldowns.ContainsKey(itemID))
+            if (CatalystCooldown.ContainsKey(ID))
             {
-                if (Cooldowns[itemID].ContainsKey(AttackID))
-                {
-                    return Cooldowns[itemID][AttackID].CurrentTime > 0;
-                }
+                return CatalystCooldown[ID][1] > 0;
             }
+
             return false;
         }
 
-        public void SetCooldown(int itemID, int AttackID, int time)
+        public void SetCooldown(int ID, int AnimationTime, int Time, bool Cooldown)
         {
-            if (!Cooldowns.ContainsKey(itemID))
+            if (!CatalystCooldown.ContainsKey(ID))
             {
-                Cooldowns.Add(itemID, new Dictionary<int, CooldownTimes>());
-            }
-
-            if (!Cooldowns[itemID].ContainsKey(AttackID))
-            {
-                Cooldowns[itemID].Add(AttackID, new CooldownTimes { CurrentTime = time, MaximumTime = time });
+                CatalystCooldown.Add(ID, new int[] { AnimationTime, Time, Time, Cooldown ? 1 : 0 });
             }
             else
             {
-                Cooldowns[itemID][AttackID].CurrentTime = time;
-                Cooldowns[itemID][AttackID].MaximumTime = time;
+                CatalystCooldown[ID][0] = AnimationTime;
+                CatalystCooldown[ID][1] = Time;
+                CatalystCooldown[ID][2] = Time;
+                CatalystCooldown[ID][3] = Cooldown ? 1 : 0;
             }
-        }
-
-        public override bool PreItemCheck()
-        {
-            // player is not holding a multiuse weapon
-            if (Player.HeldItem.ModItem is not MultiUseItem item)
-            {
-                // return, we don't have a multiuse weapon
-                return base.PreItemCheck();
-            }
-
-            // Get the AttackID based on the weapon and keybind used
-            if (Player.itemAnimation <= 1 && Main.myPlayer == Player.whoAmI)
-            {
-                // Prioritize the ultimate if both keys are present at the same time
-                if (Main.mouseLeft && !(UltimateKeyPressed || UltimateKeyHeld) && !(SkillKeyPressed || SkillKeyHeld) && item.HasNormal(Player))
-                {
-                    UsedAttack = true;
-                    AttackID = item.GetNormalID(Player);
-                    AttackCounter = item.GetNormalCounter(Player);
-                }
-                else if (!Main.mouseLeft && (SkillKeyPressed || SkillKeyHeld) && !(UltimateKeyPressed || UltimateKeyHeld) && item.HasSkill(Player))
-                {
-                    UsedAttack = true;
-                    AttackID = item.GetSkillID(Player);
-                    AttackCounter = item.GetSkillCounter(Player);
-                }
-                else if (!Main.mouseLeft && (UltimateKeyPressed || UltimateKeyHeld) && !(SkillKeyPressed || SkillKeyHeld) && item.HasUltimate(Player))
-                {
-                    UsedAttack = true;
-                    AttackID = item.GetUltimateID(Player);
-                    AttackCounter = item.GetUltimateCounter(Player);
-                }
-                else if (!Main.mouseLeft && !(UltimateKeyPressed || UltimateKeyHeld) && !(SkillKeyPressed || SkillKeyHeld))
-                {
-                    item.SetDefaults();
-                    return base.PreItemCheck();
-                }
-                else
-                {
-                    UsedAttack = true;
-                    AttackID = OldAttackID;
-                    AttackCounter = OldAttackCounter;
-                }
-            }
-
-            if (Player.itemAnimation <= 1 && Main.myPlayer != Player.whoAmI)
-            {
-                item.SetDefaults();
-            }
-
-            if (UsedAttack)
-            {
-                Player.altFunctionUse = 2;
-
-                if (Main.myPlayer == Player.whoAmI && OnCooldown(item.Type, AttackID))
-                {
-                    return base.PreItemCheck();
-                }
-
-                if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient && !OnCooldown(item.Type, AttackID))
-                {
-                    ModPacket packet = Mod.GetPacket();
-                    packet.Write((byte)KourindouMessageType.AlternateFire);
-                    packet.Write((byte)Main.myPlayer);
-                    packet.Write((bool)UsedAttack);
-                    packet.Write((int)AttackID);
-                    packet.Write((int)AttackCounter);
-                    packet.Send(-1, Main.myPlayer);
-                }
-
-                item.SetItemStats(Player, AttackID, AttackCounter);
-                Player.lastVisualizedSelectedItem = Player.HeldItem;
-
-                if (Main.myPlayer == Player.whoAmI)
-                {
-                    OldAttackID = AttackID;
-                    OldAttackCounter = AttackCounter;
-                }
-            }
-
-            return base.PreItemCheck();
         }
 
         public override void PostItemCheck()
@@ -729,22 +547,6 @@ namespace Kourindou
                     enabled = true
                 };
             }
-        }
-
-        public override void PostUpdate()
-        {
-            // Put hotkey status to false for next tick
-            SkillKeyPressed = false;
-            SkillKeyHeld = false;
-            SkillKeyReleased = false;
-
-            UltimateKeyPressed = false;
-            UltimateKeyHeld = false;
-            UltimateKeyReleased = false;
-
-            UsedAttack = false;
-            AttackID = 0;
-            AttackCounter = 0;
         }
     }
 
@@ -1177,84 +979,3 @@ namespace Kourindou
         }
     }
 }
-
-//    public class HeldItemLayer : PlayerDrawLayer
-//    {
-//        Texture2D texture;
-//        int itemTexture;
-//        public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
-//        {
-//            return drawInfo.drawPlayer.HeldItem.type == ItemType<KoninginDerNacht>()
-//                && drawInfo.drawPlayer.itemAnimation > 0
-//                && !drawInfo.drawPlayer.dead
-//                && !drawInfo.drawPlayer.noItems
-//                && !drawInfo.drawPlayer.CCed;
-//        }
-//        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.HeldItem);
-//
-//        protected override void Draw(ref PlayerDrawSet drawInfo)
-//        {
-//            const float StartAngle = -140f;
-//            const float SwingAngle = 180f;
-//            const float HeldOffset = 6f;
-//
-//            if (drawInfo.drawPlayer.HeldItem.type == ItemType<KoninginDerNacht>())
-//            {
-//                if (itemTexture != drawInfo.drawPlayer.HeldItem.type)
-//                {
-//                    itemTexture = drawInfo.drawPlayer.HeldItem.type;
-//                    texture = TextureAssets.Item[drawInfo.drawPlayer.HeldItem.type].Value;
-//                }
-//            }
-//
-//            int drawX = (int)(drawInfo.Position.X - Main.screenPosition.X - drawInfo.drawPlayer.bodyFrame.Width / 2f + drawInfo.drawPlayer.width / 2f);
-//            int drawY = (int)(drawInfo.Position.Y - Main.screenPosition.Y + drawInfo.drawPlayer.height - drawInfo.drawPlayer.bodyFrame.Height + 4);
-//            Vector2 position = new Vector2(drawX, drawY) + drawInfo.drawPlayer.bodyPosition + drawInfo.bodyVect;
-//
-//            float rotation;
-//
-//            if (drawInfo.drawPlayer.direction == 1)
-//            {
-//                rotation = StartAngle + (SwingAngle / drawInfo.drawPlayer.itemAnimationMax * (drawInfo.drawPlayer.itemAnimationMax - drawInfo.drawPlayer.itemAnimation)) + 45f;
-//                position += new Vector2(HeldOffset, 0f).RotatedBy(MathHelper.ToRadians(rotation - 45f));
-//            }
-//            else
-//            {
-//                rotation = StartAngle + 100f - (SwingAngle / drawInfo.drawPlayer.itemAnimationMax * (drawInfo.drawPlayer.itemAnimationMax - drawInfo.drawPlayer.itemAnimation)) - 45f + 180f;
-//                position += new Vector2(HeldOffset, 0f).RotatedBy(MathHelper.ToRadians(rotation - 135f));
-//            }
-//
-//            Vector2 offset = new Vector2(0, 0);
-//
-//            // Bodyframe Y values that indicate the player is at a position in the step cycle
-//            // where the sprite shifts.
-//            if (drawInfo.drawPlayer.bodyFrame.Y == 392 || drawInfo.drawPlayer.bodyFrame.Y == 448 || drawInfo.drawPlayer.bodyFrame.Y == 504
-//                || drawInfo.drawPlayer.bodyFrame.Y == 784 || drawInfo.drawPlayer.bodyFrame.Y == 840 || drawInfo.drawPlayer.bodyFrame.Y == 896)
-//            {
-//                offset.Y += 2;
-//            }
-//
-//            SpriteEffects spriteEffects = SpriteEffects.None;
-//            if (drawInfo.drawPlayer.direction == -1)
-//            {
-//                spriteEffects |= SpriteEffects.FlipHorizontally;
-//            }
-//            if ((int)drawInfo.drawPlayer.gravDir == -1)
-//            {
-//                spriteEffects |= SpriteEffects.FlipVertically;
-//                offset.Y *= -1;
-//            }
-//
-//            drawInfo.DrawDataCache.Add(new DrawData(
-//                texture,
-//                position,
-//                new Rectangle(0, 0, texture.Width, texture.Height),
-//                drawInfo.itemColor,
-//                MathHelper.ToRadians(rotation),
-//                new Vector2(spriteEffects.HasFlag((Enum)(object)(SpriteEffects)1) ? texture.Width : 0, texture.Height) + offset,
-//                1f,
-//                spriteEffects,
-//                0
-//            ));
-//        }
-//    }

@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 using Terraria.ID;
 using static Kourindou.KourindouSpellcardSystem;
 
@@ -41,6 +42,11 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override float GetValue()
+        {
+            return (float)Math.Pow(0.9f, Amount);
         }
     }
 }

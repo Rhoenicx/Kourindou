@@ -58,12 +58,11 @@ namespace Kourindou
         // Mod config
         internal static KourindouConfigClient KourindouConfigClient;
 
-        // Right clicks
-        private static List<Func<bool>> RightClickOverrides;
-
         // Keybinds
         public static ModKeybind SkillKey;
-        public static ModKeybind UltimateKey;
+
+        // Catalyst indentifiers
+        public static int NewCatalystID = 0;
 
         // Kourindou Mod Instance
         public Kourindou()
@@ -114,10 +113,7 @@ namespace Kourindou
         // Load
         public override void Load()
         {
-            RightClickOverrides = new List<Func<bool>>();
-
             SkillKey = KeybindLoader.RegisterKeybind(this, "Skill", "Mouse2");
-            UltimateKey = KeybindLoader.RegisterKeybind(this, "Ultimate", "Mouse2");
 
             SoundDictionary = new Dictionary<string, SoundStyle>
             {
@@ -144,13 +140,7 @@ namespace Kourindou
         {
             KourindouConfigClient = null;
 
-            if (RightClickOverrides != null) {
-                RightClickOverrides.Clear();
-                RightClickOverrides = null;
-            }
-
             SkillKey = null;
-            UltimateKey = null;
 
             Instance = null;
             Gensokyo = null;
@@ -570,31 +560,6 @@ namespace Kourindou
                     break;
                 }
 
-                case KourindouMessageType.AlternateFire:
-                {
-                    byte PlayerID = reader.ReadByte();
-                    bool UsedAttack = reader.ReadBoolean();
-                    int AttackID = reader.ReadInt32();
-                    int AttackCounter = reader.ReadInt32();
-
-                    KourindouPlayer player = Main.player[PlayerID].GetModPlayer<KourindouPlayer>();
-                    player.UsedAttack = UsedAttack;
-                    player.AttackID = AttackID;
-                    player.AttackCounter = AttackCounter;
-
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        ModPacket packet = GetPacket();
-                        packet.Write((byte) KourindouMessageType.AlternateFire);
-                        packet.Write((byte) PlayerID);
-                        packet.Write((bool) UsedAttack);
-                        packet.Write((int) AttackID);
-                        packet.Write((int) AttackCounter);
-                        packet.Send(-1, whoAmI);
-                    }
-                    break;    
-                }
-
                 case KourindouMessageType.RanPlushieStacks:
                 {
                     byte PlayerID = reader.ReadByte();
@@ -619,18 +584,9 @@ namespace Kourindou
                     break;
             }
         }
-
-        public static bool OverrideRightClick() 
-        {
-            foreach(var func in RightClickOverrides) {
-                if(func()) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
  
+        public static int GetNewCatalystID() => NewCatalystID++;
+
         public void LoadPlushieTextures()
         {
             if (PlushieTileTextures == null)

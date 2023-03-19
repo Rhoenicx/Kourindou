@@ -28,7 +28,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Gores\" />
-    <Folder Include="Items\Catalysts\" />
     <Folder Include="Items\Placables\" />
     <Folder Include="Items\Spellcards\Projectiles\" />
   </ItemGroup>

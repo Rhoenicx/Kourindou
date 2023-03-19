@@ -1,24 +1,32 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ModLoader.IO;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using static Kourindou.KourindouSpellcardSystem;
-using System.Collections.Generic;
 using Kourindou.Items.Spellcards;
-using Terraria.ModLoader.IO;
+using System.Threading;
 
 namespace Kourindou.Items.Catalysts
 {
     public abstract class CatalystItem : ModItem
     {
         #region Catalyst_Properties
+        public int CatalystID = 0;
         public bool HasAlwaysCastCard = false;
         public bool ShufflingCatalyst = false;
         public int CastAmount = 1;
         public int NextCastStartIndex = 0;
         public int CardSlotAmount = 1;
+        public int BaseRecharge = 0;
+        public int BaseCooldown = 0;
+        public float HeldCatalystOffset = 0f;
 
         public List<CardItem> CardItemsOnCatalyst = new List<CardItem>();
         public CardItem AlwaysCastCard;
@@ -29,11 +37,15 @@ namespace Kourindou.Items.Catalysts
         {
             if (newEntity.ModItem is CatalystItem newCatalyst)
             {
-                newCatalyst.CardSlotAmount = CardSlotAmount;
-                newCatalyst.CardItemsOnCatalyst = new List<CardItem>(CardItemsOnCatalyst);
                 newCatalyst.HasAlwaysCastCard = HasAlwaysCastCard;
-                newCatalyst.AlwaysCastCard = AlwaysCastCard;
                 newCatalyst.ShufflingCatalyst = ShufflingCatalyst;
+                newCatalyst.CastAmount = CastAmount;
+                newCatalyst.CardSlotAmount = CardSlotAmount;
+                newCatalyst.BaseRecharge = BaseRecharge;
+                newCatalyst.BaseCooldown = BaseCooldown;
+                newCatalyst.CardItemsOnCatalyst = new List<CardItem>(CardItemsOnCatalyst);
+                newCatalyst.AlwaysCastCard = AlwaysCastCard;
+                
             }
 
             return base.Clone(newEntity);
@@ -47,6 +59,8 @@ namespace Kourindou.Items.Catalysts
             tag.Add("CastAmount", CastAmount);
             tag.Add("NextCastStartIndex", NextCastStartIndex);
             tag.Add("CardSlotAmount", CardSlotAmount);
+            tag.Add("BaseRecharge", BaseRecharge);
+            tag.Add("BaseCooldown", BaseCooldown);
 
             if (HasAlwaysCastCard)
             {
@@ -72,6 +86,8 @@ namespace Kourindou.Items.Catalysts
             CastAmount = tag.GetInt("CastAmount");
             NextCastStartIndex = tag.GetInt("NextCastStartIndex");
             CardSlotAmount = tag.GetInt("CardSlotAmount");
+            BaseRecharge = tag.GetInt("BaseRecharge");
+            BaseCooldown = tag.GetInt("BaseCooldown");
 
             if (HasAlwaysCastCard)
             {
@@ -95,6 +111,16 @@ namespace Kourindou.Items.Catalysts
                     CardItemsOnCatalyst[i] = GetCardItem(Group, Spell, Stack);
                 }
             }
+        }
+
+        public override void NetSend(BinaryWriter writer)
+        {
+            writer.Write(CatalystID);
+        }
+
+        public override void NetReceive(BinaryReader reader)
+        {
+            CatalystID = reader.ReadInt32();
         }
         #endregion
 
@@ -128,8 +154,17 @@ namespace Kourindou.Items.Catalysts
         
         public override void SetDefaults()
         {
+            // Item Defaults
             SetCatalystDefaults();
 
+            // ID of this catalyst
+            CatalystID = Kourindou.GetNewCatalystID();
+
+            // Shoot
+            Item.shootSpeed = 1f;
+            Item.channel = true;
+
+            // Initialize card slots
             for (int i = 0; i < CardSlotAmount; i++)
             {
                 CheckCardSlot(i);
@@ -342,91 +377,78 @@ namespace Kourindou.Items.Catalysts
 
         public override bool CanUseItem(Player player)
         {
-            /*
-            CardItemsOnCatalyst[1] = GetCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.Acceleration);
-            return true;
-
-            List<CardItem> CatalystCards = new List<CardItem>()
-            {
-                GetCardItem((byte)Groups.ProjectileModifier,    (byte)ProjectileModifier.Acceleration               ),
-                GetCardItem((byte)Groups.Trigger,               (byte)Trigger.Trigger                               ),
-                GetCardItem((byte)Groups.Empty,                 0                                                   ),
-                GetCardItem((byte)Groups.Multicast,             (byte)Multicast.DoubleCast                          ),
-                GetCardItem((byte)Groups.Multicast,             (byte)Multicast.DoubleCast                          ),
-                GetCardItem((byte)Groups.Empty,                 0                                                   ),
-                GetCardItem((byte)Groups.Formation,             (byte)Formation.Octagon                             ),
-                GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
-                GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
-                GetCardItem((byte)Groups.ProjectileModifier,    (byte)ProjectileModifier.Explosion                  ),
-                GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
-                GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
-                GetCardItem((byte)Groups.Empty,                 0                                                   ),
-                GetCardItem((byte)Groups.Empty,                 0                                                   ),
-                GetCardItem((byte)Groups.ProjectileModifier,    (byte)ProjectileModifier.BounceDown                 ),
-                GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
-                GetCardItem((byte)Groups.ProjectileModifier,    (byte)ProjectileModifier.LifetimeUp                 ),
-                GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
-                GetCardItem((byte)Groups.Empty,                 0                                                   ),
-                GetCardItem((byte)Groups.Projectile,            (byte)KourindouSpellcardSystem.Projectile.ShotBlue  ),
-                GetCardItem((byte)Groups.Empty,                 0                                                   ),
-            };
-            */
-            SetSlotPositions(ref CardItemsOnCatalyst);
-
-            Cast cast = GenerateCast(
-                CardItemsOnCatalyst,
-                HasAlwaysCastCard ? AlwaysCastCard : null,
-                this is CatalystItem,
-                NextCastStartIndex,
-                CastAmount,
-                true
-            );
-
-            //----- DEBUG -----//
-
-            Kourindou.Instance.Logger.Debug("FailedToCast - " + cast.FailedToCast);
-            Kourindou.Instance.Logger.Debug("NextCastStartIndex - " + cast.NextCastStartIndex);
-            Kourindou.Instance.Logger.Debug("MustGoOnCooldown - " + cast.MustGoOnCooldown);
-            Kourindou.Instance.Logger.Debug("CooldownOverride - " + cast.CooldownOverride);
-            Kourindou.Instance.Logger.Debug("CooldownTime - " + cast.CooldownTime);
-            Kourindou.Instance.Logger.Debug("CooldownTimePercentage - " + cast.CooldownTimePercentage);
-            Kourindou.Instance.Logger.Debug("RechargeOverride - " + cast.RechargeOverride);
-            Kourindou.Instance.Logger.Debug("RechargeTime - " + cast.RechargeTime);
-            Kourindou.Instance.Logger.Debug("RechargeTimePercentage - " + cast.RechargeTimePercentage);
-            Kourindou.Instance.Logger.Debug("AddUseTime - " + cast.AddUseTime);
-            Kourindou.Instance.Logger.Debug("MinimumUseTime - " + cast.MinimumUseTime);
-            Kourindou.Instance.Logger.Debug("ChanceNoConsumeCard - " + cast.ChanceNoConsumeCard);
-
-            for (int i = 0; i < cast.Casts.Count; i++)
-            {
-                Kourindou.Instance.Logger.Debug("//----- Cast " + i + "-----//");
-
-                for (int a = 0; a < cast.Casts[i].Blocks.Count; a++)
-                {
-                    Kourindou.Instance.Logger.Debug("   //----- Block " + a + " -----//");
-                    Kourindou.Instance.Logger.Debug("   Repeat - " + cast.Casts[i].Blocks[a].Repeat);
-                    Kourindou.Instance.Logger.Debug("   Delay - " + cast.Casts[i].Blocks[a].Delay);
-                    Kourindou.Instance.Logger.Debug("   InitialDelay - " + cast.Casts[i].Blocks[a].InitialDelay);
-                    Kourindou.Instance.Logger.Debug("   IsDisabled - " + cast.Casts[i].Blocks[a].IsDisabled);
-                    Kourindou.Instance.Logger.Debug("       //----- Cards: -----//");
-                    for (int c = 0; c < cast.Casts[i].Blocks[a].CardItems.Count; c++)
-                    {
-                        Kourindou.Instance.Logger.Debug("       [" + c + "] " + cast.Casts[i].Blocks[a].CardItems[c].Name);
-                        Kourindou.Instance.Logger.Debug("           Amount - " + cast.Casts[i].Blocks[a].CardItems[c].Amount);
-                        Kourindou.Instance.Logger.Debug("           IsInsertedCard - " + cast.Casts[i].Blocks[a].CardItems[c].IsInsertedCard);
-                        Kourindou.Instance.Logger.Debug("           IsWrapped - " + cast.Casts[i].Blocks[a].CardItems[c].IsWrapped);
-                        Kourindou.Instance.Logger.Debug("           IsAlwaysCast - " + cast.Casts[i].Blocks[a].CardItems[c].IsAlwaysCast);
-                        Kourindou.Instance.Logger.Debug("           IsPayload - " + cast.Casts[i].Blocks[a].CardItems[c].IsPayload);
-                        Kourindou.Instance.Logger.Debug("           IsMulticasted - " + cast.Casts[i].Blocks[a].CardItems[c].IsMulticasted);
-                        Kourindou.Instance.Logger.Debug("           SlotPosition - " + cast.Casts[i].Blocks[a].CardItems[c].SlotPosition);
-                    }
-                }
-            }
-
-            NextCastStartIndex = cast.NextCastStartIndex;
-
-            return !cast.FailedToCast;
+            return !player.GetModPlayer<KourindouPlayer>().OnCooldown(CatalystID);
         }
 
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            // Copy the card list to a new list
+            List<CardItem> Cards = CardItemsOnCatalyst.ToList();
+
+            // Set the slot positions
+            SetSlotPositions(ref Cards);
+            SetSlotPositions(ref CardItemsOnCatalyst);
+
+            // Shuffle the cards at the start
+            if (ShufflingCatalyst && NextCastStartIndex == 0)
+            {
+                ShuffleCardItems(ref Cards);
+            }
+
+            // Generate cast
+            Cast cast = GenerateCast(Cards, AlwaysCastCard, this is CatalystItem, NextCastStartIndex, CastAmount, true);
+
+            // Apply the properties after the cast to this catalyst
+            NextCastStartIndex = cast.NextCastStartIndex;
+
+            // Apply consumed cards
+            ConsumedCards(ref CardItemsOnCatalyst, cast.ConsumedCards, cast.ChanceNoConsumeCard);
+
+            // Setup projectile spawn parameters
+            int LifeTime = Item.useAnimation;
+            if (!cast.FailedToCast && cast.MinimumUseTime > Item.useAnimation)
+            {
+                LifeTime = cast.MinimumUseTime;
+            }
+
+            // Spawn the catalyst projectile
+            int CatalystProjID = Terraria.Projectile.NewProjectile(
+                source,
+                position + (velocity * HeldCatalystOffset),
+                Vector2.Zero,
+                type,
+                damage,
+                knockback,
+                Main.myPlayer,
+                LifeTime
+            );
+
+            // Pass the cast properties clientsided
+            if (Main.projectile[CatalystProjID] is CatalystProjectile catalyst)
+            {
+                catalyst.Cast = cast;
+            }
+
+            // Apply Cooldown and recharge
+            int Timeout = 0;
+
+            if (cast.MustGoOnCooldown && !cast.CooldownOverride)
+            {
+                Timeout = (int)((BaseCooldown + cast.CooldownTime) * cast.CooldownTimePercentage);
+            }
+
+            if (!cast.MustGoOnCooldown && !cast.RechargeOverride)
+            {
+                Timeout = (int)((BaseRecharge + cast.RechargeTime) * cast.RechargeTimePercentage);
+            }
+
+            player.GetModPlayer<KourindouPlayer>().SetCooldown(
+                CatalystID,
+                LifeTime,
+                Timeout,
+                cast.MustGoOnCooldown);
+
+            return false;
+        }
     }
 }

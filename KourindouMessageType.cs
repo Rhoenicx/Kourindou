@@ -14,7 +14,6 @@ namespace Kourindou
         SetPlushieDirtWater,
         RandomPlacePlantTile,
         PlayerPlacePlantTile,
-        AlternateFire,
         FumoCola,
         RanPlushieStacks
     }

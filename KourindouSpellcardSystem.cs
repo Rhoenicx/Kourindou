@@ -83,7 +83,7 @@ namespace Kourindou
         public int MinimumUseTime { get; set; } = 0;
 
         // Chance to not consume cards
-        public float ChanceNoConsumeCard = 0f;
+        public float ChanceNoConsumeCard = 1f;
 
         // The actual cast info
         public List<CastInfo> Casts { get; set; } = new List<CastInfo>();
@@ -225,7 +225,7 @@ namespace Kourindou
             }
         }
 
-        public static Cast GenerateCast(List<CardItem> InputCards, CardItem AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool IsVisualized = false)
+        public static Cast GenerateCast(List<CardItem> Cards, CardItem AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool IsVisualized = false)
         {
             // Here we generate the cast info which is passed to the execution part
             // => If this catalyst is a shuffle, the cards should first be shuffled.
@@ -235,7 +235,6 @@ namespace Kourindou
             Cast CastProperties = new();
 
             // Create a new List with Cards and reset them to defaults
-            List<CardItem> Cards = new(InputCards);
             for (int i = 0; i < Cards.Count; i++)
             {
                 Cards[i].SetDefaults();
@@ -590,7 +589,7 @@ namespace Kourindou
 
                                                 case CatalystModifier.ChanceNoConsume:
                                                     {
-                                                        CastProperties.ChanceNoConsumeCard += Cards[Index].GetValue();
+                                                        CastProperties.ChanceNoConsumeCard *= Cards[Index].GetValue();
                                                     }
                                                     break;
 
@@ -881,7 +880,7 @@ namespace Kourindou
         {
             foreach (int i in Consumed)
             {
-                if (i >= 0 && i < Cards.Count && Cards[i].IsConsumable && !Cards[i].IsInsertedCard && Main.rand.NextFloat(0f, 1f) > chance)
+                if (i >= 0 && i < Cards.Count && Cards[i].IsConsumable && !Cards[i].IsInsertedCard && Main.rand.NextFloat(0f, 1f) < chance)
                 {
                     if (Cards[i].Item.stack > 1)
                     {
@@ -936,6 +935,48 @@ namespace Kourindou
             }
 
             return NewCard;
+        }
+
+        public void DebugCast(Cast cast)
+        {
+            Kourindou.Instance.Logger.Debug("FailedToCast - " + cast.FailedToCast);
+            Kourindou.Instance.Logger.Debug("NextCastStartIndex - " + cast.NextCastStartIndex);
+            Kourindou.Instance.Logger.Debug("MustGoOnCooldown - " + cast.MustGoOnCooldown);
+            Kourindou.Instance.Logger.Debug("CooldownOverride - " + cast.CooldownOverride);
+            Kourindou.Instance.Logger.Debug("CooldownTime - " + cast.CooldownTime);
+            Kourindou.Instance.Logger.Debug("CooldownTimePercentage - " + cast.CooldownTimePercentage);
+            Kourindou.Instance.Logger.Debug("RechargeOverride - " + cast.RechargeOverride);
+            Kourindou.Instance.Logger.Debug("RechargeTime - " + cast.RechargeTime);
+            Kourindou.Instance.Logger.Debug("RechargeTimePercentage - " + cast.RechargeTimePercentage);
+            Kourindou.Instance.Logger.Debug("AddUseTime - " + cast.AddUseTime);
+            Kourindou.Instance.Logger.Debug("MinimumUseTime - " + cast.MinimumUseTime);
+            Kourindou.Instance.Logger.Debug("ChanceNoConsumeCard - " + cast.ChanceNoConsumeCard);
+
+            for (int i = 0; i < cast.Casts.Count; i++)
+            {
+                Kourindou.Instance.Logger.Debug("//----- Cast " + i + "-----//");
+
+                for (int a = 0; a < cast.Casts[i].Blocks.Count; a++)
+                {
+                    Kourindou.Instance.Logger.Debug("   //----- Block " + a + " -----//");
+                    Kourindou.Instance.Logger.Debug("   Repeat - " + cast.Casts[i].Blocks[a].Repeat);
+                    Kourindou.Instance.Logger.Debug("   Delay - " + cast.Casts[i].Blocks[a].Delay);
+                    Kourindou.Instance.Logger.Debug("   InitialDelay - " + cast.Casts[i].Blocks[a].InitialDelay);
+                    Kourindou.Instance.Logger.Debug("   IsDisabled - " + cast.Casts[i].Blocks[a].IsDisabled);
+                    Kourindou.Instance.Logger.Debug("       //----- Cards: -----//");
+                    for (int c = 0; c < cast.Casts[i].Blocks[a].CardItems.Count; c++)
+                    {
+                        Kourindou.Instance.Logger.Debug("       [" + c + "] " + cast.Casts[i].Blocks[a].CardItems[c].Name);
+                        Kourindou.Instance.Logger.Debug("           Amount - " + cast.Casts[i].Blocks[a].CardItems[c].Amount);
+                        Kourindou.Instance.Logger.Debug("           IsInsertedCard - " + cast.Casts[i].Blocks[a].CardItems[c].IsInsertedCard);
+                        Kourindou.Instance.Logger.Debug("           IsWrapped - " + cast.Casts[i].Blocks[a].CardItems[c].IsWrapped);
+                        Kourindou.Instance.Logger.Debug("           IsAlwaysCast - " + cast.Casts[i].Blocks[a].CardItems[c].IsAlwaysCast);
+                        Kourindou.Instance.Logger.Debug("           IsPayload - " + cast.Casts[i].Blocks[a].CardItems[c].IsPayload);
+                        Kourindou.Instance.Logger.Debug("           IsMulticasted - " + cast.Casts[i].Blocks[a].CardItems[c].IsMulticasted);
+                        Kourindou.Instance.Logger.Debug("           SlotPosition - " + cast.Casts[i].Blocks[a].CardItems[c].SlotPosition);
+                    }
+                }
+            }
         }
 
         #region Enumerators
