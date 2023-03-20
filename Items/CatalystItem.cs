@@ -12,6 +12,9 @@ using static Terraria.ModLoader.ModContent;
 using static Kourindou.KourindouSpellcardSystem;
 using Kourindou.Items.Spellcards;
 using System.Threading;
+using System.Collections;
+using System.Text.RegularExpressions;
+using Kourindou.Projectiles;
 
 namespace Kourindou.Items.Catalysts
 {
@@ -45,7 +48,6 @@ namespace Kourindou.Items.Catalysts
                 newCatalyst.BaseCooldown = BaseCooldown;
                 newCatalyst.CardItemsOnCatalyst = new List<CardItem>(CardItemsOnCatalyst);
                 newCatalyst.AlwaysCastCard = AlwaysCastCard;
-                
             }
 
             return base.Clone(newEntity);
@@ -116,11 +118,71 @@ namespace Kourindou.Items.Catalysts
         public override void NetSend(BinaryWriter writer)
         {
             writer.Write(CatalystID);
+            writer.Write(HasAlwaysCastCard);
+            writer.Write(ShufflingCatalyst);
+            writer.Write(CastAmount);
+            writer.Write(NextCastStartIndex);
+            writer.Write(CardSlotAmount);
+            writer.Write(BaseRecharge);
+            writer.Write(BaseCooldown);
+
+            if (HasAlwaysCastCard)
+            {
+                writer.Write(AlwaysCastCard.Group);
+                writer.Write(AlwaysCastCard.Spell);
+            }
+
+            for (int i = 0; i < CardSlotAmount; i++)
+            {
+                CheckCardSlot(i);
+                writer.Write(CardItemsOnCatalyst[i].Group);
+                writer.Write(CardItemsOnCatalyst[i].Spell);
+                writer.Write(CardItemsOnCatalyst[i].Item.stack);
+            }
         }
 
         public override void NetReceive(BinaryReader reader)
         {
             CatalystID = reader.ReadInt32();
+            HasAlwaysCastCard = reader.ReadBoolean();
+            ShufflingCatalyst = reader.ReadBoolean();
+            CastAmount = reader.ReadInt32();
+            NextCastStartIndex = reader.ReadInt32();
+            CardSlotAmount = reader.ReadInt32();
+            BaseRecharge = reader.ReadInt32();
+            BaseCooldown= reader.ReadInt32();
+
+            if (HasAlwaysCastCard)
+            {
+                AlwaysCastCard = GetCardItem(reader.ReadByte(), reader.ReadByte());
+            }
+
+            for (int i = 0; i < CardSlotAmount; i++)
+            {
+                byte Group = reader.ReadByte();
+                byte Spell = reader.ReadByte();
+                int Stack = reader.ReadInt32();
+
+                if (CardItemsOnCatalyst.ElementAtOrDefault(i) == null)
+                {
+                    CardItemsOnCatalyst.Insert(i, GetCardItem(Group, Spell, Stack));
+                }
+                else
+                {
+                    if (CardItemsOnCatalyst[i].Group != Group
+                        || CardItemsOnCatalyst[i].Spell != Spell)
+                    {
+                        CardItemsOnCatalyst[i] = GetCardItem(Group, Spell, Stack);
+                    }
+
+                    if (CardItemsOnCatalyst[i].Group == Group
+                       && CardItemsOnCatalyst[i].Spell == Spell
+                       && CardItemsOnCatalyst[i].Item.stack != Stack)
+                    {
+                        CardItemsOnCatalyst[i].Item.stack = Stack;
+                    }
+                }
+            }
         }
         #endregion
 
@@ -151,7 +213,6 @@ namespace Kourindou.Items.Catalysts
         #region Defaults
         public abstract void SetCatalystDefaults();
 
-        
         public override void SetDefaults()
         {
             // Item Defaults
@@ -377,12 +438,18 @@ namespace Kourindou.Items.Catalysts
 
         public override bool CanUseItem(Player player)
         {
-            return !player.GetModPlayer<KourindouPlayer>().OnCooldown(CatalystID);
+            if (player.whoAmI == Main.myPlayer)
+            {
+                return !player.GetModPlayer<KourindouPlayer>().OnCooldown(CatalystID);
+            }
+
+            return false;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             // Copy the card list to a new list
+
             List<CardItem> Cards = CardItemsOnCatalyst.ToList();
 
             // Set the slot positions
@@ -396,7 +463,7 @@ namespace Kourindou.Items.Catalysts
             }
 
             // Generate cast
-            Cast cast = GenerateCast(Cards, AlwaysCastCard, this is CatalystItem, NextCastStartIndex, CastAmount, true);
+            Cast cast = GenerateCast(Cards, AlwaysCastCard, true, NextCastStartIndex, CastAmount, true);
 
             // Apply the properties after the cast to this catalyst
             NextCastStartIndex = cast.NextCastStartIndex;
@@ -424,12 +491,12 @@ namespace Kourindou.Items.Catalysts
             );
 
             // Pass the cast properties clientsided
-            if (Main.projectile[CatalystProjID] is CatalystProjectile catalyst)
+            if (Main.projectile[CatalystProjID].ModProjectile is CatalystProjectile catalyst)
             {
-                catalyst.Cast = cast;
+                catalyst.cast = cast;
             }
 
-            // Apply Cooldown and recharge
+            // Calculate Cooldown and recharge
             int Timeout = 0;
 
             if (cast.MustGoOnCooldown && !cast.CooldownOverride)
@@ -439,14 +506,14 @@ namespace Kourindou.Items.Catalysts
 
             if (!cast.MustGoOnCooldown && !cast.RechargeOverride)
             {
-                Timeout = (int)((BaseRecharge + cast.RechargeTime) * cast.RechargeTimePercentage);
+                Timeout = -(int)((BaseRecharge + cast.RechargeTime) * cast.RechargeTimePercentage);
             }
 
             player.GetModPlayer<KourindouPlayer>().SetCooldown(
                 CatalystID,
                 LifeTime,
-                Timeout,
-                cast.MustGoOnCooldown);
+                Timeout
+            );
 
             return false;
         }

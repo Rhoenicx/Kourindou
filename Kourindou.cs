@@ -20,6 +20,7 @@ using Kourindou.Tiles.Plants;
 using Kourindou.Projectiles.Plushies;
 using ReLogic.Content;
 using static Terraria.ModLoader.ModContent;
+using Kourindou.Items.Catalysts;
 
 namespace Kourindou
 {

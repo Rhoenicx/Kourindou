@@ -494,18 +494,18 @@ namespace Kourindou
             return false;
         }
 
-        public void SetCooldown(int ID, int AnimationTime, int Time, bool Cooldown)
+        public void SetCooldown(int ID, int AnimationTime, int Time)
         {
             if (!CatalystCooldown.ContainsKey(ID))
             {
-                CatalystCooldown.Add(ID, new int[] { AnimationTime, Time, Time, Cooldown ? 1 : 0 });
+                CatalystCooldown.Add(ID, new int[] { AnimationTime, Math.Abs(Time), Math.Abs(Time), Math.Sign(Time)});
             }
             else
             {
                 CatalystCooldown[ID][0] = AnimationTime;
-                CatalystCooldown[ID][1] = Time;
-                CatalystCooldown[ID][2] = Time;
-                CatalystCooldown[ID][3] = Cooldown ? 1 : 0;
+                CatalystCooldown[ID][1] = Math.Abs(Time);
+                CatalystCooldown[ID][2] = Math.Abs(Time);
+                CatalystCooldown[ID][3] = Math.Sign(Time);
             }
         }
 

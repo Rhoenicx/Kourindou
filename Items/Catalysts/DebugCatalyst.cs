@@ -32,7 +32,7 @@ namespace Kourindou.Items.Catalysts
             // Usage and Animation
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.autoReuse = true;
-            Item.useTurn = true;
+            Item.useTurn = false;
             Item.noUseGraphic = false;
             Item.useTime = 15;
             Item.useAnimation = 15;
