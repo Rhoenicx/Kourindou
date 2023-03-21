@@ -8,6 +8,7 @@ using static Kourindou.KourindouSpellcardSystem;
 using System.Collections.Generic;
 using Kourindou.Items.Spellcards;
 using Terraria.ModLoader.IO;
+using Kourindou.Projectiles.Catalysts;
 
 namespace Kourindou.Items.Catalysts
 {
@@ -26,19 +27,21 @@ namespace Kourindou.Items.Catalysts
             Item.rare = ItemRarityID.White;
 
             // Hitbox
-            Item.width = 20;
-            Item.height = 28;
+            Item.width = 50;
+            Item.height = 50;
 
             // Usage and Animation
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.autoReuse = true;
-            Item.useTurn = false;
-            Item.noUseGraphic = false;
-            Item.useTime = 15;
-            Item.useAnimation = 15;
+            Item.noUseGraphic = true;
+            Item.useTime = 60;
+            Item.useAnimation = 60;
+            Item.channel = true;
+            Item.noMelee = true;
 
             // Shoot
-            Item.shoot = ProjectileID.Bullet;
+            Item.shoot = ProjectileType<DebugCatalyst_Catalyst>();
+            Item.shootSpeed = 1f;
 
             // Catalyst base properties
             CastAmount = 1;
@@ -47,7 +50,7 @@ namespace Kourindou.Items.Catalysts
             AlwaysCastCard = GetCardItem((byte)Groups.Empty, 0);
             ShufflingCatalyst = false;
             BaseRecharge = 10;
-            BaseCooldown = 300;
+            BaseCooldown = 60;
         }
     }
 }

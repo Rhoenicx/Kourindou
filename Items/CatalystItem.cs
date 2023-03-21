@@ -221,10 +221,6 @@ namespace Kourindou.Items.Catalysts
             // ID of this catalyst
             CatalystID = Kourindou.GetNewCatalystID();
 
-            // Shoot
-            Item.shootSpeed = 1f;
-            Item.channel = true;
-
             // Initialize card slots
             for (int i = 0; i < CardSlotAmount; i++)
             {
@@ -478,11 +474,13 @@ namespace Kourindou.Items.Catalysts
                 LifeTime = cast.MinimumUseTime;
             }
 
+            Main.NewText("Shoot@" + player.name);
+
             // Spawn the catalyst projectile
             int CatalystProjID = Terraria.Projectile.NewProjectile(
                 source,
-                position + (velocity * HeldCatalystOffset),
-                Vector2.Zero,
+                position,
+                velocity,
                 type,
                 damage,
                 knockback,
