@@ -30,6 +30,11 @@ namespace Kourindou.Items.Catalysts
             Item.width = 50;
             Item.height = 50;
 
+            // Damage
+            Item.damage = 10;
+            Item.knockBack = 1f;
+            Item.crit = 5;
+
             // Usage and Animation
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.autoReuse = true;
@@ -51,6 +56,7 @@ namespace Kourindou.Items.Catalysts
             ShufflingCatalyst = false;
             BaseRecharge = 10;
             BaseCooldown = 60;
+            BaseSpread = 0f;
         }
     }
 }

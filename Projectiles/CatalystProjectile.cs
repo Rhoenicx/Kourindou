@@ -8,22 +8,25 @@ using Terraria.ID;
 using Terraria.GameContent;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using static Kourindou.KourindouSpellcardSystem;
 using Kourindou.Items;
+using Kourindou.Items.Catalysts;
 
 namespace Kourindou.Projectiles
 {
     public abstract class CatalystProjectile : ModProjectile
     {
-        public Cast cast;
+        public List<CastInfo> Casts;
         private bool _justSpawned = true;
-        private Player _owner;
+        public Player _owner;
         protected float HeldProjectileOffset;
 
-        private int LifeTime
-        {
-            get => (int)Projectile.ai[0]; 
-            set => Projectile.ai[0] = value;
-        }
+        public int LifeTime => (int)Projectile.ai[0];
+        public bool FailedToCast => ((int)Projectile.ai[1] & 1) == 1;
+
+        public override bool? CanDamage() => false;
+
+        public override bool ShouldUpdatePosition() => false;
 
         public override bool PreDraw(ref Color lightColor)
         {
@@ -47,28 +50,22 @@ namespace Kourindou.Projectiles
             // Set player
             if (_justSpawned)
             {
+                Projectile.timeLeft = LifeTime;
                 _owner = Main.player[Projectile.owner];
                 _justSpawned = false;
             }
 
             Projectile.owner = _owner.whoAmI;
-            Projectile.timeLeft = 5;
-
-            // LifeTime has expired
-            if (LifeTime <= 0)
-            { 
-                Projectile.Kill();
-            }
-
-            // Decrease lifetime
-            LifeTime--;
 
             // Kill the projectile if the owner cannot hold it anymore
-            if (_owner.noItems || _owner.CCed || _owner.dead)
+            if (!_owner.active || _owner.noItems || _owner.CCed || _owner.dead || (Main.myPlayer == _owner.whoAmI && Main.mapFullscreen))
             {
+                Projectile.netUpdate = true;
                 Projectile.Kill();
                 return;
             }
+
+            HandleCasting();
 
             TurnTowardsCursor();
 
@@ -82,16 +79,6 @@ namespace Kourindou.Projectiles
             _owner.itemTime = 2;
             _owner.itemAnimation = 2;
             _owner.itemRotation = (float)Math.Atan2(Projectile.velocity.Y * Projectile.direction, Projectile.velocity.X * Projectile.direction);
-        }
-
-        public override bool? CanDamage()
-        {
-            return false;
-        }
-
-        public override bool ShouldUpdatePosition()
-        {
-            return false;
         }
 
         private void TurnTowardsCursor()
@@ -124,6 +111,76 @@ namespace Kourindou.Projectiles
                     Projectile.netUpdate = true;
                 }
                 Projectile.velocity = sourceToMouseDirection;
+            }
+        }
+
+        private void HandleCasting()
+        {
+            // This code is only allowed to execute on the projectile owner's client
+            if (Projectile.owner != Main.myPlayer)
+            {
+                return;
+            }
+
+            // The cast is not allowed to be executed
+            if (FailedToCast)
+            {
+                return;
+            }
+
+            // Loop through the cast blocks
+            foreach (CastInfo _CastInfo in Casts)
+            {
+                foreach (CastBlock block in _CastInfo.Blocks)
+                {
+                    // If this cast block is disabled => continue
+                    if (block.IsDisabled)
+                    {
+                        continue;
+                    }
+
+                    // This block has a timer running
+                    if (block.Timer > 0)
+                    {
+                        block.Timer--;
+                        continue;
+                    }
+
+                    // Block has repeats and no delay, fire all at once
+                    if (block.Repeat > 0 && block.Delay <= 0)
+                    {
+                        for (int i = 0; i < block.Repeat; i++)
+                        {
+                            HandleCards(block);
+                        }
+
+                        block.IsDisabled = true;
+                    }
+
+                    // Block has repeats and a delay set
+                    else if (block.Repeat > 0 && block.Delay > 0)
+                    {
+                        HandleCards(block);
+                        block.Timer = block.Delay;
+                        block.Repeat--;
+                        block.IsDisabled = true;
+                    }
+
+                    // No repeat or delay
+                    else
+                    {
+                        HandleCards(block);
+                        block.IsDisabled = true;
+                    }
+                }
+            }
+        }
+
+        private void HandleCards(CastBlock block)
+        {
+            if (_owner.HeldItem.ModItem is CatalystItem item)
+            {
+                ExecuteCards(this, item, block);
             }
         }
     }

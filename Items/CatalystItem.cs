@@ -29,6 +29,12 @@ namespace Kourindou.Items.Catalysts
         public int CardSlotAmount = 1;
         public int BaseRecharge = 0;
         public int BaseCooldown = 0;
+        public float BaseSpread = 0f;
+        public int AddedRecharge = 0;
+        public int AddedCooldown = 0;
+        public int AddedDamage = 0;
+        public float AddedSpread = 0;
+
         public float HeldCatalystOffset = 0f;
 
         public List<CardItem> CardItemsOnCatalyst = new List<CardItem>();
@@ -44,8 +50,10 @@ namespace Kourindou.Items.Catalysts
                 newCatalyst.ShufflingCatalyst = ShufflingCatalyst;
                 newCatalyst.CastAmount = CastAmount;
                 newCatalyst.CardSlotAmount = CardSlotAmount;
-                newCatalyst.BaseRecharge = BaseRecharge;
-                newCatalyst.BaseCooldown = BaseCooldown;
+                newCatalyst.AddedRecharge = AddedRecharge;
+                newCatalyst.AddedCooldown = AddedCooldown;
+                newCatalyst.AddedDamage = AddedDamage;
+                newCatalyst.AddedSpread = AddedSpread;
                 newCatalyst.CardItemsOnCatalyst = new List<CardItem>(CardItemsOnCatalyst);
                 newCatalyst.AlwaysCastCard = AlwaysCastCard;
             }
@@ -61,8 +69,10 @@ namespace Kourindou.Items.Catalysts
             tag.Add("CastAmount", CastAmount);
             tag.Add("NextCastStartIndex", NextCastStartIndex);
             tag.Add("CardSlotAmount", CardSlotAmount);
-            tag.Add("BaseRecharge", BaseRecharge);
-            tag.Add("BaseCooldown", BaseCooldown);
+            tag.Add("AddedRecharge", AddedRecharge);
+            tag.Add("AddedCooldown", AddedCooldown);
+            tag.Add("AddedDamage", AddedDamage);
+            tag.Add("AddedSpread", AddedSpread);
 
             if (HasAlwaysCastCard)
             {
@@ -88,8 +98,10 @@ namespace Kourindou.Items.Catalysts
             CastAmount = tag.GetInt("CastAmount");
             NextCastStartIndex = tag.GetInt("NextCastStartIndex");
             CardSlotAmount = tag.GetInt("CardSlotAmount");
-            BaseRecharge = tag.GetInt("BaseRecharge");
-            BaseCooldown = tag.GetInt("BaseCooldown");
+            AddedRecharge = tag.GetInt("AddedRecharge");
+            AddedCooldown = tag.GetInt("AddedCooldown");
+            AddedDamage = tag.GetInt("AddedDamage");
+            AddedSpread = tag.GetInt("AddedSpread");
 
             if (HasAlwaysCastCard)
             {
@@ -123,8 +135,10 @@ namespace Kourindou.Items.Catalysts
             writer.Write(CastAmount);
             writer.Write(NextCastStartIndex);
             writer.Write(CardSlotAmount);
-            writer.Write(BaseRecharge);
-            writer.Write(BaseCooldown);
+            writer.Write(AddedRecharge);
+            writer.Write(AddedCooldown);
+            writer.Write(AddedDamage);
+            writer.Write(AddedSpread);
 
             if (HasAlwaysCastCard)
             {
@@ -149,8 +163,10 @@ namespace Kourindou.Items.Catalysts
             CastAmount = reader.ReadInt32();
             NextCastStartIndex = reader.ReadInt32();
             CardSlotAmount = reader.ReadInt32();
-            BaseRecharge = reader.ReadInt32();
-            BaseCooldown= reader.ReadInt32();
+            AddedRecharge = reader.ReadInt32();
+            AddedCooldown = reader.ReadInt32();
+            AddedDamage = reader.ReadInt32();
+            AddedSpread = reader.ReadSingle();
 
             if (HasAlwaysCastCard)
             {
@@ -432,16 +448,6 @@ namespace Kourindou.Items.Catalysts
         }
         #endregion
 
-        public override bool CanUseItem(Player player)
-        {
-            if (player.whoAmI == Main.myPlayer)
-            {
-                return !player.GetModPlayer<KourindouPlayer>().OnCooldown(CatalystID);
-            }
-
-            return false;
-        }
-
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             // Copy the card list to a new list
@@ -469,12 +475,11 @@ namespace Kourindou.Items.Catalysts
 
             // Setup projectile spawn parameters
             int LifeTime = Item.useAnimation;
+
             if (!cast.FailedToCast && cast.MinimumUseTime > Item.useAnimation)
             {
                 LifeTime = cast.MinimumUseTime;
             }
-
-            Main.NewText("Shoot@" + player.name);
 
             // Spawn the catalyst projectile
             int CatalystProjID = Terraria.Projectile.NewProjectile(
@@ -491,7 +496,7 @@ namespace Kourindou.Items.Catalysts
             // Pass the cast properties clientsided
             if (Main.projectile[CatalystProjID].ModProjectile is CatalystProjectile catalyst)
             {
-                catalyst.cast = cast;
+                catalyst.Casts = cast.Casts;
             }
 
             // Calculate Cooldown and recharge
@@ -499,12 +504,12 @@ namespace Kourindou.Items.Catalysts
 
             if (cast.MustGoOnCooldown && !cast.CooldownOverride)
             {
-                Timeout = (int)((BaseCooldown + cast.CooldownTime) * cast.CooldownTimePercentage);
+                Timeout = (int)((AddedCooldown + AddedCooldown + cast.CooldownTime) * cast.CooldownTimePercentage);
             }
 
             if (!cast.MustGoOnCooldown && !cast.RechargeOverride)
             {
-                Timeout = -(int)((BaseRecharge + cast.RechargeTime) * cast.RechargeTimePercentage);
+                Timeout = -(int)((BaseRecharge + AddedRecharge + cast.RechargeTime) * cast.RechargeTimePercentage);
             }
 
             player.GetModPlayer<KourindouPlayer>().SetCooldown(

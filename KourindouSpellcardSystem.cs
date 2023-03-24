@@ -11,6 +11,8 @@ using static Kourindou.KourindouSpellcardSystem;
 using Terraria.ID;
 using Kourindou.Items.Spellcards.Empty;
 using Terraria.ModLoader;
+using Kourindou.Projectiles;
+using Kourindou.Items.Catalysts;
 
 namespace Kourindou
 {
@@ -26,7 +28,7 @@ namespace Kourindou
             { 
                 this.Repeat = castBlock.Repeat;
                 this.Delay = castBlock.Delay;
-                this.InitialDelay = castBlock.InitialDelay;
+                this.Timer = castBlock.Timer;
                 this.TriggerActive = castBlock.TriggerActive;
                 this.TriggerAmount = castBlock.TriggerAmount;
                 for (int i = 0; i < castBlock.TriggerInOrder.Count; i++)
@@ -43,7 +45,7 @@ namespace Kourindou
 
         public int Repeat { get; set; } = 0;
         public int Delay { get; set; } = 0;
-        public int InitialDelay { get; set; } = 0;
+        public int Timer { get; set; } = 0;
         public bool TriggerActive { get; set; } = false;
         public int TriggerAmount { get; set; } = 0;
         public List<CardItem> TriggerInOrder { get; set; } = new List<CardItem>();
@@ -107,6 +109,9 @@ namespace Kourindou
         public Vector2 SpawnPosition { get; set; }
         public Vector2 SpawnVelocity { get; set; }
         public float SpawnSpread { get; set; }
+        public int Damage { get; set; }
+        public float Knockback { get; set; }
+        public int Crit { get; set; }
 
         // Applied modifiers to this projectile
         public List<KeyValuePair<byte, int>> FormationInOrder { get; set; }
@@ -223,6 +228,15 @@ namespace Kourindou
             {
                 Cards[i].SlotPosition = i;
             }
+        }
+
+        public static void ExecuteCards(CatalystProjectile Catalyst, CatalystItem item, CastBlock Block)
+        { 
+            // Setup
+            ProjectileInfo Proj = new ProjectileInfo();
+            Proj.SpawnPosition = Catalyst.Projectile.Center;
+            Proj.SpawnVelocity = new Vector2(item.Item.shootSpeed, 0f).RotatedBy(Catalyst.Projectile.rotation);
+            Proj.SpawnSpread = item.BaseSpread + item.AddedSpread;
         }
 
         public static Cast GenerateCast(List<CardItem> Cards, CardItem AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool IsVisualized = false)
@@ -553,7 +567,7 @@ namespace Kourindou
                                             }
                                             else
                                             {
-                                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].InitialDelay += (int)Math.Ceiling(Cards[Index].GetValue());
+                                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Timer += (int)Math.Ceiling(Cards[Index].GetValue());
                                             }
                                         }
                                         break;
@@ -864,9 +878,9 @@ namespace Kourindou
                 {
                     foreach (CastBlock _CastBlock in _CastInfo.Blocks)
                     {
-                        if ((_CastBlock.Repeat * _CastBlock.Delay) + _CastBlock.InitialDelay > CastProperties.MinimumUseTime)
+                        if ((_CastBlock.Repeat * _CastBlock.Delay) + _CastBlock.Timer > CastProperties.MinimumUseTime)
                         {
-                            CastProperties.MinimumUseTime = (_CastBlock.Repeat * _CastBlock.Delay) + _CastBlock.InitialDelay;
+                            CastProperties.MinimumUseTime = (_CastBlock.Repeat * _CastBlock.Delay) + _CastBlock.Timer;
                         }
                     }
                 }
@@ -961,7 +975,7 @@ namespace Kourindou
                     Kourindou.Instance.Logger.Debug("   //----- Block " + a + " -----//");
                     Kourindou.Instance.Logger.Debug("   Repeat - " + cast.Casts[i].Blocks[a].Repeat);
                     Kourindou.Instance.Logger.Debug("   Delay - " + cast.Casts[i].Blocks[a].Delay);
-                    Kourindou.Instance.Logger.Debug("   InitialDelay - " + cast.Casts[i].Blocks[a].InitialDelay);
+                    Kourindou.Instance.Logger.Debug("   InitialDelay - " + cast.Casts[i].Blocks[a].Timer);
                     Kourindou.Instance.Logger.Debug("   IsDisabled - " + cast.Casts[i].Blocks[a].IsDisabled);
                     Kourindou.Instance.Logger.Debug("       //----- Cards: -----//");
                     for (int c = 0; c < cast.Casts[i].Blocks[a].CardItems.Count; c++)

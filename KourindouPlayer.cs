@@ -23,6 +23,7 @@ using Kourindou.Items;
 using Kourindou.Items.Plushies;
 using Kourindou.Items.Consumables;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
+using Kourindou.Items.Catalysts;
 //using Kourindou.Projectiles.Weapons;
 
 
@@ -173,6 +174,14 @@ namespace Kourindou
             if (EquippedPlushies.Any(kvp => kvp.Key.Type == ItemType<YukariYakumo_Plushie_Item>()))
             {
                 SkillKeyPressed = Kourindou.SkillKey.JustPressed;
+            }
+
+            if (Player.whoAmI == Main.myPlayer
+                && Player.controlUseItem
+                && Player.HeldItem.ModItem is CatalystItem catalyst
+                && OnCooldown(catalyst.CatalystID))
+            {
+                Player.controlUseItem = false;
             }
         }
 
