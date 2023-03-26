@@ -18,8 +18,12 @@ namespace Kourindou.Projectiles
     {
         public List<CastInfo> Casts;
         private bool _justSpawned = true;
+
         public Player _owner;
-        protected float HeldProjectileOffset;
+        public Item _heldItem;
+
+        protected Vector2 HeldProjectileOffset;
+        protected float HeldProjectileRotation = 0f;
 
         public int LifeTime => (int)Projectile.ai[0];
         public bool FailedToCast => ((int)Projectile.ai[1] & 1) == 1;
@@ -52,6 +56,7 @@ namespace Kourindou.Projectiles
             {
                 Projectile.timeLeft = LifeTime;
                 _owner = Main.player[Projectile.owner];
+                _heldItem = _owner.HeldItem;
                 _justSpawned = false;
             }
 
@@ -70,7 +75,7 @@ namespace Kourindou.Projectiles
             TurnTowardsCursor();
 
             // Position item and projectile
-            Projectile.position = _owner.RotatedRelativePoint(_owner.MountedCenter) - Projectile.Size / 2f + new Vector2(HeldProjectileOffset, 0f).RotatedBy(Projectile.velocity.ToRotation());
+            Projectile.position = _owner.RotatedRelativePoint(_owner.MountedCenter) - Projectile.Size / 2f + HeldProjectileOffset.RotatedBy(Projectile.velocity.ToRotation() - MathHelper.ToRadians(HeldProjectileRotation));
             Projectile.rotation = Projectile.velocity.ToRotation();
             Projectile.spriteDirection = Projectile.direction;
 
@@ -100,6 +105,7 @@ namespace Kourindou.Projectiles
                 {
                     sourceToMouseDirection = -Vector2.UnitY;
                 }
+                float speed = Projectile.velocity.Length();
 
                 sourceToMouseDirection = Vector2.Normalize(Vector2.Lerp(sourceToMouseDirection,
                     Vector2.Normalize(Projectile.velocity), turnSpeed));
@@ -110,7 +116,7 @@ namespace Kourindou.Projectiles
                 {
                     Projectile.netUpdate = true;
                 }
-                Projectile.velocity = sourceToMouseDirection;
+                Projectile.velocity = sourceToMouseDirection * speed;
             }
         }
 
@@ -149,7 +155,7 @@ namespace Kourindou.Projectiles
                     // Block has repeats and no delay, fire all at once
                     if (block.Repeat > 0 && block.Delay <= 0)
                     {
-                        for (int i = 0; i < block.Repeat; i++)
+                        for (int i = 0; i <= block.Repeat; i++)
                         {
                             HandleCards(block);
                         }
@@ -163,7 +169,6 @@ namespace Kourindou.Projectiles
                         HandleCards(block);
                         block.Timer = block.Delay;
                         block.Repeat--;
-                        block.IsDisabled = true;
                     }
 
                     // No repeat or delay
@@ -178,9 +183,20 @@ namespace Kourindou.Projectiles
 
         private void HandleCards(CastBlock block)
         {
-            if (_owner.HeldItem.ModItem is CatalystItem item)
+            if (_heldItem.ModItem is CatalystItem item)
             {
-                ExecuteCards(this, item, block);
+                ExecuteCards(
+                    this.Projectile,
+                    block,
+                    _owner.RotatedRelativePoint(_owner.MountedCenter),
+                    HeldProjectileOffset.RotatedBy(Projectile.velocity.ToRotation()),
+                    Projectile.velocity,
+                    item.BaseSpread + item.AddedSpread,
+                    item.BaseDamageMultiplier + item.AddedDamageMultiplier,
+                    item.BaseKnockback + item.AddedKnockback,
+                    item.BaseCrit + item.AddedCrit,
+                    true
+                );
             }
         }
     }

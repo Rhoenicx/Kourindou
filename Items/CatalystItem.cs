@@ -21,22 +21,43 @@ namespace Kourindou.Items.Catalysts
     public abstract class CatalystItem : ModItem
     {
         #region Catalyst_Properties
+        // ID
         public int CatalystID = 0;
+
+        // Settings
         public bool HasAlwaysCastCard = false;
         public bool ShufflingCatalyst = false;
         public int CastAmount = 1;
         public int NextCastStartIndex = 0;
         public int CardSlotAmount = 1;
+
+        // Cooldown & Recharge
         public int BaseRecharge = 0;
-        public int BaseCooldown = 0;
-        public float BaseSpread = 0f;
         public int AddedRecharge = 0;
+
+        public int BaseCooldown = 0;
         public int AddedCooldown = 0;
-        public int AddedDamage = 0;
+
+        // Stats
+        public float BaseDamageMultiplier = 0f;
+        public float AddedDamageMultiplier = 0f;
+
+        public float BaseSpread = 0f;
         public float AddedSpread = 0;
 
+        public float BaseSpeed = 0f;
+        public float AddedSpeed = 0f;
+
+        public float BaseKnockback = 0f;
+        public float AddedKnockback = 0f;
+        
+        public int BaseCrit = 0;
+        public int AddedCrit = 0;
+
+        // Other
         public float HeldCatalystOffset = 0f;
 
+        // Cards
         public List<CardItem> CardItemsOnCatalyst = new List<CardItem>();
         public CardItem AlwaysCastCard;
         #endregion
@@ -52,8 +73,13 @@ namespace Kourindou.Items.Catalysts
                 newCatalyst.CardSlotAmount = CardSlotAmount;
                 newCatalyst.AddedRecharge = AddedRecharge;
                 newCatalyst.AddedCooldown = AddedCooldown;
-                newCatalyst.AddedDamage = AddedDamage;
+
+                newCatalyst.AddedDamageMultiplier = AddedDamageMultiplier;
                 newCatalyst.AddedSpread = AddedSpread;
+                newCatalyst.AddedSpeed = AddedSpeed;
+                newCatalyst.AddedKnockback = AddedKnockback;
+                newCatalyst.AddedCrit = AddedCrit;
+
                 newCatalyst.CardItemsOnCatalyst = new List<CardItem>(CardItemsOnCatalyst);
                 newCatalyst.AlwaysCastCard = AlwaysCastCard;
             }
@@ -71,8 +97,11 @@ namespace Kourindou.Items.Catalysts
             tag.Add("CardSlotAmount", CardSlotAmount);
             tag.Add("AddedRecharge", AddedRecharge);
             tag.Add("AddedCooldown", AddedCooldown);
-            tag.Add("AddedDamage", AddedDamage);
+            tag.Add("AddedDamageMultiplier", AddedDamageMultiplier);
             tag.Add("AddedSpread", AddedSpread);
+            tag.Add("AddedSpeed", AddedSpeed);
+            tag.Add("AddedKnockback", AddedKnockback);
+            tag.Add("AddedCrit", AddedCrit);
 
             if (HasAlwaysCastCard)
             {
@@ -100,8 +129,11 @@ namespace Kourindou.Items.Catalysts
             CardSlotAmount = tag.GetInt("CardSlotAmount");
             AddedRecharge = tag.GetInt("AddedRecharge");
             AddedCooldown = tag.GetInt("AddedCooldown");
-            AddedDamage = tag.GetInt("AddedDamage");
-            AddedSpread = tag.GetInt("AddedSpread");
+            AddedDamageMultiplier = tag.GetFloat("AddedDamageMultiplier");
+            AddedSpread = tag.GetFloat("AddedSpread");
+            AddedSpeed = tag.GetFloat("AddedSpeed");
+            AddedKnockback = tag.GetFloat("AddedKnockback");
+            AddedCrit = tag.GetInt("AddedCrit");
 
             if (HasAlwaysCastCard)
             {
@@ -137,8 +169,11 @@ namespace Kourindou.Items.Catalysts
             writer.Write(CardSlotAmount);
             writer.Write(AddedRecharge);
             writer.Write(AddedCooldown);
-            writer.Write(AddedDamage);
+            writer.Write(AddedDamageMultiplier);
             writer.Write(AddedSpread);
+            writer.Write(AddedSpeed);
+            writer.Write(AddedKnockback);
+            writer.Write(AddedCrit);
 
             if (HasAlwaysCastCard)
             {
@@ -165,8 +200,11 @@ namespace Kourindou.Items.Catalysts
             CardSlotAmount = reader.ReadInt32();
             AddedRecharge = reader.ReadInt32();
             AddedCooldown = reader.ReadInt32();
-            AddedDamage = reader.ReadInt32();
+            AddedDamageMultiplier = reader.ReadSingle();
             AddedSpread = reader.ReadSingle();
+            AddedSpeed = reader.ReadSingle();
+            AddedKnockback = reader.ReadSingle();
+            AddedCrit = reader.ReadInt32();
 
             if (HasAlwaysCastCard)
             {
@@ -485,12 +523,13 @@ namespace Kourindou.Items.Catalysts
             int CatalystProjID = Terraria.Projectile.NewProjectile(
                 source,
                 position,
-                velocity,
+                Vector2.Normalize(velocity) * (Item.shootSpeed + AddedSpeed),
                 type,
                 damage,
                 knockback,
                 Main.myPlayer,
-                LifeTime
+                LifeTime + 1,
+                cast.FailedToCast ? 1f : 0f
             );
 
             // Pass the cast properties clientsided
@@ -517,6 +556,8 @@ namespace Kourindou.Items.Catalysts
                 LifeTime,
                 Timeout
             );
+
+            DebugCast(cast);
 
             return false;
         }

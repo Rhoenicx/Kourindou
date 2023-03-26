@@ -2,14 +2,14 @@
 using Terraria.ID;
 using static Kourindou.KourindouSpellcardSystem;
 
-namespace Kourindou.Items.Spellcards.Trajectories
+namespace Kourindou.Items.Spellcards.Formations
 {
     public class Daedalus : CardItem
     {
         public override void SetStaticDefaults()
         {
             // When loading this card, register it!
-            RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.Daedalus, Type);
+            RegisterCardItem((byte)Groups.Formation, (byte)Formation.Daedalus, Type);
             
             DisplayName.SetDefault("Daedalus");
             Tooltip.SetDefault("");
@@ -18,8 +18,8 @@ namespace Kourindou.Items.Spellcards.Trajectories
         public override void SetCardDefaults()
         {
             // Defaults of this card
-            Group = (byte)Groups.Trajectory;
-            Spell = (byte)Trajectory.Daedalus;
+            Group = (byte)Groups.Formation;
+            Spell = (byte)Formation.Daedalus;
             Variant = 0;
             Amount = 1f;
             AddUseTime = 0;
@@ -32,7 +32,7 @@ namespace Kourindou.Items.Spellcards.Trajectories
             NeedsProjectileCard = true;
 
             // Card Color
-            CardColor = CardColors.Blue;
+            CardColor = CardColors.LightBlue;
 
             // Information
             Item.value = Item.buyPrice(0, 1, 0, 0);
@@ -41,6 +41,11 @@ namespace Kourindou.Items.Spellcards.Trajectories
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override float GetValue()
+        {
+            return 3f * Amount;
         }
     }
 }

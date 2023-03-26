@@ -42,5 +42,10 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             Item.width = 20;
             Item.height = 28;
         }
+
+        public override float GetValue()
+        {
+            return 4f * Amount;
+        }
     }
 }

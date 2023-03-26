@@ -4,14 +4,14 @@ using static Kourindou.KourindouSpellcardSystem;
 
 namespace Kourindou.Items.Spellcards.ProjectileModifiers
 {
-    public class Phasing : CardItem
+    public class Shimmer : CardItem
     {
         public override void SetStaticDefaults()
         {
             // When loading this card, register it!
-            RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.Phasing, Type);
+            RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.Shimmer, Type);
             
-            DisplayName.SetDefault("Phasing");
+            DisplayName.SetDefault("Shimmer");
             Tooltip.SetDefault("");
         }
 
@@ -19,7 +19,7 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
         {
             // Defaults of this card
             Group = (byte)Groups.ProjectileModifier;
-            Spell = (byte)ProjectileModifier.Phasing;
+            Spell = (byte)ProjectileModifier.Shimmer;
             Variant = 0;
             Amount = 1f;
             AddUseTime = 0;

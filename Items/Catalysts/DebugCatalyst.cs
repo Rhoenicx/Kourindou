@@ -50,7 +50,7 @@ namespace Kourindou.Items.Catalysts
 
             // Catalyst base properties
             CastAmount = 1;
-            CardSlotAmount = 3;
+            CardSlotAmount = 12;
             HasAlwaysCastCard = false;
             AlwaysCastCard = GetCardItem((byte)Groups.Empty, 0);
             ShufflingCatalyst = false;

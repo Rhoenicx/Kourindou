@@ -33,8 +33,9 @@ namespace Kourindou.Projectiles.Catalysts
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
 
-            // Held offset
-            HeldProjectileOffset = 32f;
+            // Held offset - Texture width * 1.414f
+            HeldProjectileOffset = new Vector2(25f, 25f);
+            HeldProjectileRotation = 45f;
         }
     }
 }
