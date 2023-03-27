@@ -30,6 +30,7 @@ namespace Kourindou.Items.Spellcards.Formations
             IsRandomCard = false;
             IsConsumable = false;
             NeedsProjectileCard = true;
+            CanBeMultiplied = false;
 
             // Card Color
             CardColor = CardColors.LightBlue;
@@ -41,6 +42,11 @@ namespace Kourindou.Items.Spellcards.Formations
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override float GetValue()
+        {
+            return 3f;
         }
     }
 }

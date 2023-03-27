@@ -30,6 +30,7 @@ namespace Kourindou.Items.Spellcards.Multicasts
             IsRandomCard = false;
             IsConsumable = false;
             NeedsProjectileCard = true;
+            CanBeMultiplied = false;
 
             // Card Color
             CardColor = CardColors.LightBlue;

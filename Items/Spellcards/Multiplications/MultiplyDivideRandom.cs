@@ -57,7 +57,8 @@ namespace Kourindou.Items.Spellcards.Multiplications
 
         public override float GetValue()
         {
-            return Main.rand.NextFloat(1/5f, 5f) * Amount;
+            float value = Main.rand.NextFloat(1 / 5f, 5f) * Amount;
+            return value > 5f ? 5f : value;
         }
     }
 }

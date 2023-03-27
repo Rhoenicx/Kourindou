@@ -89,6 +89,9 @@ namespace Kourindou
         // Chance to not consume cards
         public float ChanceNoConsumeCard = 1f;
 
+        // Amount of projectiles inside this Cast
+        public int ProjectileAmount = 0;
+
         // The actual cast info
         public List<CastInfo> Casts { get; set; } = new List<CastInfo>();
         public List<int> ConsumedCards { get; set; } = new List<int>();
@@ -795,67 +798,59 @@ namespace Kourindou
                     int stack = Cards[Index].Item.stack;
 
                     // Now try to apply the multiplication effect
-                    switch ((Groups)Cards[Index].Group)
+                    if (!Cards[Index].CanBeMultiplied)
                     {
-                        case Groups.Projectile:
-                        case Groups.Special:
-                        case Groups.Multicast:
+                        // If the cards found are of the type: Projectile, Special or Multicast:
+                        // We cannot apply multiplication effects with the amount property.
+                        // Insert a copy of the same card instead
+                        for (int y = 1; y < GetFlooredValue(Multiplications); y++)
+                        {
+                            if (consume && stack-- <= 0)
                             {
-                                // If the cards found are of the type: Projectile, Special or Multicast:
-                                // We cannot apply multiplication effects with the amount property.
-                                // Insert a copy of the same card instead
+                                break;
+                            }
+
+                            // Insert the same card after this one,
+                            // if the location where this card needs to be placed is empty
+                            if (Cards.ElementAtOrDefault(Index + y) == null)
+                            {
+                                // Add the card instead
+                                Cards.Add((CardItem)Cards[Index].Item.Clone().ModItem);
+                            }
+                            else
+                            {
+                                // Otherwise insert the card
+                                Cards.Insert(Index + y, (CardItem)Cards[Index].Item.Clone().ModItem);
+                            }
+
+                            Cards[Index + y].IsInsertedCard = true;
+                        }
+                    }
+                    else
+                    {
+                        if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive && MultiplicationCard.Group != (byte)Groups.Empty)
+                        {
+                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(MultiplicationCard);
+                        }
+                        else
+                        {
+                            if (consume)
+                            {
+                                if (GetFlooredValue(Multiplications) > stack)
+                                {
+                                    Multiplications = (float)stack;
+                                }
+
                                 for (int y = 1; y < GetFlooredValue(Multiplications); y++)
                                 {
-                                    if (consume && stack-- <= 0)
-                                    {
-                                        break;
-                                    }
-
-                                    // Insert the same card after this one,
-                                    // if the location where this card needs to be placed is empty
-                                    if (Cards.ElementAtOrDefault(Index + y) == null)
-                                    {
-                                        // Add the card instead
-                                        Cards.Add((CardItem)Cards[Index].Item.Clone().ModItem);
-                                    }
-                                    else
-                                    {
-                                        // Otherwise insert the card
-                                        Cards.Insert(Index + y, (CardItem)Cards[Index].Item.Clone().ModItem);
-                                    }
-
-                                    Cards[Index + y].IsInsertedCard = true;
+                                    CastProperties.ConsumedCards.Add(Cards[Index].SlotPosition);
                                 }
                             }
-                            break;
 
-                        default:
-                            {
-                                if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive && MultiplicationCard.Group != (byte)Groups.Empty)
-                                {
-                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(MultiplicationCard);
-                                }
-                                else
-                                {
-                                    if (consume)
-                                    {
-                                        if (GetFlooredValue(Multiplications) > stack)
-                                        {
-                                            Multiplications = (float)stack;
-                                        }
+                            Cards[Index].ApplyMultiplication(Multiplications);
+                        }
 
-                                        for (int y = 1; y < GetFlooredValue(Multiplications); y++)
-                                        {
-                                            CastProperties.ConsumedCards.Add(Cards[Index].SlotPosition);
-                                        }
-                                    }
-
-                                    Cards[Index].ApplyMultiplication(Multiplications);
-                                }
-
-                                MultiplicationCard = GetCardItem((byte)Groups.Empty, 0);
-                            }
-                            break;
+                        MultiplicationCard = GetCardItem((byte)Groups.Empty, 0);
                     }
 
                     Multiplications = 0f;
@@ -952,15 +947,31 @@ namespace Kourindou
                             // If a trigger is active, this card should get send as payload
                             if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
                             {
-                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += GetFlooredValue(Cards[Index].GetValue(), 1);
+                                if (Cards[Index].Spell == (byte)Trigger.Trigger)
+                                {
+                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += GetFlooredValue(Cards[Index].GetValue(), 1);
+                                }
+                                else
+                                {
+                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += 1;
+                                }
+
                                 CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
                             }
                             // No trigger active: During wrap-around we do not want to add triggers.
                             else if (!IsWrappingAround)
                             {
-                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += GetFlooredValue(Cards[Index].GetValue(), 1);
-                                for (int i = 0; i < GetFlooredValue(Cards[Index].GetValue(), 1); i++)
+                                if (Cards[Index].Spell == (byte)Trigger.Trigger)
                                 {
+                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += GetFlooredValue(Cards[Index].GetValue(), 1);
+                                    for (int i = 0; i < GetFlooredValue(Cards[Index].GetValue(), 1); i++)
+                                    {
+                                        CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerInOrder.Add(Cards[Index]);
+                                    }
+                                }
+                                else
+                                {
+                                    CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += 1;
                                     CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerInOrder.Add(Cards[Index]);
                                 }
                             }
@@ -1248,6 +1259,94 @@ namespace Kourindou
                 CastProperties.RechargeTime = 0;
             }
 
+            // Calculate total projectile amount of entire cast
+            for (int c = 0; c < CastProperties.Casts.Count; c++)
+            {
+                for (int b = 0; b < CastProperties.Casts[c].Blocks.Count; b++)
+                {
+                    List<int> Amounts = new List<int>
+                    {
+                        1
+                    };
+
+                    int Slot = 0;
+                    int Trig = CastProperties.Casts[c].Blocks[b].TriggerInOrder.Count;
+                    int Repe = 0;
+                    bool First = true;
+
+                    for (int i = 0; i < CastProperties.Casts[c].Blocks[b].CardItems.Count; i++)
+                    {
+                        switch (CastProperties.Casts[c].Blocks[b].CardItems[i].Group)
+                        {
+                            case (byte)Groups.Multicast:
+                                {
+                                    for (int a = 1; a < GetFlooredValue(CastProperties.Casts[c].Blocks[b].CardItems[i].GetValue()); a++)
+                                    {
+                                        Amounts.Insert(Slot, Amounts[Slot]);
+                                    }
+                                }
+                                break;
+
+                            case (byte)Groups.Projectile:
+                                {
+                                    if (Repe > 0)
+                                    {
+                                        Amounts[Slot] *= Repe;
+                                        Repe = 0;
+                                    }
+
+                                    if (Trig > 0)
+                                    {
+                                        Trig--;
+                                    }
+                                    else
+                                    {
+                                        if (!First)
+                                        {
+                                            Slot++;
+                                        }
+                                        else
+                                        {
+                                            First = false;
+                                        }
+                                    }
+                                }
+                                break;
+
+                            case (byte)Groups.Trigger:
+                                {
+                                    if (CastProperties.Casts[c].Blocks[b].CardItems[i].Spell == (byte)Trigger.Trigger)
+                                    {
+                                        Trig += GetFlooredValue(CastProperties.Casts[c].Blocks[b].CardItems[i].GetValue());
+                                    }
+                                    else
+                                    {
+                                        Trig += 1;
+                                    }
+                                }
+                                break;
+
+                            case (byte)Groups.Formation:
+                                {
+                                    Amounts[Slot] *= GetFlooredValue(CastProperties.Casts[c].Blocks[b].CardItems[i].GetValue());
+                                }
+                                break;
+
+                            case (byte)Groups.CatalystModifier:
+                                {
+                                    if (CastProperties.Casts[c].Blocks[b].CardItems[i].Variant == (byte)CatalystModifierVariant.Repeat)
+                                    {
+                                        Repe += GetFlooredValue(CastProperties.Casts[c].Blocks[b].CardItems[i].GetValue()) + 1;
+                                    }
+                                }
+                                break;
+                        }
+                    }
+
+                    CastProperties.ProjectileAmount += Amounts.Sum() * (CastProperties.Casts[c].Blocks[b].Repeat + 1);
+                }
+            }
+
             // Remove CastInfo and CastBlocks which don't have projectiles.
             for (int _CastInfo = CastProperties.Casts.Count - 1; _CastInfo >= 0; _CastInfo--)
             {
@@ -1256,7 +1355,7 @@ namespace Kourindou
                     // Remove CastBlocks if it has no projectile that can be fired by the catalyst
                     if (IsCatalyst)
                     {
-                        if (!CastProperties.Casts[_CastInfo].Blocks[_CastBlock].CardItems.Any(_CardItem => _CardItem.Group == (byte)Groups.Projectile && _CardItem.Spell != (byte)Projectile.MyOwnProjectileInstance))
+                        if (CastProperties.Casts[_CastInfo].Blocks[_CastBlock].CardItems.First(_CardItem => _CardItem.Group == (byte)Groups.Projectile).Spell == (byte)Projectile.MyOwnProjectileInstance)
                         {
                             if (IsVisualized)
                             {
@@ -1440,6 +1539,8 @@ namespace Kourindou
             Kourindou.Instance.Logger.Debug("AddUseTime - " + cast.AddUseTime);
             Kourindou.Instance.Logger.Debug("MinimumUseTime - " + cast.MinimumUseTime);
             Kourindou.Instance.Logger.Debug("ChanceNoConsumeCard - " + cast.ChanceNoConsumeCard);
+            Kourindou.Instance.Logger.Debug("ProjectileAmount - " + cast.ProjectileAmount);
+            Main.NewText("ProjectileAmount - " + cast.ProjectileAmount);
 
             for (int i = 0; i < cast.Casts.Count; i++)
             {

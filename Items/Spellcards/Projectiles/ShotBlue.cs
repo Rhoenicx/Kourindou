@@ -30,6 +30,7 @@ namespace Kourindou.Items.Spellcards.Projectiles
             IsRandomCard = false;
             IsConsumable = false;
             NeedsProjectileCard = false;
+            CanBeMultiplied = false;
 
             // Card Color
             CardColor = CardColors.White;

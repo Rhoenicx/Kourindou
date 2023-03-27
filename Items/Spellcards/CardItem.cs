@@ -50,6 +50,9 @@ namespace Kourindou.Items.Spellcards
         // If this card needs a projectile to work
         public bool NeedsProjectileCard = false;
 
+        // If this card can be multiplied
+        public bool CanBeMultiplied = true;
+
         //----- Casting properties -----//
 
         // If this card has been inserted
@@ -161,6 +164,7 @@ namespace Kourindou.Items.Spellcards
                 clone.IsRandomCard = this.IsRandomCard;
                 clone.IsConsumable = this.IsConsumable;
                 clone.NeedsProjectileCard = this.NeedsProjectileCard;
+                clone.CanBeMultiplied = this.CanBeMultiplied;
                 clone.CardColor = this.CardColor;
                 clone.IsInsertedCard = this.IsInsertedCard;
                 clone.IsWrapped = this.IsWrapped;
