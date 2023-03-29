@@ -139,7 +139,37 @@ namespace Kourindou
         public float Value { get; set; }
     }
 
-    #endregion
+    public class CounterBlock
+    {
+        public CounterBlock(int _parentID, int _myID)
+        {
+            this.MyID = _myID;
+            this.ParentID = _parentID;
+        }
+
+        public CounterBlock Clone(int _newID)
+        {
+            return new CounterBlock(this.ParentID, _newID)
+            {
+                Amount = this.Amount,
+                Triggers = this.Triggers,
+                Repeats = this.Repeats,
+                Finished = this.Finished,
+                UsedForCounting = this.UsedForCounting
+            };
+        }
+
+        public int MyID = 0;
+        public int ParentID = -99;
+        public int Amount = 1;
+        public int Triggers = 0;
+        public int Repeats = 1;
+
+        public bool Finished = false;
+        public bool UsedForCounting = false;
+    }
+
+#endregion
 
     public class KourindouSpellcardSystem
     {
@@ -251,7 +281,6 @@ namespace Kourindou
         public static void ExecuteCards(Terraria.Projectile owner, CastBlock Block, Vector2 Position, Vector2 Offset, Vector2 Velocity, float Spread, float Damage, float Knockback, int Crit, bool IsCatalyst = false)
         {
             // Setup
-            List<CardItem> AppliedOnEnding = new();
             List<CardItem> Payload = new();
 
             ProjectileInfo BaseProjectile = new()
@@ -418,8 +447,6 @@ namespace Kourindou
                                     break;
                                    
                             }
-
-                            AppliedOnEnding.Add(Block.CardItems[Index]);
                         }
                         break;
 
@@ -437,10 +464,13 @@ namespace Kourindou
                         break;
                 }
 
-                if (!EncounteredProjectile)
-                {
-                    Index++;
-                }
+                Index++;
+            }
+
+            // Somehow the given castblock does not have a projectile
+            if (!EncounteredProjectile)
+            {
+                return;
             }
 
             if (NoSpread)
@@ -449,14 +479,14 @@ namespace Kourindou
             }
 
             // Everything after the projectile will be considered payload!
-            for (int i = Index + 1; i < Block.CardItems.Count; i++)
+            for (int i = Index; i < Block.CardItems.Count; i++)
             {
                 Payload.Add(Block.CardItems[i]);
             }
 
             // if the encountered projectile is own instance
-            if (Block.CardItems[Index].Group == (byte)Groups.Projectile
-                && Block.CardItems[Index].Spell == (byte)Projectile.MyOwnProjectileInstance)
+            if (Block.CardItems[Index - 1].Group == (byte)Groups.Projectile
+                && Block.CardItems[Index - 1].Spell == (byte)Projectile.MyOwnProjectileInstance)
             {
                 //if (owner.ModProjectile is SpellcardProjectile proj)
                 //{ 
@@ -464,7 +494,6 @@ namespace Kourindou
                 //}
                 return;
             }
-
 
             // Apply formations and order
             List<ProjectileInfo> Projectiles = new List<ProjectileInfo>() { BaseProjectile };
@@ -685,7 +714,7 @@ namespace Kourindou
             }
         }
 
-        public static Cast GenerateCast(List<CardItem> Cards, CardItem AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1, bool IsVisualized = false)
+        public static Cast GenerateCast(List<CardItem> Cards, CardItem AlwaysCastCard, bool IsCatalyst, int CatalystStartIndex = 0, int CatalystCastAmount = 1)
         {
             // Here we generate the cast info which is passed to the execution part
             // => If this catalyst is a shuffle, the cards should first be shuffled.
@@ -694,10 +723,13 @@ namespace Kourindou
             // Cast List for storing the Cast blocks
             Cast CastProperties = new();
 
-            // Create a new List with Cards and reset them to defaults
-            for (int i = 0; i < Cards.Count; i++)
+            // Create a new List with Cards and reset them to defaults, only when this is not the catalyst
+            if (IsCatalyst)
             {
-                Cards[i].SetDefaults();
+                for (int i = 0; i < Cards.Count; i++)
+                {
+                    Cards[i].SetDefaults();
+                }
             }
 
             // Save wrap-around cards
@@ -705,10 +737,7 @@ namespace Kourindou
             for (int i = 0; i < CatalystStartIndex; i++)
             {
                 CardsWrapReady.Add(Cards[i]);
-                if (IsVisualized)
-                {
-                    CardsWrapReady[^1].IsWrapped = true;
-                }
+                CardsWrapReady[^1].IsWrapped = true;
             }
 
             // Setup the AlwaysCastCards
@@ -757,7 +786,15 @@ namespace Kourindou
             int NoCooldownCardAmount = 0;
             int NoRechargeCardAmount = 0;
 
-            // --- Start Casting ---
+            // Projectile Counter
+            int CurrentID = 1;
+
+            List<CounterBlock> blocks = new List<CounterBlock>();
+            blocks.Add(new CounterBlock(-1, blocks.Count));
+            blocks.Add(new CounterBlock(0, blocks.Count));
+
+
+            // --- Start Casting --- //
             while (Index < Cards.Count && CurrentCast < CatalystCastAmount)
             {
                 // Create a new cast, for when the catalyst has multiple casts
@@ -828,31 +865,15 @@ namespace Kourindou
                     }
                     else
                     {
-                        if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive && MultiplicationCard.Group != (byte)Groups.Empty)
+                        if (consume && GetFlooredValue(Multiplications) > stack)
                         {
-                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(MultiplicationCard);
-                        }
-                        else
-                        {
-                            if (consume)
-                            {
-                                if (GetFlooredValue(Multiplications) > stack)
-                                {
-                                    Multiplications = (float)stack;
-                                }
-
-                                for (int y = 1; y < GetFlooredValue(Multiplications); y++)
-                                {
-                                    CastProperties.ConsumedCards.Add(Cards[Index].SlotPosition);
-                                }
-                            }
-
-                            Cards[Index].ApplyMultiplication(Multiplications);
+                            Multiplications = (float)stack;
                         }
 
-                        MultiplicationCard = GetCardItem((byte)Groups.Empty, 0);
+                        Cards[Index].ApplyMultiplication(Multiplications);
                     }
 
+                    MultiplicationCard = GetCardItem((byte)Groups.Empty, 0);
                     Multiplications = 0f;
                 }
 
@@ -863,7 +884,7 @@ namespace Kourindou
                 }
 
                 // If visualization in enabled mark this card as a payload card
-                if (IsVisualized && CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
+                if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
                 {
                     Cards[Index].IsPayload = true;
                 }
@@ -885,6 +906,7 @@ namespace Kourindou
 
                     case Groups.Projectile:
                         {
+                            // Cast generation
                             CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
 
                             if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount > 0)
@@ -908,11 +930,63 @@ namespace Kourindou
                                     CastUnEnded = 0;
                                 }
                             }
+
+                            // Projectile counter
+                            // Execute repeats
+                            if (blocks[CurrentID].Repeats > 1)
+                            {
+                                blocks[CurrentID].Amount *= blocks[CurrentID].Repeats;
+                                blocks[CurrentID].Repeats = 1;
+                            }
+
+                            // Execute triggers
+                            if (blocks[CurrentID].Triggers > 0)
+                            {
+                                for (int i = 0; i < blocks[CurrentID].Triggers; i++)
+                                {
+                                    blocks.Add(new CounterBlock(CurrentID, blocks.Count) { Amount = blocks[CurrentID].Amount });
+                                }
+                                blocks[CurrentID].Triggers = 0;
+                            }
+
+                            // If there is an unfished block connected to this block
+                            // Move to the first connected block
+                            bool Valid = false;
+                            while (!Valid && CurrentID >= 0)
+                            {
+                                if (blocks.Any(b => b.ParentID == blocks[CurrentID].MyID && !b.Finished))
+                                {
+                                    // Move to the first unfinished block
+                                    CurrentID = blocks.First(b => b.ParentID == blocks[CurrentID].MyID && !b.Finished).MyID;
+                                    Valid = true;
+
+                                    continue;
+                                }
+
+                                // if we ended up here the block has no unfinished childs, so this block
+                                // is finished. Now we just do a quick check if this block has childs,
+                                // if yes this block cannot be counter during calculation
+                                if (blocks.Any(b => b.ParentID == blocks[CurrentID].MyID))
+                                {
+                                    // Move back up to the parent of this block
+                                    blocks[CurrentID].Finished = true;
+                                    CurrentID = blocks[CurrentID].ParentID;
+                                }
+                                else
+                                {
+                                    // Move back up to the parent of this block
+                                    blocks[CurrentID].UsedForCounting = true;
+                                    blocks[CurrentID].Finished = true;
+                                    blocks[CurrentID].Amount *= blocks[CurrentID].Repeats;
+                                    CurrentID = blocks[CurrentID].ParentID;
+                                }
+                            }
                         }
                         break;
 
                     case Groups.Multicast:
                         {
+                            // Cast generation
                             if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
                             {
                                 CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerAmount += GetFlooredValue(Cards[Index].GetValue(), 1) - 1;
@@ -926,24 +1000,27 @@ namespace Kourindou
                                     {
                                         CastProperties.Casts[CurrentCast].Blocks.Add(new CastBlock(CastProperties.Casts[CurrentCast].Blocks[CurrentBlock]));
 
-                                        // When the visualization setting is enabled, like in the UI mark the copied cards
-                                        if (IsVisualized)
+                                        foreach (CardItem item in CastProperties.Casts[CurrentCast].Blocks[CurrentBlock + MulticastAmount + i].CardItems)
                                         {
-                                            foreach (CardItem item in CastProperties.Casts[CurrentCast].Blocks[CurrentBlock + MulticastAmount + i].CardItems)
-                                            {
-                                                item.IsMulticasted = true;
-                                            }
+                                            item.IsMulticasted = true;
                                         }
                                     }
                                 }
 
                                 MulticastAmount += GetFlooredValue(Cards[Index].GetValue(), 1) - 1;
                             }
+
+                            // Projectile counter
+                            for (int i = 1; i < GetFlooredValue(Cards[Index].GetValue(), 1); i++)
+                            {
+                                blocks.Add(blocks[CurrentID].Clone(blocks.Count));
+                            }
                         }
                         break;
 
                     case Groups.Trigger:
                         {
+                            // Cast generation
                             // If a trigger is active, this card should get send as payload
                             if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
                             {
@@ -975,6 +1052,17 @@ namespace Kourindou
                                     CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerInOrder.Add(Cards[Index]);
                                 }
                             }
+
+                            // Projectile counter
+                            if (Cards[Index].Spell == (byte)Trigger.Trigger)
+                            {
+                                blocks[CurrentID].Triggers += GetFlooredValue(Cards[Index].GetValue(), 1);
+                            }
+                            else
+                            {
+                                blocks[CurrentID].Triggers += 1;
+                                blocks[CurrentID].UsedForCounting = true;
+                            }
                         }
                         break;
 
@@ -987,6 +1075,7 @@ namespace Kourindou
 
                     case Groups.CatalystModifier:
                         {
+                            // Cast Generation
                             if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].TriggerActive)
                             {
                                 CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
@@ -1079,6 +1168,12 @@ namespace Kourindou
                                         break;
                                 }
                             }
+
+                            // Projectile counter
+                            if (Cards[Index].Variant == (byte)CatalystModifierVariant.Repeat)
+                            {
+                                blocks[CurrentID].Repeats += GetFlooredValue(Cards[Index].GetValue(), 1);
+                            }
                         }
                         break;
 
@@ -1106,6 +1201,17 @@ namespace Kourindou
                                         break;
                                 }
                             }
+                        }
+                        break;
+
+
+                    case Groups.Formation:
+                        {
+                            // Cast generation
+                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].CardItems.Add(Cards[Index]);
+
+                            // Projectile Counter
+                            blocks[CurrentID].Amount *= GetFlooredValue(Cards[Index].GetValue(), 1);
                         }
                         break;
 
@@ -1175,7 +1281,10 @@ namespace Kourindou
                     // If this card is a consumable save the consumption
                     if (Cards[Index].IsConsumable)
                     {
-                        CastProperties.ConsumedCards.Add(Cards[Index].SlotPosition);
+                        for (int i = 0; i < GetFlooredValue(Cards[Index].Amount, 1); i++)
+                        {
+                            CastProperties.ConsumedCards.Add(Cards[Index].SlotPosition);
+                        }
                     }
 
                     // Check if a wrap-around is needed
@@ -1259,91 +1368,20 @@ namespace Kourindou
                 CastProperties.RechargeTime = 0;
             }
 
-            // Calculate total projectile amount of entire cast
-            for (int c = 0; c < CastProperties.Casts.Count; c++)
+            // Projectile amounts
+            for (int i = blocks.Count - 1; i >= 0; i--)
             {
-                for (int b = 0; b < CastProperties.Casts[c].Blocks.Count; b++)
+                if (!blocks.Any(b => b.ParentID == blocks[i].MyID))
                 {
-                    List<int> Amounts = new List<int>
-                    {
-                        1
-                    };
-
-                    int Slot = 0;
-                    int Trig = CastProperties.Casts[c].Blocks[b].TriggerInOrder.Count;
-                    int Repe = 0;
-                    bool First = true;
-
-                    for (int i = 0; i < CastProperties.Casts[c].Blocks[b].CardItems.Count; i++)
-                    {
-                        switch (CastProperties.Casts[c].Blocks[b].CardItems[i].Group)
-                        {
-                            case (byte)Groups.Multicast:
-                                {
-                                    for (int a = 1; a < GetFlooredValue(CastProperties.Casts[c].Blocks[b].CardItems[i].GetValue()); a++)
-                                    {
-                                        Amounts.Insert(Slot, Amounts[Slot]);
-                                    }
-                                }
-                                break;
-
-                            case (byte)Groups.Projectile:
-                                {
-                                    if (Repe > 0)
-                                    {
-                                        Amounts[Slot] *= Repe;
-                                        Repe = 0;
-                                    }
-
-                                    if (Trig > 0)
-                                    {
-                                        Trig--;
-                                    }
-                                    else
-                                    {
-                                        if (!First)
-                                        {
-                                            Slot++;
-                                        }
-                                        else
-                                        {
-                                            First = false;
-                                        }
-                                    }
-                                }
-                                break;
-
-                            case (byte)Groups.Trigger:
-                                {
-                                    if (CastProperties.Casts[c].Blocks[b].CardItems[i].Spell == (byte)Trigger.Trigger)
-                                    {
-                                        Trig += GetFlooredValue(CastProperties.Casts[c].Blocks[b].CardItems[i].GetValue());
-                                    }
-                                    else
-                                    {
-                                        Trig += 1;
-                                    }
-                                }
-                                break;
-
-                            case (byte)Groups.Formation:
-                                {
-                                    Amounts[Slot] *= GetFlooredValue(CastProperties.Casts[c].Blocks[b].CardItems[i].GetValue());
-                                }
-                                break;
-
-                            case (byte)Groups.CatalystModifier:
-                                {
-                                    if (CastProperties.Casts[c].Blocks[b].CardItems[i].Variant == (byte)CatalystModifierVariant.Repeat)
-                                    {
-                                        Repe += GetFlooredValue(CastProperties.Casts[c].Blocks[b].CardItems[i].GetValue()) + 1;
-                                    }
-                                }
-                                break;
-                        }
-                    }
-
-                    CastProperties.ProjectileAmount += Amounts.Sum() * (CastProperties.Casts[c].Blocks[b].Repeat + 1);
+                    blocks[i].UsedForCounting = true;
+                }
+            }
+            
+            foreach (CounterBlock block in blocks)
+            {
+                if (block.UsedForCounting)
+                {
+                    CastProperties.ProjectileAmount += block.Amount;
                 }
             }
 
@@ -1355,30 +1393,18 @@ namespace Kourindou
                     // Remove CastBlocks if it has no projectile that can be fired by the catalyst
                     if (IsCatalyst)
                     {
-                        if (CastProperties.Casts[_CastInfo].Blocks[_CastBlock].CardItems.First(_CardItem => _CardItem.Group == (byte)Groups.Projectile).Spell == (byte)Projectile.MyOwnProjectileInstance)
+                        if (!CastProperties.Casts[_CastInfo].Blocks[_CastBlock].CardItems.Any(_CardItem => _CardItem.Group == (byte)Groups.Projectile)
+                            || (CastProperties.Casts[_CastInfo].Blocks[_CastBlock].CardItems.Any(_CardItem => _CardItem.Group == (byte)Groups.Projectile)
+                            && CastProperties.Casts[_CastInfo].Blocks[_CastBlock].CardItems.First(_CardItem => _CardItem.Group == (byte)Groups.Projectile).Spell == (byte)Projectile.MyOwnProjectileInstance))
                         {
-                            if (IsVisualized)
-                            {
-                                CastProperties.Casts[_CastInfo].Blocks[_CastBlock].IsDisabled = true;
-                            }
-                            else
-                            {
-                                CastProperties.Casts[_CastInfo].Blocks.RemoveAt(_CastBlock);
-                            }
+                            CastProperties.Casts[_CastInfo].Blocks[_CastBlock].IsDisabled = true;
                         }
                     }
                     else
                     {
                         if (!CastProperties.Casts[_CastInfo].Blocks[_CastBlock].CardItems.Any(_CardItem => _CardItem.Group == (byte)Groups.Projectile))
                         {
-                            if (IsVisualized)
-                            {
-                                CastProperties.Casts[_CastInfo].Blocks[_CastBlock].IsDisabled = true;
-                            }
-                            else
-                            {
-                                CastProperties.Casts[_CastInfo].Blocks.RemoveAt(_CastBlock);
-                            }
+                            CastProperties.Casts[_CastInfo].Blocks[_CastBlock].IsDisabled = true;
                         }
                     }
                 }
@@ -1391,24 +1417,13 @@ namespace Kourindou
             }
 
             // Check if we have something we can cast, if not the cast fails.
-            if (IsVisualized)
+            CastProperties.FailedToCast = true;
+            foreach (CastInfo info in CastProperties.Casts)
             {
-                CastProperties.FailedToCast = true;
-
-                foreach (CastInfo info in CastProperties.Casts)
+                if (info.Blocks.Any(_block => !_block.IsDisabled))
                 {
-                    if (info.Blocks.Any(_block => !_block.IsDisabled))
-                    {
-                        CastProperties.FailedToCast = false;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                if (CastProperties.Casts.Count <= 0)
-                {
-                    CastProperties.FailedToCast = true;
+                    CastProperties.FailedToCast = false;
+                    break;
                 }
             }
 

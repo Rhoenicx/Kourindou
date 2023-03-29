@@ -503,7 +503,7 @@ namespace Kourindou.Items.Catalysts
             }
 
             // Generate cast
-            Cast cast = GenerateCast(Cards, AlwaysCastCard, true, NextCastStartIndex, CastAmount, true);
+            Cast cast = GenerateCast(Cards, AlwaysCastCard, true, NextCastStartIndex, CastAmount);
 
             // Apply the properties after the cast to this catalyst
             NextCastStartIndex = cast.NextCastStartIndex;
