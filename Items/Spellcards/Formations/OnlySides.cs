@@ -22,6 +22,7 @@ namespace Kourindou.Items.Spellcards.Formations
             Spell = (byte)Formation.OnlySides;
             Variant = (byte)FormationVariant.None;
             Amount = 1f;
+            Value = 2f;
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -44,9 +45,9 @@ namespace Kourindou.Items.Spellcards.Formations
             Item.height = 28;
         }
 
-        public override float GetValue()
+        public override float GetValue(bool max = false)
         {
-            return 2f;
+            return Value;
         }
     }
 }

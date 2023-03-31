@@ -22,6 +22,7 @@ namespace Kourindou.Items.Spellcards.Multicasts
             Spell = (byte)Multicast.DoubleCast;
             Variant = 0;
             Amount = 1f;
+            Value = 2f;
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -42,10 +43,6 @@ namespace Kourindou.Items.Spellcards.Multicasts
             // Hitbox
             Item.width = 20;
             Item.height = 28;
-        }
-        public override float GetValue()
-        {
-            return 2f * Amount;
         }
     }
 }

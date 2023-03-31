@@ -149,33 +149,36 @@ namespace Kourindou.Projectiles
                     if (block.Timer > 0)
                     {
                         block.Timer--;
-                        continue;
                     }
 
-                    // Block has repeats and no delay, fire all at once
-                    if (block.Repeat > 0 && block.Delay <= 0)
+                    if (block.Timer <= 0)
                     {
-                        for (int i = 0; i <= block.Repeat; i++)
+                        // Block has repeats and no delay, fire all at once
+                        if (block.Repeat > 0 && block.Delay <= 0)
                         {
-                            HandleCards(block);
+                            for (int i = 0; i <= block.Repeat; i++)
+                            {
+                                HandleCards(block);
+                            }
+
+                            block.IsDisabled = true;
                         }
 
-                        block.IsDisabled = true;
-                    }
+                        // Block has repeats and a delay set
+                        else if (block.Repeat > 0 && block.Delay > 0)
+                        {
+                            HandleCards(block);
+                            block.Timer = block.Delay;
 
-                    // Block has repeats and a delay set
-                    else if (block.Repeat > 0 && block.Delay > 0)
-                    {
-                        HandleCards(block);
-                        block.Timer = block.Delay;
-                        block.Repeat--;
-                    }
+                            block.Repeat--;
+                        }
 
-                    // No repeat or delay
-                    else
-                    {
-                        HandleCards(block);
-                        block.IsDisabled = true;
+                        // No repeat or delay
+                        else
+                        {
+                            HandleCards(block);
+                            block.IsDisabled = true;
+                        }
                     }
                 }
             }

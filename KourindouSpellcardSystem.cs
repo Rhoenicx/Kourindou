@@ -27,7 +27,7 @@ namespace Kourindou
         public CastBlock(CastBlock castBlock = null)
         {
             if (castBlock != null)
-            { 
+            {
                 this.Repeat = castBlock.Repeat;
                 this.Delay = castBlock.Delay;
                 this.Timer = castBlock.Timer;
@@ -102,8 +102,8 @@ namespace Kourindou
     public class ProjectileInfo
     {
         public ProjectileInfo()
-        { 
-        
+        {
+
         }
 
         public ProjectileInfo(ProjectileInfo clone)
@@ -134,7 +134,7 @@ namespace Kourindou
 
     #region Other
     public class OrderInfo
-    { 
+    {
         public SpawnOrderStats Stats { get; set; }
         public float Value { get; set; }
     }
@@ -149,27 +149,51 @@ namespace Kourindou
 
         public CounterBlock Clone(int _newID)
         {
+            SkipCounting = false;
+
             return new CounterBlock(this.ParentID, _newID)
             {
                 Amount = this.Amount,
                 Triggers = this.Triggers,
                 Repeats = this.Repeats,
-                Finished = this.Finished,
-                UsedForCounting = this.UsedForCounting
+                SkipCounting = true
             };
         }
 
+        // Identification
         public int MyID = 0;
-        public int ParentID = -99;
-        public int Amount = 1;
-        public int Triggers = 0;
-        public int Repeats = 1;
+        public int ParentID = -1;
+
+        private int _Amount = 1;
+        public int Amount
+        {
+            get { return this._Amount; }
+            set { this._Amount = value; 
+                this.SkipCounting = false; }
+        }
+
+        private int _Triggers = 0;
+        public int Triggers 
+        {
+            get { return this._Triggers; }
+            set { this._Triggers = value;
+                this.SkipCounting = false; }
+        }
+
+        private int _Repeats = 1;
+        public int Repeats 
+        {
+            get { return this._Repeats; }
+            set { this._Repeats = value;
+                this.SkipCounting = false; }
+        }
 
         public bool Finished = false;
         public bool UsedForCounting = false;
+        public bool SkipCounting = true;
     }
 
-#endregion
+    #endregion
 
     public class KourindouSpellcardSystem
     {
@@ -278,7 +302,7 @@ namespace Kourindou
             }
         }
 
-        public static void ExecuteCards(Terraria.Projectile owner, CastBlock Block, Vector2 Position, Vector2 Offset, Vector2 Velocity, float Spread, float Damage, float Knockback, int Crit, bool IsCatalyst = false)
+        public static void ExecuteCards(Terraria.Projectile owner, CastBlock Block, Vector2 Position, Vector2 HeldOffset, Vector2 Velocity, float Spread, float Damage, float Knockback, int Crit, bool IsCatalyst = false)
         {
             // Setup
             List<CardItem> Payload = new();
@@ -286,7 +310,6 @@ namespace Kourindou
             ProjectileInfo BaseProjectile = new()
             {
                 Position = Position,
-                Offset = Offset,
                 Velocity = Velocity,
                 Spread = Spread,
                 Damage = Damage,
@@ -368,84 +391,56 @@ namespace Kourindou
                     case (byte)Groups.Formation:
                         {
                             switch (Block.CardItems[Index].Variant)
-                            { 
-                                case (byte)FormationVariant.None: 
+                            {
+                                case (byte)FormationVariant.None:
                                     {
                                         switch (Block.CardItems[Index].Spell)
-                                        { 
-                                            case (byte)Formation.ForwardAndBack: 
-                                                { 
-                                                    SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.ForwardAndBack, Value = 1f }); 
-                                                } 
+                                        {
+                                            case (byte)Formation.ForwardAndBack:
+                                                {
+                                                    SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.ForwardAndBack, Value = 1f });
+                                                }
                                                 break;
 
-                                            case (byte)Formation.ForwardAndSide: 
+                                            case (byte)Formation.ForwardAndSide:
                                                 {
                                                     SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.ForwardAndSide, Value = 1f });
                                                 }
                                                 break;
 
-                                            case (byte)Formation.OnlySides: 
+                                            case (byte)Formation.OnlySides:
                                                 {
                                                     SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.OnlySides, Value = 1f });
-                                                } 
+                                                }
                                                 break;
 
                                             case (byte)Formation.Daedalus:
                                                 {
-                                                    if (SpawnOrder.Any(info => info.Stats == SpawnOrderStats.Daedalus))
-                                                    {
-                                                        SpawnOrder.First(info => info.Stats == SpawnOrderStats.Daedalus).Value += Block.CardItems[Index].GetValue();
-                                                    }
-                                                    else
-                                                    {
-                                                        SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.Daedalus, Value = Block.CardItems[Index].GetValue() });
-                                                    }
+                                                    SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.Daedalus, Value = Block.CardItems[Index].GetValue() });
                                                 }
                                                 break;
                                         }
-                                    } 
+                                    }
                                     break;
 
-                                case (byte)FormationVariant.Fork: 
+                                case (byte)FormationVariant.Fork:
                                     {
-                                        if (SpawnOrder.Any(info => info.Stats == SpawnOrderStats.Fork))
-                                        {
-                                            SpawnOrder.First(info => info.Stats == SpawnOrderStats.Fork).Value += Block.CardItems[Index].GetValue();
-                                        }
-                                        else
-                                        {
-                                            SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.Fork, Value = Block.CardItems[Index].GetValue() });
-                                        }
-                                    } 
+                                        SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.Fork, Value = Block.CardItems[Index].GetValue() });
+                                    }
                                     break;
 
-                                case (byte)FormationVariant.Scatter: 
+                                case (byte)FormationVariant.Scatter:
                                     {
-                                        if (SpawnOrder.Any(info => info.Stats == SpawnOrderStats.Scatter))
-                                        {
-                                            SpawnOrder.First(info => info.Stats == SpawnOrderStats.Scatter).Value += Block.CardItems[Index].GetValue();
-                                        }
-                                        else
-                                        {
-                                            SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.Scatter, Value = Block.CardItems[Index].GetValue() });
-                                        }
-                                    } 
+                                        SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.Scatter, Value = Block.CardItems[Index].GetValue() });
+                                    }
                                     break;
 
-                                case (byte)FormationVariant.SomethingGon: 
+                                case (byte)FormationVariant.SomethingGon:
                                     {
-                                        if (SpawnOrder.Any(info => info.Stats == SpawnOrderStats.SomethingGon))
-                                        {
-                                            SpawnOrder.First(info => info.Stats == SpawnOrderStats.SomethingGon).Value += Block.CardItems[Index].GetValue();
-                                        }
-                                        else
-                                        {
-                                            SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.SomethingGon, Value = Block.CardItems[Index].GetValue() });
-                                        }
-                                    } 
+                                        SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.SomethingGon, Value = Block.CardItems[Index].GetValue() });
+                                    }
                                     break;
-                                   
+
                             }
                         }
                         break;
@@ -509,14 +504,22 @@ namespace Kourindou
                                 int i = Projectiles.Count - 1;
                                 while (i >= 0)
                                 {
-                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) { Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(+90)) });
-                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) { Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(-90)) });
+                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
+                                    { 
+                                        Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(+90)),
+                                        Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(+90))
+                                    });
+                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
+                                    { 
+                                        Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(-90)),
+                                        Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(-90)),
+                                    });
                                     i--;
                                 }
 
                                 //AppliedFormation = true;
                             }
-                        } 
+                        }
                         break;
 
                     case SpawnOrderStats.ForwardAndBack:
@@ -526,7 +529,11 @@ namespace Kourindou
                                 int i = Projectiles.Count - 1;
                                 while (i >= 0)
                                 {
-                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) { Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(+180)) });
+                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
+                                    { 
+                                        Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(+180)),
+                                        Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(+180))
+                                    });
                                     i--;
                                 }
 
@@ -542,76 +549,77 @@ namespace Kourindou
                                 int i = Projectiles.Count - 1;
                                 while (i >= 0)
                                 {
-                                    Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(-90));
-                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) { Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(+90)) });
+                                    Projectiles[i].Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(-90));
+                                    Projectiles[i].Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(-90));
+
+                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
+                                    { 
+                                        Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(+180)),
+                                        Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(+180))
+                                    });
+
                                     i--;
                                 }
 
                                 //AppliedFormation = true;
                             }
-                        } 
+                        }
                         break;
 
                     case SpawnOrderStats.Scatter:
                         {
-                            if (!AppliedFormation)
+                            int amount = GetFlooredValue(info.Value, 0);
+                            if (amount > 1)
                             {
-                                int amount = GetFlooredValue(info.Value, 0);
-                                if (amount > 1)
+                                int i = Projectiles.Count - 1;
+                                while (i >= 0)
                                 {
-                                    int i = Projectiles.Count - 1;
-                                    while (i >= 0)
+                                    float TotalAngle = 90f;
+                                    float AddedAngle = TotalAngle / (amount - 1);
+                                    float Angle = -TotalAngle / 2f;
+                                    Projectiles[i].Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(Angle));
+
+                                    for (int f = 1; f < amount; f++)
                                     {
-                                        float TotalAngle = 90f;
-                                        float AddedAngle = TotalAngle / (amount - 1);
-                                        float Angle = -TotalAngle / 2f;
-                                        Projectiles[i].Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(Angle));
-
-                                        for (int f = 1; f < amount; f++)
-                                        {
-                                            Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) { Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians((AddedAngle * f))) });
-                                        }
-
-                                        i--;
+                                        Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
+                                        { 
+                                            Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(AddedAngle * f)),
+                                            Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(AddedAngle * f))
+                                        });
                                     }
-                                }
 
-                                //AppliedFormation = true;
+                                    i--;
+                                }
                             }
-                        } 
+                        }
                         break;
 
                     case SpawnOrderStats.Fork:
                         {
-                            if (!AppliedFormation)
+                            int amount = GetFlooredValue(info.Value, 0);
+                            if (amount > 1)
                             {
-                                int amount = GetFlooredValue(info.Value, 0);
-                                if (amount > 1)
+                                float SizeSQ = 10f;
+                                if (Projectiles.First().Type != ProjectileID.None)
                                 {
-                                    float SizeSQ = 10f;
-                                    if (Projectiles.First().Type != ProjectileID.None)
+                                    Terraria.Projectile CalcProj = new Terraria.Projectile();
+                                    CalcProj.SetDefaults(Projectiles.First().Type);
+                                    SizeSQ = CalcProj.Size.Length();
+                                }
+
+                                int i = Projectiles.Count - 1;
+                                while (i >= 0)
+                                {
+                                    float rotation = Projectiles[i].Velocity.ToRotation() + MathHelper.PiOver2;
+                                    float StartOffset = (SizeSQ * (amount - 1)) - (amount % 2 == 0 ? SizeSQ / 2f : 0f);
+                                    Projectiles[i].Offset -= new Vector2(StartOffset / 2f, 0f).RotatedBy(rotation);
+
+                                    for (int f = 1; f < amount; f++)
                                     {
-                                        Terraria.Projectile CalcProj = new Terraria.Projectile();
-                                        CalcProj.SetDefaults(Projectiles.First().Type);
-                                        SizeSQ = CalcProj.Size.Length();
+                                        Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) { Offset = Projectiles[i].Offset + new Vector2(SizeSQ * f, 0f).RotatedBy(rotation) });
                                     }
 
-                                    int i = Projectiles.Count - 1;
-                                    while (i >= 0)
-                                    {
-                                        float rotation = Projectiles[i].Velocity.ToRotation() + MathHelper.PiOver2;
-                                        float StartOffset = (SizeSQ * (amount - 1)) - (amount % 2 == 0 ? SizeSQ/2f : 0f);
-                                        Projectiles[i].Position -= new Vector2(StartOffset/2f, 0f).RotatedBy(rotation);
-
-                                        for (int f = 1; f < amount; f++)
-                                        {
-                                            Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) { Position = Projectiles[i].Position + new Vector2(SizeSQ * f, 0f).RotatedBy(rotation)});
-                                        }
-
-                                        i--;
-                                    }
-
-                                    //AppliedFormation = true;
+                                    i--;
                                 }
                             }
                         }
@@ -619,38 +627,34 @@ namespace Kourindou
 
                     case SpawnOrderStats.SomethingGon:
                         {
-                            if (!AppliedFormation)
+                            int amount = GetFlooredValue(info.Value, 0);
+                            if (amount > 1)
                             {
-                                int amount = GetFlooredValue(info.Value, 0);
-                                if (amount > 1)
+                                int i = Projectiles.Count - 1;
+                                while (i >= 0)
                                 {
-                                    int i = Projectiles.Count - 1;
-                                    while (i >= 0)
+                                    float TotalAngle = 360f;
+                                    float AddedAngle = TotalAngle / amount;
+
+                                    for (int f = 1; f < amount; f++)
                                     {
-                                        float TotalAngle = 360f;
-                                        float AddedAngle = TotalAngle / amount;
-
-                                        for (int f = 1; f < amount; f++)
-                                        {
-                                            Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) { Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians((AddedAngle * f))) });
-                                        }
-
-                                        i--;
+                                        Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
+                                        { 
+                                            Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(AddedAngle * f)),
+                                            Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(AddedAngle * f))
+                                        });
                                     }
-                                }
 
-                                //AppliedFormation = true;
+                                    i--;
+                                }
                             }
-                        } 
+                        }
                         break;
 
                     case SpawnOrderStats.Daedalus:
                         {
-                            if (!AppliedFormation)
-                            {
-                                // TODO
-                                //AppliedFormation = true;
-                            }
+                            // TODO
+                            //AppliedFormation = true;
                         }
                         break;
 
@@ -660,7 +664,7 @@ namespace Kourindou
                             {
                                 proj.Position += new Vector2(240f * info.Value, 0f).RotatedBy(proj.Velocity.ToRotation());
                             }
-                        } 
+                        }
                         break;
 
                     case SpawnOrderStats.TeleportCast:
@@ -669,7 +673,7 @@ namespace Kourindou
                             {
                                 proj.Position = Main.MouseWorld;
                             }
-                        } 
+                        }
                         break;
 
                     case SpawnOrderStats.ReverseCast:
@@ -678,17 +682,19 @@ namespace Kourindou
                             {
                                 proj.Position += new Vector2(1024f, 0f).RotatedBy(proj.Velocity.ToRotation());
                                 proj.Velocity = proj.Velocity.RotatedBy(MathHelper.ToRadians(180));
+                                proj.Offset = proj.Offset.RotatedBy(MathHelper.ToRadians(180));
                             }
-                        } 
+                        }
                         break;
 
-                    case SpawnOrderStats.Rotation:             
+                    case SpawnOrderStats.Rotation:
                         {
                             foreach (ProjectileInfo proj in Projectiles)
                             {
                                 proj.Velocity = proj.Velocity.RotatedBy(MathHelper.ToRadians(info.Value));
+                                proj.Offset = proj.Offset.RotatedBy(MathHelper.ToRadians(info.Value));
                             }
-                        } 
+                        }
                         break;
                 }
             }
@@ -697,7 +703,7 @@ namespace Kourindou
             {
                 int ID = Terraria.Projectile.NewProjectile(
                     owner.GetSource_FromAI(),
-                    info.Position,
+                    info.Position + info.Offset,
                     info.Velocity,
                     info.Type,
                     (int)info.Damage,
@@ -787,12 +793,15 @@ namespace Kourindou
             int NoRechargeCardAmount = 0;
 
             // Projectile Counter
-            int CurrentID = 1;
+            int CurrentID = 0;
 
+            // List of counting blocks.
             List<CounterBlock> blocks = new List<CounterBlock>();
-            blocks.Add(new CounterBlock(-1, blocks.Count));
-            blocks.Add(new CounterBlock(0, blocks.Count));
 
+            // Add a new CounterBlock on slot 0 with parent -1. Base block!
+            // Parent block -1 does not exist and must be short-circuited
+            // in stepping code!
+            blocks.Add(new CounterBlock(-1, blocks.Count));
 
             // --- Start Casting --- //
             while (Index < Cards.Count && CurrentCast < CatalystCastAmount)
@@ -801,6 +810,10 @@ namespace Kourindou
                 if (CastProperties.Casts.ElementAtOrDefault(CurrentCast) == null)
                 {
                     CastProperties.Casts.Add(new CastInfo());
+
+                    // Connect a new CounterBlock to the base block.
+                    blocks.Add(new CounterBlock(0, blocks.Count));
+                    CurrentID = blocks[^1].MyID;
 
                     // If this catalyst has a Always-Cast insert the card to the front of this cast
                     if (AlwaysCastCard != null && AlwaysCastCard.Group != (byte)Groups.Empty)
@@ -949,6 +962,9 @@ namespace Kourindou
                                 blocks[CurrentID].Triggers = 0;
                             }
 
+                            // Flag as non-skip
+                            blocks[CurrentID].SkipCounting = false;
+
                             // If there is an unfished block connected to this block
                             // Move to the first connected block
                             bool Valid = false;
@@ -963,22 +979,21 @@ namespace Kourindou
                                     continue;
                                 }
 
-                                // if we ended up here the block has no unfinished childs, so this block
-                                // is finished. Now we just do a quick check if this block has childs,
-                                // if yes this block cannot be counter during calculation
-                                if (blocks.Any(b => b.ParentID == blocks[CurrentID].MyID))
+                                // If we end up here the block has no unfinished childs, we
+                                // now need to go back to this blocks' parent block.
+
+                                // Mark this block as finished
+                                blocks[CurrentID].Finished = true;
+
+                                // Now check if we're going back to the root block,
+                                // if this is the case, break instead.
+                                if (blocks[CurrentID].ParentID >= 0)
                                 {
-                                    // Move back up to the parent of this block
-                                    blocks[CurrentID].Finished = true;
                                     CurrentID = blocks[CurrentID].ParentID;
                                 }
                                 else
                                 {
-                                    // Move back up to the parent of this block
-                                    blocks[CurrentID].UsedForCounting = true;
-                                    blocks[CurrentID].Finished = true;
-                                    blocks[CurrentID].Amount *= blocks[CurrentID].Repeats;
-                                    CurrentID = blocks[CurrentID].ParentID;
+                                    break;
                                 }
                             }
                         }
@@ -1104,14 +1119,14 @@ namespace Kourindou
 
                                     case CatalystModifierVariant.Delay:
                                         {
-                                            if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Repeat > 0)
+                                            int value = GetRoundedValue(Cards[Index].GetValue(), 0);
+
+                                            if (CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Repeat <= 0)
                                             {
-                                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Delay += GetRoundedValue(Cards[Index].GetValue(), 0);
+                                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Timer += value;
                                             }
-                                            else
-                                            {
-                                                CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Timer += GetRoundedValue(Cards[Index].GetValue(), 0);
-                                            }
+
+                                            CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Delay += value;
                                         }
                                         break;
 
@@ -1172,7 +1187,7 @@ namespace Kourindou
                             // Projectile counter
                             if (Cards[Index].Variant == (byte)CatalystModifierVariant.Repeat)
                             {
-                                blocks[CurrentID].Repeats += GetFlooredValue(Cards[Index].GetValue(), 1);
+                                blocks[CurrentID].Repeats = CastProperties.Casts[CurrentCast].Blocks[CurrentBlock].Repeat + 1;
                             }
                         }
                         break;
@@ -1371,17 +1386,25 @@ namespace Kourindou
             // Projectile amounts
             for (int i = blocks.Count - 1; i >= 0; i--)
             {
+                // Search for blocks that do not have any child blocks,
+                // These blocks are the ones that need to be counted.
                 if (!blocks.Any(b => b.ParentID == blocks[i].MyID))
                 {
+                    // Counting to true
                     blocks[i].UsedForCounting = true;
+
+                    // If this block had any pending repeats, apply them too.
+                    if (blocks[i].Repeats > 1)
+                    {
+                        blocks[i].Amount *= blocks[i].Repeats;
+                        blocks[i].Repeats = 1;
+                    }
                 }
-            }
-            
-            foreach (CounterBlock block in blocks)
-            {
-                if (block.UsedForCounting)
+
+                // Now increase the projectile amount of the CastProperties
+                if (blocks[i].UsedForCounting && !blocks[i].SkipCounting)
                 {
-                    CastProperties.ProjectileAmount += block.Amount;
+                    CastProperties.ProjectileAmount += blocks[i].Amount;
                 }
             }
 
@@ -1614,7 +1637,7 @@ namespace Kourindou
             ForwardAndBack,
             OnlySides,
             Daedalus,                                                                                   // 1f * AMOUNT// 
-            
+
             // Duplicates projectile and add spread, like a shotgun                                     // 
             DoubleScatter, // 2                                                                         // 2f * AMOUNT
             TripleScatter, // 3                                                                         // 3f * AMOUNT
@@ -1622,14 +1645,14 @@ namespace Kourindou
             QuintupleScatter, // 5                                                                      // 5f * AMOUNT
             ShotgunScatter,                                                                             // Main.rand.Next(2, 6) * AMOUNT
                                                                                                         // 
-            // Duplicates projectile and place them side-by-side                                        // 
+                                                                                                        // Duplicates projectile and place them side-by-side                                        // 
             DoubleFork, // 2                                                                            // 2f * AMOUNT
             TripleFork, // 3                                                                            // 3f * AMOUNT
             QuadrupleFork, // 4                                                                         // 4f * AMOUNT
             QuintupleFork, // 5                                                                         // 5f * AMOUNT
             RandomFork,                                                                                 // Main.rand.Next(2, 6) * AMOUNT
                                                                                                         // 
-            // Duplicates projectile and cast it in a circle around the player                          // 
+                                                                                                        // Duplicates projectile and cast it in a circle around the player                          // 
             Quadragon, // 4                                                                             // 4f * AMOUNT
             Pentagon, // 5                                                                              // 5f * AMOUNT
             Hexagon, // 6                                                                               // 6f * AMOUNT

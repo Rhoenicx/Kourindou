@@ -23,6 +23,7 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             Spell = (byte)CatalystModifier.ReduceRecharge50Percent;
             Variant = (byte)CatalystModifierVariant.ReduceRechargePercent;
             Amount = 1f;
+            Value = 0.5f;
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -44,9 +45,9 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             Item.height = 28;
         }
 
-        public override float GetValue()
+        public override float GetValue(bool max = false)
         {
-            return (float)Math.Pow(Main.rand.NextFloat(0.5f, 1f), Amount);
+            return (float)Math.Pow(Value, Amount);
         }
     }
 }

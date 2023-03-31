@@ -22,6 +22,7 @@ namespace Kourindou.Items.Spellcards.Formations
             Spell = (byte)Formation.QuadrupleFork;
             Variant = (byte)FormationVariant.Fork;
             Amount = 1f;
+            Value = 4f;
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -41,11 +42,6 @@ namespace Kourindou.Items.Spellcards.Formations
             // Hitbox
             Item.width = 20;
             Item.height = 28;
-        }
-
-        public override float GetValue()
-        {
-            return 4f * Amount;
         }
     }
 }

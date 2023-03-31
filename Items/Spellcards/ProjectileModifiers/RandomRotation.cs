@@ -23,6 +23,7 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             Spell = (byte)ProjectileModifier.RandomRotation;
             Variant = 0;
             Amount = 1f;
+            Value = Main.rand.NextFloat(0f, 360f);
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -42,11 +43,6 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // Hitbox
             Item.width = 20;
             Item.height = 28;
-        }
-
-        public override float GetValue()
-        {
-            return Main.rand.NextFloat(0f, 360f) * Amount;
         }
     }
 }

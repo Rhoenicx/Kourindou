@@ -22,6 +22,7 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             Spell = (byte)CatalystModifier.DelayCastRandom;
             Variant = (byte)CatalystModifierVariant.Delay;
             Amount = 1f;
+            Value = Main.rand.NextFloat(1f, 300f);
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -42,9 +43,9 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             Item.width = 20;
             Item.height = 28;
         }
-        public override float GetValue()
+        public override float GetValue(bool max = false)
         {
-            return Main.rand.Next(0, 300) * Amount;
+            return max ? 300 * Amount : Value * Amount;
         }
     }
 }

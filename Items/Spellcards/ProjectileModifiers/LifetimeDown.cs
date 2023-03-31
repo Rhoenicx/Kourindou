@@ -23,6 +23,7 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             Spell = (byte)ProjectileModifier.LifetimeDown;
             Variant = 0;
             Amount = 1f;
+            Value = 0.75f;
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -44,9 +45,9 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             Item.height = 28;
         }
 
-        public override float GetValue()
+        public override float GetValue(bool max = false)
         {
-            return (float)Math.Pow(0.75f, Amount);
+            return (float)Math.Pow(Value, Amount);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace Kourindou.Items.Spellcards.Multiplications
             Spell = (byte)Multiplication.DivideBy5;
             Variant = 0;
             Amount = 1f;
+            Value = 0.2f;
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -47,17 +48,11 @@ namespace Kourindou.Items.Spellcards.Multiplications
         public override void ApplyMultiplication(float input)
         {
             // The input is the multiplication amount, so should be 2f to 5f
-            float value = Amount * input > 5f ? 5f : Amount * input;
-            Amount *= value;
-            AddUseTime = (int)Math.Ceiling(this.AddUseTime * value);
-            AddCooldown = (int)Math.Ceiling(this.AddCooldown * value);
-            AddRecharge = (int)Math.Ceiling(this.AddRecharge * value);
-            AddSpread *= value;
-        }
-
-        public override float GetValue()
-        {
-            return 1/5f * Amount;
+            Amount *= input;
+            AddUseTime = (int)Math.Ceiling(this.AddUseTime * input);
+            AddCooldown = (int)Math.Ceiling(this.AddCooldown * input);
+            AddRecharge = (int)Math.Ceiling(this.AddRecharge * input);
+            AddSpread *= input;
         }
     }
 }

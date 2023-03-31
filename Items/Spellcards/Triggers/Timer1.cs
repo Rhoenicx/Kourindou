@@ -22,6 +22,7 @@ namespace Kourindou.Items.Spellcards.Triggers
             Spell = (byte)Trigger.Timer1;
             Variant = 0;
             Amount = 1f;
+            Value = 60f;
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -41,10 +42,6 @@ namespace Kourindou.Items.Spellcards.Triggers
             // Hitbox
             Item.width = 20;
             Item.height = 28;
-        }
-        public override float GetValue()
-        {
-            return 60f * Amount;
         }
     }
 }

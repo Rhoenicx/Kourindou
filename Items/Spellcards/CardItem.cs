@@ -26,6 +26,9 @@ namespace Kourindou.Items.Spellcards
         // Amount of times this card has been duplicated.
         public float Amount = 1f;
 
+        // Base value of this card, used for randomization
+        public float Value = 0f;
+
         // UseTime that this card adds to the catalyst
         public int AddUseTime = 0;
 
@@ -156,6 +159,7 @@ namespace Kourindou.Items.Spellcards
                 clone.Spell = this.Spell;
                 clone.Variant = this.Variant;
                 clone.Amount = this.Amount;
+                clone.Value = this.Value;
                 clone.AddUseTime = this.AddUseTime;
                 clone.AddCooldown = this.AddCooldown;
                 clone.AddRecharge = this.AddRecharge;
@@ -200,9 +204,9 @@ namespace Kourindou.Items.Spellcards
             AddSpread *= input;
         }
 
-        public virtual float GetValue()
+        public virtual float GetValue(bool max = false)
         {
-            return 1f * Amount;
+            return Value * Amount;
         }
 
         public virtual void ExecuteCard(ref ProjectileInfo info)

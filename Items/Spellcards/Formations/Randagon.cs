@@ -22,6 +22,7 @@ namespace Kourindou.Items.Spellcards.Formations
             Spell = (byte)Formation.Randagon;
             Variant = (byte)FormationVariant.SomethingGon;
             Amount = 1f;
+            Value = Main.rand.NextFloat(2, 8);
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -42,9 +43,9 @@ namespace Kourindou.Items.Spellcards.Formations
             Item.width = 20;
             Item.height = 28;
         }
-        public override float GetValue()
+        public override float GetValue(bool max = false)
         {
-            return Main.rand.Next(2, 9) * Amount;
+            return max ? 8 * Amount : Value * Amount;
         }
     }
 }

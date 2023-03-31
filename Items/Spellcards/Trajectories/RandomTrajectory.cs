@@ -44,7 +44,7 @@ namespace Kourindou.Items.Spellcards.Trajectories
             Item.height = 28;
         }
 
-        public override float GetValue()
+        public override float GetValue(bool max = false)
         {
             return Main.rand.Next(0, Enum.GetNames(typeof(Trajectory)).Length);
         }
