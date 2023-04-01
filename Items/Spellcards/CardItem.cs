@@ -27,7 +27,7 @@ namespace Kourindou.Items.Spellcards
         public float Amount = 1f;
 
         // Base value of this card, used for randomization
-        public float Value = 0f;
+        public float Value = 1f;
 
         // UseTime that this card adds to the catalyst
         public int AddUseTime = 0;
