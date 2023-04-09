@@ -33,8 +33,11 @@ namespace Kourindou
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{
-				meleeHitbox[player.whoAmI] = hitbox;
-			}
+				syncHitbox = hitbox;
+				syncHitbox.X -= (int)player.Center.X;
+				syncHitbox.Y -= (int)player.Center.Y;
+                meleeHitbox[player.whoAmI] = syncHitbox;
+            }
 			else if (player.whoAmI == Main.myPlayer && !noHitbox)
 			{
 				if (hitbox.Width != syncHitbox.Width || hitbox.Height != syncHitbox.Height)

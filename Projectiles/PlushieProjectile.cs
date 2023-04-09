@@ -177,12 +177,11 @@ namespace Kourindou.Projectiles
 
 						Rectangle hitbox;
 
-						if (KourindouGlobalItem.meleeHitbox[player.whoAmI].HasValue && player.itemAnimation > 0)
+						if (KourindouGlobalItem.meleeHitbox[player.whoAmI].HasValue && player.ItemAnimationActive)
 						{
 							hitbox = KourindouGlobalItem.meleeHitbox[player.whoAmI].Value;
 							hitbox.X += (int)player.Center.X;
 							hitbox.Y += (int)player.Center.Y;
-							hitbox = Main.ReverseGravitySupport(hitbox);
 							
 							if (Colliding(Projectile.Hitbox, hitbox) == true)
 							{
