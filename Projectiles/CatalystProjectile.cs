@@ -16,7 +16,7 @@ namespace Kourindou.Projectiles
 {
     public abstract class CatalystProjectile : ModProjectile
     {
-        public List<CastInfo> Casts;
+        public CastBlock block;
         private bool _justSpawned = true;
 
         public Player _owner;
@@ -135,9 +135,9 @@ namespace Kourindou.Projectiles
             }
 
             // Loop through the cast blocks
-            foreach (CastInfo _CastInfo in Casts)
+            if (block.HasChildren)
             {
-                foreach (CastBlock block in _CastInfo.Blocks)
+                foreach (CastBlock block in block.Children)
                 {
                     // If this cast block is disabled => continue
                     if (block.IsDisabled)
@@ -154,9 +154,9 @@ namespace Kourindou.Projectiles
                     if (block.Timer <= 0)
                     {
                         // Block has repeats and no delay, fire all at once
-                        if (block.Repeat > 0 && block.Delay <= 0)
+                        if (block.RepeatAmount > 0 && block.Delay <= 0)
                         {
-                            for (int i = 0; i <= block.Repeat; i++)
+                            for (int i = 0; i <= block.RepeatAmount; i++)
                             {
                                 HandleCards(block);
                             }
@@ -165,12 +165,12 @@ namespace Kourindou.Projectiles
                         }
 
                         // Block has repeats and a delay set
-                        else if (block.Repeat > 0 && block.Delay > 0)
+                        else if (block.RepeatAmount > 0 && block.Delay > 0)
                         {
                             HandleCards(block);
                             block.Timer = block.Delay;
 
-                            block.Repeat--;
+                            block.RepeatAmount--;
                         }
 
                         // No repeat or delay

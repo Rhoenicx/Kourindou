@@ -535,7 +535,7 @@ namespace Kourindou.Items.Catalysts
             // Pass the cast properties clientsided
             if (Main.projectile[CatalystProjID].ModProjectile is CatalystProjectile catalyst)
             {
-                catalyst.Casts = cast.Casts;
+                catalyst.block = cast.RootBlock;
             }
 
             // Calculate Cooldown and recharge
