@@ -197,8 +197,7 @@ namespace Kourindou.Projectiles
                     item.BaseSpread + item.AddedSpread,
                     item.BaseDamageMultiplier + item.AddedDamageMultiplier,
                     item.BaseKnockback + item.AddedKnockback,
-                    item.BaseCrit + item.AddedCrit,
-                    true
+                    item.BaseCrit + item.AddedCrit
                 );
             }
         }

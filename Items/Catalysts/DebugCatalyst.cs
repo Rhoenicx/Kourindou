@@ -57,6 +57,7 @@ namespace Kourindou.Items.Catalysts
             BaseRecharge = 10;
             BaseCooldown = 60;
             BaseSpread = 0f;
+            BaseDamageMultiplier = 1f;
         }
     }
 }

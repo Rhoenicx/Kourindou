@@ -1,6 +1,8 @@
-﻿using Terraria;
+﻿using Kourindou.Projectiles.Spellcards;
+using Terraria;
 using Terraria.ID;
 using static Kourindou.KourindouSpellcardSystem;
+using static Terraria.ModLoader.ModContent;
 
 namespace Kourindou.Items.Spellcards.Projectiles
 {
@@ -22,6 +24,7 @@ namespace Kourindou.Items.Spellcards.Projectiles
             Spell = (byte)KourindouSpellcardSystem.Projectile.ShotBlue;
             Variant = 0;
             Amount = 1f;
+            Value = ProjectileType<ShotBlueProj>();
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;

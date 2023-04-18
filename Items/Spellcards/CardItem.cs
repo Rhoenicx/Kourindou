@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using ReLogic.Content;
 using static Terraria.ModLoader.ModContent;
 using static Kourindou.KourindouSpellcardSystem;
+using Kourindou.Projectiles;
 
 namespace Kourindou.Items.Spellcards
 {
@@ -209,7 +210,7 @@ namespace Kourindou.Items.Spellcards
             return Value * Amount;
         }
 
-        public virtual void ExecuteCard(ref ProjectileInfo info)
+        public virtual void ExecuteCard(ref SpellCardProjectile proj)
         { 
         
         }

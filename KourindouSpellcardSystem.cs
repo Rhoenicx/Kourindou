@@ -198,49 +198,6 @@ namespace Kourindou
     }
     #endregion
 
-    #region ProjectileProperties
-    public class ProjectileInfo
-    {
-        public ProjectileInfo()
-        {
-
-        }
-
-        public ProjectileInfo(ProjectileInfo clone)
-        {
-            Type = clone.Type;
-            Position = clone.Position;
-            Velocity = clone.Velocity;
-            Offset = clone.Offset;
-            Spread = clone.Spread;
-            Damage = clone.Damage;
-            Knockback = clone.Knockback;
-            Crit = clone.Crit;
-            Stats = clone.Stats;
-        }
-
-        // Projectile type that needs to be spawned
-        public int Type { get; set; } = ProjectileID.Bullet;
-        public Vector2 Position { get; set; } = Vector2.Zero;
-        public Vector2 Velocity { get; set; } = Vector2.Zero;
-        public Vector2 Offset { get; set; } = Vector2.Zero;
-        public float Spread { get; set; } = 0f;
-        public float Damage { get; set; } = 0f;
-        public float Knockback { get; set; } = 0f;
-        public int Crit { get; set; } = 0;
-        public Dictionary<byte, float> Stats { get; set; } = new();
-    }
-    #endregion
-
-    #region Other
-    public class OrderInfo
-    {
-        public SpawnOrderStats Stats { get; set; }
-        public float Value { get; set; }
-    }
-
-    #endregion
-
     public class KourindouSpellcardSystem
     {
         private static Dictionary<byte, Dictionary<byte, int>> CardTable = new Dictionary<byte, Dictionary<byte, int>>();
@@ -348,421 +305,303 @@ namespace Kourindou
             }
         }
 
-        public static void ExecuteCards(Terraria.Projectile owner, CastBlock Block, Vector2 Position, Vector2 HeldOffset, Vector2 Velocity, float Spread, float Damage, float Knockback, int Crit, bool IsCatalyst = false)
+        public static void ExecuteCards(Terraria.Projectile owner, CastBlock Block, Vector2 Position, Vector2 HeldOffset, Vector2 Velocity, float Spread, float Damage, float Knockback, int Crit)
         {
-            // Setup
-            List<CardItem> Payload = new();
+            int Type = -999;
 
-            ProjectileInfo BaseProjectile = new()
+            if (Block.Cards.Any(x => x.Group == (byte)Groups.Projectile))
             {
-                Position = Position,
-                Velocity = Velocity,
-                Spread = Spread,
-                Damage = Damage,
-                Knockback = Knockback,
-                Crit = Crit,
-            };
+                Type = GetFlooredValue(Block.Cards.First(x => x.Group == (byte)Groups.Projectile).GetValue(), 0);
+            }
 
-            int Index = 0;
+            if (Type < 0)
+            {
+                return;
+            }
+
+            int NewID = Terraria.Projectile.NewProjectile(
+                owner.GetSource_FromThis(),
+                Position,
+                Velocity,
+                Type,
+                (int)(10 *Damage),
+                Knockback,
+                owner.owner);
+
+            if (Main.projectile[NewID].ModProjectile is not SpellCardProjectile)
+            {
+                return;
+            }
+
+            if (Main.projectile[NewID].ModProjectile is SpellCardProjectile SPproj)
+            {
+                SPproj.RevertStats();
+                SPproj.Projectile.damage = (int)(SPproj.Projectile.damage * Damage);
+                SPproj.Projectile.knockBack += Knockback;
+                SPproj.Projectile.CritChance += Crit;
+                SPproj.SpawnSpread = Spread;
+            }
+
+            List<int> Projectiles = new() { NewID };
             bool EncounteredProjectile = false;
             bool NoSpread = false;
 
-            // Loop throught the cards and setup spawn order dependent cards
-            List<OrderInfo> SpawnOrder = new();
-            while (Index < Block.Cards.Count && !EncounteredProjectile)
+            // Loop throught the cards and setup projectiles
+            for (int Index = 0; Index < Block.Cards.Count; Index++)
             {
-                switch (Block.Cards[Index].Group)
+                for (int k = Projectiles.Count - 1; k >= 0; k--)
                 {
-                    case (byte)Groups.CatalystModifier:
+                    if (Main.projectile[Projectiles[k]].ModProjectile is SpellCardProjectile proj)
+                    {
+                        switch (Block.Cards[Index].Group)
                         {
-                            switch (Block.Cards[Index].Spell)
-                            {
-                                case (byte)CatalystModifier.DistantCast:
+                            case (byte)Groups.CatalystModifier:
+                                {
+                                    switch (Block.Cards[Index].Spell)
                                     {
-                                        SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.DistantCast, Value = Block.Cards[Index].GetValue() });
-                                    }
-                                    break;
-                                case (byte)CatalystModifier.TeleportCast:
-                                    {
-                                        SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.TeleportCast, Value = 1f });
-                                    }
-                                    break;
+                                        case (byte)CatalystModifier.DistantCast:
+                                            {
+                                                proj.Projectile.position += new Vector2(240f * Block.Cards[Index].GetValue(), 0f).RotatedBy(proj.Projectile.velocity.ToRotation());
+                                            }
+                                            break;
 
-                                case (byte)CatalystModifier.ReverseCast:
-                                    {
-                                        SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.ReverseCast, Value = Block.Cards[Index].GetValue() });
-                                    }
-                                    break;
+                                        case (byte)CatalystModifier.TeleportCast:
+                                            {
+                                                proj.Projectile.Center = Main.MouseWorld;
+                                            }
+                                            break;
 
-                                case (byte)CatalystModifier.Sniper:
-                                    {
-                                        NoSpread = true;
-                                    }
-                                    break;
+                                        case (byte)CatalystModifier.ReverseCast:
+                                            {
+                                                proj.Projectile.position += new Vector2(1024f, 0f).RotatedBy(proj.Projectile.velocity.ToRotation());
+                                                proj.Projectile.velocity = proj.Projectile.velocity.RotatedBy(MathHelper.ToRadians(180));
+                                                proj.SpawnOffset = proj.SpawnOffset.RotatedBy(MathHelper.ToRadians(180));
+                                            }
+                                            break;
 
-                                default:
-                                    {
-                                        Block.Cards[Index].ExecuteCard(ref BaseProjectile);
-                                    }
-                                    break;
-                            }
-                        }
-                        break;
+                                        case (byte)CatalystModifier.Sniper:
+                                            {
+                                                NoSpread = true;
+                                            }
+                                            break;
 
-                    case (byte)Groups.ProjectileModifier:
-                        {
-                            switch (Block.Cards[Index].Spell)
-                            {
-                                case (byte)ProjectileModifier.RotateLeft22_5:
-                                case (byte)ProjectileModifier.RotateLeft45:
-                                case (byte)ProjectileModifier.RotateLeft90:
-                                case (byte)ProjectileModifier.RotateRight22_5:
-                                case (byte)ProjectileModifier.RotateRight45:
-                                case (byte)ProjectileModifier.RotateRight90:
-                                case (byte)ProjectileModifier.RandomRotation:
-                                    {
-                                        SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.Rotation, Value = Block.Cards[Index].GetValue() });
+                                        default:
+                                            {
+                                                Block.Cards[Index].ExecuteCard(ref proj);
+                                            }
+                                            break;
                                     }
-                                    break;
+                                }
+                                break;
 
-                                default:
+                            case (byte)Groups.ProjectileModifier:
+                                {
+                                    switch (Block.Cards[Index].Spell)
                                     {
-                                        Block.Cards[Index].ExecuteCard(ref BaseProjectile);
+                                        case (byte)ProjectileModifier.RotateLeft22_5:
+                                        case (byte)ProjectileModifier.RotateLeft45:
+                                        case (byte)ProjectileModifier.RotateLeft90:
+                                        case (byte)ProjectileModifier.RotateRight22_5:
+                                        case (byte)ProjectileModifier.RotateRight45:
+                                        case (byte)ProjectileModifier.RotateRight90:
+                                        case (byte)ProjectileModifier.RandomRotation:
+                                            {
+                                                proj.Projectile.velocity = proj.Projectile.velocity.RotatedBy(MathHelper.ToRadians(Block.Cards[Index].GetValue()));
+                                                proj.SpawnOffset = proj.SpawnOffset.RotatedBy(MathHelper.ToRadians(Block.Cards[Index].GetValue()));
+                                            }
+                                            break;
+
+                                        default:
+                                            {
+                                                Block.Cards[Index].ExecuteCard(ref proj);
+                                            }
+                                            break;
                                     }
-                                    break;
-                            }
-                        }
-                        break;
+                                }
+                                break;
 
-                    case (byte)Groups.Formation:
-                        {
-                            switch (Block.Cards[Index].Variant)
-                            {
-                                case (byte)FormationVariant.None:
+                            case (byte)Groups.Formation:
+                                {
+                                    switch (Block.Cards[Index].Variant)
                                     {
-                                        switch (Block.Cards[Index].Spell)
-                                        {
-                                            case (byte)Formation.ForwardAndBack:
+                                        case (byte)FormationVariant.None:
+                                            {
+                                                switch (Block.Cards[Index].Spell)
                                                 {
-                                                    SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.ForwardAndBack, Value = 1f });
-                                                }
-                                                break;
+                                                    case (byte)Formation.ForwardAndBack:
+                                                        {
+                                                            SpellCardProjectile back = proj.Clone();
+                                                            if (back != null)
+                                                            {
+                                                                back.Projectile.velocity = back.Projectile.velocity.RotatedBy(MathHelper.ToRadians(+180));
+                                                                back.SpawnOffset = back.SpawnOffset.RotatedBy(MathHelper.ToRadians(+180));
+                                                                Projectiles.Add(back.Projectile.whoAmI);
+                                                            }
+                                                        }
+                                                        break;
 
-                                            case (byte)Formation.ForwardAndSide:
+                                                    case (byte)Formation.ForwardAndSide:
+                                                        {
+                                                            SpellCardProjectile right = proj.Clone();
+                                                            if (right != null)
+                                                            {
+                                                                right.Projectile.velocity = right.Projectile.velocity.RotatedBy(MathHelper.ToRadians(+90));
+                                                                right.SpawnOffset = right.SpawnOffset.RotatedBy(MathHelper.ToRadians(+90));
+                                                                Projectiles.Add(right.Projectile.whoAmI);
+                                                            }
+
+                                                            SpellCardProjectile left = proj.Clone();
+                                                            if (left != null)
+                                                            {
+                                                                left.Projectile.velocity = left.Projectile.velocity.RotatedBy(MathHelper.ToRadians(-90));
+                                                                left.SpawnOffset = left.SpawnOffset.RotatedBy(MathHelper.ToRadians(-90));
+                                                                Projectiles.Add(left.Projectile.whoAmI);
+                                                            }
+                                                        }
+                                                        break;
+
+                                                    case (byte)Formation.OnlySides:
+                                                        {
+                                                            proj.Projectile.velocity.RotatedBy(MathHelper.ToRadians(+90));
+                                                            proj.SpawnOffset.RotatedBy(MathHelper.ToRadians(+90));
+
+                                                            SpellCardProjectile side = proj.Clone();
+                                                            if (side != null)
+                                                            {
+                                                                side.Projectile.velocity = side.Projectile.velocity.RotatedBy(MathHelper.ToRadians(+180));
+                                                                side.SpawnOffset = side.SpawnOffset.RotatedBy(MathHelper.ToRadians(+180));
+                                                                Projectiles.Add(side.Projectile.whoAmI);
+                                                            }
+                                                        }
+                                                        break;
+
+                                                    case (byte)Formation.Daedalus:
+                                                        {
+                                                            // TODO
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                            break;
+
+                                        case (byte)FormationVariant.Fork:
+                                            {
+                                                int amount = GetFlooredValue(Block.Cards[Index].GetValue(), 0);
+                                                if (amount > 1)
                                                 {
-                                                    SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.ForwardAndSide, Value = 1f });
-                                                }
-                                                break;
+                                                    float SizeSQ = proj.Projectile.Size.Length();
 
-                                            case (byte)Formation.OnlySides:
+                                                    float rotation = proj.Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+                                                    float StartOffset = (SizeSQ * (amount - 1)) - (amount % 2 == 0 ? SizeSQ / 2f : 0f);
+                                                    proj.SpawnOffset -= new Vector2(StartOffset / 2f, 0f).RotatedBy(rotation);
+
+                                                    for (int f = 1; f < amount; f++)
+                                                    {
+                                                        SpellCardProjectile copy = proj.Clone();
+                                                        if (copy != null)
+                                                        {
+                                                            copy.SpawnOffset += new Vector2(SizeSQ * f, 0f).RotatedBy(rotation);
+                                                            Projectiles.Add(copy.Projectile.whoAmI);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            break;
+
+                                        case (byte)FormationVariant.Scatter:
+                                            {
+                                                int amount = GetFlooredValue(Block.Cards[Index].GetValue(), 0);
+                                                if (amount > 1)
                                                 {
-                                                    SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.OnlySides, Value = 1f });
-                                                }
-                                                break;
+                                                    float TotalAngle = 90f;
+                                                    float AddedAngle = TotalAngle / (amount - 1);
+                                                    float Angle = -TotalAngle / 2f;
+                                                    proj.Projectile.velocity = proj.Projectile.velocity.RotatedBy(MathHelper.ToRadians(Angle));
 
-                                            case (byte)Formation.Daedalus:
+                                                    for (int f = 1; f < amount; f++)
+                                                    {
+                                                        SpellCardProjectile copy = proj.Clone();
+                                                        if (copy != null)
+                                                        {
+                                                            copy.Projectile.velocity = copy.Projectile.velocity.RotatedBy(MathHelper.ToRadians(AddedAngle * f));
+                                                            copy.SpawnOffset = copy.SpawnOffset.RotatedBy(MathHelper.ToRadians(AddedAngle * f));
+                                                            Projectiles.Add(copy.Projectile.whoAmI);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            break;
+
+                                        case (byte)FormationVariant.SomethingGon:
+                                            {
+                                                int amount = GetFlooredValue(Block.Cards[Index].GetValue(), 0);
+                                                if (amount > 1)
                                                 {
-                                                    SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.Daedalus, Value = Block.Cards[Index].GetValue() });
+                                                    float TotalAngle = 360f;
+                                                    float AddedAngle = TotalAngle / amount;
+
+                                                    for (int f = 1; f < amount; f++)
+                                                    {
+                                                        SpellCardProjectile copy = proj.Clone();
+                                                        if (copy != null)
+                                                        {
+                                                            copy.Projectile.velocity = copy.Projectile.velocity.RotatedBy(MathHelper.ToRadians(AddedAngle * f));
+                                                            copy.SpawnOffset = copy.SpawnOffset.RotatedBy(MathHelper.ToRadians(AddedAngle * f));
+                                                            Projectiles.Add(copy.Projectile.whoAmI);
+                                                        }
+                                                    }
                                                 }
-                                                break;
-                                        }
+                                            }
+                                            break;
+
                                     }
-                                    break;
-
-                                case (byte)FormationVariant.Fork:
-                                    {
-                                        SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.Fork, Value = Block.Cards[Index].GetValue() });
-                                    }
-                                    break;
-
-                                case (byte)FormationVariant.Scatter:
-                                    {
-                                        SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.Scatter, Value = Block.Cards[Index].GetValue() });
-                                    }
-                                    break;
-
-                                case (byte)FormationVariant.SomethingGon:
-                                    {
-                                        SpawnOrder.Add(new OrderInfo() { Stats = SpawnOrderStats.SomethingGon, Value = Block.Cards[Index].GetValue() });
-                                    }
-                                    break;
-
-                            }
-                        }
-                        break;
-
-                    case (byte)Groups.Projectile:
-                        {
-                            Block.Cards[Index].ExecuteCard(ref BaseProjectile);
-                            EncounteredProjectile = true;
-                        }
-                        break;
-
-                    default:
-                        {
-                            Block.Cards[Index].ExecuteCard(ref BaseProjectile);
-                        }
-                        break;
-                }
-
-                Index++;
-            }
-
-            // Somehow the given castblock does not have a projectile
-            if (!EncounteredProjectile)
-            {
-                return;
-            }
-
-            if (NoSpread)
-            {
-                BaseProjectile.Spread = 0f;
-            }
-
-            // Everything after the projectile will be considered payload!
-            for (int i = Index; i < Block.Cards.Count; i++)
-            {
-                Payload.Add(Block.Cards[i]);
-            }
-
-            // if the encountered projectile is own instance
-            if (Block.Cards[Index - 1].Group == (byte)Groups.Projectile
-                && Block.Cards[Index - 1].Spell == (byte)Projectile.MyOwnProjectileInstance)
-            {
-                //if (owner.ModProjectile is SpellcardProjectile proj)
-                //{ 
-                //    
-                //}
-                return;
-            }
-
-            // Apply formations and order
-            List<ProjectileInfo> Projectiles = new List<ProjectileInfo>() { BaseProjectile };
-            bool AppliedFormation = false;
-            foreach (OrderInfo info in SpawnOrder)
-            {
-                switch (info.Stats)
-                {
-                    case SpawnOrderStats.ForwardAndSide:
-                        {
-                            if (!AppliedFormation)
-                            {
-                                int i = Projectiles.Count - 1;
-                                while (i >= 0)
-                                {
-                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
-                                    { 
-                                        Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(+90)),
-                                        Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(+90))
-                                    });
-                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
-                                    { 
-                                        Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(-90)),
-                                        Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(-90)),
-                                    });
-                                    i--;
                                 }
+                                break;
 
-                                //AppliedFormation = true;
-                            }
-                        }
-                        break;
-
-                    case SpawnOrderStats.ForwardAndBack:
-                        {
-                            if (!AppliedFormation)
-                            {
-                                int i = Projectiles.Count - 1;
-                                while (i >= 0)
+                            case (byte)Groups.Projectile:
                                 {
-                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
-                                    { 
-                                        Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(+180)),
-                                        Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(+180))
-                                    });
-                                    i--;
+                                    Block.Cards[Index].ExecuteCard(ref proj);
+                                    EncounteredProjectile = true;
                                 }
+                                break;
 
-                                //AppliedFormation = true;
-                            }
-                        }
-                        break;
-
-                    case SpawnOrderStats.OnlySides:
-                        {
-                            if (!AppliedFormation)
-                            {
-                                int i = Projectiles.Count - 1;
-                                while (i >= 0)
+                            default:
                                 {
-                                    Projectiles[i].Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(-90));
-                                    Projectiles[i].Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(-90));
-
-                                    Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
-                                    { 
-                                        Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(+180)),
-                                        Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(+180))
-                                    });
-
-                                    i--;
+                                    Block.Cards[Index].ExecuteCard(ref proj);
                                 }
-
-                                //AppliedFormation = true;
-                            }
+                                break;
                         }
-                        break;
 
-                    case SpawnOrderStats.Scatter:
+                        if (EncounteredProjectile)
                         {
-                            int amount = GetFlooredValue(info.Value, 0);
-                            if (amount > 1)
-                            {
-                                int i = Projectiles.Count - 1;
-                                while (i >= 0)
-                                {
-                                    float TotalAngle = 90f;
-                                    float AddedAngle = TotalAngle / (amount - 1);
-                                    float Angle = -TotalAngle / 2f;
-                                    Projectiles[i].Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(Angle));
-
-                                    for (int f = 1; f < amount; f++)
-                                    {
-                                        Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
-                                        { 
-                                            Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(AddedAngle * f)),
-                                            Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(AddedAngle * f))
-                                        });
-                                    }
-
-                                    i--;
-                                }
-                            }
+                            break;
                         }
-                        break;
-
-                    case SpawnOrderStats.Fork:
-                        {
-                            int amount = GetFlooredValue(info.Value, 0);
-                            if (amount > 1)
-                            {
-                                float SizeSQ = 10f;
-                                if (Projectiles.First().Type != ProjectileID.None)
-                                {
-                                    Terraria.Projectile CalcProj = new Terraria.Projectile();
-                                    CalcProj.SetDefaults(Projectiles.First().Type);
-                                    SizeSQ = CalcProj.Size.Length();
-                                }
-
-                                int i = Projectiles.Count - 1;
-                                while (i >= 0)
-                                {
-                                    float rotation = Projectiles[i].Velocity.ToRotation() + MathHelper.PiOver2;
-                                    float StartOffset = (SizeSQ * (amount - 1)) - (amount % 2 == 0 ? SizeSQ / 2f : 0f);
-                                    Projectiles[i].Offset -= new Vector2(StartOffset / 2f, 0f).RotatedBy(rotation);
-
-                                    for (int f = 1; f < amount; f++)
-                                    {
-                                        Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) { Offset = Projectiles[i].Offset + new Vector2(SizeSQ * f, 0f).RotatedBy(rotation) });
-                                    }
-
-                                    i--;
-                                }
-                            }
-                        }
-                        break;
-
-                    case SpawnOrderStats.SomethingGon:
-                        {
-                            int amount = GetFlooredValue(info.Value, 0);
-                            if (amount > 1)
-                            {
-                                int i = Projectiles.Count - 1;
-                                while (i >= 0)
-                                {
-                                    float TotalAngle = 360f;
-                                    float AddedAngle = TotalAngle / amount;
-
-                                    for (int f = 1; f < amount; f++)
-                                    {
-                                        Projectiles.Insert(i + 1, new ProjectileInfo(Projectiles[i]) 
-                                        { 
-                                            Velocity = Projectiles[i].Velocity.RotatedBy(MathHelper.ToRadians(AddedAngle * f)),
-                                            Offset = Projectiles[i].Offset.RotatedBy(MathHelper.ToRadians(AddedAngle * f))
-                                        });
-                                    }
-
-                                    i--;
-                                }
-                            }
-                        }
-                        break;
-
-                    case SpawnOrderStats.Daedalus:
-                        {
-                            // TODO
-                            //AppliedFormation = true;
-                        }
-                        break;
-
-                    case SpawnOrderStats.DistantCast:
-                        {
-                            foreach (ProjectileInfo proj in Projectiles)
-                            {
-                                proj.Position += new Vector2(240f * info.Value, 0f).RotatedBy(proj.Velocity.ToRotation());
-                            }
-                        }
-                        break;
-
-                    case SpawnOrderStats.TeleportCast:
-                        {
-                            foreach (ProjectileInfo proj in Projectiles)
-                            {
-                                proj.Position = Main.MouseWorld;
-                            }
-                        }
-                        break;
-
-                    case SpawnOrderStats.ReverseCast:
-                        {
-                            foreach (ProjectileInfo proj in Projectiles)
-                            {
-                                proj.Position += new Vector2(1024f, 0f).RotatedBy(proj.Velocity.ToRotation());
-                                proj.Velocity = proj.Velocity.RotatedBy(MathHelper.ToRadians(180));
-                                proj.Offset = proj.Offset.RotatedBy(MathHelper.ToRadians(180));
-                            }
-                        }
-                        break;
-
-                    case SpawnOrderStats.Rotation:
-                        {
-                            foreach (ProjectileInfo proj in Projectiles)
-                            {
-                                proj.Velocity = proj.Velocity.RotatedBy(MathHelper.ToRadians(info.Value));
-                                proj.Offset = proj.Offset.RotatedBy(MathHelper.ToRadians(info.Value));
-                            }
-                        }
-                        break;
+                    }
                 }
             }
 
-            foreach (ProjectileInfo info in Projectiles)
+            // Apply last stats
+            foreach (int i in Projectiles)
             {
-                int ID = Terraria.Projectile.NewProjectile(
-                    owner.GetSource_FromAI(),
-                    info.Position + info.Offset,
-                    info.Velocity,
-                    info.Type,
-                    (int)info.Damage,
-                    info.Knockback,
-                    owner.owner,
-                    info.Crit
-                    );
+                if (Main.projectile[i].ModProjectile is SpellCardProjectile proj)
+                {
+                    proj.Projectile.position += proj.SpawnOffset;
+                    if (!NoSpread)
+                    {
+                        proj.Projectile.velocity.RotateRandom(MathHelper.ToRadians(proj.SpawnSpread));
+                    }
 
-                //Terraria.Projectile proj = Main.projectile[ID];
-                //if (proj.ModProjectile is SpellcardProjectile SpProj)
-                //{
-                //    
-                //}
+                    if (Block.HasChildren && Block.TriggerCards != null && Block.TriggerCards.Count > 0 && Block.TriggerAmount > 0)
+                    {
+                        foreach (CastBlock child in Block.Children)
+                        {
+                            proj.Payload.Add(child.Clone());
+                        }
+
+                        proj.TriggerAmount = Block.TriggerAmount;
+                        proj.TriggerCards = Block.TriggerCards;
+                    }
+                }
             }
         }
 
@@ -1828,53 +1667,41 @@ namespace Kourindou
         }
         public enum ProjectileStats : byte
         {
-            // Trajectories
-            StraightTrigger,
-            ArcLeftAmount,
-            ArcRightAmount,
-            ZigZagAmount,
-            PingPongAmount,
-            SnakeAmount,
-            UncontrolledAmount,
-            OrbitAmount,
-            SpiralAmount,
-            BoomerangAmount,
-            AimingAmount,
-
-            // Modifiers
-            AccelerationAmount,                                 //
-            AccelerationMultiplierAmount,                       //
-            SpeedAmount,                                        // => One Time SET
-            SpeedNone,                                          // => One Time SET
-            BounceAmount,                                       //
-            BounceNone,                                         //
-            BounceInfinite,                                     //
-            PenetrationAmount,                                  // => One Time SET in Defaults
-            PenetrationNone,                                    // => One Time SET in Defaults
-            PenetrationInfinite,                                // => One Time SET in Defaults
-            GravityAmount,                                      //
-            HomingEnabled,                                      //
-            RotateToEnemyEnabled,                               //
-            CollisionEnabled,                                   // => One Time SET in Defaults
-            PhasingEnabled,                                     //
-            LifeTimeAmount,                                     // => One Time SET in Defaults
-            LifeTimeNone,                                       // => One Time SET in Defaults
-            KnockbackAmount,                                    // => One Time SET in Defaults
-            KnockbackNone,                                      // => One Time SET in Defaults
-            DamageAmount,                                       // => One Time SET in Defaults
-            RotationAmount,                                     // => One Time SET
-            SnowballEnabled,                                    //
-            SizeAmount,                                         // => One Time SET in Defaults
-            OnScreenEdgeType,                                   //
-            VectorReversalEnabled,                              // => One Time SET
-            ShatterEnabled,                                     //
-            ProjectileEaterEnabled,                             //
-            MagicCircleAuraEnabled,                             //
-            ExplosionEnabled,                                   //
-            HostileOrFriendly,                                  // => One Time SET in Defaults
-            LuminescenceEnabled,                                //
-            CritrateAmount,                                     // => One Time SET in Defaults
-            ElementType                                         //
+            ArcLeft,
+            ArcRight,
+            ZigZag,
+            PingPong,
+            Snake,
+            Uncontrolled,
+            Orbit,
+            Spiral,
+            Boomerang,
+            Aiming,
+            Acceleration,
+            AccelerationMultiplier,
+            Bounce,
+            Penetrate,
+            Gravity,
+            Homing,
+            RotateToEnemy,
+            Collide,
+            Phasing,
+            LifeTime,
+            //KnockBack, => Auto-synched if != 0
+            //Damage, => Auto-synched if != 0
+            Snowball,
+            Scale,
+            EdgeType,
+            Shatter,
+            Eater,
+            Forcefield,
+            Explosion,
+            Hostile,
+            Friendly,
+            Light,
+            CritChance,
+            ArmorPenetration,
+            Element
         }
 
         #endregion
