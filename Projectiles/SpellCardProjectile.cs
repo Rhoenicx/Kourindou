@@ -11,6 +11,7 @@ using static Terraria.ModLoader.ModContent;
 using static Kourindou.KourindouSpellcardSystem;
 using Kourindou.Items.Spellcards;
 using Kourindou.Items.Spellcards.Trajectories;
+using Terraria.DataStructures;
 
 namespace Kourindou.Projectiles
 {
@@ -924,12 +925,13 @@ namespace Kourindou.Projectiles
             BaseCritChance = Projectile.CritChance;
         }
 
-        public void RevertStats()
+        public override void OnSpawn(IEntitySource source)
         {
             Projectile.damage = BaseDamage;
             Projectile.knockBack = BaseKnockback;
             Projectile.CritChance = BaseCritChance;
             Projectile.velocity = Vector2.Normalize(Projectile.velocity) * BaseSpeed;
+            base.OnSpawn(source);
         }
 
         public override void AI()
@@ -954,7 +956,7 @@ namespace Kourindou.Projectiles
                 Projectile.type,
                 Projectile.damage,
                 Projectile.knockBack,
-                Projectile.owner,
+                Main.myPlayer,
                 Projectile.ai[0],
                 Projectile.ai[1]);
 

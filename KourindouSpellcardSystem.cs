@@ -15,6 +15,7 @@ using Kourindou.Projectiles;
 using Kourindou.Items.Catalysts;
 using Kourindou.Items.Spellcards.CatalystModifiers;
 using Kourindou.Items.Spellcards.Formations;
+using static Humanizer.In;
 
 namespace Kourindou
 {
@@ -326,7 +327,7 @@ namespace Kourindou
                 Type,
                 (int)(10 *Damage),
                 Knockback,
-                owner.owner);
+                Main.myPlayer);
 
             if (Main.projectile[NewID].ModProjectile is not SpellCardProjectile)
             {
@@ -335,7 +336,6 @@ namespace Kourindou
 
             if (Main.projectile[NewID].ModProjectile is SpellCardProjectile SPproj)
             {
-                SPproj.RevertStats();
                 SPproj.Projectile.damage = (int)(SPproj.Projectile.damage * Damage);
                 SPproj.Projectile.knockBack += Knockback;
                 SPproj.Projectile.CritChance += Crit;
@@ -600,6 +600,12 @@ namespace Kourindou
 
                         proj.TriggerAmount = Block.TriggerAmount;
                         proj.TriggerCards = Block.TriggerCards;
+                    }
+
+                    // Maunally send a net update for the projectile
+                    if (Main.netMode != NetmodeID.SinglePlayer)
+                    {
+                        NetMessage.TrySendData(27, number: proj.Projectile.whoAmI);
                     }
                 }
             }
