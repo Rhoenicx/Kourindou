@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using Kourindou.Projectiles;
+using Terraria;
 using Terraria.ID;
 using static Kourindou.KourindouSpellcardSystem;
 
@@ -41,6 +42,19 @@ namespace Kourindou.Items.Spellcards.Trajectories
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override void ExecuteCard(ref SpellCardProjectile proj)
+        {
+            proj.Aiming = 0f;
+            proj.Arc = 0f;
+            proj.Boomerang = 0f;
+            proj.Orbit = 0f;
+            proj.PingPong = 0f;
+            proj.Snake = 0f;
+            proj.Spiral = 0f;
+            proj.Uncontrolled = 0f;
+            proj.ZigZag = 0f;
         }
     }
 }

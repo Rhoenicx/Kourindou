@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kourindou.Projectiles;
+using System;
 using Terraria;
 using Terraria.ID;
 using static Kourindou.KourindouSpellcardSystem;
@@ -48,6 +49,11 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
         public override float GetValue(bool max = false)
         {
             return (float)Math.Pow(Value, Amount);
+        }
+
+        public override void ExecuteCard(ref SpellCardProjectile proj)
+        {
+            proj.Projectile.knockBack *= GetValue();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using Kourindou.Projectiles;
+using Terraria;
 using Terraria.ID;
 using static Kourindou.KourindouSpellcardSystem;
 
@@ -22,6 +23,7 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             Spell = (byte)CatalystModifier.Sniper;
             Variant = (byte)CatalystModifierVariant.None;
             Amount = 1f;
+            Value = -3600f;
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -41,6 +43,11 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override void ExecuteCard(ref SpellCardProjectile proj)
+        {
+            proj.SpawnSpread = -3600f;
         }
     }
 }

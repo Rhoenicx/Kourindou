@@ -6,16 +6,16 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Kourindou.Items.Spellcards;
-using static Kourindou.KourindouSpellcardSystem;
 using Terraria.ID;
-using Kourindou.Items.Spellcards.Empty;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
+using Kourindou.Items.Spellcards;
+using Kourindou.Items.Spellcards.Empty;
 using Kourindou.Projectiles;
 using Kourindou.Items.Catalysts;
 using Kourindou.Items.Spellcards.CatalystModifiers;
 using Kourindou.Items.Spellcards.Formations;
-using static Humanizer.In;
+using System.Reflection;
 
 namespace Kourindou
 {
@@ -306,7 +306,107 @@ namespace Kourindou
             }
         }
 
-        public static void ExecuteCards(Terraria.Projectile owner, CastBlock Block, Vector2 Position, Vector2 HeldOffset, Vector2 Velocity, float Spread, float Damage, float Knockback, int Crit)
+        public static int SpawnSpellCardProjectile(
+            IEntitySource spawnSource,
+            int Type,
+            Vector2 position,
+            Vector2 direction,
+            float DamageMultiplier,
+            float KnockBackMultiplier,
+            float SpeedMultiplier,
+            int CritChance,
+            int Owner = 255,
+            float ai0 = 0.0f,
+            float ai1 = 0.0f)
+        {
+            // ----- Mimic vanilla code -----//
+
+            // Search for a free slot
+            int FreeSlot = 1000;
+            for (int i = 0; i < Main.maxProjectiles; i++)
+            {
+                if (!Main.projectile[i].active)
+                {
+                    FreeSlot = i;
+                    break;
+                }
+            }
+
+            // No free slot, grab the projectile with the lowest lifetime instead
+            if (FreeSlot >= Main.maxProjectiles)
+            {
+                FreeSlot = Terraria.Projectile.FindOldestProjectile();
+            }
+
+            // Grab the projectile instance
+            Terraria.Projectile projectile = Main.projectile[FreeSlot];
+
+            // Reset Defaults
+            projectile.SetDefaults(Type);
+
+            // Setup projectile - Apply catalyst modifiers directly
+            projectile.position = position - new Vector2(projectile.width, projectile.height) * 0.5f;
+            projectile.velocity = direction * projectile.velocity.Length() * SpeedMultiplier;
+            projectile.owner = Owner;
+            projectile.damage = (int)(projectile.damage * DamageMultiplier);
+            projectile.knockBack *= KnockBackMultiplier;
+            projectile.CritChance += CritChance;
+            projectile.identity = FreeSlot;
+            projectile.gfxOffY = 0f;
+            projectile.stepSpeed = 1f;
+            projectile.wet = projectile.ignoreWater ? false : Collision.WetCollision(projectile.position, projectile.width, projectile.height);
+            projectile.honeyWet = Collision.honey;
+            projectile.ai[0] = ai0;
+            projectile.ai[1] = ai1;
+
+            // Set Identity
+            Main.projectileIdentity[Owner, FreeSlot] = FreeSlot;
+
+            // Banner
+            FindBannerToAssociateTo(spawnSource, projectile);
+
+            // Player stats
+            HandlePlayerStatModifiers(spawnSource, projectile);
+
+            // Call ProjectileLoader OnSpawn()
+            typeof(ProjectileLoader).GetMethod("OnSpawn", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { projectile, spawnSource });
+
+            // Done! Don't forget to manually use SendData to sync the projectile!
+            return FreeSlot;
+        }
+
+        private static void FindBannerToAssociateTo(IEntitySource spawnSource, Terraria.Projectile next)
+        {
+            if (!(spawnSource is EntitySource_Parent entitySourceParent))
+                return;
+            if (entitySourceParent.Entity is Terraria.Projectile entity2)
+            {
+                next.bannerIdToRespondTo = entity2.bannerIdToRespondTo;
+            }
+            else
+            {
+                if (!(entitySourceParent.Entity is NPC entity3))
+                    return;
+                next.bannerIdToRespondTo = Item.NPCtoBanner(entity3.BannerID());
+            }
+        }
+
+        private static void HandlePlayerStatModifiers(IEntitySource spawnSource, Terraria.Projectile projectile)
+        {
+            switch (spawnSource)
+            {
+                case EntitySource_ItemUse entitySourceItemUse when entitySourceItemUse.Entity is Player entity1:
+                    projectile.CritChance += entity1.GetWeaponCrit(entitySourceItemUse.Item);
+                    projectile.ArmorPenetration += entity1.GetWeaponArmorPenetration(entitySourceItemUse.Item);
+                    break;
+                case EntitySource_Parent entitySourceParent when entitySourceParent.Entity is Terraria.Projectile entity2:
+                    projectile.CritChance += entity2.CritChance;
+                    projectile.ArmorPenetration += entity2.ArmorPenetration;
+                    break;
+            }
+        }
+
+        public static void ExecuteCards(Terraria.Projectile owner, CastBlock Block, Vector2 Position, Vector2 HeldOffset, Vector2 Velocity, float Spread, float DamageMultiplier, float KnockbackMultiplier, int CritChance)
         {
             int Type = -999;
 
@@ -320,13 +420,15 @@ namespace Kourindou
                 return;
             }
 
-            int NewID = Terraria.Projectile.NewProjectile(
+            int NewID = SpawnSpellCardProjectile(
                 owner.GetSource_FromThis(),
+                Type,
                 Position,
                 Velocity,
-                Type,
-                (int)(10 *Damage),
-                Knockback,
+                DamageMultiplier,
+                KnockbackMultiplier,
+                1f,
+                CritChance,
                 Main.myPlayer);
 
             if (Main.projectile[NewID].ModProjectile is not SpellCardProjectile)
@@ -336,9 +438,6 @@ namespace Kourindou
 
             if (Main.projectile[NewID].ModProjectile is SpellCardProjectile SPproj)
             {
-                SPproj.Projectile.damage = (int)(SPproj.Projectile.damage * Damage);
-                SPproj.Projectile.knockBack += Knockback;
-                SPproj.Projectile.CritChance += Crit;
                 SPproj.SpawnSpread = Spread;
             }
 
@@ -420,7 +519,7 @@ namespace Kourindou
                                 }
                                 break;
 
-                            case (byte)Groups.Formation:
+                            case (byte)Groups.Trajectory:
                                 {
                                     switch (Block.Cards[Index].Variant)
                                     {
@@ -602,7 +701,7 @@ namespace Kourindou
                         proj.TriggerCards = Block.TriggerCards;
                     }
 
-                    // Maunally send a net update for the projectile
+                    // Manually send the net update for this projectile
                     if (Main.netMode != NetmodeID.SinglePlayer)
                     {
                         NetMessage.TrySendData(27, number: proj.Projectile.whoAmI);
@@ -978,7 +1077,7 @@ namespace Kourindou
                         break;
 
 
-                    case Groups.Formation:
+                    case Groups.Trajectory:
                         {
                             CurrentBlock.AddCard(Cards[Index]);
                             CurrentBlock.ProjectileCounter *= GetFlooredValue(Cards[Index].GetValue(), 1);
@@ -1364,8 +1463,8 @@ namespace Kourindou
         {
             Empty,
             Projectile,
-            Formation,
             Trajectory,
+            Formation,
             ProjectileModifier,
             CatalystModifier,
             Element,
@@ -1601,7 +1700,8 @@ namespace Kourindou
                                                                                                         // 
         public enum Element : byte                                                                      // 
         {                                                                                               // 
-            // Patchouli's elements                                                                     // 
+            // Patchouli's elements
+            Generic, 
             Sun,                                                                                        // 
             Moon,                                                                                       // 
             Fire,                                                                                       // 
@@ -1673,8 +1773,7 @@ namespace Kourindou
         }
         public enum ProjectileStats : byte
         {
-            ArcLeft,
-            ArcRight,
+            Arc,
             ZigZag,
             PingPong,
             Snake,
@@ -1691,7 +1790,7 @@ namespace Kourindou
             Homing,
             RotateToEnemy,
             Collide,
-            Phasing,
+            Shimmer,
             LifeTime,
             //KnockBack, => Auto-synched if != 0
             //Damage, => Auto-synched if != 0

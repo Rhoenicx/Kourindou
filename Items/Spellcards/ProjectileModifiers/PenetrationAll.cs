@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using Kourindou.Projectiles;
+using Terraria;
 using Terraria.ID;
 using static Kourindou.KourindouSpellcardSystem;
 
@@ -41,6 +42,11 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override void ExecuteCard(ref SpellCardProjectile proj)
+        {
+            proj.Penetrate = -1;
         }
     }
 }

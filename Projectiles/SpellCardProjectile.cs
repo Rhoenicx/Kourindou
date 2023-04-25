@@ -17,12 +17,6 @@ namespace Kourindou.Projectiles
 {
     public abstract class SpellCardProjectile : ModProjectile
     {
-        // Saved Stats - these ones get overwritten right after the first SetDefaults.
-        private float BaseSpeed;
-        private float BaseKnockback;
-        private int BaseDamage;
-        private int BaseCritChance;
-
         // Spawn
         private bool _JustSpawned = true;
         public Vector2 SpawnOffset = Vector2.Zero;
@@ -38,59 +32,33 @@ namespace Kourindou.Projectiles
         #region Modifiers
         public HashSet<ProjectileStats> NetModifiers = new();
 
-        // [Formation: ArcLeft]
-        public float _ArcLeft = 0f;
-        public float ArcLeft
+        // [Trajectory: Arc]
+        public float _Arc = 0f;
+        public float Arc
         {
-            get => _ArcLeft;
+            get => _Arc;
             set
             {
                 if (Main.netMode != NetmodeID.SinglePlayer && Projectile.owner == Main.myPlayer)
                 {
-                    if (_ArcLeft != value)
+                    if (_Arc != value)
                     {
-                        if (!NetModifiers.Contains(ProjectileStats.ArcLeft))
+                        if (!NetModifiers.Contains(ProjectileStats.Arc))
                         {
-                            NetModifiers.Add(ProjectileStats.ArcLeft);
+                            NetModifiers.Add(ProjectileStats.Arc);
                         }
                         Projectile.netUpdate = true;
-                        _ArcLeft = value;
+                        _Arc = value;
                     }
                 }
                 else
                 {
-                    _ArcLeft = value;
+                    _Arc = value;
                 }
             }
         }
 
-        // [Formation: ArcRight]
-        public float _ArcRight = 0f;
-        public float ArcRight
-        {
-            get => _ArcRight;
-            set
-            {
-                if (Main.netMode != NetmodeID.SinglePlayer && Projectile.owner == Main.myPlayer)
-                {
-                    if (_ArcRight != value)
-                    {
-                        if (!NetModifiers.Contains(ProjectileStats.ArcRight))
-                        {
-                            NetModifiers.Add(ProjectileStats.ArcRight);
-                        }
-                        Projectile.netUpdate = true;
-                        _ArcRight = value;
-                    }
-                }
-                else
-                {
-                    _ArcRight = value;
-                }
-            }
-        }
-
-        // [Formation: ZigZag]
+        // [Trajectory: ZigZag]
         public float _ZigZag = 0f;
         public float ZigZag
         {
@@ -116,7 +84,7 @@ namespace Kourindou.Projectiles
             }
         }
 
-        // [Formation: PingPong]
+        // [Trajectory: PingPong]
         public float _PingPong = 0f;
         public float PingPong
         {
@@ -142,7 +110,7 @@ namespace Kourindou.Projectiles
             }
         }
 
-        // [Formation: Snake]
+        // [Trajectory: Snake]
         public float _Snake = 0f;
         public float Snake
         {
@@ -168,7 +136,7 @@ namespace Kourindou.Projectiles
             }
         }
 
-        // [Formation: Uncontrolled]
+        // [Trajectory: Uncontrolled]
         public float _Uncontrolled = 0f;
         public float Uncontrolled
         {
@@ -194,7 +162,7 @@ namespace Kourindou.Projectiles
             }
         }
 
-        // [Formation: Orbit]
+        // [Trajectory: Orbit]
         public float _Orbit = 0f;
         public float Orbit
         {
@@ -220,7 +188,7 @@ namespace Kourindou.Projectiles
             }
         }
 
-        // [Formation: Boomerang]
+        // [Trajectory: Boomerang]
         public float _Boomerang = 0f;
         public float Boomerang
         {
@@ -246,7 +214,7 @@ namespace Kourindou.Projectiles
             }
         }
 
-        // [Formation: Spiral]
+        // [Trajectory: Spiral]
         public float _Spiral = 0f;
         public float Spiral
         {
@@ -272,7 +240,7 @@ namespace Kourindou.Projectiles
             }
         }
 
-        // [Formation: Aiming]
+        // [Trajectory: Aiming]
         public float _Aiming = 0f;
         public float Aiming
         {
@@ -504,28 +472,28 @@ namespace Kourindou.Projectiles
             }
         }
 
-        // [Modifier: Phasing]
-        public bool _Phasing = false;
-        public bool Phasing
+        // [Modifier: Shimmer]
+        public bool _Shimmer = false;
+        public bool Shimmer
         {
-            get => _Phasing;
+            get => _Shimmer;
             set
             {
                 if (Main.netMode != NetmodeID.SinglePlayer && Projectile.owner == Main.myPlayer)
                 {
-                    if (_Phasing != value)
+                    if (_Shimmer != value)
                     {
-                        if (!NetModifiers.Contains(ProjectileStats.Phasing))
+                        if (!NetModifiers.Contains(ProjectileStats.Shimmer))
                         {
-                            NetModifiers.Add(ProjectileStats.Phasing);
+                            NetModifiers.Add(ProjectileStats.Shimmer);
                         }
                         Projectile.netUpdate = true;
-                        _Phasing = value;
+                        _Shimmer = value;
                     }
                 }
                 else
                 {
-                    _Phasing = value;
+                    _Shimmer = value;
                 }
             }
         }
@@ -863,26 +831,26 @@ namespace Kourindou.Projectiles
 
         // [Modifier: Element]
         public byte _Element = 0;
-        public byte Element
+        public Element Element
         {
-            get => _Element;
+            get => (Element)_Element;
             set
             {
                 if (Main.netMode != NetmodeID.SinglePlayer && Projectile.owner == Main.myPlayer)
                 {
-                    if (_Element != value)
+                    if ((Element)_Element != value)
                     {
                         if (!NetModifiers.Contains(ProjectileStats.Element))
                         {
                             NetModifiers.Add(ProjectileStats.Element);
                         }
                         Projectile.netUpdate = true;
-                        _Element = value;
+                        _Element = (byte)value;
                     }
                 }
                 else
                 {
-                    _Element = value;
+                    _Element = (byte)value;
                 }
             }
         }
@@ -918,20 +886,6 @@ namespace Kourindou.Projectiles
         public override void SetDefaults()
         {
             SetProjectileDefaults();
-
-            BaseSpeed = Projectile.velocity.Length();
-            BaseKnockback = Projectile.knockBack;
-            BaseDamage = Projectile.damage;
-            BaseCritChance = Projectile.CritChance;
-        }
-
-        public override void OnSpawn(IEntitySource source)
-        {
-            Projectile.damage = BaseDamage;
-            Projectile.knockBack = BaseKnockback;
-            Projectile.CritChance = BaseCritChance;
-            Projectile.velocity = Vector2.Normalize(Projectile.velocity) * BaseSpeed;
-            base.OnSpawn(source);
         }
 
         public override void AI()
@@ -949,63 +903,68 @@ namespace Kourindou.Projectiles
 
         public SpellCardProjectile Clone()
         {
-            int newID = Terraria.Projectile.NewProjectile(
+            // Spawn the new projectile
+            int newID = SpawnSpellCardProjectile(
                 Projectile.GetSource_FromAI(),
+                Projectile.type,
                 Projectile.position,
                 Projectile.velocity,
-                Projectile.type,
-                Projectile.damage,
-                Projectile.knockBack,
+                1f,
+                1f,
+                1f,
+                0,
                 Main.myPlayer,
                 Projectile.ai[0],
                 Projectile.ai[1]);
 
-            if (Main.projectile[newID].ModProjectile is SpellCardProjectile proj)
+            // Apply vanilla stats
+            Terraria.Projectile proj = Main.projectile[newID];
+
+            proj.position = Projectile.position;
+            proj.velocity = Projectile.velocity;
+            proj.type = Projectile.type;
+            proj.damage = Projectile.damage;
+            proj.knockBack = Projectile.knockBack;
+            proj.CritChance = Projectile.CritChance;
+            proj.timeLeft = Projectile.timeLeft;
+            proj.penetrate = Projectile.penetrate;
+            proj.ArmorPenetration = Projectile.ArmorPenetration;
+            proj.tileCollide = Projectile.tileCollide;
+            proj.scale = Projectile.scale;
+            proj.hostile = Projectile.hostile;
+            proj.friendly = Projectile.friendly;
+            proj.light = Projectile.light;
+
+            // Apply custom stats
+            if (proj.ModProjectile is SpellCardProjectile SPproj)
             {
-                proj.SpawnOffset = SpawnOffset;
-                proj.SpawnSpread = SpawnSpread;
+                SPproj.SpawnOffset = SpawnOffset;
+                SPproj.SpawnSpread = SpawnSpread;
+                SPproj.Arc = Arc;
+                SPproj.ZigZag = ZigZag;
+                SPproj.PingPong = PingPong;
+                SPproj.Snake = Snake;
+                SPproj.Uncontrolled = Uncontrolled;
+                SPproj.Orbit = Orbit;
+                SPproj.Spiral = Spiral;
+                SPproj.Boomerang = Boomerang;
+                SPproj.Aiming = Aiming;
+                SPproj.Acceleration = Acceleration;
+                SPproj.AccelerationMultiplier = AccelerationMultiplier;
+                SPproj.Bounce = Bounce;
+                SPproj.Gravity = Gravity;
+                SPproj.Homing = Homing;
+                SPproj.RotateToEnemy = RotateToEnemy;
+                SPproj.Shimmer = Shimmer;
+                SPproj.Snowball = Snowball;
+                SPproj.EdgeType = EdgeType;
+                SPproj.Shatter = Shatter;
+                SPproj.Eater = Eater;
+                SPproj.Forcefield = Forcefield;
+                SPproj.Explosion = Explosion;
+                SPproj.Element = Element;
 
-                proj.Projectile.position = Projectile.position;
-                proj.Projectile.velocity = Projectile.velocity;
-                proj.Projectile.type = Projectile.type;
-                proj.Projectile.damage = Projectile.damage;
-                proj.Projectile.knockBack = Projectile.knockBack;
-                proj.Projectile.CritChance = Projectile.CritChance;
-                proj.Projectile.timeLeft = Projectile.timeLeft;
-                proj.Projectile.penetrate = Projectile.penetrate;
-                proj.Projectile.ArmorPenetration = Projectile.ArmorPenetration;
-                proj.Projectile.tileCollide = Projectile.tileCollide;
-                proj.Projectile.scale = Projectile.scale;
-                proj.Projectile.hostile = Projectile.hostile;
-                proj.Projectile.friendly = Projectile.friendly;
-                proj.Projectile.light = Projectile.light;
-
-                proj.ArcLeft = ArcLeft;
-                proj.ArcRight = ArcRight;
-                proj.ZigZag = ZigZag;
-                proj.PingPong = PingPong;
-                proj.Snake = Snake;
-                proj.Uncontrolled = Uncontrolled;
-                proj.Orbit = Orbit;
-                proj.Spiral = Spiral;
-                proj.Boomerang = Boomerang;
-                proj.Aiming = Aiming;
-                proj.Acceleration = Acceleration;
-                proj.AccelerationMultiplier = AccelerationMultiplier;
-                proj.Bounce = Bounce;
-                proj.Gravity = Gravity;
-                proj.Homing = Homing;
-                proj.RotateToEnemy = RotateToEnemy;
-                proj.Phasing = Phasing;
-                proj.Snowball = Snowball;
-                proj.EdgeType = EdgeType;
-                proj.Shatter = Shatter;
-                proj.Eater = Eater;
-                proj.Forcefield = Forcefield;
-                proj.Explosion = Explosion;
-                proj.Element = Element;
-
-                return proj;
+                return SPproj;
             }
 
             return null;
@@ -1020,8 +979,7 @@ namespace Kourindou.Projectiles
                 writer.Write((byte)modifier);
                 switch (modifier)
                 {
-                    case ProjectileStats.ArcLeft: { writer.Write(ArcLeft); } break;
-                    case ProjectileStats.ArcRight: { writer.Write(ArcRight); } break;
+                    case ProjectileStats.Arc: { writer.Write(Arc); } break;
                     case ProjectileStats.ZigZag: { writer.Write(ZigZag); } break;
                     case ProjectileStats.PingPong: { writer.Write(PingPong); } break;
                     case ProjectileStats.Snake: { writer.Write(Snake); } break;
@@ -1038,7 +996,7 @@ namespace Kourindou.Projectiles
                     case ProjectileStats.Homing: { writer.Write(Homing); } break;
                     case ProjectileStats.RotateToEnemy: { writer.Write(RotateToEnemy); } break;
                     case ProjectileStats.Collide: { writer.Write(Collide); } break;
-                    case ProjectileStats.Phasing: { writer.Write(Phasing); } break;
+                    case ProjectileStats.Shimmer: { writer.Write(Shimmer); } break;
                     case ProjectileStats.LifeTime: { writer.Write(LifeTime); } break;
                     case ProjectileStats.Snowball: { writer.Write(Snowball); } break;
                     case ProjectileStats.Scale: { writer.Write(Scale); } break;
@@ -1052,7 +1010,7 @@ namespace Kourindou.Projectiles
                     case ProjectileStats.Light: { writer.Write(Light); } break;
                     case ProjectileStats.CritChance: { writer.Write(CritChance); } break;
                     case ProjectileStats.ArmorPenetration: { writer.Write(ArmorPenetration); } break;
-                    case ProjectileStats.Element: { writer.Write(Element); } break;
+                    case ProjectileStats.Element: { writer.Write((byte)Element); } break;
                 }
             }
         }
@@ -1065,8 +1023,7 @@ namespace Kourindou.Projectiles
             {
                 switch ((ProjectileStats)reader.ReadByte())
                 {
-                    case ProjectileStats.ArcLeft: { ArcLeft = reader.ReadSingle(); } break;
-                    case ProjectileStats.ArcRight: { ArcRight = reader.ReadSingle(); } break;
+                    case ProjectileStats.Arc: { Arc = reader.ReadSingle(); } break;
                     case ProjectileStats.ZigZag: { ZigZag = reader.ReadSingle(); } break;
                     case ProjectileStats.PingPong: { PingPong = reader.ReadSingle(); } break;
                     case ProjectileStats.Snake: { Snake = reader.ReadSingle(); } break;
@@ -1083,7 +1040,7 @@ namespace Kourindou.Projectiles
                     case ProjectileStats.Homing: { Homing = reader.ReadSingle(); } break;
                     case ProjectileStats.RotateToEnemy: { RotateToEnemy = reader.ReadSingle(); } break;
                     case ProjectileStats.Collide: { Collide = reader.ReadBoolean(); } break;
-                    case ProjectileStats.Phasing: { Phasing = reader.ReadBoolean(); } break;
+                    case ProjectileStats.Shimmer: { Shimmer = reader.ReadBoolean(); } break;
                     case ProjectileStats.LifeTime: { LifeTime = reader.ReadInt32(); } break;
                     case ProjectileStats.Snowball: { Snowball = reader.ReadSingle(); } break;
                     case ProjectileStats.Scale: { Scale = reader.ReadSingle(); } break;
@@ -1097,7 +1054,7 @@ namespace Kourindou.Projectiles
                     case ProjectileStats.Light: { Light = reader.ReadSingle(); } break;
                     case ProjectileStats.CritChance: { CritChance = reader.ReadInt32(); } break;
                     case ProjectileStats.ArmorPenetration: { ArmorPenetration = reader.ReadInt32(); } break;
-                    case ProjectileStats.Element: { Element = reader.ReadByte(); } break;
+                    case ProjectileStats.Element: { Element = (Element)reader.ReadByte(); } break;
                 }
             }
         }

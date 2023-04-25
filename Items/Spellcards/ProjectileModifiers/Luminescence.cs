@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using Kourindou.Projectiles;
+using System;
+using Terraria;
 using Terraria.ID;
 using static Kourindou.KourindouSpellcardSystem;
 
@@ -22,6 +24,7 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             Spell = (byte)ProjectileModifier.Luminescence;
             Variant = 0;
             Amount = 1f;
+            Value = 0.5f;
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -41,6 +44,23 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // Hitbox
             Item.width = 20;
             Item.height = 28;
+        }
+
+        public override float GetValue(bool max = false)
+        {
+            return (float)Math.Pow(Value, Amount);
+        }
+
+        public override void ExecuteCard(ref SpellCardProjectile proj)
+        {
+            if (proj.Light == 0f)
+            {
+                proj.Light = GetValue();
+            }
+            else
+            {
+                proj.Light *= GetValue();
+            }
         }
     }
 }
