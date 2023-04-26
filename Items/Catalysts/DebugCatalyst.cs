@@ -56,8 +56,11 @@ namespace Kourindou.Items.Catalysts
             ShufflingCatalyst = false;
             BaseRecharge = 10;
             BaseCooldown = 60;
-            BaseSpread = 0f;
             BaseDamageMultiplier = 1f;
+            BaseKnockbackMultiplier = 1f;
+            BaseVelocityMultiplier = 1f;
+            BaseSpread = 0f;
+            BaseCrit = 0;
         }
     }
 }

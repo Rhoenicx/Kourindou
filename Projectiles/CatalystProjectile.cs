@@ -16,7 +16,13 @@ namespace Kourindou.Projectiles
 {
     public abstract class CatalystProjectile : ModProjectile
     {
-        public CastBlock block;
+        public CastBlock ShootBlock;
+        public float DamageMultiplier = 1f;
+        public float KnockbackMultiplier = 1f;
+        public float VelocityMultiplier = 1f;
+        public float Spread = 0f;
+        public int Crit = 0;
+
         private bool _justSpawned = true;
 
         public Player _owner;
@@ -135,9 +141,9 @@ namespace Kourindou.Projectiles
             }
 
             // Loop through the cast blocks
-            if (block.HasChildren)
+            if (ShootBlock.HasChildren)
             {
-                foreach (CastBlock block in block.Children)
+                foreach (CastBlock block in ShootBlock.Children)
                 {
                     // If this cast block is disabled => continue
                     if (block.IsDisabled)
@@ -186,20 +192,18 @@ namespace Kourindou.Projectiles
 
         private void HandleCards(CastBlock block)
         {
-            if (_heldItem.ModItem is CatalystItem item)
-            {
-                ExecuteCards(
-                    this.Projectile,
-                    block,
-                    _owner.RotatedRelativePoint(_owner.MountedCenter),
-                    HeldProjectileOffset.RotatedBy(Projectile.velocity.ToRotation()),
-                    Projectile.velocity,
-                    item.BaseSpread + item.AddedSpread,
-                    item.BaseDamageMultiplier + item.AddedDamageMultiplier,
-                    item.BaseKnockback + item.AddedKnockback,
-                    item.BaseCrit + item.AddedCrit
-                );
-            }
+            ExecuteCards(
+                this.Projectile,
+                block,
+                _owner.RotatedRelativePoint(_owner.MountedCenter),
+                HeldProjectileOffset.RotatedBy(Projectile.velocity.ToRotation()),
+                Vector2.Normalize(Projectile.velocity),
+                DamageMultiplier,
+                KnockbackMultiplier,
+                VelocityMultiplier,
+                Spread,
+                Crit
+            );
         }
     }
 }

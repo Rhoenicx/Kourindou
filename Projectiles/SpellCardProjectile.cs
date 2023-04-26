@@ -12,6 +12,7 @@ using static Kourindou.KourindouSpellcardSystem;
 using Kourindou.Items.Spellcards;
 using Kourindou.Items.Spellcards.Trajectories;
 using Terraria.DataStructures;
+using Kourindou.Items.Catalysts;
 
 namespace Kourindou.Projectiles
 {
@@ -25,6 +26,13 @@ namespace Kourindou.Projectiles
         // Triggers
         public List<CardItem> TriggerCards = new();
         public int TriggerAmount = 0;
+
+        // Trigger Stats
+        public float DamageMultiplier = 1f;
+        public float KnockbackMultiplier = 1f;
+        public float VelocityMultiplier = 1f;
+        public float Spread = 0f;
+        public int Crit = 0;
 
         // Castblock payload
         public List<CastBlock> Payload = new();
@@ -899,6 +907,48 @@ namespace Kourindou.Projectiles
             Projectile.rotation = Projectile.velocity.ToRotation();
 
             base.AI();
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            if (TriggerAmount > 0 && TriggerCards.Count > 0)
+            {
+                for (int i = 0; i < TriggerCards.Count; i++)
+                {
+                    foreach (CastBlock block in Payload)
+                    {
+                        if (block.TriggerID != i || block.IsDisabled)
+                        {
+                            continue;
+                        }
+
+                        for (int j = 0; j <= block.RepeatAmount; j++)
+                        {
+                            HandleCards(block);
+                        }
+
+                        block.IsDisabled = true;
+                    }
+                }
+            }
+
+            base.Kill(timeLeft);
+        }
+
+        private void HandleCards(CastBlock block)
+        {
+            ExecuteCards(
+                this.Projectile,
+                block,
+                Projectile.Center,
+                Vector2.Zero,
+                Vector2.Normalize(Projectile.velocity),
+                DamageMultiplier,
+                KnockbackMultiplier,
+                VelocityMultiplier,
+                Spread,
+                Crit
+            );
         }
 
         public SpellCardProjectile Clone()

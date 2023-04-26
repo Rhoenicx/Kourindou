@@ -215,11 +215,6 @@ namespace Kourindou.Items.Spellcards
         
         }
 
-        //public virtual void ExecuteCardOnInstance(ref SpellcardProjectile proj)
-        //{ 
-        //
-        //}
-
         public enum CardColors
         { 
             Blue,

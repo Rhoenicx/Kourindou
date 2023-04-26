@@ -39,18 +39,23 @@ namespace Kourindou.Items.Catalysts
         public int AddedCooldown = 0;
 
         // Stats
+        public float DamageMultiplier => BaseDamageMultiplier + AddedDamageMultiplier;
         public float BaseDamageMultiplier = 0f;
         public float AddedDamageMultiplier = 0f;
 
+        public float KnockbackMultiplier => BaseKnockbackMultiplier + AddedKnockbackMultiplier;
+        public float BaseKnockbackMultiplier = 0f;
+        public float AddedKnockbackMultiplier = 0f;
+
+        public float VelocityMultiplier => BaseVelocityMultiplier + AddedVelocityMultiplier;
+        public float BaseVelocityMultiplier = 0f;
+        public float AddedVelocityMultiplier = 0f;
+
+        public float Spread => BaseSpread + AddedSpread;
         public float BaseSpread = 0f;
         public float AddedSpread = 0;
 
-        public float BaseSpeed = 0f;
-        public float AddedSpeed = 0f;
-
-        public float BaseKnockback = 0f;
-        public float AddedKnockback = 0f;
-        
+        public int Crit => BaseCrit + AddedCrit;
         public int BaseCrit = 0;
         public int AddedCrit = 0;
 
@@ -76,8 +81,8 @@ namespace Kourindou.Items.Catalysts
 
                 newCatalyst.AddedDamageMultiplier = AddedDamageMultiplier;
                 newCatalyst.AddedSpread = AddedSpread;
-                newCatalyst.AddedSpeed = AddedSpeed;
-                newCatalyst.AddedKnockback = AddedKnockback;
+                newCatalyst.AddedVelocityMultiplier = AddedVelocityMultiplier;
+                newCatalyst.AddedKnockbackMultiplier = AddedKnockbackMultiplier;
                 newCatalyst.AddedCrit = AddedCrit;
 
                 newCatalyst.CardItemsOnCatalyst = new List<CardItem>(CardItemsOnCatalyst);
@@ -99,8 +104,8 @@ namespace Kourindou.Items.Catalysts
             tag.Add("AddedCooldown", AddedCooldown);
             tag.Add("AddedDamageMultiplier", AddedDamageMultiplier);
             tag.Add("AddedSpread", AddedSpread);
-            tag.Add("AddedSpeed", AddedSpeed);
-            tag.Add("AddedKnockback", AddedKnockback);
+            tag.Add("AddedVelocityMultiplier", AddedVelocityMultiplier);
+            tag.Add("AddedKnockbackMultiplier", AddedKnockbackMultiplier);
             tag.Add("AddedCrit", AddedCrit);
 
             if (HasAlwaysCastCard)
@@ -131,8 +136,8 @@ namespace Kourindou.Items.Catalysts
             AddedCooldown = tag.GetInt("AddedCooldown");
             AddedDamageMultiplier = tag.GetFloat("AddedDamageMultiplier");
             AddedSpread = tag.GetFloat("AddedSpread");
-            AddedSpeed = tag.GetFloat("AddedSpeed");
-            AddedKnockback = tag.GetFloat("AddedKnockback");
+            AddedVelocityMultiplier = tag.GetFloat("AddedVelocityMultiplier");
+            AddedKnockbackMultiplier = tag.GetFloat("AddedKnockbackMultiplier");
             AddedCrit = tag.GetInt("AddedCrit");
 
             if (HasAlwaysCastCard)
@@ -171,8 +176,8 @@ namespace Kourindou.Items.Catalysts
             writer.Write(AddedCooldown);
             writer.Write(AddedDamageMultiplier);
             writer.Write(AddedSpread);
-            writer.Write(AddedSpeed);
-            writer.Write(AddedKnockback);
+            writer.Write(AddedVelocityMultiplier);
+            writer.Write(AddedKnockbackMultiplier);
             writer.Write(AddedCrit);
 
             if (HasAlwaysCastCard)
@@ -202,8 +207,8 @@ namespace Kourindou.Items.Catalysts
             AddedCooldown = reader.ReadInt32();
             AddedDamageMultiplier = reader.ReadSingle();
             AddedSpread = reader.ReadSingle();
-            AddedSpeed = reader.ReadSingle();
-            AddedKnockback = reader.ReadSingle();
+            AddedVelocityMultiplier = reader.ReadSingle();
+            AddedKnockbackMultiplier = reader.ReadSingle();
             AddedCrit = reader.ReadInt32();
 
             if (HasAlwaysCastCard)
@@ -523,7 +528,7 @@ namespace Kourindou.Items.Catalysts
             int CatalystProjID = Terraria.Projectile.NewProjectile(
                 source,
                 position,
-                Vector2.Normalize(velocity) * (Item.shootSpeed + AddedSpeed),
+                Vector2.Normalize(velocity),
                 type,
                 damage,
                 knockback,
@@ -535,7 +540,12 @@ namespace Kourindou.Items.Catalysts
             // Pass the cast properties clientsided
             if (Main.projectile[CatalystProjID].ModProjectile is CatalystProjectile catalyst)
             {
-                catalyst.block = cast.RootBlock;
+                catalyst.ShootBlock = cast.RootBlock;
+                catalyst.DamageMultiplier = DamageMultiplier;
+                catalyst.KnockbackMultiplier = KnockbackMultiplier;
+                catalyst.VelocityMultiplier = VelocityMultiplier;
+                catalyst.Spread = Spread;
+                catalyst.Crit = Crit;
             }
 
             // Calculate Cooldown and recharge
