@@ -898,30 +898,94 @@ namespace Kourindou.Projectiles
 
         public override void AI()
         {
+            // ----- Spawn ----- //
             if (_JustSpawned)
             {
                 _JustSpawned = false;
             }
 
+            // ----- Triggers ----- //
+            for (int i = 0; i < TriggerCards.Count; i++)
+            {
+                if (TriggerCards[i] == null || TriggerCards[i].Group != (byte)Groups.Trigger)
+                {
+                    continue;
+                }
+
+                switch ((Trigger)TriggerCards[i].Spell)
+                {
+                    case Trigger.Timer1:
+                    case Trigger.Timer2:
+                    case Trigger.Timer3:
+                    case Trigger.Timer4:
+                    case Trigger.Timer5:
+                        {
+                            // Trigger Condition
+                            if (Timer < GetFlooredValue(TriggerCards[i].GetValue(), 1))
+                            {
+                                continue;
+                            }
+
+                            // Execute the payload blocks
+                            ExecutePayload(i);
+                        }
+                        break;
+                }
+            }
+
+            // ----- End ----- //
+
             // Rotation of the projectile
             Projectile.rotation = Projectile.velocity.ToRotation();
+
+            // Increase Timer
+            Timer++;
 
             base.AI();
         }
 
         public override void Kill(int timeLeft)
         {
-            if (TriggerAmount > 0 && TriggerCards.Count > 0)
+            // Execute remaining triggers when the projectile is killed
+            foreach (CastBlock block in Payload)
             {
-                for (int i = 0; i < TriggerCards.Count; i++)
+                if (block.IsDisabled)
                 {
-                    foreach (CastBlock block in Payload)
-                    {
-                        if (block.TriggerID != i || block.IsDisabled)
-                        {
-                            continue;
-                        }
+                    continue;
+                }
 
+                for (int j = 0; j <= block.RepeatAmount; j++)
+                {
+                    HandleCards(block);
+                }
+
+                block.IsDisabled = true;
+            }
+
+            base.Kill(timeLeft);
+        }
+
+        private void ExecutePayload(int ID)
+        {
+            foreach (CastBlock block in Payload)
+            {
+                // If this cast block is disabled => continue
+                if (block.IsDisabled || block.TriggerID != ID)
+                {
+                    continue;
+                }
+
+                // This block has a timer running
+                if (block.Timer > 0)
+                {
+                    block.Timer--;
+                }
+
+                if (block.Timer <= 0)
+                {
+                    // Block has repeats and no delay, fire all at once
+                    if (block.RepeatAmount > 0 && block.Delay <= 0)
+                    {
                         for (int j = 0; j <= block.RepeatAmount; j++)
                         {
                             HandleCards(block);
@@ -929,10 +993,24 @@ namespace Kourindou.Projectiles
 
                         block.IsDisabled = true;
                     }
+
+                    // Block has repeats and a delay set
+                    else if (block.RepeatAmount > 0 && block.Delay > 0)
+                    {
+                        HandleCards(block);
+                        block.Timer = block.Delay;
+
+                        block.RepeatAmount--;
+                    }
+
+                    // No repeat or delay
+                    else
+                    {
+                        HandleCards(block);
+                        block.IsDisabled = true;
+                    }
                 }
             }
-
-            base.Kill(timeLeft);
         }
 
         private void HandleCards(CastBlock block)

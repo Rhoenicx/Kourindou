@@ -60,6 +60,19 @@ namespace Kourindou
                 }
             }
 
+            if (this.HasChildren)
+            {
+                foreach (CastBlock child in this.Children)
+                {
+                    if (block.Children == null)
+                    {
+                        block.Children = new();
+                    }
+
+                    block.Children.Add(child.Clone());
+                }
+            }
+
             return block;
         }
 
@@ -922,15 +935,11 @@ namespace Kourindou
             bool EncounteredProjectile = false;
             bool NoSpread = false;
 
-            
-
             // Loop throught the cards and setup projectiles
             for (int Index = 0; Index < Block.Cards.Count; Index++)
             {
                 for (int k = Projectiles.Count - 1; k >= 0; k--)
                 {
-                    Main.NewText(Block.Cards[Index].Name + " - " + Block.Cards[Index].Group + " " + Block.Cards[Index].Spell + " " + Block.Cards[Index].Variant);
-
                     if (Main.projectile[Projectiles[k]].ModProjectile is SpellCardProjectile proj)
                     {
                         switch (Block.Cards[Index].Group)
@@ -1042,8 +1051,8 @@ namespace Kourindou
 
                                                     case (byte)Formation.OnlySides:
                                                         {
-                                                            proj.Projectile.velocity.RotatedBy(MathHelper.ToRadians(+90));
-                                                            proj.SpawnOffset.RotatedBy(MathHelper.ToRadians(+90));
+                                                            proj.Projectile.velocity = proj.Projectile.velocity.RotatedBy(MathHelper.ToRadians(+90));
+                                                            proj.SpawnOffset = proj.SpawnOffset.RotatedBy(MathHelper.ToRadians(+90));
 
                                                             SpellCardProjectile side = proj.Clone();
                                                             if (side != null)
@@ -1441,7 +1450,7 @@ namespace Kourindou
             Kourindou.Instance.Logger.Debug("MinimumUseTime - " + cast.MinimumUseTime);
             Kourindou.Instance.Logger.Debug("ChanceNoConsumeCard - " + cast.ChanceNoConsumeCard);
             Kourindou.Instance.Logger.Debug("ProjectileAmount - " + cast.ProjectileAmount);
-            Main.NewText("ProjectileAmount - " + cast.ProjectileAmount);
+            //Main.NewText("ProjectileAmount - " + cast.ProjectileAmount);
 
             DebugRecursive(cast.RootBlock, 0);
         }

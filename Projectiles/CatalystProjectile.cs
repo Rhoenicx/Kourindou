@@ -76,7 +76,11 @@ namespace Kourindou.Projectiles
                 return;
             }
 
-            HandleCasting();
+            // The cast is not allowed to be executed
+            if (!FailedToCast)
+            {
+                HandleCasting();
+            }
 
             TurnTowardsCursor();
 
@@ -130,12 +134,6 @@ namespace Kourindou.Projectiles
         {
             // This code is only allowed to execute on the projectile owner's client
             if (Projectile.owner != Main.myPlayer)
-            {
-                return;
-            }
-
-            // The cast is not allowed to be executed
-            if (FailedToCast)
             {
                 return;
             }
