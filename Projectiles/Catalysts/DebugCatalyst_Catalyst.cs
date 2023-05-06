@@ -14,7 +14,7 @@ namespace Kourindou.Projectiles.Catalysts
 {
     public class DebugCatalyst_Catalyst : CatalystProjectile
     {
-        public override void SetDefaults()
+        public override void SetCatalystDefaults()
         {
             // AI
             Projectile.aiStyle = -1;

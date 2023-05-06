@@ -55,6 +55,14 @@ namespace Kourindou.Projectiles
             return false;
         }
 
+        public abstract void SetCatalystDefaults();
+        public override void SetDefaults()
+        {
+            SetCatalystDefaults();
+
+            Projectile.netImportant = true;
+        }
+
         public override void AI()
         {
             // Set player

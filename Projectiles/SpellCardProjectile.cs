@@ -904,8 +904,98 @@ namespace Kourindou.Projectiles
                 _JustSpawned = false;
             }
 
+            // ----- Trajectory ----- //
+            #region Trajectory
+            List<Vector2> NextVelocity = new();
+
+            // Arc
+            if (Arc != 0f)
+            {
+                NextVelocity.Add(Vector2.Normalize(Projectile.velocity.RotatedBy(MathHelper.ToRadians(Arc * 0.5f))) * Math.Abs(Arc));
+            }
+
+            // ZigZag
+            if (ZigZag != 0f)
+            {
+                int Direction = Math.Sign(ZigZag);
+
+                int Flip1 = (int)(120f / Math.Abs(ZigZag));
+                int Flip2 = (int)(Flip1 / 2);
+
+                if (Timer % Flip1 == 0 && Timer != 0)
+                {
+                    NextVelocity.Add(Vector2.Normalize(Projectile.velocity.RotatedBy(MathHelper.ToRadians(+135 * Direction))) * Math.Abs(ZigZag));
+                }
+                else if (Timer % Flip1 == Flip2 && Timer != 0)
+                {
+                    NextVelocity.Add(Vector2.Normalize(Projectile.velocity.RotatedBy(MathHelper.ToRadians(-135 * Direction))) * Math.Abs(ZigZag));
+                }
+            }
+
+            // PingPong
+            if (PingPong != 0f)
+            {
+                int Direction = Math.Sign(PingPong);
+
+                int Flip1 = (int)(120f / Math.Abs(PingPong));
+                int Flip2 = (int)(Flip1 / 2);
+
+                int TurnTime = (int)(Flip2 / 4);
+                const float TotalAngle = 180f;
+                float AnglePerTick = TotalAngle / TurnTime;
+
+                if (Timer % Flip1 >= Flip1 - TurnTime)
+                {
+                    NextVelocity.Add(Vector2.Normalize(Projectile.velocity.RotatedBy(MathHelper.ToRadians(+AnglePerTick * Direction))) * Math.Abs(PingPong));
+                }
+
+                if (Timer % Flip1 >= Flip2 - TurnTime && Timer % Flip1 < Flip2)
+                {
+                    NextVelocity.Add(Vector2.Normalize(Projectile.velocity.RotatedBy(MathHelper.ToRadians(-AnglePerTick * Direction))) * Math.Abs(PingPong));
+                }
+            }
+
+            // Snake
+            if (Snake != 0f)
+            {
+                int Direction = Math.Sign(Snake);
+
+                float WaveLength = 180f / Math.Abs(Snake);
+                float Amplitude = 2f * Math.Abs(Snake);
+
+                float Angle = (float)Math.Sin((2 * MathHelper.Pi * Timer) / WaveLength) * Amplitude * Direction;
+
+                NextVelocity.Add(Vector2.Normalize(Projectile.velocity.RotatedBy(MathHelper.ToRadians(Angle))) * Math.Abs(Snake));
+            }
+
+            // Uncontrolled
+            if (Uncontrolled != 0f)
+            {
+                if (Projectile.owner == Main.myPlayer)
+                {
+                    if (Main.rand.Next(0, (int)(100 / Math.Abs(Uncontrolled))) == 0)
+                    {
+                        NextVelocity.Add(Vector2.Normalize(Projectile.velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(0f, 360f)))));
+                        Projectile.netUpdate = true;
+                    }
+                }
+            }
+
+            if (NextVelocity.Count > 0)
+            {
+                Vector2 newVelocity = Vector2.Zero;
+                for (int i = 0; i < NextVelocity.Count; i++)
+                {
+                    newVelocity += NextVelocity[i];
+                }
+
+                Projectile.velocity = Vector2.Normalize(newVelocity / NextVelocity.Count) * Projectile.velocity.Length();
+            }
+            #endregion
+
             // ----- Triggers ----- //
-            for (int i = 0; i < TriggerCards.Count; i++)
+            #region Trigger
+            for (int i = TriggerCards.Count - 1; i >= 0; i--)
             {
                 if (TriggerCards[i] == null || TriggerCards[i].Group != (byte)Groups.Trigger)
                 {
@@ -921,17 +1011,21 @@ namespace Kourindou.Projectiles
                     case Trigger.Timer5:
                         {
                             // Trigger Condition
-                            if (Timer < GetFlooredValue(TriggerCards[i].GetValue(), 1))
+                            if (Timer >= GetFlooredValue(TriggerCards[i].GetValue(), 1))
                             {
-                                continue;
-                            }
+                                // Execute the payload blocks
+                                ActivateTrigger(i);
 
-                            // Execute the payload blocks
-                            ExecutePayload(i);
+                                // Remove this Trigger
+                                TriggerCards.RemoveAt(i);
+                            }
                         }
                         break;
                 }
             }
+
+            ExecutePayload();
+            #endregion
 
             // ----- End ----- //
 
@@ -965,12 +1059,22 @@ namespace Kourindou.Projectiles
             base.Kill(timeLeft);
         }
 
-        private void ExecutePayload(int ID)
+        private void ActivateTrigger(int ID)
+        {
+            foreach (CastBlock block in Payload)
+            {
+                if (block.TriggerID == ID)
+                { 
+                    block.TriggerActivated = true;
+                }
+            }
+        }
+        private void ExecutePayload()
         {
             foreach (CastBlock block in Payload)
             {
                 // If this cast block is disabled => continue
-                if (block.IsDisabled || block.TriggerID != ID)
+                if (block.IsDisabled || !block.TriggerActivated)
                 {
                     continue;
                 }

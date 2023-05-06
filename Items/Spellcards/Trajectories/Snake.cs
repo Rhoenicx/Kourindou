@@ -12,7 +12,7 @@ namespace Kourindou.Items.Spellcards.Trajectories
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.Snake, Type);
             
-            DisplayName.SetDefault("Aiming");
+            DisplayName.SetDefault("Snake");
             Tooltip.SetDefault("");
         }
 
