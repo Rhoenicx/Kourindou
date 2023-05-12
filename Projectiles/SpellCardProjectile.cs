@@ -896,6 +896,12 @@ namespace Kourindou.Projectiles
             SetProjectileDefaults();
         }
 
+        public override ModProjectile Clone(Terraria.Projectile newEntity)
+        {
+            TriggerCards = new List<CardItem>();
+            return base.Clone(newEntity);
+        }
+
         public override void AI()
         {
             // ----- Spawn ----- //

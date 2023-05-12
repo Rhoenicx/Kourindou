@@ -1190,7 +1190,11 @@ namespace Kourindou
                         }
 
                         proj.TriggerAmount = Block.TriggerAmount;
-                        proj.TriggerCards = Block.TriggerCards;
+
+                        for (int y = 0; y < Block.TriggerCards.Count; y++)
+                        {
+                            proj.TriggerCards.Add(Block.TriggerCards[y]);
+                        }
                     }
 
                     // Apply stats
