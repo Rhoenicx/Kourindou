@@ -20,6 +20,7 @@ using Kourindou.Tiles.Plants;
 using Kourindou.Projectiles.Plushies;
 using ReLogic.Content;
 using static Terraria.ModLoader.ModContent;
+using Kourindou.Items.Catalysts;
 
 namespace Kourindou
 {
@@ -58,12 +59,11 @@ namespace Kourindou
         // Mod config
         internal static KourindouConfigClient KourindouConfigClient;
 
-        // Right clicks
-        private static List<Func<bool>> RightClickOverrides;
-
         // Keybinds
         public static ModKeybind SkillKey;
-        public static ModKeybind UltimateKey;
+
+        // Catalyst indentifiers
+        public static int NewCatalystID = 0;
 
         // Kourindou Mod Instance
         public Kourindou()
@@ -71,6 +71,7 @@ namespace Kourindou
             Instance = this;
         }
 
+        #region GensokyoMod
         // Gensokyo Mod Instance
         public static Mod Gensokyo;
         public static bool GensokyoLoaded;
@@ -103,18 +104,17 @@ namespace Kourindou
         public static int Gensokyo_Fairy_Stone_Type;
         public static int Gensokyo_Fairy_Sunflower_Type;
         public static int Gensokyo_Fairy_Thorn_Type;
+        #endregion
 
+        #region HairLoader
         // Hairloader Mod Instance
         public static Mod HairLoader;
         public static bool HairLoaderLoaded;
-
+        #endregion
         // Load
         public override void Load()
         {
-            RightClickOverrides = new List<Func<bool>>();
-
             SkillKey = KeybindLoader.RegisterKeybind(this, "Skill", "Mouse2");
-            UltimateKey = KeybindLoader.RegisterKeybind(this, "Ultimate", "Mouse2");
 
             SoundDictionary = new Dictionary<string, SoundStyle>
             {
@@ -124,6 +124,8 @@ namespace Kourindou
 
             FabricItems = new HashSet<int>();
             ThreadItems = new HashSet<int>();
+
+            KourindouSpellcardSystem.Load();
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
@@ -139,13 +141,7 @@ namespace Kourindou
         {
             KourindouConfigClient = null;
 
-            if (RightClickOverrides != null) {
-                RightClickOverrides.Clear();
-                RightClickOverrides = null;
-            }
-
             SkillKey = null;
-            UltimateKey = null;
 
             Instance = null;
             Gensokyo = null;
@@ -155,6 +151,8 @@ namespace Kourindou
 
             FabricItems = null;
             ThreadItems = null;
+
+            KourindouSpellcardSystem.Unload();
 
             //code that has to be run on clients only!
             if (!Main.dedServ)
@@ -563,31 +561,6 @@ namespace Kourindou
                     break;
                 }
 
-                case KourindouMessageType.AlternateFire:
-                {
-                    byte PlayerID = reader.ReadByte();
-                    bool UsedAttack = reader.ReadBoolean();
-                    int AttackID = reader.ReadInt32();
-                    int AttackCounter = reader.ReadInt32();
-
-                    KourindouPlayer player = Main.player[PlayerID].GetModPlayer<KourindouPlayer>();
-                    player.UsedAttack = UsedAttack;
-                    player.AttackID = AttackID;
-                    player.AttackCounter = AttackCounter;
-
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        ModPacket packet = GetPacket();
-                        packet.Write((byte) KourindouMessageType.AlternateFire);
-                        packet.Write((byte) PlayerID);
-                        packet.Write((bool) UsedAttack);
-                        packet.Write((int) AttackID);
-                        packet.Write((int) AttackCounter);
-                        packet.Send(-1, whoAmI);
-                    }
-                    break;    
-                }
-
                 case KourindouMessageType.RanPlushieStacks:
                 {
                     byte PlayerID = reader.ReadByte();
@@ -612,18 +585,9 @@ namespace Kourindou
                     break;
             }
         }
-
-        public static bool OverrideRightClick() 
-        {
-            foreach(var func in RightClickOverrides) {
-                if(func()) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
  
+        public static int GetNewCatalystID() => NewCatalystID++;
+
         public void LoadPlushieTextures()
         {
             if (PlushieTileTextures == null)
