@@ -15,8 +15,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Kaguya Houraisan Plushie");
-            Tooltip.SetDefault("The exiled princess of the moon");
+            // DisplayName.SetDefault("Kaguya Houraisan Plushie");
+            // Tooltip.SetDefault("The exiled princess of the moon");
         }
 
         public override string AddEffectTooltip()

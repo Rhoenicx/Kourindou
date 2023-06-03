@@ -13,8 +13,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.Deceleration, Type);
             
-            DisplayName.SetDefault("Deceleration");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Deceleration");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

@@ -7,6 +7,7 @@ using static Terraria.ModLoader.ModContent;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
 using Kourindou.Buffs;
 using Microsoft.Xna.Framework;
+using System.Linq;
 
 namespace Kourindou
 {
@@ -28,21 +29,21 @@ namespace Kourindou
             }
         }
 
-        public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+        public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
         {
             // Medicine Melancholy debuff present increase damage
             if (DebuffMedicineMelancholy)
             {
-                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
+                modifiers.FinalDamage *= 1f + (0.04f * (DebuffMedicineMelancholyStacks + 1));
             }
         }
 
-        public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
         {
             // Medicine Melancholy debuff present increase damage
             if (DebuffMedicineMelancholy)
             {
-                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
+                modifiers.FinalDamage *= 1f + (0.04f * (DebuffMedicineMelancholyStacks + 1));
             }
         }
 
@@ -83,28 +84,28 @@ namespace Kourindou
         }
 
         // Remove items from shop
-        public override void SetupShop(int type, Chest shop, ref int nextSlot)
+        public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
         {
             // Here we remove Pink and Black Thread items from the Clothier's shop
-            if (type == NPCID.Clothier)
+            if (npc.type == NPCID.Clothier)
             {
                 // Remove Item form shopinventory
-                for (int i = 0; i < nextSlot; i++)
+                for (int i = 0; i < items.Length; i++)
                 {
-                    if (shop.item[i].type == ItemID.BlackThread || shop.item[i].type == ItemID.PinkThread)
+                    if (items[i].type == ItemID.BlackThread || items[i].type == ItemID.PinkThread)
                     {
-                        shop.item[i] = new Item();
+                        items[i] = new Item();
                     }
                 }
 
                 // Remove empty slots from shopinventory
-                for (int i = nextSlot; i >= 0 ; i--)
+                for (int i = items.Length; i >= 0 ; i--)
                 {
-                    if (shop.item[i].type == ItemID.None)
+                    if (items[i].type == ItemID.None)
                     {
-                        for (int a = i; a < nextSlot; a++)
+                        for (int a = i; a < items.Length; a++)
                         {
-                            shop.item[a] = shop.item[a + 1];
+                            items[a] = items[a + 1];
                         }
                     }
                 }

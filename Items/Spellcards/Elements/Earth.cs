@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Elements
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Element, (byte)Element.Earth, Type);
             
-            DisplayName.SetDefault("Earth");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Earth");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

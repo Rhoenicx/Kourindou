@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Seiran Plushie");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Seiran Plushie");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetDefaults()

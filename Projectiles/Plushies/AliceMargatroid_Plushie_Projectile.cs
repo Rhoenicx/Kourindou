@@ -13,7 +13,7 @@ namespace Kourindou.Projectiles.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Alice Margatroid Plushie");
+            // DisplayName.SetDefault("Alice Margatroid Plushie");
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 0; 
         }

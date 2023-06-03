@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Elements
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Element, (byte)Element.Metal, Type);
             
-            DisplayName.SetDefault("Metal");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Metal");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

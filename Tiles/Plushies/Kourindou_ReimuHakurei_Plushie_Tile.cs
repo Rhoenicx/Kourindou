@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Enums;
 using Terraria.DataStructures;
@@ -47,8 +48,8 @@ namespace Kourindou.Tiles.Plushies
             TileID.Sets.DisableSmartCursor[Type] = true;
 
             // Map Entry
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Reimu Hakurei Plushie Kourindou ver.");
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Reimu Hakurei Plushie Kourindou ver.");
             AddMapEntry(new Color(109, 17, 28), name);
 
             plushieItem = ItemType<Kourindou_ReimuHakurei_Plushie_Item>();

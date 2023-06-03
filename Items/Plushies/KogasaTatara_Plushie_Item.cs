@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Kogasa Tatara Plushie");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Kogasa Tatara Plushie");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetDefaults()

@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Kasen Ibaraki Plushie");
-            Tooltip.SetDefault("A mountain hermit. Her hair buns are very cute");
+            // DisplayName.SetDefault("Kasen Ibaraki Plushie");
+            // Tooltip.SetDefault("A mountain hermit. Her hair buns are very cute");
         }
 
         public override string AddEffectTooltip()

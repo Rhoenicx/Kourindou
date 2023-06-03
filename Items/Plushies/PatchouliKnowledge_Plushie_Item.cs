@@ -13,13 +13,13 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Patchouli Knowledge Plushie");
-            Tooltip.SetDefault("The magician of the scarlet mansion");
+            // DisplayName.SetDefault("Patchouli Knowledge Plushie");
+            // Tooltip.SetDefault("The magician of the scarlet mansion");
         }
 
         public override string AddEffectTooltip()
         {
-            return "Doubled magic damage but non-magic attacks deal no damage\r\n" +
+            return "Doubled magic damage, but non-magic attacks can not deal damage\r\n" +
                     "Movement speed is halved, +30% magic crit, -50% mana cost";
         }
 
@@ -89,12 +89,6 @@ namespace Kourindou.Items.Plushies
             // Increase Magic damage by 2 times
             player.GetDamage(DamageClass.Magic) *= 2.00f;
 
-            // All other damage types deal zero, really into negatives because other mods might increase this
-            player.GetDamage(DamageClass.Ranged).Flat = 0f;
-            player.GetDamage(DamageClass.Summon).Flat = 0f;
-            player.GetDamage(DamageClass.Melee).Flat = 0f;
-            player.GetDamage(DamageClass.Throwing).Flat = 0f;
-
             // reduce movespeed
             if (player.accRunSpeed > player.maxRunSpeed)
             {
@@ -108,15 +102,44 @@ namespace Kourindou.Items.Plushies
             }
         }
 
-        public override bool? PlushieCanHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int amountEquipped)
+        public override bool PlushieCanHitNPC(Player player, NPC target, int amountEquipped)
         {
-            if ((item != null && (item.CountsAsClass(DamageClass.Melee) || item.CountsAsClass(DamageClass.Ranged) || item.CountsAsClass(DamageClass.Throwing)))
-                || (proj != null && (proj.CountsAsClass(DamageClass.Melee) || proj.CountsAsClass(DamageClass.Ranged) || proj.CountsAsClass(DamageClass.Throwing) || proj.minion)))
+            if (player.HeldItem.CountsAsClass(DamageClass.Magic) || player.HeldItem.CountsAsClass(DamageClass.MagicSummonHybrid))
             {
-                return false;
+                return base.PlushieCanHitNPC(player, target, amountEquipped);
             }
 
-            return base.PlushieCanHit(myPlayer, item, proj, npc, player, amountEquipped);
+            return false;
+        }
+
+        public override bool PlushieCanHitNPCWithProj(Player player, Projectile proj, NPC target, int amountEquipped)
+        {
+            if (proj.CountsAsClass(DamageClass.Magic) || proj.CountsAsClass(DamageClass.MagicSummonHybrid))
+            {
+                return base.PlushieCanHitNPCWithProj(player, proj, target, amountEquipped);
+            }
+
+            return false;
+        }
+
+        public override bool PlushieCanHitPvp(Player player, Item item, Player target, int amountEquipped)
+        {
+            if (item.CountsAsClass(DamageClass.Magic) || item.CountsAsClass(DamageClass.MagicSummonHybrid))
+            {
+                return base.PlushieCanHitPvp(player, item, target, amountEquipped);
+            }
+
+            return false;
+        }
+
+        public override bool PlushieCanHitPvpWithProj(Player player, Projectile proj, Player target, int amountEquipped)
+        {
+            if (proj.CountsAsClass(DamageClass.Magic) || proj.CountsAsClass(DamageClass.MagicSummonHybrid))
+            {
+                return base.PlushieCanHitPvpWithProj(player, proj, target, amountEquipped);
+            }
+
+            return false;
         }
     }
 }

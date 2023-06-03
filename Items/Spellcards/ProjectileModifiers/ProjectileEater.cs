@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.ProjectileEater, Type);
             
-            DisplayName.SetDefault("Projectile Eater");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Projectile Eater");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

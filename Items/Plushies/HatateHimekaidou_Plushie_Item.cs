@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Hatate Himekaidou Plushie");
-            Tooltip.SetDefault("The reporter for the Kakashi Spirit News. Uses thoughtography to obtain material for her newspaper");
+            // DisplayName.SetDefault("Hatate Himekaidou Plushie");
+            // Tooltip.SetDefault("The reporter for the Kakashi Spirit News. Uses thoughtography to obtain material for her newspaper");
         }
 
         public override void SetDefaults()

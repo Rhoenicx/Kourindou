@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Marisa Kirisame Plushie Kourindou ver.");
-            Tooltip.SetDefault("This plushie has a tracker inside it. Marisa is now coming to steal your goods, da ze!");
+            // DisplayName.SetDefault("Marisa Kirisame Plushie Kourindou ver.");
+            // Tooltip.SetDefault("This plushie has a tracker inside it. Marisa is now coming to steal your goods, da ze!");
         }
 
         public override void SetDefaults()

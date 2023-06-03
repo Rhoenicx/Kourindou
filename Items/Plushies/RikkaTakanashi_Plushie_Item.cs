@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Rikka Takanashi Plushie");
-            Tooltip.SetDefault("Reality rejected... synapses shattered... be vanished from this world!");
+            // DisplayName.SetDefault("Rikka Takanashi Plushie");
+            // Tooltip.SetDefault("Reality rejected... synapses shattered... be vanished from this world!");
         }
 
         public override void SetDefaults()

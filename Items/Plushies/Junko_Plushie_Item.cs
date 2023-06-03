@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Junko Plushie");
-            Tooltip.SetDefault("A divine spirit, and the sworn enemy of the Lunarians. She can purify anything");
+            // DisplayName.SetDefault("Junko Plushie");
+            // Tooltip.SetDefault("A divine spirit, and the sworn enemy of the Lunarians. She can purify anything");
         }
 
         public override void SetDefaults()

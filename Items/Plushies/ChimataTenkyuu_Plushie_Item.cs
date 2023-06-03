@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Chimata Tenkyuu Plushie");
-            Tooltip.SetDefault("The overseer of the market. Now where is that bustling marketplace...");
+            // DisplayName.SetDefault("Chimata Tenkyuu Plushie");
+            // Tooltip.SetDefault("The overseer of the market. Now where is that bustling marketplace...");
         }
 
         public override void SetDefaults()

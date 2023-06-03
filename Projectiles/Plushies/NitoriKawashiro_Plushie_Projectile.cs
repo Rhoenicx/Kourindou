@@ -13,7 +13,7 @@ namespace Kourindou.Projectiles.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Nitori Kawashiro Plushie");
+            // DisplayName.SetDefault("Nitori Kawashiro Plushie");
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 0; 
         }

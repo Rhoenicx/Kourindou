@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Trajectories
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.PingPong, Type);
             
-            DisplayName.SetDefault("Ping-Pong");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Ping-Pong");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Multiplications
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Multiplication, (byte)Multiplication.MultiplyBy3, Type);
             
-            DisplayName.SetDefault("Multiply by 3");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Multiply by 3");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

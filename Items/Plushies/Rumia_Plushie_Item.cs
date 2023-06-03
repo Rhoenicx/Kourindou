@@ -13,8 +13,10 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Rumia Plushie");
-            Tooltip.SetDefault("The youkai of the dusk");
+            // DisplayName.SetDefault("Rumia Plushie");
+            // Tooltip.SetDefault("The youkai of the dusk");
+
+            ItemID.Sets.IsLavaImmuneRegardlessOfRarity[Type] = true;
         }
 
         public override string AddEffectTooltip()
@@ -71,11 +73,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override bool? CanBurnInLava()
-        {
-            return false;
         }
 
         public override void PlushieUpdateEquips(Player player, int amountEquipped)

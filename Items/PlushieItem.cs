@@ -225,56 +225,97 @@ namespace Kourindou.Items
 
         }
 
-        public virtual bool PlushieCanbeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot, int amountEquipped)
+        public virtual bool PlushieCanBeHitByNPC(Player player, NPC npc, ref int cooldownSlot, int amountEquipped)
         {
             return true;
         }
 
-        public virtual bool? PlushieCanHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int amountEquipped)
+        public virtual bool PlushieCanHitNPC(Player player, NPC target, int amountEquipped)
         {
             return true;
         }
 
-        public virtual void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
-        { 
-        
-        }
-
-        public virtual void PlushieOnHitBy(Player myPlayer, Projectile proj, NPC npc, int damage, bool crit, int amountEquipped)
-        { 
-        
-        }
-
-        public virtual void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
-        { 
-        
-        }
-        public virtual void PlushieHurt(Player myPlayer, bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter, int amountEquipped)
-        { 
-
-        }
-
-        public virtual bool PlushiePreKill(Player myPlayer, double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, int amountEquipped)
+        public virtual bool PlushieCanHitNPCWithProj(Player player, Projectile proj, NPC target, int amountEquipped)
         {
             return true;
         }
 
-        public virtual void PlushieModifyWeaponCrit(Player myPlayer, Item item, ref float crit, int amountEquipped)
+        public virtual bool PlushieCanHitPvp(Player player, Item item, Player target, int amountEquipped)
+        {
+            return true;
+        }
+
+        public virtual bool PlushieCanHitPvpWithProj(Player player, Projectile proj, Player target, int amountEquipped)
+        {
+            return true;
+        }
+
+        public virtual void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
+        { 
+        
+        }
+       
+        public virtual void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
+        {
+
+        }
+
+        public virtual void PlushieOnHitByNPC(Player player, NPC npc, Player.HurtInfo hurtInfo, int amountEquipped)
         { 
         
         }
 
-        public virtual void PlushieModifyItemScale(Player myPlayer, Item item, ref float scale, int amountEquipped)
+        public virtual void PlushieOnHitByProjectile(Player player, Projectile proj, Player.HurtInfo hurtInfo, int amountEquipped)
+        {
+
+        }
+
+        public virtual void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
         { 
         
         }
 
-        public virtual void PlushieKill(Player myPlayer, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource, int amountEquipped)
+        public virtual void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        {
+
+        }
+
+        public virtual void PlushieOnHurt(Player player, Player.HurtInfo info, int amountEquipped)
+        { 
+
+        }
+
+        public virtual void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
+        {
+
+        }
+
+        public virtual bool PlushiePreKill(Player player, double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, int amountEquipped)
+        {
+            return true;
+        }
+
+        public virtual void PlushieModifyWeaponCrit(Player player, Item item, ref float crit, int amountEquipped)
         { 
         
         }
 
-        public virtual void PlushieUpdateBadLifeRegen(Player myPlayer, int amountEquipped)
+        public virtual void PlushieModifyItemScale(Player player, Item item, ref float scale, int amountEquipped)
+        { 
+        
+        }
+
+        public virtual void PlushieKill(Player player, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource, int amountEquipped)
+        {
+        
+        }
+
+        public virtual void PlushieKillPvp(Player targetPlayer, Player sourcePlayer, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource, int amountEquipped)
+        {
+
+        }
+
+        public virtual void PlushieUpdateBadLifeRegen(Player player, int amountEquipped)
         { 
         
         }

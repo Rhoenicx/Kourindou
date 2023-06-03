@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Enums;
 using Terraria.DataStructures;
@@ -51,8 +52,8 @@ namespace Kourindou.Tiles.Furniture
             TileID.Sets.DisableSmartCursor[Type] = true;
             AnimationFrameHeight = 56;
 
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Weaving Loom");
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Weaving Loom");
             AddMapEntry(new Color(114, 114, 114), name);
         }
 

@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Joon Yorigami Plushie");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Joon Yorigami Plushie");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetDefaults()

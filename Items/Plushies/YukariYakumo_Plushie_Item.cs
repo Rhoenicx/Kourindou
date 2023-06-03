@@ -18,8 +18,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Yukari Yakumo Plushie");
-            Tooltip.SetDefault("The mastermind gap youkai. Perhaps this doll borrows part of her power");
+            // DisplayName.SetDefault("Yukari Yakumo Plushie");
+            // Tooltip.SetDefault("The mastermind gap youkai. Perhaps this doll borrows part of her power");
         }
 
         public override string AddEffectTooltip()
@@ -98,7 +98,7 @@ namespace Kourindou.Items.Plushies
                 if (player.GetModPlayer<KourindouPlayer>().SkillKeyPressed)
                 {
                     // Calculate the destination
-                    Vector2 destination = new Vector2(Main.MouseWorld.X - player.width / 2f, Main.MouseWorld.Y);
+                    Vector2 destination = new(Main.MouseWorld.X - player.width / 2f, Main.MouseWorld.Y);
 
                     // Inverted gravity support
                     if ((int)player.gravDir == 1)
@@ -115,28 +115,11 @@ namespace Kourindou.Items.Plushies
                             // Teleport player
                             player.Teleport(destination, 1, 0);
 
-                            // Deal damage if the player already has this debuff, aka used tp before
-                            if (player.HasBuff(BuffID.ChaosState))
-                            {
-                                player.Hurt(
-                                    (int)Main.rand.Next(0, 2) == 0 ? PlayerDeathReason.ByCustomReason(player.name + " played with the boundaries too much") :
-                                        PlayerDeathReason.ByCustomReason(player.name + " breached the boundary between life and death"),
-                                    (int)Math.Ceiling(((player.statLifeMax2 * 0.1) / (1 - player.endurance) + (Main.expertMode ? player.statDefense * 0.75 : player.statDefense * 0.5))),
-                                    0,
-                                    false,
-                                    false,
-                                    false,
-                                    -1);
-                            }
-
-                            // Add ChaosState buff
-                            player.AddBuff(BuffID.ChaosState, 300);
-
                             // Inform other clients of the teleport
                             if (Main.netMode == NetmodeID.MultiplayerClient)
                             {
                                 NetMessage.SendData(
-                                    MessageID.Teleport,
+                                    MessageID.TeleportEntity,
                                     -1, -1, null,
                                     0,
                                     player.whoAmI,

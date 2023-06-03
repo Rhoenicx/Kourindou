@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.Sniper, Type);
             
-            DisplayName.SetDefault("Sniper");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Sniper");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

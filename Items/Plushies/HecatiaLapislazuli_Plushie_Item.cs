@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Hecatia Lapislazuli Plushie");
-            Tooltip.SetDefault("The Goddess of Hell. She has a questionable fashion sense");
+            // DisplayName.SetDefault("Hecatia Lapislazuli Plushie");
+            // Tooltip.SetDefault("The Goddess of Hell. She has a questionable fashion sense");
         }
 
         public override void SetDefaults()

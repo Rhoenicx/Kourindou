@@ -13,7 +13,7 @@ namespace Kourindou.Projectiles.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Hata No Kokoro Plushie");
+            // DisplayName.SetDefault("Hata No Kokoro Plushie");
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 0; 
         }

@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Specials
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Special, (byte)Special.RandomCard, Type);
             
-            DisplayName.SetDefault("Random card");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Random card");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

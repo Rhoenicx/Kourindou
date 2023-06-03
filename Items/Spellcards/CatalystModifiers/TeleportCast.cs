@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.TeleportCast, Type);
             
-            DisplayName.SetDefault("Teleport Cast");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Teleport Cast");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

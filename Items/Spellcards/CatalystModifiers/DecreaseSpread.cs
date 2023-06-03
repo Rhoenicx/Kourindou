@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.DecreaseSpread, Type);
             
-            DisplayName.SetDefault("Decrease Spread");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Decrease Spread");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

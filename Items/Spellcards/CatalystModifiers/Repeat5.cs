@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.Repeat5, Type);
             
-            DisplayName.SetDefault("Repeat 5");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Repeat 5");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

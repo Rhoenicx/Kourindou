@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Nitori Kawashiro Plushie");
-            Tooltip.SetDefault("A kappa that can control water. Like all other kappa, she's skilled in technology and engineering!");
+            // DisplayName.SetDefault("Nitori Kawashiro Plushie");
+            // Tooltip.SetDefault("A kappa that can control water. Like all other kappa, she's skilled in technology and engineering!");
         }
 
         public override void SetDefaults()

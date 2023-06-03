@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -19,7 +20,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Flandre's Explosive Crit");    
+			// DisplayName.SetDefault("Flandre's Explosive Crit");
 		}
 		
         public override void SetDefaults()
@@ -33,9 +34,11 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			Projectile.penetrate = -1;
             Projectile.DamageType = DamageClass.Magic;
             Projectile.damage = 1;
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.idStaticNPCHitCooldown = TimeAlive;
 
-			// Hitbox
-			Projectile.width = 98;
+            // Hitbox
+            Projectile.width = 98;
 			Projectile.height = 98;
 
 			// Movement
@@ -44,6 +47,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			
 			// Visual
 			Projectile.scale = 1.5f;
+            Projectile.rotation = MathHelper.ToRadians(Main.rand.Next(0, 360));
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -68,54 +72,16 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
         {
             if (JustSpawned)
             {
-                if ((int)Projectile.ai[0] < 10000)
-                {
-                    Main.npc[(int)Projectile.ai[0]].immune[Projectile.owner] = 0;
-                }
-                else
-                {
-                    Projectile.ai[0] -= 10000f;
+                SoundEngine.PlaySound(
+                    SoundID.DD2_ExplosiveTrapExplode with { Volume = .8f, PitchVariance = .1f },
+                    Projectile.Center);
 
-                    Main.player[(int)Projectile.ai[0]].immuneTime = 0;
-                }
-
-                Projectile.rotation = MathHelper.ToRadians(Main.rand.Next(0, 360));
                 JustSpawned = false;
             }
 
             Frame = (int)(Timer / (TimeAlive / Frames));
 
             Timer += 1;
-        }
-
-        public override bool? CanHitNPC(NPC target)
-        {
-            if (Timer > 1f)
-            {
-                return false;
-            }
-
-            return base.CanHitNPC(target);
-        }
-
-        public override bool CanHitPvp(Player player)
-        {
-            if (Timer > 1f)
-            {
-                return false;
-            }
-
-            return base.CanHitPvp(player);
-        }
-
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-        {
-	        target.immune[Projectile.owner] = (int)Projectile.ai[1];
-        }
-
-        public override void OnHitPvp(Player target, int damage, bool crit)
-        {
-	        target.immuneTime = (int)Projectile.ai[1];
         }
     }
 }

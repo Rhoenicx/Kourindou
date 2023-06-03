@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Formations
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.DoubleScatter, Type);
             
-            DisplayName.SetDefault("Double Scatter");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Double Scatter");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

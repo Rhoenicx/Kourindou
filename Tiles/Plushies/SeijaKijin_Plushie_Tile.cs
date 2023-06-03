@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Enums;
 using Terraria.DataStructures;
@@ -58,8 +59,8 @@ namespace Kourindou.Tiles.Plushies
             TileID.Sets.DisableSmartCursor[Type] = true;
 
             // Map Entry
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Seija Kijin Plushie");
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Seija Kijin Plushie");
             AddMapEntry(new Color(0, 0, 0), name);
 
             plushieItem = ItemType<SeijaKijin_Plushie_Item>();

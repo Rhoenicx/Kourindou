@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.EliminateRecharge, Type);
             
-            DisplayName.SetDefault("Eliminate Recharge");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Eliminate Recharge");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

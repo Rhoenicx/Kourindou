@@ -9,7 +9,7 @@ namespace Kourindou.Items.CraftingMaterials
     public class WhiteThread : ModItem
     {
         public override void SetStaticDefaults() {
-			DisplayName.SetDefault("White Thread");
+			// DisplayName.SetDefault("White Thread");
 		}
 
         public override void SetDefaults()
@@ -58,7 +58,7 @@ namespace Kourindou.Items.CraftingMaterials
                     // Remove colors on water
                     CreateRecipe(1)
                         .AddIngredient(i, 1)
-                        .AddCondition(Recipe.Condition.NearWater)
+                        .AddCondition(Condition.NearWater)
                         .Register();
 
                     // Remove colors on dye vat

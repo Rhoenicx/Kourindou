@@ -16,8 +16,8 @@ namespace Kourindou.Items.Catalysts
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Testing Catalyst 1");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Testing Catalyst 1");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCatalystDefaults()

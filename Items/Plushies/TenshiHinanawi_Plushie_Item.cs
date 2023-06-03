@@ -7,6 +7,8 @@ using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
+using Terraria.Map;
+using Terraria.WorldBuilding;
 
 namespace Kourindou.Items.Plushies
 {
@@ -14,8 +16,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Tenshi Hinanawi Plushie");
-            Tooltip.SetDefault("The unruly celestial. She's bored of Heaven, it seems");
+            // DisplayName.SetDefault("Tenshi Hinanawi Plushie");
+            // Tooltip.SetDefault("The unruly celestial. She's bored of Heaven, it seems");
         }
 
         public override string AddEffectTooltip()
@@ -92,18 +94,36 @@ namespace Kourindou.Items.Plushies
             player.statManaMax2 += player.statManaMax2;
         }
 
-        public override void PlushieOnHitBy(Player myPlayer, Projectile proj, NPC npc, int damage, bool crit, int amountEquipped)
+        public override void PlushieOnHurt(Player player, Player.HurtInfo info, int amountEquipped)
         {
-            myPlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage = damage;
-            myPlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = true;
+            player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage = info.Damage;
+            player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = true;
         }
 
-        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
+        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
         {
-            if (myPlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge)
+            if (player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge)
             {
-                damage += myPlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage * 5;
-                myPlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = false;
+                modifiers.SourceDamage += player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage * 5;
+                player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = false;
+            }
+        }
+
+        public override void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        {
+            if (player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge)
+            {
+                modifiers.SourceDamage += player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage * 5;
+                player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = false;
+            }
+        }
+
+        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
+        {
+            if (sourcePlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge)
+            {
+                info.SourceDamage += sourcePlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage * 5;
+                sourcePlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = false;
             }
         }
     }

@@ -6,6 +6,8 @@ using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
+using Terraria.Map;
+using Terraria.DataStructures;
 
 namespace Kourindou.Items.Plushies
 {
@@ -13,8 +15,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Chen Plushie");
-            Tooltip.SetDefault("The cutest shikigami's shikigami!");
+            // DisplayName.SetDefault("Chen Plushie");
+            // Tooltip.SetDefault("The cutest shikigami's shikigami!");
         }
 
         public override string AddEffectTooltip()
@@ -88,30 +90,38 @@ namespace Kourindou.Items.Plushies
             // On Kill effect handled in player
         }
 
-        public override void PlushieHurt(Player myPlayer, bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter, int amountEquipped)
+        public override void PlushieOnHurt(Player player, Player.HurtInfo info, int amountEquipped)
         {
-            myPlayer.AddBuff(BuffID.ShadowDodge, 180);
+            player.AddBuff(BuffID.ShadowDodge, 180);
         }
 
-        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            if (npc != null && npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
+            if (target.life <= 0 && !target.friendly && target.lifeMax > 5)
             {
                 // On kill gain rapid healing, well fed and 25 health
-                myPlayer.AddBuff(BuffID.RapidHealing, 720);
-                myPlayer.AddBuff(BuffID.WellFed, 720);
-                myPlayer.statLife += 25;
-                myPlayer.HealEffect(25, true);
+                player.AddBuff(BuffID.RapidHealing, 720);
+                player.AddBuff(BuffID.WellFed, 720);
+                player.Heal(25);
             }
+        }
 
-            if (player != null && (player.statLife <= 0 || player.dead))
+        public override void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
+        {
+            if (target.life <= 0 && !target.friendly && target.lifeMax > 5)
             {
                 // On kill gain rapid healing, well fed and 25 health
-                myPlayer.AddBuff(BuffID.RapidHealing, 720);
-                myPlayer.AddBuff(BuffID.WellFed, 720);
-                myPlayer.statLife += 25;
-                myPlayer.HealEffect(25, true);
+                player.AddBuff(BuffID.RapidHealing, 720);
+                player.AddBuff(BuffID.WellFed, 720);
+                player.Heal(25);
             }
+        }
+
+        public override void PlushieKillPvp(Player targetPlayer, Player sourcePlayer, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource, int amountEquipped)
+        {
+            sourcePlayer.AddBuff(BuffID.RapidHealing, 720);
+            sourcePlayer.AddBuff(BuffID.WellFed, 720);
+            sourcePlayer.Heal(25);
         }
     }
 }

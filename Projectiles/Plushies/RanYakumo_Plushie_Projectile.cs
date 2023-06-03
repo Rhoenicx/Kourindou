@@ -13,7 +13,7 @@ namespace Kourindou.Projectiles.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Ran Yakumo Plushie");
+            // DisplayName.SetDefault("Ran Yakumo Plushie");
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 0; 
         }

@@ -10,8 +10,8 @@ namespace Kourindou.Items.Seeds
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Cotton Seeds");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Cotton Seeds");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetDefaults()

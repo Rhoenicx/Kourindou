@@ -13,8 +13,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.LifetimeDown, Type);
             
-            DisplayName.SetDefault("Lifetime Down");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Lifetime Down");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

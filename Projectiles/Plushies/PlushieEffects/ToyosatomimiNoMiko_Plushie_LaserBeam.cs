@@ -23,7 +23,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Miko's laser");
+            // DisplayName.SetDefault("Miko's laser");
         }
 
         public override void SetDefaults()
@@ -37,6 +37,8 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
             Projectile.penetrate = -1;
             Projectile.DamageType = DamageClass.Magic;
             Projectile.damage = 1;
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.idStaticNPCHitCooldown = 20;
 
             // Hitbox
             Projectile.width = 10;
@@ -97,10 +99,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
             return (Projectile.timeLeft < LifeTime - StartTime) || (Projectile.timeLeft > EndTime);
         }
 
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-        {
-            target.immune[Projectile.owner] = 20;
-        }
+        public override bool ShouldUpdatePosition() => false;
 
         public override void AI()
         {
@@ -127,19 +126,16 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
             }
         }
 
-        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-            crit = Projectile.ai[1] == 1f ? true : false;
-        }
-
-        public override void ModifyHitPvp(Player target, ref int damage, ref bool crit)
-        {
-            crit = Projectile.ai[1] == 1f ? true : false;
-        }
-
-        public override bool ShouldUpdatePosition()
-        {
-            return false;
+            if (Projectile.ai[1] == 1f)
+            {
+                modifiers.SetCrit();
+            }
+            else
+            {
+                modifiers.DisableCrit();
+            }
         }
     }
 }

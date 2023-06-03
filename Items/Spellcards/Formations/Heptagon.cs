@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Formations
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.Heptagon, Type);
             
-            DisplayName.SetDefault("Heptagon");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Heptagon");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

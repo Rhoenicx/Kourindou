@@ -8,8 +8,8 @@ namespace Kourindou.Buffs
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Fumo Cola");
-            Description.SetDefault("Increases attack speed by {AttackSpeed}% and movement speed by {MovementSpeed}%");
+            // DisplayName.SetDefault("Fumo Cola");
+            // Description.SetDefault("Increases attack speed by {AttackSpeed}% and movement speed by {MovementSpeed}%");
             Main.debuff[Type] = false;
             Main.pvpBuff[Type] = true;
             Main.buffNoSave[Type] = false;
@@ -18,14 +18,14 @@ namespace Kourindou.Buffs
             BuffID.Sets.NurseCannotRemoveDebuff[Type] = false;
         }
 
-        public override void ModifyBuffTip(ref string tip, ref int rare)
+        public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
         {
             int stacks = Main.LocalPlayer.GetModPlayer<KourindouPlayer>().FumoColaBuffStacks;
 
-            tip = tip.Replace("{AttackSpeed}", (stacks*5).ToString());
-            tip = tip.Replace("{MovementSpeed}", (stacks*5).ToString());
+            tip = tip.Replace("{AttackSpeed}", (stacks * 5).ToString());
+            tip = tip.Replace("{MovementSpeed}", (stacks * 5).ToString());
 
-            base.ModifyBuffTip(ref tip, ref rare);
+            base.ModifyBuffText(ref buffName, ref tip, ref rare);
         }
 
         public override void Update(Player player, ref int buffIndex)

@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.BounceUp, Type);
             
-            DisplayName.SetDefault("Bounce Up");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Bounce Up");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

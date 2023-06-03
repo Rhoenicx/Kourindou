@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Specials
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Special, (byte)Special.CastEverything, Type);
             
-            DisplayName.SetDefault("Cast everything");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Cast everything");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

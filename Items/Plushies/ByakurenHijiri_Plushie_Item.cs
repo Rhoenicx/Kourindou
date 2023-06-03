@@ -14,8 +14,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Byakuren Hijiri Plushie");
-            Tooltip.SetDefault("A Buddhist nun and magician. Currently, she's then Myouren Temple's head priest"); 
+            // DisplayName.SetDefault("Byakuren Hijiri Plushie");
+            // Tooltip.SetDefault("A Buddhist nun and magician. Currently, she's then Myouren Temple's head priest"); 
         }
 
         public override string AddEffectTooltip()
@@ -97,15 +97,15 @@ namespace Kourindou.Items.Plushies
             player.GetCritChance(DamageClass.Ranged) = 0f;
             player.GetCritChance(DamageClass.Summon) = 0f;
             player.GetCritChance(DamageClass.MagicSummonHybrid) = 0f;
+            player.GetCritChance(DamageClass.Throwing) = 0f;
+            player.GetCritChance(DamageClass.MeleeNoSpeed) = 0f;
+            player.GetCritChance(DamageClass.SummonMeleeSpeed) = 0f;
         }
 
-        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
+        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
         {
-            if (crit)
-            {
-                damage *= 2;
-            }
-            knockback *= 3;
+            modifiers.CritDamage *= 2f;
+            modifiers.Knockback *= 3f;
         }
 
         public override void PlushieModifyWeaponCrit(Player myPlayer, Item item, ref float crit, int amountEquipped)

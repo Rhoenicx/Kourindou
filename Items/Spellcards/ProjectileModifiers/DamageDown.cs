@@ -13,8 +13,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.DamageDown, Type);
             
-            DisplayName.SetDefault("Damage Down");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Damage Down");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

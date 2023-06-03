@@ -9,7 +9,7 @@ namespace Kourindou.Items.CraftingMaterials
     public class CyanThread : ModItem
     {
         public override void SetStaticDefaults() {
-			DisplayName.SetDefault("Cyan Thread");
+			// DisplayName.SetDefault("Cyan Thread");
 		}
 
         public override void SetDefaults()

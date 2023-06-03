@@ -9,7 +9,7 @@ namespace Kourindou.Items.CraftingMaterials
     public class TealThread : ModItem
     {
         public override void SetStaticDefaults() {
-			DisplayName.SetDefault("Teal Thread");
+			// DisplayName.SetDefault("Teal Thread");
 		}
 
         public override void SetDefaults()

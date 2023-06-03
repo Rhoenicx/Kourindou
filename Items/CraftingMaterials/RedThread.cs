@@ -9,7 +9,7 @@ namespace Kourindou.Items.CraftingMaterials
     public class RedThread : ModItem
     {
         public override void SetStaticDefaults() {
-			DisplayName.SetDefault("Red Thread");
+			// DisplayName.SetDefault("Red Thread");
 		}
 
         public override void SetDefaults()

@@ -14,8 +14,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Medicine Melancholy Plushie");
-            Tooltip.SetDefault("A young doll youkai that lives on the Nameless Hill. She can harness the poison of anything");
+            // DisplayName.SetDefault("Medicine Melancholy Plushie");
+            // Tooltip.SetDefault("A young doll youkai that lives on the Nameless Hill. She can harness the poison of anything");
         }
 
         public override string AddEffectTooltip()
@@ -86,25 +86,31 @@ namespace Kourindou.Items.Plushies
             player.buffImmune[BuffID.Poisoned] = true;
         }
 
-        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            if (npc != null)
+            if ((int)Main.rand.Next(0, 100) < 12)
             {
-                if ((int)Main.rand.Next(0, 100) < 12)
-                {
-                    npc.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
-                }
-                npc.AddBuff(BuffID.Poisoned, 600);
+                target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
             }
+            target.AddBuff(BuffID.Poisoned, 600);
+        }
 
-            if (player != null)
+        public override void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
+        {
+            if ((int)Main.rand.Next(0, 100) < 12)
             {
-                if ((int)Main.rand.Next(0, 100) < 12)
-                {
-                    player.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
-                }
-                player.AddBuff(BuffID.Poisoned, 300);
+                target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
             }
+            target.AddBuff(BuffID.Poisoned, 600);
+        }
+
+        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
+        {
+            if ((int)Main.rand.Next(0, 100) < 12)
+            {
+                targetPlayer.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
+            }
+            targetPlayer.AddBuff(BuffID.Poisoned, 300);
         }
     }
 }

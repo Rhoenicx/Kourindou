@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Enums;
 using Terraria.DataStructures;
@@ -47,8 +48,8 @@ namespace Kourindou.Tiles.Plushies
             TileID.Sets.DisableSmartCursor[Type] = true;
 
             // Map Entry
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Iku Nagae Plushie");
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Iku Nagae Plushie");
             AddMapEntry(new Color(21, 14, 81), name);
 
             plushieItem = ItemType<IkuNagae_Plushie_Item>();

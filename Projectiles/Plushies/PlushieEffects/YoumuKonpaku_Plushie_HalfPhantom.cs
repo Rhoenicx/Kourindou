@@ -63,7 +63,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 		public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Half Phantom");
+            // DisplayName.SetDefault("Half Phantom");
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
 			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
@@ -80,6 +80,8 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
             // Entity Interaction
             Projectile.friendly = true; 
             Projectile.penetrate = -1;
+			Projectile.usesIDStaticNPCImmunity = true;
+			Projectile.idStaticNPCHitCooldown = 30;
             
             // Hitbox
             Projectile.width = 24;
@@ -169,6 +171,8 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 				// Justspawned to false
 				_justSpawned = false;
 			}
+
+			Projectile.damage = _owner.HeldItem.damage;
 			
 			CheckIfOwnerActive();
 

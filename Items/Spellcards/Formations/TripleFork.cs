@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Formations
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.TripleFork, Type);
             
-            DisplayName.SetDefault("Triple Fork");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Triple Fork");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

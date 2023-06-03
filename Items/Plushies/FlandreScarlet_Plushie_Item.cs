@@ -16,8 +16,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Flandre Scarlet Plushie");
-            Tooltip.SetDefault("The ultimate basement lurker. The scarlet sky has since tempted her presence outside the mansion"); 
+            // DisplayName.SetDefault("Flandre Scarlet Plushie");
+            // Tooltip.SetDefault("The ultimate basement lurker. The scarlet sky has since tempted her presence outside the mansion"); 
         }
 
         public override string AddEffectTooltip()
@@ -86,88 +86,36 @@ namespace Kourindou.Items.Plushies
             // Increase crit by 10 percent
             player.GetCritChance(DamageClass.Generic) += 10;
 
-            // Crit hits explode
+            // Crit hits explode, excluding player pvp hits since they cannot crit
         }
 
-        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            if (crit)
+            if (hit.Crit)
             {
-                Vector2 position = Vector2.Zero;
-
-                if (npc != null)
-                {
-                    int immune = item != null ? item.useAnimation : npc.immune[myPlayer.whoAmI];
-
-                    position = npc.Center;
-
-                    Projectile.NewProjectile(
-                        Item.GetSource_Accessory(Item),
-                        position,
-                        Vector2.Zero,
-                        ProjectileType<FlandreScarlet_Plushie_Explosion>(),
-                        damage * 2 + 80,
-                        0f,
-                        Main.myPlayer,
-                        npc.whoAmI,
-                        immune
-                    );
-
-                    if (proj != null)
-                    {
-                        npc.immune[myPlayer.whoAmI] = 0;
-                    }
-                }
-
-                if (player != null)
-                {
-                    int immune = item != null ? item.useAnimation : player.immuneTime;
-
-                    position = player.Center;
-
-                    Projectile.NewProjectile(
-                        myPlayer.GetSource_Accessory(Item),
-                        position,
-                        Vector2.Zero,
-                        ProjectileType<FlandreScarlet_Plushie_Explosion>(),
-                        damage * 2 + 80,
-                        0f,
-                        Main.myPlayer,
-                        myPlayer.whoAmI + 10000,
-                        immune
-                    );
-
-                    if (proj != null)
-                    {
-                        player.immuneTime = 0;
-                    }
-                }
-
-                SoundEngine.PlaySound(
-                    SoundID.DD2_ExplosiveTrapExplode with { Volume = .8f, PitchVariance = .1f },
-                    position);
-
-                if (Main.netMode == NetmodeID.MultiplayerClient)
-                {
-                    // Send sound packet for other clients
-                    ModPacket packet = Mod.GetPacket();
-                    packet.Write((byte)KourindouMessageType.PlaySound);
-                    packet.Write((string)"DD2_ExplosiveTrapExplode");
-                    packet.Write((float)0.8f);
-                    packet.Write((float)1f);
-                    packet.Write((int)position.X);
-                    packet.Write((int)position.Y);
-                    packet.Send(-1, Main.myPlayer);
-                }
+                SpawnExplosion(target.Center, hit.SourceDamage);
             }
         }
 
-        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            if (proj != null && proj.type == ProjectileType<FlandreScarlet_Plushie_Explosion>())
+            if (proj.type != ProjectileType<FlandreScarlet_Plushie_Explosion>() && hit.Crit)
             {
-                crit = false;
+                SpawnExplosion(target.Center, hit.SourceDamage);
             }
+        }
+
+        public void SpawnExplosion(Vector2 position, int damage)
+        {
+            Projectile.NewProjectile(
+                Item.GetSource_Accessory(Item),
+                position,
+                Vector2.Zero,
+                ProjectileType<FlandreScarlet_Plushie_Explosion>(),
+                damage * 3,
+                0f,
+                Main.myPlayer
+            );
         }
     }
 }

@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Formations
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.RandomFormation, Type);
             
-            DisplayName.SetDefault("Random Formation");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Random Formation");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

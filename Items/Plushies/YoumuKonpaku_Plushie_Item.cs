@@ -15,8 +15,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Youmu Konpaku Plushie");
-            Tooltip.SetDefault("Hakugyokurou's gardener, and Yuyuko's servant");
+            // DisplayName.SetDefault("Youmu Konpaku Plushie");
+            // Tooltip.SetDefault("Hakugyokurou's gardener, and Yuyuko's servant");
         }
 
         public override string AddEffectTooltip()

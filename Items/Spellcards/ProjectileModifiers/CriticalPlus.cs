@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.CriticalPlus, Type);
             
-            DisplayName.SetDefault("Critical Plus");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Critical Plus");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Elements
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Element, (byte)Element.Frost, Type);
             
-            DisplayName.SetDefault("Frost");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Frost");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

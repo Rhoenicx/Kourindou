@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Kanako Yasaka Plushie");
-            Tooltip.SetDefault("The current goddess of the Moriya Shrine. Religion is a business");
+            // DisplayName.SetDefault("Kanako Yasaka Plushie");
+            // Tooltip.SetDefault("The current goddess of the Moriya Shrine. Religion is a business");
         }
 
         public override void SetDefaults()

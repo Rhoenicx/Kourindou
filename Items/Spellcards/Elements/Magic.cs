@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Elements
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Element, (byte)Element.Magic, Type);
             
-            DisplayName.SetDefault("Magic");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Magic");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

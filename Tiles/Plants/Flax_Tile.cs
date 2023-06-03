@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Enums;
 using Terraria.DataStructures;
@@ -53,8 +54,8 @@ namespace Kourindou.Tiles.Plants
 
             TileObjectData.addTile(Type);
 
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Flax Plant");
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Flax Plant");
             AddMapEntry(new Color(1, 128, 201), name);
 
             HitSound = SoundID.Grass;

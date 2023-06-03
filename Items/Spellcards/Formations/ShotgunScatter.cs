@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Formations
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.ShotgunScatter, Type);
             
-            DisplayName.SetDefault("Shotgun");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Shotgun");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

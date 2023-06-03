@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Trajectories
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.RandomTrajectory, Type);
             
-            DisplayName.SetDefault("Random trajectory");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Random trajectory");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

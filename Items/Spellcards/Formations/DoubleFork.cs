@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Formations
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.DoubleFork, Type);
             
-            DisplayName.SetDefault("Double Fork");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Double Fork");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

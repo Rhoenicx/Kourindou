@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.PenetrationAll, Type);
             
-            DisplayName.SetDefault("Penetration All");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Penetration All");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

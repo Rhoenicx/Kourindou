@@ -8,8 +8,8 @@ namespace Kourindou.Buffs
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Plushie Magic");
-            Description.SetDefault("Slight increase to life and mana regeneration");
+            // DisplayName.SetDefault("Plushie Magic");
+            // Description.SetDefault("Slight increase to life and mana regeneration");
             Main.debuff[Type] = false;
             Main.pvpBuff[Type] = true;
             Main.buffNoSave[Type] = true;

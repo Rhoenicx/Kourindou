@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.VectorReversal, Type);
             
-            DisplayName.SetDefault("Vector Reversal");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Vector Reversal");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

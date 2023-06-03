@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Trajectories
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.Boomerang, Type);
             
-            DisplayName.SetDefault("Boomerang");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Boomerang");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

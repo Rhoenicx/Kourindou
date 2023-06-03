@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Hitori 'the rock' Gotou Plushie");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Hitori 'the rock' Gotou Plushie");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetDefaults()

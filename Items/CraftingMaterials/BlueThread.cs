@@ -9,7 +9,7 @@ namespace Kourindou.Items.CraftingMaterials
     public class BlueThread : ModItem
     {
         public override void SetStaticDefaults() {
-			DisplayName.SetDefault("Blue Thread");
+			// DisplayName.SetDefault("Blue Thread");
 		}
 
         public override void SetDefaults()

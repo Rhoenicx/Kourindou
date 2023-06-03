@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Shinmyoumaru Sukuna Plushie");
-            Tooltip.SetDefault("The inchling of the Shining Needle Castle. Her needle is very versatile");
+            // DisplayName.SetDefault("Shinmyoumaru Sukuna Plushie");
+            // Tooltip.SetDefault("The inchling of the Shining Needle Castle. Her needle is very versatile");
         }
 
         public override void SetDefaults()

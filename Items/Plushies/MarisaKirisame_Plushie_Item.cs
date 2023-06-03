@@ -7,6 +7,7 @@ using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
+using Terraria.Map;
 
 namespace Kourindou.Items.Plushies
 {
@@ -14,8 +15,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Marisa Kirisame Plushie");
-            Tooltip.SetDefault("The ordinary human who uses magic");
+            // DisplayName.SetDefault("Marisa Kirisame Plushie");
+            // Tooltip.SetDefault("The ordinary human who uses magic");
         }
 
         public override string AddEffectTooltip()
@@ -89,25 +90,37 @@ namespace Kourindou.Items.Plushies
             // On crit spawns a star projectile that is aimed at the target hit
         }
 
-        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            if (crit)
+            if (hit.Crit)
             {
-                int star = Projectile.NewProjectile
-                (
-                    myPlayer.GetSource_Accessory(GetInstance<PlushieEquipSlot>().FunctionalItem),
-                    myPlayer.Center,
-                    Vector2.Normalize(Main.MouseWorld - myPlayer.Center) * 10f,
-                    ProjectileID.StarWrath,
-                    50,
-                    1f,
-                    Main.myPlayer,
-                    1f
-                );
-
-                Main.projectile[star].hide = true;
-                Main.projectile[star].netUpdate = true;
+                SpawnStar(player.RotatedRelativePoint(player.MountedCenter), hit.SourceDamage);
             }
+        }
+
+        public override void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
+        {
+            if (hit.Crit)
+            {
+                SpawnStar(player.RotatedRelativePoint(player.MountedCenter), hit.SourceDamage);
+            }
+        }
+
+        public void SpawnStar(Vector2 position, int damage)
+        {
+            int star = Projectile.NewProjectile(
+                Item.GetSource_Accessory(Item),
+                position,
+                Vector2.Normalize(Main.MouseWorld - position) * 10f,
+                ProjectileID.StarWrath,
+                damage,
+                0f,
+                Main.myPlayer,
+                1f
+            );
+
+            Main.projectile[star].hide = true;
+            Main.projectile[star].netUpdate = true;
         }
     }
 }

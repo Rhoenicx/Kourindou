@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Formations
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.Octagon, Type);
             
-            DisplayName.SetDefault("Octagon");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Octagon");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

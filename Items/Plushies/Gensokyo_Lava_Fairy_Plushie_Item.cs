@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Lava Fairy Plushie");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Lava Fairy Plushie");
+            // Tooltip.SetDefault("");
         }
 
         public override string AddEffectTooltip()
@@ -81,14 +81,14 @@ namespace Kourindou.Items.Plushies
             }
         }
 
-        public override bool PlushieCanbeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot, int amountEquipped)
+        public override bool PlushieCanBeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot, int amountEquipped)
         {
             if (Kourindou.GensokyoLoaded)
             {
                 return npc.type != Kourindou.Gensokyo_Fairy_Lava_Type;
             }
 
-            return base.PlushieCanbeHitByNPC(myPlayer, npc, ref cooldownSlot, amountEquipped);
+            return base.PlushieCanBeHitByNPC(myPlayer, npc, ref cooldownSlot, amountEquipped);
         }
     }
 }

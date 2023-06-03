@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Multiplications
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Multiplication, (byte)Multiplication.MultiplyBy4, Type);
             
-            DisplayName.SetDefault("Multiply by 4");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Multiply by 4");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

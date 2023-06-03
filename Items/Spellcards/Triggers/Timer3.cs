@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Triggers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trigger, (byte)Trigger.Timer3, Type);
             
-            DisplayName.SetDefault("Timer 3");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Timer 3");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

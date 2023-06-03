@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Elements
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Element, (byte)Element.Sun, Type);
             
-            DisplayName.SetDefault("Sun");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Sun");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

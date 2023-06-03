@@ -10,7 +10,7 @@ namespace Kourindou.Items.Furniture
     {
         public override void SetStaticDefaults() 
         {
-			DisplayName.SetDefault("Weaving Loom");
+			// DisplayName.SetDefault("Weaving Loom");
 		}
 
         public override void SetDefaults()

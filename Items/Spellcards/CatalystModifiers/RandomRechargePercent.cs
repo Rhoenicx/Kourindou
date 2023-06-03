@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.RandomRechargePercent, Type);
             
-            DisplayName.SetDefault("Random Recharge Percent");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Random Recharge Percent");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

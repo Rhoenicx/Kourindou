@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Tanned Cirno Plushie");
-            Tooltip.SetDefault("The strongest [with a tan]!");
+            // DisplayName.SetDefault("Tanned Cirno Plushie");
+            // Tooltip.SetDefault("The strongest [with a tan]!");
         }
 
         public override void SetDefaults()

@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Elements
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Element, (byte)Element.Fire, Type);
             
-            DisplayName.SetDefault("Fire");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Fire");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

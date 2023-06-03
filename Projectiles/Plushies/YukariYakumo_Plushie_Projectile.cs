@@ -13,7 +13,7 @@ namespace Kourindou.Projectiles.Plushies
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("YukariYakumo Plushie");
+			// DisplayName.SetDefault("YukariYakumo Plushie");
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
 		}

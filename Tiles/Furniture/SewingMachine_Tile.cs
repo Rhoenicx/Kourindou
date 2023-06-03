@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Enums;
 using Terraria.DataStructures;
@@ -50,8 +51,8 @@ namespace Kourindou.Tiles.Furniture
 
             TileID.Sets.DisableSmartCursor[Type] = true;
 
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Sewing Machine");
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Sewing Machine");
             AddMapEntry(new Color(57, 51, 46), name);
         }
 

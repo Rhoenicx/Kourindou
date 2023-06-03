@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Enums;
 using Terraria.DataStructures;
@@ -47,8 +48,8 @@ namespace Kourindou.Tiles.Plushies
             TileID.Sets.DisableSmartCursor[Type] = true;
 
             // Map Entry
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Hatate Himekaidou Plushie");
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Hatate Himekaidou Plushie");
             AddMapEntry(new Color(125, 43, 208), name);
 
             plushieItem = ItemType<HatateHimekaidou_Plushie_Item>();

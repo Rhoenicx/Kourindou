@@ -7,15 +7,18 @@ using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
+using Terraria.Map;
 
 namespace Kourindou.Items.Plushies
 {
     public class Kourindou_RemiliaScarlet_Plushie_Item : PlushieItem
     {
+        public const float HealPercentage = 0.05f;
+
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Remilia Scarlet Plushie Kourindou ver.");
-            Tooltip.SetDefault("The Scarlet Devil herself. The new outfit suits her");
+            // DisplayName.SetDefault("Remilia Scarlet Plushie Kourindou ver.");
+            // Tooltip.SetDefault("The Scarlet Devil herself. The new outfit suits her");
         }
 
         public override string AddEffectTooltip()
@@ -85,13 +88,28 @@ namespace Kourindou.Items.Plushies
             // All damage heals for 5% 
         }
 
-        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            if (myPlayer.statLife < myPlayer.statLifeMax2)
+            Heal(player, hit.Damage);
+        }
+
+        public override void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
+        {
+            Heal(player, hit.Damage);
+        }
+
+        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
+        {
+            Heal(sourcePlayer, info.Damage);
+        }
+
+        public void Heal(Player player, int damage)
+        {
+            if (player.statLife < player.statLifeMax2)
             {
-                int healAmount = (int)Math.Ceiling((double)((damage * 0.05) < myPlayer.statLifeMax2 - myPlayer.statLife ? (int)(damage * 0.05) : myPlayer.statLifeMax2 - myPlayer.statLife));
-                myPlayer.statLife += healAmount;
-                myPlayer.HealEffect(healAmount, true);
+                int healAmount = (int)Math.Ceiling((double)((damage * HealPercentage) < player.statLifeMax2 - player.statLife ? (int)(damage * HealPercentage) : player.statLifeMax2 - player.statLife));
+                player.statLife += healAmount;
+                player.HealEffect(healAmount, true);
             }
         }
     }

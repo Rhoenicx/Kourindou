@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Utsuho Reiuji Plushie");
-            Tooltip.SetDefault("The hell raven that holds Yatagarasu's power. She controls the heat of the flames of hell");
+            // DisplayName.SetDefault("Utsuho Reiuji Plushie");
+            // Tooltip.SetDefault("The hell raven that holds Yatagarasu's power. She controls the heat of the flames of hell");
         }
 
         public override void SetDefaults()

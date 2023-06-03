@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Elements
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Element, (byte)Element.Water, Type);
             
-            DisplayName.SetDefault("Water");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Water");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

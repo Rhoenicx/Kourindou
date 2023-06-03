@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.InstantKill, Type);
             
-            DisplayName.SetDefault("Instant Kill");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Instant Kill");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

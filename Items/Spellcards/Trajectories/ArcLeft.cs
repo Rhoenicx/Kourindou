@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Trajectories
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.ArcLeft, Type);
             
-            DisplayName.SetDefault("Arc left");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Arc left");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

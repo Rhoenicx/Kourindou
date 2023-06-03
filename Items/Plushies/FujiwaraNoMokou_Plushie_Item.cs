@@ -15,8 +15,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Fujiwara No Mokou Plushie");
-            Tooltip.SetDefault("The bamboo forest's guide. Rumor has it that she runs a yakitori stand");
+            // DisplayName.SetDefault("Fujiwara No Mokou Plushie");
+            // Tooltip.SetDefault("The bamboo forest's guide. Rumor has it that she runs a yakitori stand");
         }
 
         public override string AddEffectTooltip()

@@ -13,7 +13,7 @@ namespace Kourindou.Projectiles.Plushies
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Seija Kijin Plushie");
+			// DisplayName.SetDefault("Seija Kijin Plushie");
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
 		}

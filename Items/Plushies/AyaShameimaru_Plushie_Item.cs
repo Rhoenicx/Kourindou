@@ -15,8 +15,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Aya Shameimaru Plushie");
-            Tooltip.SetDefault("A crow tengu. Runs a newspaper that's mostly sensational gossip");
+            // DisplayName.SetDefault("Aya Shameimaru Plushie");
+            // Tooltip.SetDefault("A crow tengu. Runs a newspaper that's mostly sensational gossip");
             ArmorIDs.Wing.Sets.Stats[Item.wingSlot] = new WingStats(240, 7f, 2.0f);
         }
 

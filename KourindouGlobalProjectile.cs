@@ -156,12 +156,12 @@ namespace Kourindou
             }
         }
 
-        public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
         {
             ValidForHoming = false;
         }
 
-        public override void OnHitPvp(Projectile projectile, Player target, int damage, bool crit)
+        public override void OnHitPlayer(Projectile projectile, Player target, Player.HurtInfo info)
         {
             ValidForHoming = false;
         }

@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Shanghai Doll Plushie");
-            Tooltip.SetDefault("A replica of Alice's most prominent doll");
+            // DisplayName.SetDefault("Shanghai Doll Plushie");
+            // Tooltip.SetDefault("A replica of Alice's most prominent doll");
         }
 
         public override void SetDefaults()

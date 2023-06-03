@@ -10,7 +10,7 @@ namespace Kourindou.Items.Furniture
     {
         public override void SetStaticDefaults() 
         {
-			DisplayName.SetDefault("U.N. Owen Washer");
+			// DisplayName.SetDefault("U.N. Owen Washer");
 		}
 
         public override void SetDefaults()

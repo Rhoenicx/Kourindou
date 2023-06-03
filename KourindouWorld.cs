@@ -106,7 +106,7 @@ namespace Kourindou
             }
         }
 
-        public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
+        public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
         {
             int index = tasks.FindIndex(genpass => genpass.Name.Equals("Dye Plants"));
             if (index != -1)

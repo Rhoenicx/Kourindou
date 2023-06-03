@@ -13,7 +13,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Sakuya's Knife");    
+			// DisplayName.SetDefault("Sakuya's Knife");    
 		}
 		
 		public override void SetDefaults()
@@ -26,6 +26,8 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
             Projectile.hostile = false;
 			Projectile.penetrate = (int)Main.rand.Next(1,4);
 			Projectile.DamageType = DamageClass.Throwing;
+			Projectile.usesIDStaticNPCImmunity = true;
+			Projectile.idStaticNPCHitCooldown = 10;
 
 			// Hitbox
 			Projectile.width = 8;

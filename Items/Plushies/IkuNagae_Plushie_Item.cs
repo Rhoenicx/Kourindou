@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Iku Nagae Plushie");
-            Tooltip.SetDefault("A messenger of the Dragon Palace, who observes the mood of the atmosphere");
+            // DisplayName.SetDefault("Iku Nagae Plushie");
+            // Tooltip.SetDefault("A messenger of the Dragon Palace, who observes the mood of the atmosphere");
         }
 
         public override void SetDefaults()

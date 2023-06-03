@@ -19,8 +19,8 @@ namespace Kourindou.Items.Consumables
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Fumo Cola");
-            Tooltip.SetDefault("Coca Cola is Fumo");
+            // DisplayName.SetDefault("Fumo Cola");
+            // Tooltip.SetDefault("Coca Cola is Fumo");
         }
 
         public override void SetDefaults()

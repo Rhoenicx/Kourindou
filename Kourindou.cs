@@ -245,7 +245,7 @@ namespace Kourindou
         }
 
         // Add Crafting recipe groups
-        public override void AddRecipeGroups()
+        public override void AddRecipeGroups()/* tModPorter Note: Removed. Use ModSystem.AddRecipeGroups */
         {
             // Stuffing
             RecipeGroup Stuffing = new (() => Language.GetTextValue("LegacyMisc.37") + " Stuffing", new int[]

@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Seiga Kaku Plushie");
-            Tooltip.SetDefault("Doki, doki, waku, waku...");
+            // DisplayName.SetDefault("Seiga Kaku Plushie");
+            // Tooltip.SetDefault("Doki, doki, waku, waku...");
         }
 
         public override void SetDefaults()

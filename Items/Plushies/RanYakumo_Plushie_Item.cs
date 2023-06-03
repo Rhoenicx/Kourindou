@@ -11,6 +11,7 @@ using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
 using Terraria.DataStructures;
+using Terraria.Map;
 
 namespace Kourindou.Items.Plushies
 {
@@ -18,8 +19,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Ran Yakumo Plushie");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Ran Yakumo Plushie");
+            // Tooltip.SetDefault("");
         }
 
         public override string AddEffectTooltip()
@@ -102,31 +103,51 @@ namespace Kourindou.Items.Plushies
             player.statLifeMax2 = (int)Math.Floor((double)player.statLifeMax2 * (1.1 + (0.05 * player.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks)));
         }
 
-        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            if ((npc != null && npc.life <= 0 && !npc.friendly && npc.lifeMax > 5)
-                || (player != null && (player.statLife <= 0 || player.dead)))
+            if (target.life <= 0 && !target.friendly && target.lifeMax > 5)
+            { 
+                ManageStacks(player);
+            }
+        }
+
+        public override void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
+        {
+            if (target.life <= 0 && !target.friendly && target.lifeMax > 5)
             {
-                // Increase kill counter
-                if (myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks < 8)
-                {
-                    myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_EnemieKillCounter++;
-                }
+                ManageStacks(player);
+            }
+        }
 
-                // Increase stacks
-                if (myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_EnemieKillCounter >= 10 && myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks < 8)
-                {
-                    myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks++;
-                    myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_EnemieKillCounter = 0;
+        public override void PlushieKillPvp(Player targetPlayer, Player sourcePlayer, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource, int amountEquipped)
+        {
+            if (Main.myPlayer == sourcePlayer.whoAmI)
+            {
+                ManageStacks(sourcePlayer);
+            }
+        }
 
-                    if (Main.netMode == NetmodeID.MultiplayerClient)
-                    {
-                        ModPacket packet = Mod.GetPacket();
-                        packet.Write((byte)KourindouMessageType.RanPlushieStacks);
-                        packet.Write((byte)Main.myPlayer);
-                        packet.Write((byte)myPlayer.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks);
-                        packet.Send(-1, Main.myPlayer);
-                    }
+        public void ManageStacks(Player player)
+        {
+            // Increase kill counter
+            if (player.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks < 8)
+            {
+                player.GetModPlayer<KourindouPlayer>().RanPlushie_EnemieKillCounter++;
+            }
+
+            // Increase stacks
+            if (player.GetModPlayer<KourindouPlayer>().RanPlushie_EnemieKillCounter >= 10 && player.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks < 8)
+            {
+                player.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks++;
+                player.GetModPlayer<KourindouPlayer>().RanPlushie_EnemieKillCounter = 0;
+
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    ModPacket packet = Mod.GetPacket();
+                    packet.Write((byte)KourindouMessageType.RanPlushieStacks);
+                    packet.Write((byte)Main.myPlayer);
+                    packet.Write((byte)player.GetModPlayer<KourindouPlayer>().RanPlushie_Stacks);
+                    packet.Send(-1, Main.myPlayer);
                 }
             }
         }

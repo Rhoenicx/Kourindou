@@ -7,22 +7,22 @@ using Terraria.ModLoader.Config;
 
 namespace Kourindou
 {
-    [Label("Settings")]
+    //[Label("Settings")]
     public class KourindouConfigClient : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
         // Header Personalization
-        [Header("Personalization of the Kourindou mod")]
+        //[Header("Personalization of the Kourindou mod")]
 
         // Plushie Power Mode Setting
         [DefaultValue(false)]
-        [Label("Plushie special effects")]
+        //[Label("Plushie special effects")]
         public bool plushiePower;
 
         //Old Textures
         [DefaultValue(false)]
-        [Label("Use old Fumomod textures (when available)")]
+        //[Label("Use old Fumomod textures (when available)")]
         public bool UseOldTextures;
 
         public override void OnLoaded()

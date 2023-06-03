@@ -10,8 +10,8 @@ namespace Kourindou.Items.CraftingMaterials
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Flax Bundle");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Flax Bundle");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetDefaults()

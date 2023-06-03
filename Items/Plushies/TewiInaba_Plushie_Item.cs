@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Tewi Inaba Plushie");
-            Tooltip.SetDefault("A very old rabbit youkai. Despite this, she's childish");
+            // DisplayName.SetDefault("Tewi Inaba Plushie");
+            // Tooltip.SetDefault("A very old rabbit youkai. Despite this, she's childish");
         }
 
         public override string AddEffectTooltip()
@@ -86,11 +86,19 @@ namespace Kourindou.Items.Plushies
             // 25 percent chance for all NPC's to drop double loot
         }
 
-        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            if (npc != null && (int)Main.rand.Next(0, 5) == 0 && npc.life <= 0)
+            if ((int)Main.rand.Next(0, 5) == 0 && target.life <= 0)
             {
-                npc.NPCLoot();
+                target.NPCLoot();
+            }
+        }
+
+        public override void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
+        {
+            if ((int)Main.rand.Next(0, 5) == 0 && target.life <= 0)
+            {
+                target.NPCLoot();
             }
         }
     }

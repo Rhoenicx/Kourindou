@@ -15,8 +15,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Sakuya Izayoi Plushie Kourindou ver.");
-            Tooltip.SetDefault("The maid of the scarlet mansion");
+            // DisplayName.SetDefault("Sakuya Izayoi Plushie Kourindou ver.");
+            // Tooltip.SetDefault("The maid of the scarlet mansion");
         }
 
         public override string AddEffectTooltip()

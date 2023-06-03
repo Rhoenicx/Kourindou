@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Enums;
 using Terraria.DataStructures;
@@ -47,8 +48,8 @@ namespace Kourindou.Tiles.Plushies
             TileID.Sets.DisableSmartCursor[Type] = true;
 
             // Map Entry
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Fujiwara No Mokou Plushie");
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Fujiwara No Mokou Plushie");
             AddMapEntry(new Color(231, 231, 231), name);
 
             plushieItem = ItemType<FujiwaraNoMokou_Plushie_Item>();

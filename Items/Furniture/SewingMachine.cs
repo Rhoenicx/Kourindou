@@ -10,7 +10,7 @@ namespace Kourindou.Items.Furniture
     {
         public override void SetStaticDefaults() 
         {
-			DisplayName.SetDefault("Sewing Machine");
+			// DisplayName.SetDefault("Sewing Machine");
 		}
 
         public override void SetDefaults()

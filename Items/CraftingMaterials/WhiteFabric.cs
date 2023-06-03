@@ -24,7 +24,7 @@ namespace Kourindou.Items.CraftingMaterials
             // Remove existing recipes
             foreach (Recipe recipe in Main.recipe)
             {
-                if (recipe.TryGetResult(ItemID.Silk, out Item result))
+                if (recipe.TryGetResult(ItemID.Silk, out _))
                 {
                     Main.recipe[recipe.RecipeIndex].DisableRecipe();
                 }
@@ -44,7 +44,7 @@ namespace Kourindou.Items.CraftingMaterials
                     // Remove colors on water
                     Recipe newRecipe2 = Recipe.Create(ItemID.Silk, 1);
                     newRecipe2.AddIngredient(i, 1);
-                    newRecipe2.AddCondition(Recipe.Condition.NearWater);
+                    newRecipe2.AddCondition(Condition.NearWater);
                     newRecipe2.Register();
 
                     // Remove colors on dye vat

@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Sumireko Usami Plushie");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Sumireko Usami Plushie");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetDefaults()

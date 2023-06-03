@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Formations
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.OnlySides, Type);
             
-            DisplayName.SetDefault("Only Sides");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Only Sides");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

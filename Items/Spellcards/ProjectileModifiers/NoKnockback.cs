@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.NoKnockback, Type);
             
-            DisplayName.SetDefault("No Knockback");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("No Knockback");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

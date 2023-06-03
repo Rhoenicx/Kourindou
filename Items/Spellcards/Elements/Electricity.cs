@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Elements
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Element, (byte)Element.Electricity, Type);
             
-            DisplayName.SetDefault("Electricity");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Electricity");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

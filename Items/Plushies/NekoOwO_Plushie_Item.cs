@@ -13,8 +13,10 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Neko OwO Plushie");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Neko OwO Plushie");
+            // Tooltip.SetDefault("");
+
+            ItemID.Sets.IsLavaImmuneRegardlessOfRarity[Type] = true;
         }
 
         public override void SetDefaults()
@@ -67,11 +69,6 @@ namespace Kourindou.Items.Plushies
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
         }
-		
-		public override bool? CanBurnInLava()
-		{
-			return false;
-		}
 
         public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {

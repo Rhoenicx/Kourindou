@@ -7,6 +7,7 @@ using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
+using Terraria.WorldBuilding;
 
 namespace Kourindou.Items.Plushies
 {
@@ -14,14 +15,14 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Shion Yorigami Plushie");
-            Tooltip.SetDefault("A poverty god. It doesn't seem to take your money, though...");
+            // DisplayName.SetDefault("Shion Yorigami Plushie");
+            // Tooltip.SetDefault("A poverty god. It doesn't seem to take your money, though...");
         }
 
         public override string AddEffectTooltip()
         {
             return "Small chance to instantly kill the enemy hit!\r\n" +
-                    "-25% damage, -100% crit";
+                    "-25% damage and also cannot crit";
         }
 
         public override void SetDefaults()
@@ -86,11 +87,31 @@ namespace Kourindou.Items.Plushies
             player.GetCritChance(DamageClass.Generic) -= 100f;
         }
 
-        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
+        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
         {
             if ((int)Main.rand.Next(0, 1000) == 0)
             {
-                damage = Math.Abs((int)(damage * Main.rand.NextFloat(1000f, 1000000f)));
+                modifiers.SourceDamage *= Main.rand.NextFloat(1000f, 1000000f);
+            }
+
+            modifiers.DisableCrit();
+        }
+
+        public override void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        {
+            if ((int)Main.rand.Next(0, 1000) == 0)
+            {
+                modifiers.SourceDamage *= Main.rand.NextFloat(1000f, 1000000f);
+            }
+
+            modifiers.DisableCrit();
+        }
+
+        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
+        {
+            if ((int)Main.rand.Next(0, 1000) == 0)
+            {
+                info.SourceDamage = (int)(info.SourceDamage * Main.rand.NextFloat(1000f, 1000000f));
             }
         }
     }

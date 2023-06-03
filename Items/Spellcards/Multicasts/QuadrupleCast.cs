@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Multicasts
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Multicast, (byte)Multicast.QuadrupleCast, Type);
             
-            DisplayName.SetDefault("Quadruple Cast");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Quadruple Cast");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

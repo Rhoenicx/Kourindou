@@ -13,8 +13,10 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Stone Fairy Plushie");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Stone Fairy Plushie");
+            // Tooltip.SetDefault("");
+
+            ItemID.Sets.IsLavaImmuneRegardlessOfRarity[Type] = true;
         }
 
         public override string AddEffectTooltip()
@@ -76,11 +78,6 @@ namespace Kourindou.Items.Plushies
                     .Register();
             }
         }
-		
-		public override bool? CanBurnInLava()
-		{
-			return false;
-		}
 
         public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {
@@ -90,14 +87,14 @@ namespace Kourindou.Items.Plushies
             }
         }
 
-        public override bool PlushieCanbeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot, int amountEquipped)
+        public override bool PlushieCanBeHitByNPC(Player myPlayer, NPC npc, ref int cooldownSlot, int amountEquipped)
         {
             if (Kourindou.GensokyoLoaded)
             {
                 return npc.type != Kourindou.Gensokyo_Fairy_Stone_Type;
             }
 
-            return base.PlushieCanbeHitByNPC(myPlayer, npc, ref cooldownSlot, amountEquipped);
+            return base.PlushieCanBeHitByNPC(myPlayer, npc, ref cooldownSlot, amountEquipped);
         }
     }
 }

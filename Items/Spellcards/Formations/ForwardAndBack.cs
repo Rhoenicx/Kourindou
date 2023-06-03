@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Formations
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.ForwardAndBack, Type);
             
-            DisplayName.SetDefault("Forward And Back");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Forward And Back");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

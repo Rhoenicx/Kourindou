@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.MagicCircleAura, Type);
             
-            DisplayName.SetDefault("Magic Circle Aura");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Magic Circle Aura");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

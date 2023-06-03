@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Luna Child Plushie");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Luna Child Plushie");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetDefaults()

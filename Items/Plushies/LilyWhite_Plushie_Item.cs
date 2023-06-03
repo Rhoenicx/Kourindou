@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Lily White Plushie");
-            Tooltip.SetDefault("Spring is here!");
+            // DisplayName.SetDefault("Lily White Plushie");
+            // Tooltip.SetDefault("Spring is here!");
         }
 
         public override string AddEffectTooltip()

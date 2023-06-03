@@ -10,7 +10,7 @@ namespace Kourindou.Items.CraftingMaterials
     {
         public override void SetStaticDefaults() 
         {
-			DisplayName.SetDefault("Blue Fabric");
+			// DisplayName.SetDefault("Blue Fabric");
 		}
 
         public override void SetDefaults()

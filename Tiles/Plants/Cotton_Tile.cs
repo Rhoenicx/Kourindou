@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Enums;
 using Terraria.DataStructures;
@@ -58,8 +59,8 @@ namespace Kourindou.Tiles.Plants
 
             TileObjectData.addTile(Type);
 
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Cotton Plant");
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Cotton Plant");
             AddMapEntry(new Color(155, 155, 155), name);
 
             HitSound = SoundID.Dig;

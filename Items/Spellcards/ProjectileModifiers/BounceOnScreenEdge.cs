@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.BounceOnScreenEdge, Type);
             
-            DisplayName.SetDefault("Bounce On Screen Edge");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Bounce On Screen Edge");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

@@ -13,8 +13,10 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Yoshika Miyako Plushie");
-            Tooltip.SetDefault("A Jiangshi. Their owner likes them a lot");
+            // DisplayName.SetDefault("Yoshika Miyako Plushie");
+            // Tooltip.SetDefault("A Jiangshi. Their owner likes them a lot");
+
+            ItemID.Sets.IsLavaImmuneRegardlessOfRarity[Type] = true;
         }
 
         public override void SetDefaults()
@@ -67,11 +69,6 @@ namespace Kourindou.Items.Plushies
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
         }
-		
-		public override bool? CanBurnInLava()
-		{
-			return false;
-		}
 
         public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {

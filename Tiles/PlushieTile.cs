@@ -52,7 +52,7 @@ namespace Kourindou.Tiles.Plushies
             }
         }
 
-        public override bool Drop(int i, int j)
+        public override bool CanDrop(int i, int j)
         {
             return false;
         }

@@ -13,8 +13,10 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Nagato Yuki Plushie");
-            Tooltip.SetDefault("An introverted, taciturn bibliophile. Also an alien");
+            // DisplayName.SetDefault("Nagato Yuki Plushie");
+            // Tooltip.SetDefault("An introverted, taciturn bibliophile. Also an alien");
+
+            ItemID.Sets.IsLavaImmuneRegardlessOfRarity[Type] = true;
         }
 
         public override void SetDefaults()
@@ -67,11 +69,6 @@ namespace Kourindou.Items.Plushies
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
         }
-
-        public override bool? CanBurnInLava()
-		{
-			return false;
-		}
 
         public override void PlushieUpdateEquips(Player player, int amountEquipped)
         {

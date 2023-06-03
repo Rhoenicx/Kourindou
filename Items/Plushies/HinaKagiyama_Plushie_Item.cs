@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Hina Kagiyama Plushie");
-            Tooltip.SetDefault("A misfortune god that gathers misfortune. We do not have a spinning animation for it yet. Sorry");
+            // DisplayName.SetDefault("Hina Kagiyama Plushie");
+            // Tooltip.SetDefault("A misfortune god that gathers misfortune. We do not have a spinning animation for it yet. Sorry");
         }
 
         public override void SetDefaults()

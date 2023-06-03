@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Inu Sakuya Izayoi Plushie");
-            Tooltip.SetDefault("Does the real Sakuya like this? Probably. It's adorable, why wouldn't she?");
+            // DisplayName.SetDefault("Inu Sakuya Izayoi Plushie");
+            // Tooltip.SetDefault("Does the real Sakuya like this? Probably. It's adorable, why wouldn't she?");
         }
 
         public override void SetDefaults()

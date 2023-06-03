@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Kisume Plushie");
-            Tooltip.SetDefault("A Tsurube-otoshi who spends her time in buckets in the dark instead of trees. Watch your head");
+            // DisplayName.SetDefault("Kisume Plushie");
+            // Tooltip.SetDefault("A Tsurube-otoshi who spends her time in buckets in the dark instead of trees. Watch your head");
         }
 
         public override void SetDefaults()

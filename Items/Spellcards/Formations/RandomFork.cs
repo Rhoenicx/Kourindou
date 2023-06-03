@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Formations
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.RandomFork, Type);
             
-            DisplayName.SetDefault("Random Fork");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Random Fork");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

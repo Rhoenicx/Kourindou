@@ -9,8 +9,8 @@ namespace Kourindou.Items.CraftingMaterials
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Cotton Fibre");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Cotton Fibre");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetDefaults()

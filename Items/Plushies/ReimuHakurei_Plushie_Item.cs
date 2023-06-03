@@ -16,8 +16,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Reimu Hakurei Plushie");
-            Tooltip.SetDefault("The Hakurei shrine maiden. It's also aimbot if powered");
+            // DisplayName.SetDefault("Reimu Hakurei Plushie");
+            // Tooltip.SetDefault("The Hakurei shrine maiden. It's also aimbot if powered");
         }
 
         public override string AddEffectTooltip()

@@ -8,6 +8,7 @@ using Kourindou.Projectiles.Plushies;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
+using Terraria.Map;
 
 namespace Kourindou.Items.Plushies
 {
@@ -15,8 +16,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Toyosatomimi no Miko Plushie");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Toyosatomimi no Miko Plushie");
+            // Tooltip.SetDefault("");
         }
 
         public override string AddEffectTooltip()
@@ -84,40 +85,43 @@ namespace Kourindou.Items.Plushies
             player.GetDamage(DamageClass.Generic) += 0.05f;
 
             // discount for listening to all people (at once)
-            player.discount = true;
+            player.discountEquipped = true;
         }
 
-        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            if (proj != null && proj.type == ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
-            {
-                return;
-            }
+            SpawnBeam(target.Center, hit.SourceDamage, hit.Knockback, hit.Crit);
+        }
 
-            Vector2 SpawnPosition = Vector2.Zero;
-            if (npc != null)
+        public override void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
+        {
+            if (proj.type != ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
             {
-                SpawnPosition = npc.Center;
+                SpawnBeam(target.Center, hit.SourceDamage, hit.Knockback, hit.Crit);
             }
-            if (player != null)
-            {
-                SpawnPosition = player.Center;
-            }
+        }
 
-            if (SpawnPosition != Vector2.Zero)
+        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
+        {
+            if (info.DamageSource.SourceProjectileType != ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
             {
-                Projectile.NewProjectile(
-                    myPlayer.GetSource_FromThis(),
-                    SpawnPosition,
-                    Vector2.Zero,
-                    ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>(),
-                    myPlayer.HeldItem.damage,
-                    myPlayer.HeldItem.knockBack,
-                    Main.myPlayer,
-                    0f,
-                    crit ? 1f : 0f
-                );
+                SpawnBeam(targetPlayer.Center, info.SourceDamage, info.Knockback, false);
             }
+        }
+
+        public void SpawnBeam(Vector2 position, int damage, float knockback, bool crit = false)
+        {
+            Projectile.NewProjectile(
+                Item.GetSource_Accessory(Item),
+                position,
+                Vector2.Zero,
+                ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>(),
+                damage,
+                knockback,
+                Main.myPlayer,
+                0f,
+                crit ? 1f : 0f
+            );
         }
     }
 }

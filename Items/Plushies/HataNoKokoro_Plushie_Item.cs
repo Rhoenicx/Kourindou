@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Hata No Kokoro Plushie");
-            Tooltip.SetDefault("A menreiki youkai. Her face doesn't show emotions, although the doll probably couldn't if it tried");
+            // DisplayName.SetDefault("Hata No Kokoro Plushie");
+            // Tooltip.SetDefault("A menreiki youkai. Her face doesn't show emotions, although the doll probably couldn't if it tried");
         }
 
         public override void SetDefaults()

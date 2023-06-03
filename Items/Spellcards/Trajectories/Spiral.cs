@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Trajectories
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.Spiral, Type);
             
-            DisplayName.SetDefault("Spiral");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Spiral");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

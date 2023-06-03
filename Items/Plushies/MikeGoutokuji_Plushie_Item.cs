@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Mike Goutokuji Plushie");
-            Tooltip.SetDefault("A maneki-neko whose powers do not fully work. She can attract money or people, but not both");
+            // DisplayName.SetDefault("Mike Goutokuji Plushie");
+            // Tooltip.SetDefault("A maneki-neko whose powers do not fully work. She can attract money or people, but not both");
         }
 
 

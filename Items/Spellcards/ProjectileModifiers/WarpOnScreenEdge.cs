@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.WarpOnScreenEdge, Type);
             
-            DisplayName.SetDefault("Warp On Screen Edge");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Warp On Screen Edge");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

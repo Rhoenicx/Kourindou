@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Enums;
 using Terraria.DataStructures;
@@ -51,8 +52,8 @@ namespace Kourindou.Tiles.Furniture
             TileID.Sets.DisableSmartCursor[Type] = true;
             //animationFrameHeight = 56;
 
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("U.N. Owen Washer");
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("U.N. Owen Washer");
             AddMapEntry(new Color(187, 199, 219), name);
         }
 

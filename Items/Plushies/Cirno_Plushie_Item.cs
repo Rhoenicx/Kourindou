@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Cirno Plushie");
-            Tooltip.SetDefault("The ice fairy. It's stupidly strong, and stupid as well");
+            // DisplayName.SetDefault("Cirno Plushie");
+            // Tooltip.SetDefault("The ice fairy. It's stupidly strong, and stupid as well");
         }
 
         public override string AddEffectTooltip()
@@ -83,38 +83,56 @@ namespace Kourindou.Items.Plushies
             player.endurance += 0.17f;
         }
 
-        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            if (player != null)
-            {
-                player.AddBuff(BuffID.Chilled, 600);
-                player.AddBuff(BuffID.Frostburn, 600);
-                player.AddBuff(BuffID.Slow, 600);
-                if (crit)
-                {
-                    player.AddBuff(BuffID.Frozen, 120);
-                }
-            }
+            target.AddBuff(BuffID.Chilled, 600);
+            target.AddBuff(BuffID.Frostburn, 600);
+            target.AddBuff(BuffID.Slow, 600);
 
-            if (npc != null)
+            if (hit.Crit)
             {
-                npc.AddBuff(BuffID.Chilled, 600);
-                npc.AddBuff(BuffID.Frostburn, 600);
-                npc.AddBuff(BuffID.Slow, 600);
-                if (crit)
-                {
-                    npc.AddBuff(BuffID.Frozen, 120);
-                }
+                target.AddBuff(BuffID.Frozen, 120);
             }
-
         }
 
-        public override void PlushieModifyHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, ref int damage, ref float knockback, ref bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
+        {
+            target.AddBuff(BuffID.Chilled, 600);
+            target.AddBuff(BuffID.Frostburn, 600);
+            target.AddBuff(BuffID.Slow, 600);
+
+            if (hit.Crit)
+            {
+                target.AddBuff(BuffID.Frozen, 120);
+            }
+        }
+
+        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
         {
             if ((int)Main.rand.Next(0, 12) == 9)
             {
-                damage *= 9;
+                modifiers.SourceDamage *= 9;
             }
+        }
+
+        public override void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        {
+            if ((int)Main.rand.Next(0, 12) == 9)
+            {
+                modifiers.SourceDamage *= 9;
+            }
+        }
+
+        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo hit, int amountEquipped)
+        {
+            if ((int)Main.rand.Next(0, 12) == 9)
+            {
+                hit.SourceDamage *= 9;
+            }
+
+            targetPlayer.AddBuff(BuffID.Chilled, 600);
+            targetPlayer.AddBuff(BuffID.Frostburn, 600);
+            targetPlayer.AddBuff(BuffID.Slow, 600);
         }
     }
 }

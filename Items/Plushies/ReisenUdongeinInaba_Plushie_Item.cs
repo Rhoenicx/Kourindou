@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Reisen Udongein Inaba Plushie");
-            Tooltip.SetDefault("The Lunar War deserter. A self-proclaimed Earth rabbit");
+            // DisplayName.SetDefault("Reisen Udongein Inaba Plushie");
+            // Tooltip.SetDefault("The Lunar War deserter. A self-proclaimed Earth rabbit");
         }
 
         public override string AddEffectTooltip()

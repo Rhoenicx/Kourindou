@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.Formations
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.QuintupleScatter, Type);
             
-            DisplayName.SetDefault("Quintuple Scatter");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Quintuple Scatter");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

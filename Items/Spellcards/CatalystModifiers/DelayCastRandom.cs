@@ -11,8 +11,8 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.DelayCastRandom, Type);
             
-            DisplayName.SetDefault("Delay Cast Random");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Delay Cast Random");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

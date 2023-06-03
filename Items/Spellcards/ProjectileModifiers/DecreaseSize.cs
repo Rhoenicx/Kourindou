@@ -13,8 +13,8 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.DecreaseSize, Type);
             
-            DisplayName.SetDefault("Decrease Size");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Decrease Size");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

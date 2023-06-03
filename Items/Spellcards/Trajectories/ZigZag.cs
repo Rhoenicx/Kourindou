@@ -12,8 +12,8 @@ namespace Kourindou.Items.Spellcards.Trajectories
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.ZigZag, Type);
             
-            DisplayName.SetDefault("Zig-Zag");
-            Tooltip.SetDefault("");
+            // DisplayName.SetDefault("Zig-Zag");
+            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

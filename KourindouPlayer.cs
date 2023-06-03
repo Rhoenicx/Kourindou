@@ -24,6 +24,7 @@ using Kourindou.Items.Plushies;
 using Kourindou.Items.Consumables;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
 using Kourindou.Items.Catalysts;
+using Kourindou.Items.Spellcards.ProjectileModifiers;
 //using Kourindou.Projectiles.Weapons;
 
 
@@ -119,7 +120,8 @@ namespace Kourindou
         //--------------------------------------------------------------------------------------------------------------------//
         //----------------------------------------------------- Player methods -----------------------------------------------//
         //--------------------------------------------------------------------------------------------------------------------//
-        public override void OnEnterWorld(Player player)
+
+        public override void OnEnterWorld()
         {
             Kourindou.KourindouConfigClient.plushiePower = Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower;
 
@@ -141,7 +143,7 @@ namespace Kourindou
             }
         }
 
-        public override void PlayerConnect(Player player)
+        public override void PlayerConnect()
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
@@ -255,7 +257,7 @@ namespace Kourindou
 
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                if (!plushie.Key.PlushieCanbeHitByNPC(Player, npc, ref cooldownSlot, plushie.Value))
+                if (!plushie.Key.PlushieCanBeHitByNPC(Player, npc, ref cooldownSlot, plushie.Value))
                 {
                     hit = false;
                 }
@@ -264,13 +266,13 @@ namespace Kourindou
             return hit;
         }
 
-        public override bool? CanHitNPC(Item item, NPC target)
+        public override bool CanHitNPC(NPC target)
         {
-            bool? hit = base.CanHitNPC(item, target);
+            bool hit = base.CanHitNPC(target);
 
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                if (plushie.Key.PlushieCanHit(Player, item, null, target, null, plushie.Value) == false)
+                if (!plushie.Key.PlushieCanHitNPC(Player, target, plushie.Value))
                 {
                     hit = false;
                 }
@@ -285,7 +287,7 @@ namespace Kourindou
 
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                if (plushie.Key.PlushieCanHit(Player, null, proj, target, null, plushie.Value) == false)
+                if (!plushie.Key.PlushieCanHitNPCWithProj(Player,proj, target, plushie.Value))
                 {
                     hit = false;
                 }
@@ -300,7 +302,7 @@ namespace Kourindou
 
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                if (plushie.Key.PlushieCanHit(Player, item, null, null, target, plushie.Value) == false)
+                if (!plushie.Key.PlushieCanHitPvp(Player, item, target, plushie.Value))
                 {
                     hit = false;
                 }
@@ -315,7 +317,7 @@ namespace Kourindou
 
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                if (plushie.Key.PlushieCanHit(Player, null, proj, null, target, plushie.Value) == false)
+                if (!plushie.Key.PlushieCanHitPvpWithProj(Player, proj, target, plushie.Value))
                 {
                     hit = false;
                 }
@@ -324,114 +326,84 @@ namespace Kourindou
             return hit;
         }
 
-        // --------- Triggers on PVE --------- //
-        public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                plushie.Key.PlushieOnHit(Player, item, null, target, null, damage, knockback, crit, plushie.Value);
-            }
-        }
-        public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockBack, bool crit)
-        {
-            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
-            {
-                plushie.Key.PlushieOnHit(Player, null, proj, target, null, damage, knockBack, crit, plushie.Value);
+                plushie.Key.PlushieOnHitNPCWithItem(Player, item, target, hit, damageDone, plushie.Value);
             }
         }
 
-        // --------- Triggers on PVP --------- //
-        public override void OnHitPvp(Item item, Player target, int damage, bool crit)
+        public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                plushie.Key.PlushieOnHit(Player, item, null, null, target, damage, 0f, crit, plushie.Value);
+                plushie.Key.PlushieOnHitNPCWithProj(Player, proj, target, hit, damageDone, plushie.Value);
             }
         }
 
-        public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
+        public override void OnHitByNPC(NPC npc, Player.HurtInfo hurtInfo)
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                plushie.Key.PlushieOnHit(Player, null, proj, null, target, damage, 0f, crit, plushie.Value);
+                plushie.Key.PlushieOnHitByNPC(Player, npc, hurtInfo, plushie.Value);
             }
         }
 
-        public override void OnHitByNPC(NPC npc, int damage, bool crit)
+        public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                plushie.Key.PlushieOnHitBy(Player, null, npc, damage, crit, plushie.Value);
+                plushie.Key.PlushieOnHitByProjectile(Player, proj, hurtInfo, plushie.Value);
             }
         }
 
-        public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
+        public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                plushie.Key.PlushieOnHitBy(Player, proj, null, damage, crit, plushie.Value);
+                plushie.Key.PlushieModifyHitNPCWithItem(Player, item, target, modifiers, plushie.Value);
             }
         }
 
-        // --------- Hits this player does on NPC --------- //
-        public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
+        public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                plushie.Key.PlushieModifyHit(Player, item, null, target, null, ref damage, ref knockback, ref crit, plushie.Value);
+                plushie.Key.PlushieModifyHitNPCWithProj(Player, proj, target, modifiers, plushie.Value);
             }
         }
 
-        public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-        {
-            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
-            {
-                plushie.Key.PlushieModifyHit(Player, null, proj, target, null, ref damage, ref knockback, ref crit, plushie.Value);
-            }
-        }
-
-        // --------- Hits on OTHER player --------- //
-        public override void ModifyHitPvp(Item item, Player target, ref int damage, ref bool crit)
-        {
-            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
-            {
-                float knockback = 0f;
-                plushie.Key.PlushieModifyHit(Player, item, null, null, target, ref damage, ref knockback, ref crit, plushie.Value);
-            }
-        }
-
-        public override void ModifyHitPvpWithProj(Projectile proj, Player target, ref int damage, ref bool crit)
-        {
-            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
-            {
-                float knockback = 0f;
-                plushie.Key.PlushieModifyHit(Player, null, proj, null, target, ref damage, ref knockback, ref crit, plushie.Value);
-            }
-        }
-
-        // --------- Hits on THIS player by NPC --------- //
-        public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
+        public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers)
         {
             if (DebuffMedicineMelancholy)
             {
-                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
+                modifiers.FinalDamage *= 1f + (0.04f * (DebuffMedicineMelancholyStacks + 1));
             }
         }
 
-        public override void ModifyHitByProjectile(Projectile proj, ref int damage, ref bool crit)
+        public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers)
         {
             if (DebuffMedicineMelancholy)
             {
-                damage = (int)((float)damage * (1f + (0.04f * (DebuffMedicineMelancholyStacks + 1))));
+                modifiers.FinalDamage *= 1f + (0.04f * (DebuffMedicineMelancholyStacks + 1));
             }
         }
 
-        // --------- Player got hurt --------- //
-        public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
+        public override void OnHurt(Player.HurtInfo info)
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                plushie.Key.PlushieHurt(Player, pvp, quiet, damage, hitDirection, crit, cooldownCounter, plushie.Value);
+                plushie.Key.PlushieOnHurt(Player, info, plushie.Value);
+            }
+
+            if (info.PvP && info.DamageSource.SourcePlayerIndex > -1 && info.DamageSource.SourcePlayerIndex == Main.myPlayer)
+            {
+                Player sourcePlayer = Main.player[info.DamageSource.SourcePlayerIndex];
+                foreach (KeyValuePair<PlushieItem, int> plushie in sourcePlayer.GetModPlayer<KourindouPlayer>().EquippedPlushies)
+                {
+                    plushie.Key.PlushieOnHurtPvp(Player, sourcePlayer, info, plushie.Value);
+                }
             }
         }
 
@@ -466,6 +438,15 @@ namespace Kourindou
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
                 plushie.Key.PlushieKill(Player, damage, hitDirection, pvp, damageSource, plushie.Value);
+            }
+
+            if (pvp && damageSource.SourcePlayerIndex > -1 && damageSource.SourcePlayerIndex == Main.myPlayer)
+            {
+                Player sourcePlayer = Main.player[damageSource.SourcePlayerIndex];
+                foreach (KeyValuePair<PlushieItem, int> plushie in sourcePlayer.GetModPlayer<KourindouPlayer>().EquippedPlushies)
+                {
+                    plushie.Key.PlushieKillPvp(Player, sourcePlayer, damage, hitDirection, pvp, damageSource, plushie.Value);
+                }
             }
         }
 

@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Rin Kaenbyou Plushie");
-            Tooltip.SetDefault("One of Satori's pets. She hauls corpses into the flames of hell to maintain it");
+            // DisplayName.SetDefault("Rin Kaenbyou Plushie");
+            // Tooltip.SetDefault("One of Satori's pets. She hauls corpses into the flames of hell to maintain it");
         }
 
         public override void SetDefaults()

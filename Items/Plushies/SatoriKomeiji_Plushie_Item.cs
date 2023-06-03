@@ -13,8 +13,8 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Satori Komeiji Plushie");
-            Tooltip.SetDefault("The mistress of the Earth Palace in Former Hell. You can't talk to animals with this, sadly");
+            // DisplayName.SetDefault("Satori Komeiji Plushie");
+            // Tooltip.SetDefault("The mistress of the Earth Palace in Former Hell. You can't talk to animals with this, sadly");
         }
 
         public override string AddEffectTooltip()
@@ -86,21 +86,25 @@ namespace Kourindou.Items.Plushies
             // All Attacks inflict Cursed Flames, Ichor and Confusion
         }
 
-        public override void PlushieOnHit(Player myPlayer, Item item, Projectile proj, NPC npc, Player player, int damage, float knockback, bool crit, int amountEquipped)
+        public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            if (npc != null)
-            {
-                npc.AddBuff(BuffID.CursedInferno, 600);
-                npc.AddBuff(BuffID.Confused, 600);
-                npc.AddBuff(BuffID.Ichor, 600);
-            }
+            target.AddBuff(BuffID.CursedInferno, 600);
+            target.AddBuff(BuffID.Confused, 600);
+            target.AddBuff(BuffID.Ichor, 600);
+        }
 
-            if (player != null)
-            {
-                player.AddBuff(BuffID.CursedInferno, 600);
-                player.AddBuff(BuffID.Confused, 600);
-                player.AddBuff(BuffID.Ichor, 600);
-            }
+        public override void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
+        {
+            target.AddBuff(BuffID.CursedInferno, 600);
+            target.AddBuff(BuffID.Confused, 600);
+            target.AddBuff(BuffID.Ichor, 600);
+        }
+
+        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
+        {
+            targetPlayer.AddBuff(BuffID.CursedInferno, 600);
+            targetPlayer.AddBuff(BuffID.Confused, 600);
+            targetPlayer.AddBuff(BuffID.Ichor, 600);
         }
     }
 }
