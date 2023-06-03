@@ -1,0 +1,1593 @@
+Mods: {
+	Kourindou: {
+		Buffs: {
+			Buff_FumoCola: {
+				DisplayName: Fumo Cola
+				Description: Increases attack speed by {AttackSpeed}% and movement speed by {MovementSpeed}%
+			}
+
+			Buff_PlushieInRange: {
+				DisplayName: Plushie Magic
+				Description: Slight increase to life and mana regeneration
+			}
+
+			DeBuff_MedicineMelancholy: {
+				DisplayName: Manipulation of Poison
+				Description: Inflicted by strong poison which increases damage taken
+			}
+
+			DeBuff_Mortality: {
+				DisplayName: Mortality
+				Description: You can die
+			}
+		}
+
+		Items: {
+			DebugCatalyst: {
+				DisplayName: Testing Catalyst 1
+				Tooltip: ""
+			}
+
+			FumoCola: {
+				DisplayName: Fumo Cola
+				Tooltip: Coca Cola is Fumo
+			}
+
+			BlackFabric: {
+				DisplayName: Black Fabric
+				Tooltip: ""
+			}
+
+			BlueFabric: {
+				DisplayName: Blue Fabric
+				Tooltip: ""
+			}
+
+			BlueThread: {
+				DisplayName: Blue Thread
+				Tooltip: ""
+			}
+
+			BrownFabric: {
+				DisplayName: Brown Fabric
+				Tooltip: ""
+			}
+
+			BrownThread: {
+				DisplayName: Brown Thread
+				Tooltip: ""
+			}
+
+			CottonFibre: {
+				DisplayName: Cotton Fibre
+				Tooltip: ""
+			}
+
+			CyanFabric: {
+				DisplayName: Cyan Fabric
+				Tooltip: ""
+			}
+
+			CyanThread: {
+				DisplayName: Cyan Thread
+				Tooltip: ""
+			}
+
+			FlaxBundle: {
+				DisplayName: Flax Bundle
+				Tooltip: ""
+			}
+
+			GreenFabric: {
+				DisplayName: Green Fabric
+				Tooltip: ""
+			}
+
+			LimeFabric: {
+				DisplayName: Lime Fabric
+				Tooltip: ""
+			}
+
+			LimeThread: {
+				DisplayName: Lime Thread
+				Tooltip: ""
+			}
+
+			OrangeFabric: {
+				DisplayName: Orange Fabric
+				Tooltip: ""
+			}
+
+			OrangeThread: {
+				DisplayName: Orange Thread
+				Tooltip: ""
+			}
+
+			PinkFabric: {
+				DisplayName: Pink Fabric
+				Tooltip: ""
+			}
+
+			PurpleFabric: {
+				DisplayName: Purple Fabric
+				Tooltip: ""
+			}
+
+			PurpleThread: {
+				DisplayName: Purple Thread
+				Tooltip: ""
+			}
+
+			RainbowFabric: {
+				DisplayName: Rainbow Fabric
+				Tooltip: ""
+			}
+
+			RainbowThread: {
+				DisplayName: Rainbow Thread
+				Tooltip: ""
+			}
+
+			RedFabric: {
+				DisplayName: Red Fabric
+				Tooltip: ""
+			}
+
+			RedThread: {
+				DisplayName: Red Thread
+				Tooltip: ""
+			}
+
+			SilverFabric: {
+				DisplayName: Silver Fabric
+				Tooltip: ""
+			}
+
+			SilverThread: {
+				DisplayName: Silver Thread
+				Tooltip: ""
+			}
+
+			SkyBlueFabric: {
+				DisplayName: Sky Blue Fabric
+				Tooltip: ""
+			}
+
+			SkyBlueThread: {
+				DisplayName: Sky Blue Thread
+				Tooltip: ""
+			}
+
+			TealFabric: {
+				DisplayName: Teal Fabric
+				Tooltip: ""
+			}
+
+			TealThread: {
+				DisplayName: Teal Thread
+				Tooltip: ""
+			}
+
+			VioletFabric: {
+				DisplayName: Violet Fabric
+				Tooltip: ""
+			}
+
+			VioletThread: {
+				DisplayName: Violet Thread
+				Tooltip: ""
+			}
+
+			WhiteThread: {
+				DisplayName: White Thread
+				Tooltip: ""
+			}
+
+			YellowFabric: {
+				DisplayName: Yellow Fabric
+				Tooltip: ""
+			}
+
+			YellowThread: {
+				DisplayName: Yellow Thread
+				Tooltip: ""
+			}
+
+			SewingMachine: {
+				DisplayName: Sewing Machine
+				Tooltip: ""
+			}
+
+			UN_Owen_Washer: {
+				DisplayName: U.N. Owen Washer
+				Tooltip: ""
+			}
+
+			WeavingLoom: {
+				DisplayName: Weaving Loom
+				Tooltip: ""
+			}
+
+			AliceMargatroid_Plushie_Item: {
+				DisplayName: Alice Margatroid Plushie
+				Tooltip: The seven-colored magician. Ironically, she's a doll now
+			}
+
+			AyaShameimaru_Plushie_Item: {
+				DisplayName: Aya Shameimaru Plushie
+				Tooltip: A crow tengu. Runs a newspaper that's mostly sensational gossip
+			}
+
+			BombDoll_Plushie_Item: {
+				DisplayName: Bomb Doll Plushie
+				Tooltip: ""
+			}
+
+			ByakurenHijiri_Plushie_Item: {
+				DisplayName: Byakuren Hijiri Plushie
+				Tooltip: A Buddhist nun and magician. Currently, she's then Myouren Temple's head priest
+			}
+
+			Chen_Plushie_Item: {
+				DisplayName: Chen Plushie
+				Tooltip: The cutest shikigami's shikigami!
+			}
+
+			ChimataTenkyuu_Plushie_Item: {
+				DisplayName: Chimata Tenkyuu Plushie
+				Tooltip: The overseer of the market. Now where is that bustling marketplace...
+			}
+
+			Cirno_Plushie_Item: {
+				DisplayName: Cirno Plushie
+				Tooltip: The ice fairy. It's stupidly strong, and stupid as well
+			}
+
+			Daiyousei_Plushie_Item: {
+				DisplayName: Daiyousei Plushie
+				Tooltip: Cirno's friend..?
+			}
+
+			EirinYagokoro_Plushie_Item: {
+				DisplayName: Eirin Yagokoro Plushie
+				Tooltip: The genius of the Moon
+			}
+
+			FlandreScarlet_Plushie_Item: {
+				DisplayName: Flandre Scarlet Plushie
+				Tooltip: The ultimate basement lurker. The scarlet sky has since tempted her presence outside the mansion
+			}
+
+			FujiwaraNoMokou_Plushie_Item: {
+				DisplayName: Fujiwara No Mokou Plushie
+				Tooltip: The bamboo forest's guide. Rumor has it that she runs a yakitori stand
+			}
+
+			Gensokyo_Bone_Fairy_Plushie_Item: {
+				DisplayName: Bone Fairy Plushie
+				Tooltip: ""
+			}
+
+			Gensokyo_Flower_Fairy_Plushie_Item: {
+				DisplayName: Flower Fairy Plushie
+				Tooltip: ""
+			}
+
+			Gensokyo_Lava_Fairy_Plushie_Item: {
+				DisplayName: Lava Fairy Plushie
+				Tooltip: ""
+			}
+
+			Gensokyo_Snow_Fairy_Plushie_Item: {
+				DisplayName: Snow Fairy Plushie
+				Tooltip: ""
+			}
+
+			Gensokyo_Stone_Fairy_Plushie_Item: {
+				DisplayName: Stone Fairy Plushie
+				Tooltip: ""
+			}
+
+			Gensokyo_Sunflower_Fairy_Plushie_Item: {
+				DisplayName: Sunflower Fairy Plushie
+				Tooltip: ""
+			}
+
+			Gensokyo_Thorn_Fairy_Plushie_Item: {
+				DisplayName: Thorn Fairy Plushie
+				Tooltip: ""
+			}
+
+			HataNoKokoro_Plushie_Item: {
+				DisplayName: Hata No Kokoro Plushie
+				Tooltip: A menreiki youkai. Her face doesn't show emotions, although the doll probably couldn't if it tried
+			}
+
+			HatateHimekaidou_Plushie_Item: {
+				DisplayName: Hatate Himekaidou Plushie
+				Tooltip: The reporter for the Kakashi Spirit News. Uses thoughtography to obtain material for her newspaper
+			}
+
+			HatsuneMiku_Plushie_Item: {
+				DisplayName: Hatsune Miku Plushie
+				Tooltip:
+					'''
+					The voice of the future, in pixel plushie form!
+					Fires leeks from the heavens if powered
+					'''
+			}
+
+			HecatiaLapislazuli_Plushie_Item: {
+				DisplayName: Hecatia Lapislazuli Plushie
+				Tooltip: The Goddess of Hell. She has a questionable fashion sense
+			}
+
+			HinaKagiyama_Plushie_Item: {
+				DisplayName: Hina Kagiyama Plushie
+				Tooltip: A misfortune god that gathers misfortune. We do not have a spinning animation for it yet. Sorry
+			}
+
+			HitoriGotou_Plushie_Item: {
+				DisplayName: Hitori 'the rock' Gotou Plushie
+				Tooltip: ""
+			}
+
+			HongMeiling_Plushie_Item: {
+				DisplayName: Hong Meiling Plushie
+				Tooltip: The scarlet mansion's gatekeeper
+			}
+
+			IkuNagae_Plushie_Item: {
+				DisplayName: Iku Nagae Plushie
+				Tooltip: A messenger of the Dragon Palace, who observes the mood of the atmosphere
+			}
+
+			InuSakuyaIzayoi_Plushie_Item: {
+				DisplayName: Inu Sakuya Izayoi Plushie
+				Tooltip: Does the real Sakuya like this? Probably. It's adorable, why wouldn't she?
+			}
+
+			JoonYorigami_Plushie_Item: {
+				DisplayName: Joon Yorigami Plushie
+				Tooltip: ""
+			}
+
+			Junko_Plushie_Item: {
+				DisplayName: Junko Plushie
+				Tooltip: A divine spirit, and the sworn enemy of the Lunarians. She can purify anything
+			}
+
+			KaguyaHouraisan_Plushie_Item: {
+				DisplayName: Kaguya Houraisan Plushie
+				Tooltip: The exiled princess of the moon
+			}
+
+			KanakoYasaka_Plushie_Item: {
+				DisplayName: Kanako Yasaka Plushie
+				Tooltip: The current goddess of the Moriya Shrine. Religion is a business
+			}
+
+			KasenIbaraki_Plushie_Item: {
+				DisplayName: Kasen Ibaraki Plushie
+				Tooltip: A mountain hermit. Her hair buns are very cute
+			}
+
+			KeineKamishirasawa_Plushie_Item: {
+				DisplayName: Keine Kamishirasa Plushie
+				Tooltip: The Guardian of the Human Village. She is a school teacher there, and is also its guardian in times of peril
+			}
+
+			Kisume_Plushie_Item: {
+				DisplayName: Kisume Plushie
+				Tooltip: A Tsurube-otoshi who spends her time in buckets in the dark instead of trees. Watch your head
+			}
+
+			Koakuma_Plushie_Item: {
+				DisplayName: Koakuma Plushie
+				Tooltip: The scarlet devil mansion's librarian, and Patchouli's assistant
+			}
+
+			KogasaTatara_Plushie_Item: {
+				DisplayName: Kogasa Tatara Plushie
+				Tooltip: ""
+			}
+
+			KoishiKomeiji_Plushie_Item: {
+				DisplayName: Koishi Komeiji Plushie
+				Tooltip: Satori's sister? You can't seem to remember them otherwise...
+			}
+
+			Kourindou_MarisaKirisame_Plushie_Item: {
+				DisplayName: Marisa Kirisame Plushie Kourindou ver.
+				Tooltip: This plushie has a tracker inside it. Marisa is now coming to steal your goods, da ze!
+			}
+
+			Kourindou_ReimuHakurei_Plushie_Item: {
+				DisplayName: Reimu Hakurei Plushie Kourindou ver.
+				Tooltip: The Hakurei shrine maiden, in a slightly different outfit
+			}
+
+			Kourindou_RemiliaScarlet_Plushie_Item: {
+				DisplayName: Remilia Scarlet Plushie Kourindou ver.
+				Tooltip: The Scarlet Devil herself. The new outfit suits her
+			}
+
+			Kourindou_SakuyaIzayoi_Plushie_Item: {
+				DisplayName: Sakuya Izayoi Plushie Kourindou ver.
+				Tooltip: The maid of the scarlet mansion
+			}
+
+			LilyWhite_Plushie_Item: {
+				DisplayName: Lily White Plushie
+				Tooltip: Spring is here!
+			}
+
+			LunaChild_Plushie_Item: {
+				DisplayName: Luna Child Plushie
+				Tooltip: ""
+			}
+
+			MarisaKirisame_Plushie_Item: {
+				DisplayName: Marisa Kirisame Plushie
+				Tooltip: The ordinary human who uses magic
+			}
+
+			MedicineMelancholy_Plushie_Item: {
+				DisplayName: Medicine Melancholy Plushie
+				Tooltip: A young doll youkai that lives on the Nameless Hill. She can harness the poison of anything
+			}
+
+			MikeGoutokuji_Plushie_Item: {
+				DisplayName: Mike Goutokuji Plushie
+				Tooltip: A maneki-neko whose powers do not fully work. She can attract money or people, but not both
+			}
+
+			MinamitsuMurasa_Plushie_Item: {
+				DisplayName: Minamitsu Murasa Plushie
+				Tooltip: A phantom, and the Palanquin Ship's captain
+			}
+
+			MomijiInubashiri_Plushie_Item: {
+				DisplayName: Momiji Inubashiri Plushie
+				Tooltip: The Youkai Mountain's guard dog. Calling her that might get you killed
+			}
+
+			NagatoYuki_Plushie_Item: {
+				DisplayName: Nagato Yuki Plushie
+				Tooltip: An introverted, taciturn bibliophile. Also an alien
+			}
+
+			NekoOwO_Plushie_Item: {
+				DisplayName: Neko OwO Plushie
+				Tooltip: ""
+			}
+
+			NitoriKawashiro_Plushie_Item: {
+				DisplayName: Nitori Kawashiro Plushie
+				Tooltip: A kappa that can control water. Like all other kappa, she's skilled in technology and engineering!
+			}
+
+			NueHoujuu_Plushie_Item: {
+				DisplayName: Nue Houjuu Plushie
+				Tooltip: An alien?! Perhaps this doll isn't her true form...
+			}
+
+			PatchouliKnowledge_Plushie_Item: {
+				DisplayName: Patchouli Knowledge Plushie
+				Tooltip: The magician of the scarlet mansion
+			}
+
+			RanYakumo_Plushie_Item: {
+				DisplayName: Ran Yakumo Plushie
+				Tooltip: ""
+			}
+
+			ReimuHakurei_Plushie_Item: {
+				DisplayName: Reimu Hakurei Plushie
+				Tooltip: The Hakurei shrine maiden. It's also aimbot if powered
+			}
+
+			ReisenUdongeinInaba_Plushie_Item: {
+				DisplayName: Reisen Udongein Inaba Plushie
+				Tooltip: The Lunar War deserter. A self-proclaimed Earth rabbit
+			}
+
+			RikkaTakanashi_Plushie_Item: {
+				DisplayName: Rikka Takanashi Plushie
+				Tooltip: Reality rejected... synapses shattered... be vanished from this world!
+			}
+
+			RikkaTakanashiTMO_Plushie_Item: {
+				DisplayName: Rikka Takanashi Plushie Take me on! ver.
+				Tooltip: Reality rejected... synapses shattered... be vanished from this world!
+			}
+
+			RinKaenbyou_Plushie_Item: {
+				DisplayName: Rin Kaenbyou Plushie
+				Tooltip: One of Satori's pets. She hauls corpses into the flames of hell to maintain it
+			}
+
+			Rumia_Plushie_Item: {
+				DisplayName: Rumia Plushie
+				Tooltip: The youkai of the dusk
+			}
+
+			SanaeKochiya_Plushie_Item: {
+				DisplayName: Sanae Kochiya Plushie
+				Tooltip: The wind god shrine maiden. She doesn't look like Reimu
+			}
+
+			SatoriKomeiji_Plushie_Item: {
+				DisplayName: Satori Komeiji Plushie
+				Tooltip: The mistress of the Earth Palace in Former Hell. You can't talk to animals with this, sadly
+			}
+
+			SeigaKaku_Plushie_Item: {
+				DisplayName: Seiga Kaku Plushie
+				Tooltip: Doki, doki, waku, waku...
+			}
+
+			SeijaKijin_Plushie_Item: {
+				DisplayName: Seija Kijin Plushie
+				Tooltip: The mischief-causing amanojaku. It goes on the ceiling, too!
+			}
+
+			Seiran_Plushie_Item: {
+				DisplayName: Seiran Plushie
+				Tooltip: ""
+			}
+
+			ShanghaiDoll_Plushie_Item: {
+				DisplayName: Shanghai Doll Plushie
+				Tooltip: A replica of Alice's most prominent doll
+			}
+
+			ShinmyoumaruSukuna_Plushie_Item: {
+				DisplayName: Shinmyoumaru Sukuna Plushie
+				Tooltip: The inchling of the Shining Needle Castle. Her needle is very versatile
+			}
+
+			ShionYorigami_Plushie_Item: {
+				DisplayName: Shion Yorigami Plushie
+				Tooltip: A poverty god. It doesn't seem to take your money, though...
+			}
+
+			StarSapphire_Plushie_Item: {
+				DisplayName: Star Sapphire Plushie
+				Tooltip: ""
+			}
+
+			SuikaIbuki_Plushie_Item: {
+				DisplayName: Suika Ibuki Plushie
+				Tooltip: The alcoholic oni. Her appearance makes you question her age, and whether she should be drinking alcohol
+			}
+
+			SumirekoUsami_Plushie_Item: {
+				DisplayName: Sumireko Usami Plushie
+				Tooltip: ""
+			}
+
+			SunnyMilk_Plushie_Item: {
+				DisplayName: Sunny Milk Plushie
+				Tooltip: ""
+			}
+
+			SuwakoMoriya_Plushie_Item: {
+				DisplayName: Suwako Moriya Plushie
+				Tooltip: One of the Moriya Shrine's gods. Handles the shrine's divine services
+			}
+
+			Tanned_Cirno_Plushie_Item: {
+				DisplayName: Tanned Cirno Plushie
+				Tooltip: The strongest [with a tan]!
+			}
+
+			TenshiHinanawi_Plushie_Item: {
+				DisplayName: Tenshi Hinanawi Plushie
+				Tooltip: The unruly celestial. She's bored of Heaven, it seems
+			}
+
+			TewiInaba_Plushie_Item: {
+				DisplayName: Tewi Inaba Plushie
+				Tooltip: A very old rabbit youkai. Despite this, she's childish
+			}
+
+			ToyosatomimiNoMiko_Plushie_Item: {
+				DisplayName: Toyosatomimi no Miko Plushie
+				Tooltip: ""
+			}
+
+			UtsuhoReiuji_Plushie_Item: {
+				DisplayName: Utsuho Reiuji Plushie
+				Tooltip: The hell raven that holds Yatagarasu's power. She controls the heat of the flames of hell
+			}
+
+			YoshikaMiyako_Plushie_Item: {
+				DisplayName: Yoshika Miyako Plushie
+				Tooltip: A Jiangshi. Their owner likes them a lot
+			}
+
+			YoumuKonpaku_Plushie_Item: {
+				DisplayName: Youmu Konpaku Plushie
+				Tooltip: Hakugyokurou's gardener, and Yuyuko's servant
+			}
+
+			YukariYakumo_Plushie_Item: {
+				DisplayName: Yukari Yakumo Plushie
+				Tooltip: The mastermind gap youkai. Perhaps this doll borrows part of her power
+			}
+
+			YuukaKazami_Plushie_Item: {
+				DisplayName: Yuuka Kazami Plushie
+				Tooltip: The flower youkai. She's not actually a flower youkai, but she really likes flowers
+			}
+
+			YuyukoSaigyouji_Plushie_Item: {
+				DisplayName: Yuyuko Saigyouji Plushie
+				Tooltip: The princess of the Netherworld
+			}
+
+			CottonSeeds: {
+				DisplayName: Cotton Seeds
+				Tooltip: ""
+			}
+
+			FlaxSeeds: {
+				DisplayName: Flax Seeds
+				Tooltip: ""
+			}
+
+			ChanceNoConsume: {
+				DisplayName: Chance No Consume
+				Tooltip: ""
+			}
+
+			DecreaseSpread: {
+				DisplayName: Decrease Spread
+				Tooltip: ""
+			}
+
+			DelayCastBy1: {
+				DisplayName: Delay Cast By 1
+				Tooltip: ""
+			}
+
+			DelayCastBy2: {
+				DisplayName: Delay Cast By 2
+				Tooltip: ""
+			}
+
+			DelayCastBy3: {
+				DisplayName: Delay Cast By 3
+				Tooltip: ""
+			}
+
+			DelayCastBy4: {
+				DisplayName: Delay Cast By 4
+				Tooltip: ""
+			}
+
+			DelayCastBy5: {
+				DisplayName: Delay Cast By 5
+				Tooltip: ""
+			}
+
+			DelayCastRandom: {
+				DisplayName: Delay Cast Random
+				Tooltip: ""
+			}
+
+			DistantCast: {
+				DisplayName: Distant Cast
+				Tooltip: ""
+			}
+
+			EliminateCooldown: {
+				DisplayName: Eliminate Cooldown
+				Tooltip: ""
+			}
+
+			EliminateRecharge: {
+				DisplayName: Eliminate Recharge
+				Tooltip: ""
+			}
+
+			IncreaseSpread: {
+				DisplayName: Increase Spread
+				Tooltip: ""
+			}
+
+			NextCardNoCooldown: {
+				DisplayName: Next Card No Cooldown
+				Tooltip: ""
+			}
+
+			NextCardNoRecharge: {
+				DisplayName: Next Card No Recharge
+				Tooltip: ""
+			}
+
+			RandomCooldownPercent: {
+				DisplayName: Random Cooldown Percent
+				Tooltip: ""
+			}
+
+			RandomRechargePercent: {
+				DisplayName: Random Recharge Percent
+				Tooltip: ""
+			}
+
+			ReduceCooldown10Percent: {
+				DisplayName: Reduce Cooldown 10 Percent
+				Tooltip: ""
+			}
+
+			ReduceCooldown25Percent: {
+				DisplayName: Reduce Cooldown 25 Percent
+				Tooltip: ""
+			}
+
+			ReduceCooldown50Percent: {
+				DisplayName: Reduce Cooldown 50 Percent
+				Tooltip: ""
+			}
+
+			ReduceRecharge10Percent: {
+				DisplayName: Reduce Recharge 10 Percent
+				Tooltip: ""
+			}
+
+			ReduceRecharge25Percent: {
+				DisplayName: Reduce Recharge 25 Percent
+				Tooltip: ""
+			}
+
+			ReduceRecharge50Percent: {
+				DisplayName: Reduce Recharge 50 Percent
+				Tooltip: ""
+			}
+
+			Repeat1: {
+				DisplayName: Repeat 1
+				Tooltip: ""
+			}
+
+			Repeat2: {
+				DisplayName: Repeat 2
+				Tooltip: ""
+			}
+
+			Repeat3: {
+				DisplayName: Repeat 3
+				Tooltip: ""
+			}
+
+			Repeat4: {
+				DisplayName: Repeat 4
+				Tooltip: ""
+			}
+
+			Repeat5: {
+				DisplayName: Repeat 5
+				Tooltip: ""
+			}
+
+			RepeatRandom: {
+				DisplayName: Repeat Random
+				Tooltip: ""
+			}
+
+			ReverseCast: {
+				DisplayName: Reverse Cast
+				Tooltip: ""
+			}
+
+			Sniper: {
+				DisplayName: Sniper
+				Tooltip: ""
+			}
+
+			TeleportCast: {
+				DisplayName: Teleport Cast
+				Tooltip: ""
+			}
+
+			Earth: {
+				DisplayName: Earth
+				Tooltip: ""
+			}
+
+			Electricity: {
+				DisplayName: Electricity
+				Tooltip: ""
+			}
+
+			Fire: {
+				DisplayName: Fire
+				Tooltip: ""
+			}
+
+			Frost: {
+				DisplayName: Frost
+				Tooltip: ""
+			}
+
+			Magic: {
+				DisplayName: Magic
+				Tooltip: ""
+			}
+
+			Metal: {
+				DisplayName: Metal
+				Tooltip: ""
+			}
+
+			MightyWind: {
+				DisplayName: Mighty Wind
+				Tooltip: ""
+			}
+
+			Moon: {
+				DisplayName: Moon
+				Tooltip: ""
+			}
+
+			Poison: {
+				DisplayName: Poison
+				Tooltip: ""
+			}
+
+			Sun: {
+				DisplayName: Sun
+				Tooltip: ""
+			}
+
+			Water: {
+				DisplayName: Water
+				Tooltip: ""
+			}
+
+			Wood: {
+				DisplayName: Wood
+				Tooltip: ""
+			}
+
+			EmptyCard: {
+				DisplayName: Empty Spellcard
+				Tooltip: You shouldn't have this you CHEATER!
+			}
+
+			Daedalus: {
+				DisplayName: Daedalus
+				Tooltip: ""
+			}
+
+			DoubleFork: {
+				DisplayName: Double Fork
+				Tooltip: ""
+			}
+
+			DoubleScatter: {
+				DisplayName: Double Scatter
+				Tooltip: ""
+			}
+
+			ForwardAndBack: {
+				DisplayName: Forward And Back
+				Tooltip: ""
+			}
+
+			ForwardAndSide: {
+				DisplayName: Forward And Side
+				Tooltip: ""
+			}
+
+			Heptagon: {
+				DisplayName: Heptagon
+				Tooltip: ""
+			}
+
+			Hexagon: {
+				DisplayName: Hexagon
+				Tooltip: ""
+			}
+
+			Octagon: {
+				DisplayName: Octagon
+				Tooltip: ""
+			}
+
+			OnlySides: {
+				DisplayName: Only Sides
+				Tooltip: ""
+			}
+
+			Pentagon: {
+				DisplayName: Pentagon
+				Tooltip: ""
+			}
+
+			Quadragon: {
+				DisplayName: Quadragon
+				Tooltip: ""
+			}
+
+			QuadrupleFork: {
+				DisplayName: Quadruple Fork
+				Tooltip: ""
+			}
+
+			QuadrupleScatter: {
+				DisplayName: Quadruple Scatter
+				Tooltip: ""
+			}
+
+			QuintupleFork: {
+				DisplayName: Quintuple Fork
+				Tooltip: ""
+			}
+
+			QuintupleScatter: {
+				DisplayName: Quintuple Scatter
+				Tooltip: ""
+			}
+
+			Randagon: {
+				DisplayName: Randagon
+				Tooltip: ""
+			}
+
+			RandomFork: {
+				DisplayName: Random Fork
+				Tooltip: ""
+			}
+
+			RandomFormation: {
+				DisplayName: Random Formation
+				Tooltip: ""
+			}
+
+			ShotgunScatter: {
+				DisplayName: Shotgun
+				Tooltip: ""
+			}
+
+			TripleFork: {
+				DisplayName: Triple Fork
+				Tooltip: ""
+			}
+
+			TripleScatter: {
+				DisplayName: Triple Scatter
+				Tooltip: ""
+			}
+
+			DoubleCast: {
+				DisplayName: Double Cast
+				Tooltip: ""
+			}
+
+			QuadrupleCast: {
+				DisplayName: Quadruple Cast
+				Tooltip: ""
+			}
+
+			TripleCast: {
+				DisplayName: Triple Cast
+				Tooltip: ""
+			}
+
+			DivideBy2: {
+				DisplayName: Divide by 2
+				Tooltip: ""
+			}
+
+			DivideBy3: {
+				DisplayName: Divide by 3
+				Tooltip: ""
+			}
+
+			DivideBy4: {
+				DisplayName: Divide by 4
+				Tooltip: ""
+			}
+
+			DivideBy5: {
+				DisplayName: Divide by 5
+				Tooltip: ""
+			}
+
+			MultiplyBy2: {
+				DisplayName: Multiply by 2
+				Tooltip: ""
+			}
+
+			MultiplyBy3: {
+				DisplayName: Multiply by 3
+				Tooltip: ""
+			}
+
+			MultiplyBy4: {
+				DisplayName: Multiply by 4
+				Tooltip: ""
+			}
+
+			MultiplyBy5: {
+				DisplayName: Multiply by 5
+				Tooltip: ""
+			}
+
+			MultiplyDivideRandom: {
+				DisplayName: Multiply Divide Random
+				Tooltip: ""
+			}
+
+			A_Terrible_Idea: {
+				DisplayName: A Terrible Idea
+				Tooltip: ""
+			}
+
+			Acceleration: {
+				DisplayName: Acceleration
+				Tooltip: ""
+			}
+
+			AccelerationMultiplier: {
+				DisplayName: Acceleration Multiplier
+				Tooltip: ""
+			}
+
+			AngryBullets: {
+				DisplayName: Angry Bullets
+				Tooltip: ""
+			}
+
+			AntiGravity: {
+				DisplayName: Anti Gravity
+				Tooltip: ""
+			}
+
+			BounceDown: {
+				DisplayName: Bounce Down
+				Tooltip: ""
+			}
+
+			BounceOnScreenEdge: {
+				DisplayName: Bounce On Screen Edge
+				Tooltip: ""
+			}
+
+			BounceUp: {
+				DisplayName: Bounce Up
+				Tooltip: ""
+			}
+
+			Collide: {
+				DisplayName: Collide
+				Tooltip: ""
+			}
+
+			CriticalPlus: {
+				DisplayName: Critical Plus
+				Tooltip: ""
+			}
+
+			DamageDown: {
+				DisplayName: Damage Down
+				Tooltip: ""
+			}
+
+			DamageUp: {
+				DisplayName: Damage Up
+				Tooltip: ""
+			}
+
+			Deceleration: {
+				DisplayName: Deceleration
+				Tooltip: ""
+			}
+
+			DecelerationMultiplier: {
+				DisplayName: Deceleration Multiplier
+				Tooltip: ""
+			}
+
+			DecreaseKnockback: {
+				DisplayName: Decrease Knockback
+				Tooltip: ""
+			}
+
+			DecreaseSize: {
+				DisplayName: Decrease Size
+				Tooltip: ""
+			}
+
+			DecreaseSpeed: {
+				DisplayName: Decrease Speed
+				Tooltip: ""
+			}
+
+			Explosion: {
+				DisplayName: Explosion
+				Tooltip: ""
+			}
+
+			FallingFlat: {
+				DisplayName: Falling Flat
+				Tooltip: ""
+			}
+
+			Ghosting: {
+				DisplayName: Ghosting
+				Tooltip: ""
+			}
+
+			Gravity: {
+				DisplayName: Gravity
+				Tooltip: ""
+			}
+
+			Homing: {
+				DisplayName: Homing
+				Tooltip: ""
+			}
+
+			IncreaseKnockback: {
+				DisplayName: Increase Knockback
+				Tooltip: ""
+			}
+
+			IncreaseSize: {
+				DisplayName: Increase Size
+				Tooltip: ""
+			}
+
+			IncreaseSpeed: {
+				DisplayName: Increase Speed
+				Tooltip: ""
+			}
+
+			InstantKill: {
+				DisplayName: Instant Kill
+				Tooltip: ""
+			}
+
+			LifetimeDown: {
+				DisplayName: Lifetime Down
+				Tooltip: ""
+			}
+
+			LifetimeUp: {
+				DisplayName: Lifetime Up
+				Tooltip: ""
+			}
+
+			Luminescence: {
+				DisplayName: Luminescence
+				Tooltip: ""
+			}
+
+			MagicCircleAura: {
+				DisplayName: Magic Circle Aura
+				Tooltip: ""
+			}
+
+			NoGravity: {
+				DisplayName: NoGravity
+				Tooltip: ""
+			}
+
+			NoKnockback: {
+				DisplayName: No Knockback
+				Tooltip: ""
+			}
+
+			PenetrationAll: {
+				DisplayName: Penetration All
+				Tooltip: ""
+			}
+
+			PenetrationDown: {
+				DisplayName: Penetration Down
+				Tooltip: ""
+			}
+
+			PenetrationUp: {
+				DisplayName: Penetration Up
+				Tooltip: ""
+			}
+
+			PenetrationZero: {
+				DisplayName: Penetration Zero
+				Tooltip: ""
+			}
+
+			ProjectileEater: {
+				DisplayName: Projectile Eater
+				Tooltip: ""
+			}
+
+			RandomProjectileModifier: {
+				DisplayName: Random Projectile Modifier
+				Tooltip: ""
+			}
+
+			RandomRotation: {
+				DisplayName: Random Rotation
+				Tooltip: ""
+			}
+
+			RotateLeft22_5: {
+				DisplayName: Rotate Left 22.5
+				Tooltip: ""
+			}
+
+			RotateLeft45: {
+				DisplayName: Rotate Left 45
+				Tooltip: ""
+			}
+
+			RotateLeft90: {
+				DisplayName: Rotate Left 90
+				Tooltip: ""
+			}
+
+			RotateRight22_5: {
+				DisplayName: Rotate Right 22.5
+				Tooltip: ""
+			}
+
+			RotateRight45: {
+				DisplayName: Rotate Right 45
+				Tooltip: ""
+			}
+
+			RotateRight90: {
+				DisplayName: Rotate Right 90
+				Tooltip: ""
+			}
+
+			RotateToEnemy: {
+				DisplayName: Rotate To Enemy
+				Tooltip: ""
+			}
+
+			Shatter: {
+				DisplayName: Shatter
+				Tooltip: ""
+			}
+
+			Shimmer: {
+				DisplayName: Shimmer
+				Tooltip: ""
+			}
+
+			Snowball: {
+				DisplayName: Snowball
+				Tooltip: ""
+			}
+
+			VectorReversal: {
+				DisplayName: Vector Reversal
+				Tooltip: ""
+			}
+
+			WarpOnScreenEdge: {
+				DisplayName: Warp On Screen Edge
+				Tooltip: ""
+			}
+
+			MyOwnProjectileInstance: {
+				DisplayName: My Own Projectile Instance
+				Tooltip: ""
+			}
+
+			ShotBlue: {
+				DisplayName: Blue Shot
+				Tooltip: ""
+			}
+
+			CastEverything: {
+				DisplayName: Cast everything
+				Tooltip: ""
+			}
+
+			RandomCard: {
+				DisplayName: Random card
+				Tooltip: ""
+			}
+
+			Aiming: {
+				DisplayName: Aiming
+				Tooltip: ""
+			}
+
+			ArcLeft: {
+				DisplayName: Arc left
+				Tooltip: ""
+			}
+
+			ArcRight: {
+				DisplayName: Arc right
+				Tooltip: ""
+			}
+
+			Boomerang: {
+				DisplayName: Boomerang
+				Tooltip: ""
+			}
+
+			Orbit: {
+				DisplayName: Orbit
+				Tooltip: ""
+			}
+
+			PingPong: {
+				DisplayName: Ping-Pong
+				Tooltip: ""
+			}
+
+			RandomTrajectory: {
+				DisplayName: Random trajectory
+				Tooltip: ""
+			}
+
+			Snake: {
+				DisplayName: Snake
+				Tooltip: ""
+			}
+
+			Spiral: {
+				DisplayName: Spiral
+				Tooltip: ""
+			}
+
+			Straight: {
+				DisplayName: Straight
+				Tooltip: ""
+			}
+
+			Uncontrolled: {
+				DisplayName: Uncontrolled
+				Tooltip: ""
+			}
+
+			ZigZag: {
+				DisplayName: Zig-Zag
+				Tooltip: ""
+			}
+
+			AddTrigger: {
+				DisplayName: Trigger
+				Tooltip: ""
+			}
+
+			Timer1: {
+				DisplayName: Timer 1
+				Tooltip: ""
+			}
+
+			Timer2: {
+				DisplayName: Timer 2
+				Tooltip: ""
+			}
+
+			Timer3: {
+				DisplayName: Timer 3
+				Tooltip: ""
+			}
+
+			Timer4: {
+				DisplayName: Timer 4
+				Tooltip: ""
+			}
+
+			Timer5: {
+				DisplayName: Timer 5
+				Tooltip: ""
+			}
+		}
+
+		Projectiles: {
+			DebugCatalyst_Catalyst.DisplayName: Debug Catalyst_ Catalyst
+			AliceMargatroid_Plushie_Projectile.DisplayName: Alice Margatroid Plushie
+			AyaShameimaru_Plushie_Projectile.DisplayName: Aya Shameimaru Plushie
+			BombDoll_Plushie_Projectile.DisplayName: Bomb Doll Plushie
+			ByakurenHijiri_Plushie_Projectile.DisplayName: Byakuren Hijiri Plushie
+			Chen_Plushie_Projectile.DisplayName: Chen Plushie
+			ChimataTenkyuu_Plushie_Projectile.DisplayName: Chimata Tenkyuu Plushie
+			Cirno_Plushie_Projectile.DisplayName: Cirno Plushie
+			Daiyousei_Plushie_Projectile.DisplayName: Daiyousei Plushie
+			EirinYagokoro_Plushie_Projectile.DisplayName: Eirin Yagokoro Plushie
+			FlandreScarlet_Plushie_Projectile.DisplayName: Flandre Scarlet Plushie
+			FujiwaraNoMokou_Plushie_Projectile.DisplayName: Fujiwara No Mokou Plushie
+			Gensokyo_Bone_Fairy_Plushie_Projectile.DisplayName: Bone Fairy Plushie
+			Gensokyo_Flower_Fairy_Plushie_Projectile.DisplayName: Flower Fairy Plushie
+			Gensokyo_Lava_Fairy_Plushie_Projectile.DisplayName: Lava Fairy Plushie
+			Gensokyo_Snow_Fairy_Plushie_Projectile.DisplayName: Snow Fairy Plushie
+			Gensokyo_Stone_Fairy_Plushie_Projectile.DisplayName: Stone Fairy Plushie
+			Gensokyo_Sunflower_Fairy_Plushie_Projectile.DisplayName: Sunflower Fairy Plushie
+			Gensokyo_Thorn_Fairy_Plushie_Projectile.DisplayName: Thorn Fairy Plushie
+			HataNoKokoro_Plushie_Projectile.DisplayName: Hata No Kokoro Plushie
+			HatateHimekaidou_Plushie_Projectile.DisplayName: Hatate Himekaidou Plushie
+			HatsuneMiku_Plushie_Projectile.DisplayName: Hatsune Miku Plushie
+			HecatiaLapislazuli_Plushie_Projectile.DisplayName: Hecatia Lapislazuli Plushie
+			HinaKagiyama_Plushie_Projectile.DisplayName: Hina Kagiyama Plushie
+			HitoriGotou_Plushie_Projectile.DisplayName: Hitori 'the rock' Gotou Plushie
+			HongMeiling_Plushie_Projectile.DisplayName: Hong Meiling Plushie
+			IkuNagae_Plushie_Projectile.DisplayName: Iku Nagae Plushie
+			InuSakuyaIzayoi_Plushie_Projectile.DisplayName: Inu Sakuya Izayoi Plushie
+			JoonYorigami_Plushie_Projectile.DisplayName: Joon Yorigami Plushie
+			Junko_Plushie_Projectile.DisplayName: Junko Plushie
+			KaguyaHouraisan_Plushie_Projectile.DisplayName: Kaguya Houraisan Plushie
+			KanakoYasaka_Plushie_Projectile.DisplayName: Kanako Yasaka Plushie
+			KasenIbaraki_Plushie_Projectile.DisplayName: Kasen Ibaraki Plushie
+			KeineKamishirasawa_Plushie_Projectile.DisplayName: Keine Kamishirasawa Plushie
+			Kisume_Plushie_Projectile.DisplayName: Kisume Plushie
+			Koakuma_Plushie_Projectile.DisplayName: Koakuma Plushie
+			KogasaTatara_Plushie_Projectile.DisplayName: Kogasa Tatara Plushie
+			KoishiKomeiji_Plushie_Projectile.DisplayName: Koishi Komeiji Plushie
+			Kourindou_MarisaKirisame_Plushie_Projectile.DisplayName: Marisa Kirisame Plushie Kourindou ver.
+			Kourindou_ReimuHakurei_Plushie_Projectile.DisplayName: Reimu Hakurei Plushie Kourindou ver.
+			Kourindou_RemiliaScarlet_Plushie_Projectile.DisplayName: Remilia Scarlet Plushie Kourindou ver.
+			Kourindou_SakuyaIzayoi_Plushie_Projectile.DisplayName: Sakuya Izayoi Plushie Kourindou ver.
+			LilyWhite_Plushie_Projectile.DisplayName: Lily White Plushie
+			LunaChild_Plushie_Projectile.DisplayName: Luna Child Plushie
+			MarisaKirisame_Plushie_Projectile.DisplayName: Marisa Kirisame Plushie
+			MedicineMelancholy_Plushie_Projectile.DisplayName: Medicine Melancholy Plushie
+			MikeGoutokuji_Plushie_Projectile.DisplayName: Mike Goutokuji Plushie
+			MinamitsuMurasa_Plushie_Projectile.DisplayName: Minamitsu Murasa Plushie
+			MomijiInubashiri_Plushie_Projectile.DisplayName: Momiji Inubashiri Plushie
+			NagatoYuki_Plushie_Projectile.DisplayName: Nagato Yuki Plushie
+			NekoOwO_Plushie_Projectile.DisplayName: Neko OwO Plushie
+			NitoriKawashiro_Plushie_Projectile.DisplayName: Nitori Kawashiro Plushie
+			NueHoujuu_Plushie_Projectile.DisplayName: Nue Houjuu Plushie
+			PatchouliKnowledge_Plushie_Projectile.DisplayName: Patchouli Knowledge Plushie
+			FlandreScarlet_Plushie_Explosion.DisplayName: Flandre's Explosive Crit
+			SakuyaIzayoi_Plushie_Knife.DisplayName: Sakuya's Knife
+			ToyosatomimiNoMiko_Plushie_LaserBeam.DisplayName: Miko's laser
+			YoumuKonpaku_Plushie_HalfPhantom.DisplayName: Half Phantom
+			RanYakumo_Plushie_Projectile.DisplayName: Ran Yakumo Plushie
+			ReimuHakurei_Plushie_Projectile.DisplayName: Reimu Hakurei Plushie
+			ReisenUdongeinInaba_Plushie_Projectile.DisplayName: Reisen Udongein Inaba Plushie
+			RikkaTakanashi_Plushie_Projectile.DisplayName: Rikka Takanashi Plushie
+			RikkaTakanashiTMO_Plushie_Projectile.DisplayName: Rikka Takanashi Plushie Take me on! ver.
+			RinKaenbyou_Plushie_Projectile.DisplayName: Rin Kaenbyou Plushie
+			Rumia_Plushie_Projectile.DisplayName: Rumia Plushie
+			SanaeKochiya_Plushie_Projectile.DisplayName: Sanae Kochiya Plushie
+			SatoriKomeiji_Plushie_Projectile.DisplayName: Satori Komeiji Plushie
+			SeigaKaku_Plushie_Projectile.DisplayName: Seiga Kaku Plushie
+			SeijaKijin_Plushie_Projectile.DisplayName: Seija Kijin Plushie
+			Seiran_Plushie_Projectile.DisplayName: Seiran Plushie
+			ShanghaiDoll_Plushie_Projectile.DisplayName: Shanghai Doll Plushie
+			ShinmyoumaruSukuna_Plushie_Projectile.DisplayName: Shinmyoumaru Sukuna Plushie
+			ShionYorigami_Plushie_Projectile.DisplayName: Shion Yorigami Plushie
+			StarSapphire_Plushie_Projectile.DisplayName: Star Sapphire Plushie
+			SuikaIbuki_Plushie_Projectile.DisplayName: Suika Ibuki Plushie
+			SumirekoUsami_Plushie_Projectile.DisplayName: Sumireko Usami Plushie
+			SunnyMilk_Plushie_Projectile.DisplayName: Sunny Milk Plushie
+			SuwakoMoriya_Plushie_Projectile.DisplayName: Suwako Moriya Plushie
+			Tanned_Cirno_Plushie_Projectile.DisplayName: Tanned Cirno Plushie
+			TenshiHinanawi_Plushie_Projectile.DisplayName: Tenshi Hinanawi Plushie
+			TewiInaba_Plushie_Projectile.DisplayName: Tewi Inaba Plushie
+			ToyosatomimiNoMiko_Plushie_Projectile.DisplayName: Toyosatomimi no Miko Plushie
+			UtsuhoReiuji_Plushie_Projectile.DisplayName: Utsuho Reiuji Plushie
+			YoshikaMiyako_Plushie_Projectile.DisplayName: Yoshika Miyako Plushie
+			YoumuKonpaku_Plushie_Projectile.DisplayName: Youmu Konpaku Plushie
+			YukariYakumo_Plushie_Projectile.DisplayName: YukariYakumo Plushie
+			YuukaKazami_Plushie_Projectile.DisplayName: Yuuka Kazami Plushie
+			YuyukoSaigyouji_Plushie_Projectile.DisplayName: Yuyuko Saigyouji Plushie
+			ShotBlueProj.DisplayName: Shot Blue Proj
+		}
+
+		Tiles: {
+			SewingMachine_Tile.MapEntry: Sewing Machine
+			Thread_Tile.MapEntry: Thread
+			UN_Owen_Washer_Tile.MapEntry: U.N. Owen Washer
+			WeavingLoom_Tile.MapEntry: Weaving Loom
+			Cotton_Tile.MapEntry: Cotton Plant
+			Flax_Tile.MapEntry: Flax Plant
+			AliceMargatroid_Plushie_Tile.MapEntry: Alice Margatroid Plushie
+			AyaShameimaru_Plushie_Tile.MapEntry: Aya Shameimaru Plushie
+			BombDoll_Plushie_Tile.MapEntry: Bomb Doll Plushie
+			ByakurenHijiri_Plushie_Tile.MapEntry: Byakuren Hijiri Plushie
+			Chen_Plushie_Tile.MapEntry: Chen Plushie
+			ChimataTenkyuu_Plushie_Tile.MapEntry: Chimata Tenkyuu Plushie
+			Cirno_Plushie_Tile.MapEntry: Cirno Plushie
+			Daiyousei_Plushie_Tile.MapEntry: Daiyousei Plushie
+			EirinYagokoro_Plushie_Tile.MapEntry: Eirin Yagokoro Plushie
+			FlandreScarlet_Plushie_Tile.MapEntry: Flandre Scarlet Plushie
+			FujiwaraNoMokou_Plushie_Tile.MapEntry: Fujiwara No Mokou Plushie
+			Gensokyo_Bone_Fairy_Plushie_Tile.MapEntry: Bone Fairy Plushie
+			Gensokyo_Flower_Fairy_Plushie_Tile.MapEntry: Flower Fairy Plushie
+			Gensokyo_Lava_Fairy_Plushie_Tile.MapEntry: Lava Fairy Plushie
+			Gensokyo_Snow_Fairy_Plushie_Tile.MapEntry: Snow Fairy Plushie
+			Gensokyo_Stone_Fairy_Plushie_Tile.MapEntry: Stone Fairy Plushie
+			Gensokyo_Sunflower_Fairy_Plushie_Tile.MapEntry: Sunflower Fairy Plushie
+			Gensokyo_Thorn_Fairy_Plushie_Tile.MapEntry: Thorn Fairy Plushie
+			HataNoKokoro_Plushie_Tile.MapEntry: Hata No Kokoro Plushie
+			HatateHimekaidou_Plushie_Tile.MapEntry: Hatate Himekaidou Plushie
+			HatsuneMiku_Plushie_Tile.MapEntry: Hatsune Miku Plushie
+			HecatiaLapislazuli_Plushie_Tile.MapEntry: Hecatia Lapislazuli Plushie
+			HinaKagiyama_Plushie_Tile.MapEntry: Hina Kagiyama Plushie
+			HitoriGotou_Plushie_Tile.MapEntry: Hitori 'the rock' Gotou Plushie
+			HongMeiling_Plushie_Tile.MapEntry: Hong Meiling Plushie
+			IkuNagae_Plushie_Tile.MapEntry: Iku Nagae Plushie
+			InuSakuyaIzayoi_Plushie_Tile.MapEntry: Inu Sakuya Izayoi Plushie
+			JoonYorigami_Plushie_Tile.MapEntry: Joon Yorigami Plushie
+			Junko_Plushie_Tile.MapEntry: Junko Plushie
+			KaguyaHouraisan_Plushie_Tile.MapEntry: Kaguya Houraisan Plushie
+			KanakoYasaka_Plushie_Tile.MapEntry: Kanako Yasaka Plushie
+			KasenIbaraki_Plushie_Tile.MapEntry: Kasen Ibaraki Plushie
+			KeineKamishirasawa_Plushie_Tile.MapEntry: Keine Kamishirasawa Plushie
+			Kisume_Plushie_Tile.MapEntry: Kisume Plushie
+			Koakuma_Plushie_Tile.MapEntry: Koakuma Plushie
+			KogasaTatara_Plushie_Tile.MapEntry: Kogasa Tatara Plushie
+			KoishiKomeiji_Plushie_Tile.MapEntry: Koishi Komeiji Plushie
+			Kourindou_MarisaKirisame_Plushie_Tile.MapEntry: Marisa Kirisame Plushie Kourindou ver.
+			Kourindou_ReimuHakurei_Plushie_Tile.MapEntry: Reimu Hakurei Plushie Kourindou ver.
+			Kourindou_RemiliaScarlet_Plushie_Tile.MapEntry: Remilia Scarlet Plushie Kourindou ver.
+			Kourindou_SakuyaIzayoi_Plushie_Tile.MapEntry: Sakuya Izayoi Plushie Kourindou ver.
+			LilyWhite_Plushie_Tile.MapEntry: Lily White Plushie
+			LunaChild_Plushie_Tile.MapEntry: Luna Child Plushie
+			MarisaKirisame_Plushie_Tile.MapEntry: Marisa Kirisame Plushie
+			MedicineMelancholy_Plushie_Tile.MapEntry: Medicine Melancholy Plushie
+			MikeGoutokuji_Plushie_Tile.MapEntry: Mike Goutokuji Plushie
+			MinamitsuMurasa_Plushie_Tile.MapEntry: Minamitsu Murasa Plushie
+			MomijiInubashiri_Plushie_Tile.MapEntry: Momiji Inubashiri Plushie
+			NagatoYuki_Plushie_Tile.MapEntry: Nagato Yuki Plushie
+			NekoOwO_Plushie_Tile.MapEntry: Neko OwO Plushie
+			NitoriKawashiro_Plushie_Tile.MapEntry: Nitori Kawashiro Plushie
+			NueHoujuu_Plushie_Tile.MapEntry: Nue Houjuu Plushie
+			PatchouliKnowledge_Plushie_Tile.MapEntry: Patchouli Knowledge Plushie
+			RanYakumo_Plushie_Tile.MapEntry: Ran Yakumo Plushie
+			ReimuHakurei_Plushie_Tile.MapEntry: Reimu Hakurei Plushie
+			ReisenUdongeinInaba_Plushie_Tile.MapEntry: Reisen Udongein Inaba Plushie
+			RikkaTakanashi_Plushie_Tile.MapEntry: Rikka Takanashi Plushie
+			RikkaTakanashiTMO_Plushie_Tile.MapEntry: Rikka Takanashi Plushie Take me on! ver.
+			RinKaenbyou_Plushie_Tile.MapEntry: Rin Kaenbyou Plushie
+			Rumia_Plushie_Tile.MapEntry: Rumia Plushie
+			SanaeKochiya_Plushie_Tile.MapEntry: Sanae Kochiya Plushie
+			SatoriKomeiji_Plushie_Tile.MapEntry: Satori Komeiji Plushie
+			SeigaKaku_Plushie_Tile.MapEntry: Seiga Kaku Plushie
+			SeijaKijin_Plushie_Tile.MapEntry: Seija Kijin Plushie
+			Seiran_Plushie_Tile.MapEntry: Seiran Plushie
+			ShanghaiDoll_Plushie_Tile.MapEntry: Shanghai Doll Plushie
+			ShinmyoumaruSukuna_Plushie_Tile.MapEntry: Shinmyoumaru Sukuna Plushie
+			ShionYorigami_Plushie_Tile.MapEntry: Shion Yorigami Plushie
+			StarSapphire_Plushie_Tile.MapEntry: Star Sapphire Plushie
+			SuikaIbuki_Plushie_Tile.MapEntry: Suika Ibuki Plushie
+			SumirekoUsami_Plushie_Tile.MapEntry: Sumireko Usami Plushie
+			SunnyMilk_Plushie_Tile.MapEntry: Sunny Milk Plushie
+			SuwakoMoriya_Plushie_Tile.MapEntry: Suwako Moriya Plushie
+			Tanned_Cirno_Plushie_Tile.MapEntry: Tanned Cirno Plushie
+			TenshiHinanawi_Plushie_Tile.MapEntry: Tenshi Hinanawi Plushie
+			TewiInaba_Plushie_Tile.MapEntry: Tewi Inaba Plushie
+			ToyosatomimiNoMiko_Plushie_Tile.MapEntry: Toyosatomimi no Miko Plushie
+			UtsuhoReiuji_Plushie_Tile.MapEntry: Utsuho Reiuji Plushie
+			YoshikaMiyako_Plushie_Tile.MapEntry: Yoshika Miyako Plushie
+			YoumuKonpaku_Plushie_Tile.MapEntry: Youmu Konpaku Plushie
+			YukariYakumo_Plushie_Tile.MapEntry: Yukari Yakumo Plushie
+			YuukaKazami_Plushie_Tile.MapEntry: Yuuka Kazami Plushie
+			YuyukoSaigyouji_Plushie_Tile.MapEntry: Yuyuko Saigyouji Plushie
+		}
+
+		Configs: {
+			KourindouConfigClient: {
+				UseOldTextures: {
+					Tooltip: ""
+					Label: Use Old Textures
+				}
+
+				plushiePower: {
+					Tooltip: ""
+					Label: plushie Power
+				}
+
+				DisplayName: Kourindou Config Client
+			}
+		}
+
+		Keybinds.Skill.DisplayName: Skill
+	}
+}
