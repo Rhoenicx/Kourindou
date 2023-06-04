@@ -100,7 +100,7 @@ namespace Kourindou.Items.Plushies
         {
             if ((int)Main.rand.Next(0, 12) == 9)
             {
-                modifiers.SourceDamage *= 9;
+                modifiers.SourceDamage += 9;
             }
         }
 
@@ -108,7 +108,7 @@ namespace Kourindou.Items.Plushies
         {
             if ((int)Main.rand.Next(0, 12) == 9)
             {
-                modifiers.SourceDamage *= 9;
+                modifiers.SourceDamage += 9;
             }
         }
     }

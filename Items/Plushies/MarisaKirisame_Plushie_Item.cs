@@ -83,6 +83,7 @@ namespace Kourindou.Items.Plushies
         {
             if (hit.Crit)
             {
+                target.immune[player.whoAmI] = 0;
                 SpawnStar(target, player.RotatedRelativePoint(player.MountedCenter), hit.SourceDamage);
             }
         }
@@ -91,6 +92,7 @@ namespace Kourindou.Items.Plushies
         {
             if (hit.Crit)
             {
+                target.immune[player.whoAmI] = 0;
                 SpawnStar(target, player.RotatedRelativePoint(player.MountedCenter), hit.SourceDamage);
             }
         }
@@ -101,14 +103,11 @@ namespace Kourindou.Items.Plushies
                 Item.GetSource_OnHit(victim),
                 position,
                 Vector2.Normalize(Main.MouseWorld - position) * 10f,
-                ProjectileID.StarWrath,
+                ProjectileID.StarCannonStar,
                 damage,
                 0f,
-                Main.myPlayer,
-                1f
+                Main.myPlayer
             );
-
-            Main.projectile[star].hide = true;
             Main.projectile[star].netUpdate = true;
         }
     }

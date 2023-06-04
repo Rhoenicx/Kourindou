@@ -67,8 +67,8 @@ namespace Kourindou
 				{
 					Projectile.NewProjectile(
 						player.GetSource_Accessory(new Item(ItemType<Kourindou_SakuyaIzayoi_Plushie_Item>())),
-						player.Center,
-						Vector2.Normalize(Main.MouseWorld - player.Center).RotatedBy(MathHelper.ToRadians(i >= 2 ? 5 * (i - 1) : -5 * (i + 1))) * (player.HeldItem.shootSpeed > 0f ? player.HeldItem.shootSpeed : 8f),
+						player.RotatedRelativePoint(player.MountedCenter),
+						Vector2.Normalize(Main.MouseWorld - player.RotatedRelativePoint(player.MountedCenter)).RotatedBy(MathHelper.ToRadians(i >= 2 ? 5 * (i - 1) : -5 * (i + 1))) * (player.HeldItem.shootSpeed > 0f ? player.HeldItem.shootSpeed : 8f),
 						ProjectileType<SakuyaIzayoi_Plushie_Knife>(),
 						10 + (int)(player.statLifeMax2 / 15),
 						1f,

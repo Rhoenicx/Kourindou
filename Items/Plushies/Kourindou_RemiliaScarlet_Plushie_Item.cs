@@ -91,9 +91,7 @@ namespace Kourindou.Items.Plushies
         {
             if (player.statLife < player.statLifeMax2)
             {
-                int healAmount = (int)Math.Ceiling((double)((damage * HealPercentage) < player.statLifeMax2 - player.statLife ? (int)(damage * HealPercentage) : player.statLifeMax2 - player.statLife));
-                player.statLife += healAmount;
-                player.HealEffect(healAmount, true);
+                player.Heal((int)Math.Ceiling(damage * HealPercentage));
             }
         }
     }

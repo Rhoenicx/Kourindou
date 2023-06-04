@@ -146,7 +146,7 @@ namespace Kourindou.Items
                 {
                     Projectile.NewProjectile(
                         player.GetSource_ItemUse(Item),
-                        new Vector2(player.Center.X, player.Center.Y - 16f),
+                        player.RotatedRelativePoint(player.MountedCenter),
                         speed,
                         projectileType,
                         Item.damage,

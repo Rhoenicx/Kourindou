@@ -73,8 +73,7 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Permanent invisibility buff
-            //player.AddBuff(BuffID.Invisibility, 60, true);
-            player.invis = true;
+            player.AddBuff(BuffID.Invisibility, 60, true);
 
             // reduce player aggro
             player.aggro -= 1500;

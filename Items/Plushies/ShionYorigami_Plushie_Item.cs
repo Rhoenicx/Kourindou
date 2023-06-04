@@ -79,7 +79,7 @@ namespace Kourindou.Items.Plushies
         {
             if ((int)Main.rand.Next(0, 1000) == 0)
             {
-                modifiers.SourceDamage *= Main.rand.NextFloat(1000f, 1000000f);
+                modifiers.SourceDamage += Main.rand.NextFloat(1000f, 1000000f);
             }
 
             modifiers.DisableCrit();
@@ -89,7 +89,7 @@ namespace Kourindou.Items.Plushies
         {
             if ((int)Main.rand.Next(0, 1000) == 0)
             {
-                modifiers.SourceDamage *= Main.rand.NextFloat(1000f, 1000000f);
+                modifiers.SourceDamage += Main.rand.NextFloat(1000f, 1000000f);
             }
 
             modifiers.DisableCrit();

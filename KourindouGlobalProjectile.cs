@@ -44,26 +44,6 @@ namespace Kourindou
 
         public override void AI(Projectile projectile)
         {
-            //Marisa Plushie Effect
-            if (projectile.type == ProjectileID.StarWrath
-                && Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Any(kvp => kvp.Key.Type == ItemType<MarisaKirisame_Plushie_Item>()))
-            {
-                if (projectile.ai[0] >= 1f)
-                {
-                    if (projectile.ai[1] > 1f)
-                    {
-                        projectile.hide = false;
-                    }
-
-                    projectile.ai[1]++;
-
-                    if (projectile.ai[1] > 300f)
-                    {
-                        projectile.Kill();
-                    }
-                }
-            }
-
             // Reimu Plushie effect - Search for a valid target
             if (Main.player[projectile.owner].GetModPlayer<KourindouPlayer>().EquippedPlushies.Any(kvp => kvp.Key.Type == ItemType<ReimuHakurei_Plushie_Item>())
                 && projectile.owner == Main.myPlayer

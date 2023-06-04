@@ -84,7 +84,7 @@ namespace Kourindou.Items.Plushies
 
         public override void PlushieOnHurt(Player player, Player.HurtInfo info, int amountEquipped)
         {
-            player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage = info.Damage;
+            player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage += (int)((float)info.Damage * (((1f - ((float)player.statLife / (float)player.statLifeMax2)) * 4f) + 1f));
             player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = true;
         }
 
@@ -92,8 +92,9 @@ namespace Kourindou.Items.Plushies
         {
             if (player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge)
             {
-                modifiers.SourceDamage += player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage * 5;
+                modifiers.FlatBonusDamage += player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage;
                 player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = false;
+                player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage = 0;
             }
         }
 
@@ -101,8 +102,9 @@ namespace Kourindou.Items.Plushies
         {
             if (player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge)
             {
-                modifiers.SourceDamage += player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage * 5;
+                modifiers.FlatBonusDamage += player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage;
                 player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = false;
+                player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage = 0;
             }
         }
     }

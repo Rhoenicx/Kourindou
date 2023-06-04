@@ -516,7 +516,7 @@ Mods: {
 				PlushieEquipEffect:
 					'''
 					Massively increase life regen when not moving, but you are dazed and slowed
-					Increases damaeg by 25%, melee speed by 10% and melee critrate by 10%
+					Increases damage by 25%, melee speed by 10% and melee critrate by 10%
 					'''
 			}
 
@@ -1110,7 +1110,8 @@ Mods: {
 					'''
 				PlushieEquipEffect:
 					'''
-					Whenever you receive damage, your next attack's damage is increased by 5 times received damage
+					Whenever you receive damage you build up revenge damage. The amount of 
+					damage is based upon your damage taken and current HP to maximum HP ratio
 					Increases damage by 20%, life regeneration by 50% and doubles maximum mana
 					'''
 			}
