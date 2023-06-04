@@ -11,18 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class ReisenUdongeinInaba_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Reisen Udongein Inaba Plushie");
-            // Tooltip.SetDefault("The Lunar War deserter. A self-proclaimed Earth rabbit");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "During a blood moon gain a massive stat boost!\r\n" +
-                    "+25% Ranged damage, +20% ranged crit, +15 penetration";
-        }
-
         public override void SetDefaults()
         {
             // Information

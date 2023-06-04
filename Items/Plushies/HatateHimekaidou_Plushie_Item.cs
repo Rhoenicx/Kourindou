@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class HatateHimekaidou_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Hatate Himekaidou Plushie");
-            // Tooltip.SetDefault("The reporter for the Kakashi Spirit News. Uses thoughtography to obtain material for her newspaper");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -68,11 +62,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

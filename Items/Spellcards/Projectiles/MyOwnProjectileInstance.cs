@@ -10,9 +10,6 @@ namespace Kourindou.Items.Spellcards.Projectiles
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Projectile, (byte)KourindouSpellcardSystem.Projectile.MyOwnProjectileInstance, Type);
-            
-            // DisplayName.SetDefault("My Own Projectile Instance");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

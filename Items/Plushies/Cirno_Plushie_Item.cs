@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Cirno_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Cirno Plushie");
-            // Tooltip.SetDefault("The ice fairy. It's stupidly strong, and stupid as well");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Every hit has 9% chance to deal 9 times damage! +25% damage, -17% damage taken";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -107,7 +96,7 @@ namespace Kourindou.Items.Plushies
             }
         }
 
-        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, ref NPC.HitModifiers modifiers, int amountEquipped)
         {
             if ((int)Main.rand.Next(0, 12) == 9)
             {
@@ -115,24 +104,12 @@ namespace Kourindou.Items.Plushies
             }
         }
 
-        public override void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        public override void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers, int amountEquipped)
         {
             if ((int)Main.rand.Next(0, 12) == 9)
             {
                 modifiers.SourceDamage *= 9;
             }
-        }
-
-        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo hit, int amountEquipped)
-        {
-            if ((int)Main.rand.Next(0, 12) == 9)
-            {
-                hit.SourceDamage *= 9;
-            }
-
-            targetPlayer.AddBuff(BuffID.Chilled, 600);
-            targetPlayer.AddBuff(BuffID.Frostburn, 600);
-            targetPlayer.AddBuff(BuffID.Slow, 600);
         }
     }
 }

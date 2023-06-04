@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Gensokyo_Thorn_Fairy_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Thorn Fairy Plushie");
-            // Tooltip.SetDefault("");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Thorn fairies become friendly";
-        }
-
         public override void SetDefaults()
         {
             // Information

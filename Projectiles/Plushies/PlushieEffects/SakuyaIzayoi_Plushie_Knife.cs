@@ -10,12 +10,7 @@ using static Terraria.ModLoader.ModContent;
 namespace Kourindou.Projectiles.Plushies.PlushieEffects
 {
     public class SakuyaIzayoi_Plushie_Knife : ModProjectile
-	{
-		public override void SetStaticDefaults()
-		{
-			// DisplayName.SetDefault("Sakuya's Knife");    
-		}
-		
+	{		
 		public override void SetDefaults()
 		{
 			// AI

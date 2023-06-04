@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class KasenIbaraki_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Kasen Ibaraki Plushie");
-            // Tooltip.SetDefault("A mountain hermit. Her hair buns are very cute");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Greatly increases life regen, gain immunity to most debuffs and increases minion slots";
-        }
-
         public override void SetDefaults()
         {
             // Information

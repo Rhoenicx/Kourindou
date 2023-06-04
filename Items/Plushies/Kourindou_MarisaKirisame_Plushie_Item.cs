@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Kourindou_MarisaKirisame_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Marisa Kirisame Plushie Kourindou ver.");
-            // Tooltip.SetDefault("This plushie has a tracker inside it. Marisa is now coming to steal your goods, da ze!");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -66,11 +60,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

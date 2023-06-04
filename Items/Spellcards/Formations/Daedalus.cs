@@ -10,9 +10,6 @@ namespace Kourindou.Items.Spellcards.Formations
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.Daedalus, Type);
-            
-            // DisplayName.SetDefault("Daedalus");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

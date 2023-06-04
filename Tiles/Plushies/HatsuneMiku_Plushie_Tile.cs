@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Hatsune Miku Plushie");
             AddMapEntry(new Color(21, 142, 110), name);
 
             plushieItem = ItemType<HatsuneMiku_Plushie_Item>();

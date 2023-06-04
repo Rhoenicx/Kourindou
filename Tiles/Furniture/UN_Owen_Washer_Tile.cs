@@ -53,7 +53,6 @@ namespace Kourindou.Tiles.Furniture
             //animationFrameHeight = 56;
 
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("U.N. Owen Washer");
             AddMapEntry(new Color(187, 199, 219), name);
         }
 

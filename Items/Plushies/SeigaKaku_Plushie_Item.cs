@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class SeigaKaku_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Seiga Kaku Plushie");
-            // Tooltip.SetDefault("Doki, doki, waku, waku...");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -64,11 +58,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

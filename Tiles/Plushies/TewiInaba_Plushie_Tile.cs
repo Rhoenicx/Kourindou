@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Tewi Inaba Plushie");
             AddMapEntry(new Color(225, 212, 235), name);
 
             plushieItem = ItemType<TewiInaba_Plushie_Item>();

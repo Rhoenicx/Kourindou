@@ -13,15 +13,7 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Rumia Plushie");
-            // Tooltip.SetDefault("The youkai of the dusk");
-
             ItemID.Sets.IsLavaImmuneRegardlessOfRarity[Type] = true;
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Infinite flying in the dark...";
         }
 
         public override void SetDefaults()
@@ -84,7 +76,7 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Grant infinite flight time, sneaky thing here: just putting the elapsed flight time back to 1. 
-            // Now only gets applied if the player has the obstructed debuff...
+            // Now only gets applied if the player has the obstructed debuff since it could be cleared by other mods
             if (player.HasBuff(BuffID.Obstructed))
             {
                 player.wingTime += 1;

@@ -14,17 +14,6 @@ namespace Kourindou.Items.Plushies
 {
     public class FlandreScarlet_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Flandre Scarlet Plushie");
-            // Tooltip.SetDefault("The ultimate basement lurker. The scarlet sky has since tempted her presence outside the mansion"); 
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Critical hits explode! +50% damage, +10% crit";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -93,7 +82,7 @@ namespace Kourindou.Items.Plushies
         {
             if (hit.Crit)
             {
-                SpawnExplosion(target.Center, hit.SourceDamage);
+                SpawnExplosion(target, target.Center, hit.SourceDamage);
             }
         }
 
@@ -101,14 +90,14 @@ namespace Kourindou.Items.Plushies
         {
             if (proj.type != ProjectileType<FlandreScarlet_Plushie_Explosion>() && hit.Crit)
             {
-                SpawnExplosion(target.Center, hit.SourceDamage);
+                SpawnExplosion(target, target.Center, hit.SourceDamage);
             }
         }
 
-        public void SpawnExplosion(Vector2 position, int damage)
+        public void SpawnExplosion(Entity victim, Vector2 position, int damage)
         {
             Projectile.NewProjectile(
-                Item.GetSource_Accessory(Item),
+                Item.GetSource_OnHit(victim),
                 position,
                 Vector2.Zero,
                 ProjectileType<FlandreScarlet_Plushie_Explosion>(),

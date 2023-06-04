@@ -21,11 +21,6 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
         private const float MaxWidth = 8f;
         private const float MaxLength = 2000f;
 
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Miko's laser");
-        }
-
         public override void SetDefaults()
         {
             // AI

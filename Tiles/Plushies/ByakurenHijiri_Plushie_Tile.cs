@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Byakuren Hijiri Plushie");
             AddMapEntry(new Color(71, 57, 38), name);
 
             plushieItem = ItemType<ByakurenHijiri_Plushie_Item>();

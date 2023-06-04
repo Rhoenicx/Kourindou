@@ -52,7 +52,6 @@ namespace Kourindou.Tiles.Furniture
             TileID.Sets.DisableSmartCursor[Type] = true;
 
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Sewing Machine");
             AddMapEntry(new Color(57, 51, 46), name);
         }
 

@@ -13,18 +13,6 @@ namespace Kourindou.Items.Plushies
 {
     public class KaguyaHouraisan_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Kaguya Houraisan Plushie");
-            // Tooltip.SetDefault("The exiled princess of the moon");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "When killed heal all your HP, 60 second cooldown \r\n" +
-                    "+25% damage, -25% damage taken, +15 defense";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -98,9 +86,8 @@ namespace Kourindou.Items.Plushies
                 return true;
             }
 
-            myPlayer.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
-            myPlayer.statLife += myPlayer.statLifeMax2;
-            myPlayer.HealEffect(myPlayer.statLifeMax2, true);
+            myPlayer.AddBuff(BuffType<DeBuff_Mortality>(), 18000, true);
+            myPlayer.Heal(myPlayer.statLifeMax2);
 
             return false;
         }

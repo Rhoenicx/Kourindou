@@ -8,10 +8,6 @@ namespace Kourindou.Items.CraftingMaterials
 {
     public class LimeThread : ModItem
     {
-        public override void SetStaticDefaults() {
-			// DisplayName.SetDefault("Lime Thread");
-		}
-
         public override void SetDefaults()
         {
             Item.CloneDefaults(ItemID.BlackThread);

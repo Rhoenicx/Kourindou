@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class KoishiKomeiji_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Koishi Komeiji Plushie");
-            // Tooltip.SetDefault("Satori's sister? You can't seem to remember them otherwise...");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Permanent invisibility and reduced aggro, +25% damage";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -84,7 +73,8 @@ namespace Kourindou.Items.Plushies
             player.lifeRegen += 1;
 
             // Permanent invisibility buff
-            player.AddBuff(BuffID.Invisibility, 60, true);
+            //player.AddBuff(BuffID.Invisibility, 60, true);
+            player.invis = true;
 
             // reduce player aggro
             player.aggro -= 1500;

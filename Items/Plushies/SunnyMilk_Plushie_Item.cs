@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class SunnyMilk_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Sunny Milk Plushie");
-            // Tooltip.SetDefault("");
-        }
-
         public override void SetDefaults()
         {
             // Information

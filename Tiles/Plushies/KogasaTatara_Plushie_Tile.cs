@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Kogasa Tatara Plushie");
             AddMapEntry(new Color(38, 165, 171), name);
 
             plushieItem = ItemType<KogasaTatara_Plushie_Item>();

@@ -60,7 +60,6 @@ namespace Kourindou.Tiles.Plants
             TileObjectData.addTile(Type);
 
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Cotton Plant");
             AddMapEntry(new Color(155, 155, 155), name);
 
             HitSound = SoundID.Dig;

@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Chimata Tenkyuu Plushie");
             AddMapEntry(new Color(0, 14, 58), name);
 
             plushieItem = ItemType<ChimataTenkyuu_Plushie_Item>();

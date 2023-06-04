@@ -8,12 +8,6 @@ namespace Kourindou.Items.CraftingMaterials
 {
     public class FlaxBundle : ModItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Flax Bundle");
-            // Tooltip.SetDefault("");
-        }
-
         public override void SetDefaults()
         {
             // Information

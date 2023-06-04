@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Luna Child Plushie");
             AddMapEntry(new Color(255, 238, 204), name);
 
             plushieItem = ItemType<LunaChild_Plushie_Item>();

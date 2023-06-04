@@ -7,12 +7,6 @@ namespace Kourindou.Items.CraftingMaterials
 {
     public class CottonFibre : ModItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Cotton Fibre");
-            // Tooltip.SetDefault("");
-        }
-
         public override void SetDefaults()
         {
             // Information

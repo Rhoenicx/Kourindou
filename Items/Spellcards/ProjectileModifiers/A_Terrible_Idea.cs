@@ -11,9 +11,6 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.A_Terrible_Idea, Type);
-            
-            // DisplayName.SetDefault("A Terrible Idea");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

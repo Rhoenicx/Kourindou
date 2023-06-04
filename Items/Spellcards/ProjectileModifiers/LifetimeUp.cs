@@ -12,9 +12,6 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.LifetimeUp, Type);
-            
-            // DisplayName.SetDefault("Lifetime Up");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

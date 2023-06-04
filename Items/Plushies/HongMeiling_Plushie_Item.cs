@@ -11,18 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class HongMeiling_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Hong Meiling Plushie");
-            // Tooltip.SetDefault("The scarlet mansion's gatekeeper");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Tremendously increases life regen when not moving, but you are dazed and slowed \r\n" +
-                    "+25% damage, +10% melee speed, 10% melee crit";
-        }
-
         public override void SetDefaults()
         {
             // Information

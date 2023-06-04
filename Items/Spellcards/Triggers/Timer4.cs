@@ -10,9 +10,6 @@ namespace Kourindou.Items.Spellcards.Triggers
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trigger, (byte)Trigger.Timer4, Type);
-            
-            // DisplayName.SetDefault("Timer 4");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

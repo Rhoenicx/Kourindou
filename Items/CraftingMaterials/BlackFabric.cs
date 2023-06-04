@@ -3,6 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Furniture;
+using Terraria.Localization;
 
 namespace Kourindou.Items.CraftingMaterials
 {
@@ -13,7 +14,7 @@ namespace Kourindou.Items.CraftingMaterials
             Item.CloneDefaults(ItemID.Silk);
             Item.width = 32;
             Item.height = 26;
-            Item.SetNameOverride("Black Fabric");
+            Item.SetNameOverride(Language.GetTextValue("Mods.Kourindou.Items." + Name + ".DisplayName"));
         }
 
         public override void AddRecipes()

@@ -12,9 +12,6 @@ namespace Kourindou.Items.Spellcards.Empty
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Empty, 0, Type);
-            
-            // DisplayName.SetDefault("Empty Spellcard");
-            // Tooltip.SetDefault("You shouldn't have this you CHEATER!");
         }
 
         public override void SetCardDefaults()

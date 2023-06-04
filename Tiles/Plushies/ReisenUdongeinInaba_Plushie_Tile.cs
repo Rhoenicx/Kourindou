@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Reisen Udongein Inaba Plushie");
             AddMapEntry(new Color(184, 152, 196), name);
 
             plushieItem = ItemType<ReisenUdongeinInaba_Plushie_Item>();

@@ -10,9 +10,6 @@ namespace Kourindou.Items.Spellcards.Multicasts
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Multicast, (byte)Multicast.TripleCast, Type);
-            
-            // DisplayName.SetDefault("Triple Cast");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

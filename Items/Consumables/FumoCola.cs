@@ -13,15 +13,8 @@ namespace Kourindou.Items.Consumables
 {
     public class FumoCola : ModItem
     {
-
         public static float OpeningProgress = 0.8f;
         public static float DrinkProgress = 0.3f;
-
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Fumo Cola");
-            // Tooltip.SetDefault("Coca Cola is Fumo");
-        }
 
         public override void SetDefaults()
         {

@@ -178,6 +178,21 @@ Mods: {
 				Tooltip: ""
 			}
 
+			WhiteFabric: {
+				DisplayName: White Fabric
+				Tooltip: ""
+			}
+
+			WhiteFabricRope: {
+				DisplayName: White Fabric Rope
+				Tooltip: ""
+			}
+
+			WhiteFabricRopeCoil: {
+				DisplayName: White Fabric Rope Coil
+				Tooltip: ""
+			}
+
 			WhiteThread: {
 				DisplayName: White Thread
 				Tooltip: ""
@@ -210,431 +225,1013 @@ Mods: {
 
 			AliceMargatroid_Plushie_Item: {
 				DisplayName: Alice Margatroid Plushie
-				Tooltip: The seven-colored magician. Ironically, she's a doll now
+				Tooltip:
+					'''
+					"The seven-colored magician. Ironically, she's a doll now"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Increase magic critrate by 15%, magic and summon damage by 10% and gain 1 minion slot
 			}
 
 			AyaShameimaru_Plushie_Item: {
 				DisplayName: Aya Shameimaru Plushie
-				Tooltip: A crow tengu. Runs a newspaper that's mostly sensational gossip
+				Tooltip:
+					'''
+					"A crow tengu. Runs a newspaper that's mostly sensational gossip"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Functions as wings
 			}
 
 			BombDoll_Plushie_Item: {
 				DisplayName: Bomb Doll Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			ByakurenHijiri_Plushie_Item: {
 				DisplayName: Byakuren Hijiri Plushie
-				Tooltip: A Buddhist nun and magician. Currently, she's then Myouren Temple's head priest
+				Tooltip:
+					'''
+					"A Buddhist nun and magician. Currently, she's then Myouren Temple's head priest"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Increases HP by 25%. Increases melee damage by 100%, but decrease all other damage by 50%
+					Multiply knockback by 3. Doubles melee crit damage, but can no longer receive critrate buffs
+					'''
 			}
 
 			Chen_Plushie_Item: {
 				DisplayName: Chen Plushie
-				Tooltip: The cutest shikigami's shikigami!
+				Tooltip:
+					'''
+					"The cutest shikigami's shikigami!"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					On enemy kill restore 25 HP and grant well fed and rapid healing for 12 seconds
+					When hurt gain shadow dodge for 3 seconds. Increase damage by 25%
+					'''
 			}
 
 			ChimataTenkyuu_Plushie_Item: {
 				DisplayName: Chimata Tenkyuu Plushie
-				Tooltip: The overseer of the market. Now where is that bustling marketplace...
+				Tooltip:
+					'''
+					"The overseer of the market. Now where is that bustling marketplace..."
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			Cirno_Plushie_Item: {
 				DisplayName: Cirno Plushie
-				Tooltip: The ice fairy. It's stupidly strong, and stupid as well
+				Tooltip:
+					'''
+					"The ice fairy. It's stupidly strong, and stupid as well"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Increase damage by 25% damage and reduce damage taken by 17%
+					Every hit has a 9% chance to deal 9 times damage!
+					'''
 			}
 
 			Daiyousei_Plushie_Item: {
 				DisplayName: Daiyousei Plushie
-				Tooltip: Cirno's friend..?
+				Tooltip:
+					'''
+					"Cirno's friend..?"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			EirinYagokoro_Plushie_Item: {
 				DisplayName: Eirin Yagokoro Plushie
-				Tooltip: The genius of the Moon
+				Tooltip:
+					'''
+					"The genius of the Moon"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Increase maximum HP by 50 points and massively increase life regeneration
+					Increase damage by 25% and arrow damage by an additional 10%
+					Reduces the cooldown of healing potions by 25%, does not stack with similar effects
+					'''
 			}
 
 			FlandreScarlet_Plushie_Item: {
 				DisplayName: Flandre Scarlet Plushie
-				Tooltip: The ultimate basement lurker. The scarlet sky has since tempted her presence outside the mansion
+				Tooltip:
+					'''
+					"The ultimate basement lurker. The scarlet sky has since tempted her presence outside the mansion"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Increases damage by 50% and increases critrate by 10%
+					Critical hits cause a violent explosion for 3 times damage
+					'''
 			}
 
 			FujiwaraNoMokou_Plushie_Item: {
 				DisplayName: Fujiwara No Mokou Plushie
-				Tooltip: The bamboo forest's guide. Rumor has it that she runs a yakitori stand
+				Tooltip:
+					'''
+					"The bamboo forest's guide. Rumor has it that she runs a yakitori stand"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					When receiving lethal damage you are healed and gain inferno and wrath
+					This effect can only trigger once every 5 minutes
+					Increases damage by 25% and increases melee damage by an additional 25%
+					Increases melee crit by 10% and reduce damage taken by 15%
+					'''
 			}
 
 			Gensokyo_Bone_Fairy_Plushie_Item: {
 				DisplayName: Bone Fairy Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Bone fairies become friendly
 			}
 
 			Gensokyo_Flower_Fairy_Plushie_Item: {
 				DisplayName: Flower Fairy Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Flower fairies become friendly
 			}
 
 			Gensokyo_Lava_Fairy_Plushie_Item: {
 				DisplayName: Lava Fairy Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Lava fairies become friendly
 			}
 
 			Gensokyo_Snow_Fairy_Plushie_Item: {
 				DisplayName: Snow Fairy Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Snow fairies become friendly
 			}
 
 			Gensokyo_Stone_Fairy_Plushie_Item: {
 				DisplayName: Stone Fairy Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Stone fairies become friendly
 			}
 
 			Gensokyo_Sunflower_Fairy_Plushie_Item: {
 				DisplayName: Sunflower Fairy Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Sunflower fairies become friendly
 			}
 
 			Gensokyo_Thorn_Fairy_Plushie_Item: {
 				DisplayName: Thorn Fairy Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Thorn fairies become friendly
 			}
 
 			HataNoKokoro_Plushie_Item: {
 				DisplayName: Hata No Kokoro Plushie
-				Tooltip: A menreiki youkai. Her face doesn't show emotions, although the doll probably couldn't if it tried
+				Tooltip:
+					'''
+					"A menreiki youkai. Her face doesn't show emotions, although the doll probably couldn't if it tried"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			HatateHimekaidou_Plushie_Item: {
 				DisplayName: Hatate Himekaidou Plushie
-				Tooltip: The reporter for the Kakashi Spirit News. Uses thoughtography to obtain material for her newspaper
+				Tooltip:
+					'''
+					"The reporter for the Kakashi Spirit News. Uses thoughtography to obtain material for her newspaper"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			HatsuneMiku_Plushie_Item: {
 				DisplayName: Hatsune Miku Plushie
 				Tooltip:
 					'''
-					The voice of the future, in pixel plushie form!
-					Fires leeks from the heavens if powered
+					"The voice of the future, in pixel plushie form!"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
 					'''
+				PlushieEquipEffect: Increases damage done by 39% and reduces damage taken by 39%
 			}
 
 			HecatiaLapislazuli_Plushie_Item: {
 				DisplayName: Hecatia Lapislazuli Plushie
-				Tooltip: The Goddess of Hell. She has a questionable fashion sense
+				Tooltip:
+					'''
+					"The Goddess of Hell. She has a questionable fashion sense"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			HinaKagiyama_Plushie_Item: {
 				DisplayName: Hina Kagiyama Plushie
-				Tooltip: A misfortune god that gathers misfortune. We do not have a spinning animation for it yet. Sorry
+				Tooltip:
+					'''
+					"A misfortune god that gathers misfortune. We do not have a spinning animation for it yet... Sorry"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			HitoriGotou_Plushie_Item: {
 				DisplayName: Hitori 'the rock' Gotou Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			HongMeiling_Plushie_Item: {
 				DisplayName: Hong Meiling Plushie
-				Tooltip: The scarlet mansion's gatekeeper
+				Tooltip:
+					'''
+					"The scarlet mansion's gatekeeper"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Massively increase life regen when not moving, but you are dazed and slowed
+					Increases damaeg by 25%, melee speed by 10% and melee critrate by 10%
+					'''
 			}
 
 			IkuNagae_Plushie_Item: {
 				DisplayName: Iku Nagae Plushie
-				Tooltip: A messenger of the Dragon Palace, who observes the mood of the atmosphere
+				Tooltip:
+					'''
+					"A messenger of the Dragon Palace, who observes the mood of the atmosphere"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			InuSakuyaIzayoi_Plushie_Item: {
 				DisplayName: Inu Sakuya Izayoi Plushie
-				Tooltip: Does the real Sakuya like this? Probably. It's adorable, why wouldn't she?
+				Tooltip:
+					'''
+					"Does the real Sakuya like this? Probably. It's adorable, why wouldn't she?"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			JoonYorigami_Plushie_Item: {
 				DisplayName: Joon Yorigami Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			Junko_Plushie_Item: {
 				DisplayName: Junko Plushie
-				Tooltip: A divine spirit, and the sworn enemy of the Lunarians. She can purify anything
+				Tooltip:
+					'''
+					"A divine spirit, and the sworn enemy of the Lunarians. She can purify anything"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			KaguyaHouraisan_Plushie_Item: {
 				DisplayName: Kaguya Houraisan Plushie
-				Tooltip: The exiled princess of the moon
+				Tooltip:
+					'''
+					"The exiled princess of the moon"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					When receiving lethal damage you are healed. This effect can only trigger once every 5 minutes
+					Increases damage by 25% and reduce damage taken by 25%. Also gain 15 points of defense
+					'''
 			}
 
 			KanakoYasaka_Plushie_Item: {
 				DisplayName: Kanako Yasaka Plushie
-				Tooltip: The current goddess of the Moriya Shrine. Religion is a business
+				Tooltip:
+					'''
+					"The current goddess of the Moriya Shrine. Religion is a business"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			KasenIbaraki_Plushie_Item: {
 				DisplayName: Kasen Ibaraki Plushie
-				Tooltip: A mountain hermit. Her hair buns are very cute
+				Tooltip:
+					'''
+					"A mountain hermit. Her hair buns are very cute!"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Greatly increases life regen, gain immunity to most debuffs and increases minion slots
 			}
 
 			KeineKamishirasawa_Plushie_Item: {
 				DisplayName: Keine Kamishirasa Plushie
-				Tooltip: The Guardian of the Human Village. She is a school teacher there, and is also its guardian in times of peril
+				Tooltip:
+					'''
+					"The Guardian of the Human Village. She is a school teacher there, and is also its guardian in times of peril"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			Kisume_Plushie_Item: {
 				DisplayName: Kisume Plushie
-				Tooltip: A Tsurube-otoshi who spends her time in buckets in the dark instead of trees. Watch your head
+				Tooltip:
+					'''
+					"A Tsurube-otoshi who spends her time in buckets in the dark instead of trees. Watch your head"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			Koakuma_Plushie_Item: {
 				DisplayName: Koakuma Plushie
-				Tooltip: The scarlet devil mansion's librarian, and Patchouli's assistant
+				Tooltip:
+					'''
+					"The scarlet devil mansion's librarian, and Patchouli's assistant"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			KogasaTatara_Plushie_Item: {
 				DisplayName: Kogasa Tatara Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			KoishiKomeiji_Plushie_Item: {
 				DisplayName: Koishi Komeiji Plushie
-				Tooltip: Satori's sister? You can't seem to remember them otherwise...
+				Tooltip:
+					'''
+					"Satori's sister? You can't seem to remember them otherwise..."
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Permanent invisibility and reduced aggro. Increases damage by 25%
 			}
 
 			Kourindou_MarisaKirisame_Plushie_Item: {
 				DisplayName: Marisa Kirisame Plushie Kourindou ver.
-				Tooltip: This plushie has a tracker inside it. Marisa is now coming to steal your goods, da ze!
+				Tooltip:
+					'''
+					"This plushie has a tracker inside it. Marisa is now coming to steal your goods, da ze!"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			Kourindou_ReimuHakurei_Plushie_Item: {
 				DisplayName: Reimu Hakurei Plushie Kourindou ver.
-				Tooltip: The Hakurei shrine maiden, in a slightly different outfit
+				Tooltip:
+					'''
+					"The Hakurei shrine maiden, in a slightly different outfit"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			Kourindou_RemiliaScarlet_Plushie_Item: {
 				DisplayName: Remilia Scarlet Plushie Kourindou ver.
-				Tooltip: The Scarlet Devil herself. The new outfit suits her
+				Tooltip:
+					'''
+					"The Scarlet Devil herself. The new outfit suits her"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Heal for 5% of all damage done! Increases damage by 25%
 			}
 
 			Kourindou_SakuyaIzayoi_Plushie_Item: {
 				DisplayName: Sakuya Izayoi Plushie Kourindou ver.
-				Tooltip: The maid of the scarlet mansion
+				Tooltip:
+					'''
+					"The maid of the scarlet mansion... ZA WARUDO!"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Throw 4 Knives upon using any weapon. Increases ranged and melee damage by 30%
 			}
 
 			LilyWhite_Plushie_Item: {
 				DisplayName: Lily White Plushie
-				Tooltip: Spring is here!
+				Tooltip:
+					'''
+					"Spring is here!"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: When in the forest biome gain permanent sunflower buff and greatly increased life regeneration
 			}
 
 			LunaChild_Plushie_Item: {
 				DisplayName: Luna Child Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			MarisaKirisame_Plushie_Item: {
 				DisplayName: Marisa Kirisame Plushie
-				Tooltip: The ordinary human who uses magic
+				Tooltip:
+					'''
+					"The ordinary human who uses magic"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Critical hits shoot an additional star projectile!
+					Increases magic damage by 25%, magic critrate by 15% and reduces mana cost by 25%
+					'''
 			}
 
 			MedicineMelancholy_Plushie_Item: {
 				DisplayName: Medicine Melancholy Plushie
-				Tooltip: A young doll youkai that lives on the Nameless Hill. She can harness the poison of anything
+				Tooltip:
+					'''
+					"A young doll youkai that lives on the Nameless Hill. She can harness the poison of anything"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Every hit has a chance to inflict a special stackable poison debuff.
+					Gain immunity to all poison based debuffs.
+					'''
 			}
 
 			MikeGoutokuji_Plushie_Item: {
 				DisplayName: Mike Goutokuji Plushie
-				Tooltip: A maneki-neko whose powers do not fully work. She can attract money or people, but not both
+				Tooltip:
+					'''
+					"A maneki-neko whose powers do not fully work. She can attract money or people, but not both"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Increases pickup range of coins and hitting enemies sometimes drop coins!
 			}
 
 			MinamitsuMurasa_Plushie_Item: {
 				DisplayName: Minamitsu Murasa Plushie
-				Tooltip: A phantom, and the Palanquin Ship's captain
+				Tooltip:
+					'''
+					"A phantom, and the Palanquin Ship's captain"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Permanent ability to swim, doubled breath and permanent fishron mount speed buff
+					When standing in water increases damage by 20% and critrate by 5%, also increased life regeneration
+					Increases damage by 10%
+					'''
 			}
 
 			MomijiInubashiri_Plushie_Item: {
 				DisplayName: Momiji Inubashiri Plushie
-				Tooltip: The Youkai Mountain's guard dog. Calling her that might get you killed
+				Tooltip:
+					'''
+					"The Youkai Mountain's guard dog. Calling her that might get you killed"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Permanent dangersense and hunter buff
+					Increases damage by 15%, melee damage by 25% and melee critrate by 10%
+					'''
 			}
 
 			NagatoYuki_Plushie_Item: {
 				DisplayName: Nagato Yuki Plushie
-				Tooltip: An introverted, taciturn bibliophile. Also an alien
+				Tooltip:
+					'''
+					"An introverted, taciturn bibliophile. Also an alien"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			NekoOwO_Plushie_Item: {
 				DisplayName: Neko OwO Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			NitoriKawashiro_Plushie_Item: {
 				DisplayName: Nitori Kawashiro Plushie
-				Tooltip: A kappa that can control water. Like all other kappa, she's skilled in technology and engineering!
+				Tooltip:
+					'''
+					"A kappa that can control water. Like all other kappa, she's skilled in technology and engineering!"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			NueHoujuu_Plushie_Item: {
 				DisplayName: Nue Houjuu Plushie
-				Tooltip: An alien?! Perhaps this doll isn't her true form...
+				Tooltip:
+					'''
+					"An alien?! Perhaps this doll isn't her true form..."
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			PatchouliKnowledge_Plushie_Item: {
 				DisplayName: Patchouli Knowledge Plushie
-				Tooltip: The magician of the scarlet mansion
+				Tooltip:
+					'''
+					"The magician of the scarlet mansion"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Doubled magic damage, but non-magic attacks cannot deal damage
+					Movement speed is halved. Increases magic critrate by 30% and reduces mana cost by 50%
+					'''
 			}
 
 			RanYakumo_Plushie_Item: {
 				DisplayName: Ran Yakumo Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Every 10 emenies defeated increases maximum HP, damage and movement speed by 5%
+					The effect is cleared upon death and can stack up to 8 times
+					Increases maximum HP, damage and movement speed by 10%
+					'''
 			}
 
 			ReimuHakurei_Plushie_Item: {
 				DisplayName: Reimu Hakurei Plushie
-				Tooltip: The Hakurei shrine maiden. It's also aimbot if powered
+				Tooltip:
+					'''
+					"The Hakurei shrine maiden. It's also aimbot if powered"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Projectiles fired are homing, but all damage is reduced by 25%
 			}
 
 			ReisenUdongeinInaba_Plushie_Item: {
 				DisplayName: Reisen Udongein Inaba Plushie
-				Tooltip: The Lunar War deserter. A self-proclaimed Earth rabbit
+				Tooltip:
+					'''
+					"The Lunar War deserter. A self-proclaimed Earth rabbit"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					During a blood moon gain a massive stat boost!
+					Increases ranged damage by 25% and ranged critrate by 20%
+					'''
 			}
 
 			RikkaTakanashi_Plushie_Item: {
 				DisplayName: Rikka Takanashi Plushie
-				Tooltip: Reality rejected... synapses shattered... be vanished from this world!
+				Tooltip:
+					'''
+					"Reality rejected... synapses shattered... be vanished from this world!"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			RikkaTakanashiTMO_Plushie_Item: {
 				DisplayName: Rikka Takanashi Plushie Take me on! ver.
-				Tooltip: Reality rejected... synapses shattered... be vanished from this world!
+				Tooltip:
+					'''
+					"Reality rejected... synapses shattered... be vanished from this world!"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			RinKaenbyou_Plushie_Item: {
 				DisplayName: Rin Kaenbyou Plushie
-				Tooltip: One of Satori's pets. She hauls corpses into the flames of hell to maintain it
+				Tooltip:
+					'''
+					"One of Satori's pets. She hauls corpses into the flames of hell to maintain it"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			Rumia_Plushie_Item: {
 				DisplayName: Rumia Plushie
-				Tooltip: The youkai of the dusk
+				Tooltip:
+					'''
+					"The youkai of the dusk"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Infinite flight time, but you cannot see
 			}
 
 			SanaeKochiya_Plushie_Item: {
 				DisplayName: Sanae Kochiya Plushie
-				Tooltip: The wind god shrine maiden. She doesn't look like Reimu
+				Tooltip:
+					'''
+					"The wind god shrine maiden. She doesn't look like Reimu"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Grants immunity to the mighty winds!
+					Increases damage and critrate by 25%
+					'''
 			}
 
 			SatoriKomeiji_Plushie_Item: {
 				DisplayName: Satori Komeiji Plushie
-				Tooltip: The mistress of the Earth Palace in Former Hell. You can't talk to animals with this, sadly
+				Tooltip:
+					'''
+					"The mistress of the Earth Palace in Former Hell. You can't talk to animals with this, sadly"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: All hits inflicht cursed flames, ichor and confusion!
 			}
 
 			SeigaKaku_Plushie_Item: {
 				DisplayName: Seiga Kaku Plushie
-				Tooltip: Doki, doki, waku, waku...
+				Tooltip:
+					'''
+					"Doki, doki, waku, waku..."
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			SeijaKijin_Plushie_Item: {
 				DisplayName: Seija Kijin Plushie
-				Tooltip: The mischief-causing amanojaku. It goes on the ceiling, too!
+				Tooltip:
+					'''
+					"The mischief-causing amanojaku. It goes on the ceiling, too!"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Control gravity!
+					Increases damage by 25% and critrate by 10%
+					'''
 			}
 
 			Seiran_Plushie_Item: {
 				DisplayName: Seiran Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			ShanghaiDoll_Plushie_Item: {
 				DisplayName: Shanghai Doll Plushie
-				Tooltip: A replica of Alice's most prominent doll
+				Tooltip:
+					'''
+					"A replica of Alice's most prominent doll"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			ShinmyoumaruSukuna_Plushie_Item: {
 				DisplayName: Shinmyoumaru Sukuna Plushie
-				Tooltip: The inchling of the Shining Needle Castle. Her needle is very versatile
+				Tooltip:
+					'''
+					"The inchling of the Shining Needle Castle. Her needle is very versatile"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			ShionYorigami_Plushie_Item: {
 				DisplayName: Shion Yorigami Plushie
-				Tooltip: A poverty god. It doesn't seem to take your money, though...
+				Tooltip:
+					'''
+					"A poverty god. It doesn't seem to take your money, though..."
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Small chance to instantly kill the enemy hit!
+					Reduces damage by 25% and removes the ability to score critical hits
+					'''
 			}
 
 			StarSapphire_Plushie_Item: {
 				DisplayName: Star Sapphire Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			SuikaIbuki_Plushie_Item: {
 				DisplayName: Suika Ibuki Plushie
-				Tooltip: The alcoholic oni. Her appearance makes you question her age, and whether she should be drinking alcohol
+				Tooltip:
+					'''
+					"The alcoholic oni. Her appearance makes you question her age, and whether she should be drinking alcohol"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Melee weapons twice as big and deal double damage! Increases falling speed
+					When tripsy gain 16 points of defence, increases melee critrate by 10% and reduce damage taken by 10%
+					'''
 			}
 
 			SumirekoUsami_Plushie_Item: {
 				DisplayName: Sumireko Usami Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			SunnyMilk_Plushie_Item: {
 				DisplayName: Sunny Milk Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			SuwakoMoriya_Plushie_Item: {
 				DisplayName: Suwako Moriya Plushie
-				Tooltip: One of the Moriya Shrine's gods. Handles the shrine's divine services
+				Tooltip:
+					'''
+					"One of the Moriya Shrine's gods. Handles the shrine's divine services"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Increases digging speed and reach
 			}
 
 			Tanned_Cirno_Plushie_Item: {
 				DisplayName: Tanned Cirno Plushie
-				Tooltip: The strongest [with a tan]!
+				Tooltip:
+					'''
+					"The strongest, now with a tan!"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			TenshiHinanawi_Plushie_Item: {
 				DisplayName: Tenshi Hinanawi Plushie
-				Tooltip: The unruly celestial. She's bored of Heaven, it seems
+				Tooltip:
+					'''
+					"The unruly celestial. She's bored of Heaven, it seems"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Whenever you receive damage, your next attack's damage is increased by 5 times received damage
+					Increases damage by 20%, life regeneration by 50% and doubles maximum mana
+					'''
 			}
 
 			TewiInaba_Plushie_Item: {
 				DisplayName: Tewi Inaba Plushie
-				Tooltip: A very old rabbit youkai. Despite this, she's childish
+				Tooltip:
+					'''
+					"A very old rabbit youkai. Despite this, she's childish"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Chance for enemies to drop double loot when killed
+					Increases critrate by 20%
+					'''
 			}
 
 			ToyosatomimiNoMiko_Plushie_Item: {
 				DisplayName: Toyosatomimi no Miko Plushie
-				Tooltip: ""
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Call a beam of light upon those you've damaged!
 			}
 
 			UtsuhoReiuji_Plushie_Item: {
 				DisplayName: Utsuho Reiuji Plushie
-				Tooltip: The hell raven that holds Yatagarasu's power. She controls the heat of the flames of hell
+				Tooltip:
+					'''
+					"The hell raven that holds Yatagarasu's power. She controls the heat of the flames of hell"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			YoshikaMiyako_Plushie_Item: {
 				DisplayName: Yoshika Miyako Plushie
-				Tooltip: A Jiangshi. Their owner likes them a lot
+				Tooltip:
+					'''
+					"A Jiangshi. Their owner likes them a lot"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
 			}
 
 			YoumuKonpaku_Plushie_Item: {
 				DisplayName: Youmu Konpaku Plushie
-				Tooltip: Hakugyokurou's gardener, and Yuyuko's servant
+				Tooltip:
+					'''
+					"Hakugyokurou's gardener, and Yuyuko's servant"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Summon myon to fight for you!
+					Increases damage by 25% and melee speed by 50%
+					Increases melee critrate by 15% and melee penetration by 15 points
+					'''
 			}
 
 			YukariYakumo_Plushie_Item: {
 				DisplayName: Yukari Yakumo Plushie
-				Tooltip: The mastermind gap youkai. Perhaps this doll borrows part of her power
+				Tooltip:
+					'''
+					"The mastermind gap youkai. Perhaps this doll borrows part of her power"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Teleport to the mouse cursor using the skill button
+					Increases damage by 15% and increases armor penetration by 50 points
+					'''
 			}
 
 			YuukaKazami_Plushie_Item: {
 				DisplayName: Yuuka Kazami Plushie
-				Tooltip: The flower youkai. She's not actually a flower youkai, but she really likes flowers
+				Tooltip:
+					'''
+					"The flower youkai. She's not actually a flower youkai, but she really likes flowers"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					When happy! increase defense by 7 points, maximum HP by 50,
+					armor penetration by 20 and doubled movement speed
+					Increases damage by 25% and adds the ability to dash
+					'''
 			}
 
 			YuyukoSaigyouji_Plushie_Item: {
 				DisplayName: Yuyuko Saigyouji Plushie
-				Tooltip: The princess of the Netherworld
+				Tooltip:
+					'''
+					"The princess of the Netherworld"
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect:
+					'''
+					Increases minion knockback, minion damage by 25% and raises minion & turret slots
+					With an active food buff increases damage by 25% and movement speed, reversed when no food buff
+					'''
 			}
 
 			CottonSeeds: {
 				DisplayName: Cotton Seeds
-				Tooltip: ""
+				Tooltip: Use this to grow cotton plants!
 			}
 
 			FlaxSeeds: {
 				DisplayName: Flax Seeds
-				Tooltip: ""
+				Tooltip: Use this to grow flax plants!
 			}
 
 			ChanceNoConsume: {
@@ -854,7 +1451,7 @@ Mods: {
 
 			EmptyCard: {
 				DisplayName: Empty Spellcard
-				Tooltip: You shouldn't have this you CHEATER!
+				Tooltip: You shouldn't have this!
 			}
 
 			Daedalus: {
@@ -1581,7 +2178,7 @@ Mods: {
 
 				plushiePower: {
 					Tooltip: ""
-					Label: plushie Power
+					Label: Enabled Plushie Special Effects
 				}
 
 				DisplayName: Kourindou Config Client
@@ -1589,5 +2186,11 @@ Mods: {
 		}
 
 		Keybinds.Skill.DisplayName: Skill
+
+		PlushieEffectLines: {
+			None: No effect :(
+			WhenEquipped: "When equipped: "
+			PlushieCanBeThrown: When held: press right click to throw the plushie
+		}
 	}
 }

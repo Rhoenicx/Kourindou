@@ -13,9 +13,6 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Nue Houjuu Plushie");
-            // Tooltip.SetDefault("An alien?! Perhaps this doll isn't her true form...");
-
             ItemID.Sets.IsLavaImmuneRegardlessOfRarity[Type] = true;
         }
 
@@ -68,11 +65,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

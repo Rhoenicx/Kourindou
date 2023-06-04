@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Gensokyo_Lava_Fairy_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Lava Fairy Plushie");
-            // Tooltip.SetDefault("");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Lava fairies become friendly";
-        }
-
         public override void SetDefaults()
         {
             // Information

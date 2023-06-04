@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Daiyousei_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Daiyousei Plushie");
-            // Tooltip.SetDefault("Cirno's friend..?");
-        }
-
         public override void SetDefaults()
         {
             // Information

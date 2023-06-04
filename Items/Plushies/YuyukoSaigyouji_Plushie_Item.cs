@@ -11,18 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class YuyukoSaigyouji_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Yuyuko Saigyouji Plushie");
-            // Tooltip.SetDefault("The princess of the Netherworld");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Increased minion knockback and minion & turret slots. + 25% minion damage\r\n" +
-                    "With active food buff: +25% damage and increased movement speed. Reversed effects when no food buff!";
-        }
-
         public override void SetDefaults()
         {
             // Information

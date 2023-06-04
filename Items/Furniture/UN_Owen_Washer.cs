@@ -8,11 +8,6 @@ namespace Kourindou.Items.Furniture
 {
     public class UN_Owen_Washer : ModItem
     {
-        public override void SetStaticDefaults() 
-        {
-			// DisplayName.SetDefault("U.N. Owen Washer");
-		}
-
         public override void SetDefaults()
         {
             // Information

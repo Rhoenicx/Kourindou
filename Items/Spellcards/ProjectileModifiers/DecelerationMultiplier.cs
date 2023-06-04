@@ -12,9 +12,6 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.DecelerationMultiplier, Type);
-            
-            // DisplayName.SetDefault("Deceleration Multiplier");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

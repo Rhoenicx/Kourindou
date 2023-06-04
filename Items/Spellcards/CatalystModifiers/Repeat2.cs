@@ -10,9 +10,6 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.Repeat2, Type);
-            
-            // DisplayName.SetDefault("Repeat 2");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

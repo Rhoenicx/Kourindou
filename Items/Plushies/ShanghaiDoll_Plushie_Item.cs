@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class ShanghaiDoll_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Shanghai Doll Plushie");
-            // Tooltip.SetDefault("A replica of Alice's most prominent doll");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -66,11 +60,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 } 

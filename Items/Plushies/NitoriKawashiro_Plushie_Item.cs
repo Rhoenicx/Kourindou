@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class NitoriKawashiro_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Nitori Kawashiro Plushie");
-            // Tooltip.SetDefault("A kappa that can control water. Like all other kappa, she's skilled in technology and engineering!");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -66,11 +60,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

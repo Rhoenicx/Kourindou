@@ -11,18 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class PatchouliKnowledge_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Patchouli Knowledge Plushie");
-            // Tooltip.SetDefault("The magician of the scarlet mansion");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Doubled magic damage, but non-magic attacks can not deal damage\r\n" +
-                    "Movement speed is halved, +30% magic crit, -50% mana cost";
-        }
-
         public override void SetDefaults()
         {
             // Information

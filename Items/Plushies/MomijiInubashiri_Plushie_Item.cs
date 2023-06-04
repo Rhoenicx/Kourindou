@@ -11,18 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class MomijiInubashiri_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Momiji Inubashiri Plushie");
-            // Tooltip.SetDefault("The Youkai Mountain's guard dog. Calling her that might get you killed");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Permanent dangersense and hunter buff\r\n" +
-                    "+10 % damage, +25 % melee damage, +10 % melee crit";
-        }
-
         public override void SetDefaults()
         {
             // Information

@@ -12,17 +12,6 @@ namespace Kourindou.Items.Plushies
 {
     public class SeijaKijin_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Seija Kijin Plushie");
-            // Tooltip.SetDefault("The mischief-causing amanojaku. It goes on the ceiling, too!");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Control gravity! +25% damage, +10% crit";
-        }
-
         public override void SetDefaults()
         {
             // Information

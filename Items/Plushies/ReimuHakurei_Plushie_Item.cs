@@ -14,17 +14,6 @@ namespace Kourindou.Items.Plushies
 {
     public class ReimuHakurei_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Reimu Hakurei Plushie");
-            // Tooltip.SetDefault("The Hakurei shrine maiden. It's also aimbot if powered");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "All projectiles fired are homing but damage is decreased by 25%";
-        }
-
         public override void SetDefaults()
         {
             // Information

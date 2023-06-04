@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class HataNoKokoro_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Hata No Kokoro Plushie");
-            // Tooltip.SetDefault("A menreiki youkai. Her face doesn't show emotions, although the doll probably couldn't if it tried");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -68,11 +62,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

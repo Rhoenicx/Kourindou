@@ -63,7 +63,6 @@ namespace Kourindou.Tiles.Furniture
             TileID.Sets.DisableSmartCursor[Type] = true;
 
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Thread");
             AddMapEntry(new Color(43, 19, 103), name);
         }
 

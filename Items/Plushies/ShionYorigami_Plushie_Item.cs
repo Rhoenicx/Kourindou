@@ -13,18 +13,6 @@ namespace Kourindou.Items.Plushies
 {
     public class ShionYorigami_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Shion Yorigami Plushie");
-            // Tooltip.SetDefault("A poverty god. It doesn't seem to take your money, though...");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Small chance to instantly kill the enemy hit!\r\n" +
-                    "-25% damage and also cannot crit";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -87,7 +75,7 @@ namespace Kourindou.Items.Plushies
             player.GetCritChance(DamageClass.Generic) -= 100f;
         }
 
-        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, ref NPC.HitModifiers modifiers, int amountEquipped)
         {
             if ((int)Main.rand.Next(0, 1000) == 0)
             {
@@ -97,7 +85,7 @@ namespace Kourindou.Items.Plushies
             modifiers.DisableCrit();
         }
 
-        public override void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        public override void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers, int amountEquipped)
         {
             if ((int)Main.rand.Next(0, 1000) == 0)
             {
@@ -105,14 +93,6 @@ namespace Kourindou.Items.Plushies
             }
 
             modifiers.DisableCrit();
-        }
-
-        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
-        {
-            if ((int)Main.rand.Next(0, 1000) == 0)
-            {
-                info.SourceDamage = (int)(info.SourceDamage * Main.rand.NextFloat(1000f, 1000000f));
-            }
         }
     }
 }

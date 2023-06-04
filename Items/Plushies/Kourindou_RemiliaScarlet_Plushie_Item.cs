@@ -15,17 +15,6 @@ namespace Kourindou.Items.Plushies
     {
         public const float HealPercentage = 0.05f;
 
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Remilia Scarlet Plushie Kourindou ver.");
-            // Tooltip.SetDefault("The Scarlet Devil herself. The new outfit suits her");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "You heal for 5% of all damage done! +25% damage";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -98,12 +87,7 @@ namespace Kourindou.Items.Plushies
             Heal(player, hit.Damage);
         }
 
-        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
-        {
-            Heal(sourcePlayer, info.Damage);
-        }
-
-        public void Heal(Player player, int damage)
+        public static void Heal(Player player, int damage)
         {
             if (player.statLife < player.statLifeMax2)
             {

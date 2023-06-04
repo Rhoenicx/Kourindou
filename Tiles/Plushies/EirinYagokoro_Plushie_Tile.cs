@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Eirin Yagokoro Plushie");
             AddMapEntry(new Color(10, 32, 99), name);
 
             plushieItem = ItemType<EirinYagokoro_Plushie_Item>();

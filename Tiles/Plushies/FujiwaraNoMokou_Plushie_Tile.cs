@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Fujiwara No Mokou Plushie");
             AddMapEntry(new Color(231, 231, 231), name);
 
             plushieItem = ItemType<FujiwaraNoMokou_Plushie_Item>();

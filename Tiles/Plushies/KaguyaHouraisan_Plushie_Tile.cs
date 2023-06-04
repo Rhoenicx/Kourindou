@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Kaguya Houraisan Plushie");
             AddMapEntry(new Color(227, 179, 215), name);
 
             plushieItem = ItemType<KaguyaHouraisan_Plushie_Item>();

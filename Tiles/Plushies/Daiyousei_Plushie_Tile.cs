@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Daiyousei Plushie");
             AddMapEntry(new Color(88, 167, 69), name);
 
             plushieItem = ItemType<Daiyousei_Plushie_Item>();

@@ -17,17 +17,6 @@ namespace Kourindou.Items.Plushies
 {
     public class RanYakumo_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Ran Yakumo Plushie");
-            // Tooltip.SetDefault("");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Every 10 enemies defeated increases max HP, damage and movement speed by 5% until death\r\n" + "Stacks up to 8 times. Increases max HP, damage and movement speed by 10%";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -116,14 +105,6 @@ namespace Kourindou.Items.Plushies
             if (target.life <= 0 && !target.friendly && target.lifeMax > 5)
             {
                 ManageStacks(player);
-            }
-        }
-
-        public override void PlushieKillPvp(Player targetPlayer, Player sourcePlayer, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource, int amountEquipped)
-        {
-            if (Main.myPlayer == sourcePlayer.whoAmI)
-            {
-                ManageStacks(sourcePlayer);
             }
         }
 

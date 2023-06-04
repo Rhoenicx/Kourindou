@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class HinaKagiyama_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Hina Kagiyama Plushie");
-            // Tooltip.SetDefault("A misfortune god that gathers misfortune. We do not have a spinning animation for it yet. Sorry");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -64,11 +58,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

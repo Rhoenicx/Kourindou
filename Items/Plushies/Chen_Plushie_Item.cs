@@ -13,17 +13,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Chen_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Chen Plushie");
-            // Tooltip.SetDefault("The cutest shikigami's shikigami!");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Kills grant 25 HP, well fed and rapid healing for 12 seconds.\r\n" + "When hurt gain shadow dodge for 3 seconds. +25% damage";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -115,13 +104,6 @@ namespace Kourindou.Items.Plushies
                 player.AddBuff(BuffID.WellFed, 720);
                 player.Heal(25);
             }
-        }
-
-        public override void PlushieKillPvp(Player targetPlayer, Player sourcePlayer, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource, int amountEquipped)
-        {
-            sourcePlayer.AddBuff(BuffID.RapidHealing, 720);
-            sourcePlayer.AddBuff(BuffID.WellFed, 720);
-            sourcePlayer.Heal(25);
         }
     }
 }

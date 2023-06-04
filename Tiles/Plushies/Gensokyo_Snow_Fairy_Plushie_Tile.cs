@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Snow Fairy Plushie");
             AddMapEntry(new Color(102, 155, 204), name);
 
             plushieItem = ItemType<Gensokyo_Snow_Fairy_Plushie_Item>();

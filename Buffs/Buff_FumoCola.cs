@@ -8,8 +8,6 @@ namespace Kourindou.Buffs
     {
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Fumo Cola");
-            // Description.SetDefault("Increases attack speed by {AttackSpeed}% and movement speed by {MovementSpeed}%");
             Main.debuff[Type] = false;
             Main.pvpBuff[Type] = true;
             Main.buffNoSave[Type] = false;

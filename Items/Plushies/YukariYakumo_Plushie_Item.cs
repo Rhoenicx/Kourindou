@@ -16,18 +16,6 @@ namespace Kourindou.Items.Plushies
 {
     public class YukariYakumo_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Yukari Yakumo Plushie");
-            // Tooltip.SetDefault("The mastermind gap youkai. Perhaps this doll borrows part of her power");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Teleport to the mouse cursor using skill button\r\n" +
-                    "+15% damage, +50 penetration";
-        }
-
         public override void SetDefaults()
         {
             // Information

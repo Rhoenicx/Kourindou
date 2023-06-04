@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Hecatia Lapislazuli Plushie");
             AddMapEntry(new Color(30, 30, 30), name);
 
             plushieItem = ItemType<HecatiaLapislazuli_Plushie_Item>();

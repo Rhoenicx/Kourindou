@@ -13,17 +13,6 @@ namespace Kourindou.Items.Plushies
 {
     public class MarisaKirisame_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Marisa Kirisame Plushie");
-            // Tooltip.SetDefault("The ordinary human who uses magic");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Critical hits shoot a star projectile! +25% magic damage, +15% magic crit, -25% mana cost";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -94,7 +83,7 @@ namespace Kourindou.Items.Plushies
         {
             if (hit.Crit)
             {
-                SpawnStar(player.RotatedRelativePoint(player.MountedCenter), hit.SourceDamage);
+                SpawnStar(target, player.RotatedRelativePoint(player.MountedCenter), hit.SourceDamage);
             }
         }
 
@@ -102,14 +91,14 @@ namespace Kourindou.Items.Plushies
         {
             if (hit.Crit)
             {
-                SpawnStar(player.RotatedRelativePoint(player.MountedCenter), hit.SourceDamage);
+                SpawnStar(target, player.RotatedRelativePoint(player.MountedCenter), hit.SourceDamage);
             }
         }
 
-        public void SpawnStar(Vector2 position, int damage)
+        public void SpawnStar(Entity victim,Vector2 position, int damage)
         {
             int star = Projectile.NewProjectile(
-                Item.GetSource_Accessory(Item),
+                Item.GetSource_OnHit(victim),
                 position,
                 Vector2.Normalize(Main.MouseWorld - position) * 10f,
                 ProjectileID.StarWrath,

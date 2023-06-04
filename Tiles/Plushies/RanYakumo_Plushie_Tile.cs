@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Ran Yakumo Plushie");
             AddMapEntry(new Color(107, 58, 0), name);
 
             plushieItem = ItemType<RanYakumo_Plushie_Item>();

@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class ChimataTenkyuu_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Chimata Tenkyuu Plushie");
-            // Tooltip.SetDefault("The overseer of the market. Now where is that bustling marketplace...");
-        }
-
         public override void SetDefaults()
         {
             // Information

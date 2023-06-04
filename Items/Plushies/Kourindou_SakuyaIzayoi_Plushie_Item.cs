@@ -13,17 +13,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Kourindou_SakuyaIzayoi_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Sakuya Izayoi Plushie Kourindou ver.");
-            // Tooltip.SetDefault("The maid of the scarlet mansion");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Throw 4 knives upon using a weapon. +40% throwing and ranged damage";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -82,9 +71,9 @@ namespace Kourindou.Items.Plushies
             // Increase life regen by 1 point
             player.lifeRegen += 1;
 
-            // Increase Throwing damage by 40 percent
-            player.GetDamage(DamageClass.Throwing) += 0.40f;
-            player.GetDamage(DamageClass.Ranged) += 0.40f;
+            // Increase melee and ranged damage by 30 percent
+            player.GetDamage(DamageClass.Melee) += 0.30f;
+            player.GetDamage(DamageClass.Ranged) += 0.30f;
         }
     }
 }

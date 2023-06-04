@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class SanaeKochiya_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Sanae Kochiya Plushie");
-            // Tooltip.SetDefault("The wind god shrine maiden. She doesn't look like Reimu");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Immunity to the mighty winds! +25% damage, +25% crit";
-        }
-
         public override void SetDefaults()
         {
             // Information

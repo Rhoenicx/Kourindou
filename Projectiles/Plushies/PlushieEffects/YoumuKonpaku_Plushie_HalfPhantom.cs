@@ -41,13 +41,13 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 		}
 
 		// Attack
-		private float ViewDist = 800f;
+		private readonly float ViewDist = 800f;
 		private bool HasTarget => Target >= 0;
 
 		// Movement
 		private bool MoveUpdate = true;
-		private float MaxSpeed = 15f;
-		private float Magnitude = 0.05f;
+		private readonly float MaxSpeed = 15f;
+		private readonly float Magnitude = 0.05f;
 		private float OldIdleDistance = 0f;
 		private float OldIdleRotation = 0f;
 		private Vector2 IdlePostion;
@@ -63,7 +63,6 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 
 		public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Half Phantom");
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
 			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
@@ -378,7 +377,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			}
 		}
 
-		protected Vector2 CapVector(Vector2 vector, float max)
+		protected static Vector2 CapVector(Vector2 vector, float max)
         {
             return vector.Length() > max ? Vector2.Normalize(vector) * max : vector;
         }
@@ -443,9 +442,7 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			else
 			{
 				int changeTail = 0;
-				float checkDistance = 0;
-				
-				checkDistance = Vector2.Distance(Projectile.position, Projectile.oldPos[0]);
+				float checkDistance = Vector2.Distance(Projectile.position, Projectile.oldPos[0]);
 				
 				for (int i = 0; i < Projectile.oldPos.Length - 1; i++)
 				{

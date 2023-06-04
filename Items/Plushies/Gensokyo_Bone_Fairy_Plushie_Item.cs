@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Gensokyo_Bone_Fairy_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Bone Fairy Plushie");
-            // Tooltip.SetDefault("");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Bone fairies become friendly";
-        }
-
         public override void SetDefaults()
         {
             // Information

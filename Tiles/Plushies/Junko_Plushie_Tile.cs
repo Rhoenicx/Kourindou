@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Junko Plushie");
             AddMapEntry(new Color(0, 0, 0), name);
 
             plushieItem = ItemType<Junko_Plushie_Item>();

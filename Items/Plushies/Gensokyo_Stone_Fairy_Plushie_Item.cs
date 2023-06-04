@@ -11,19 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Gensokyo_Stone_Fairy_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Stone Fairy Plushie");
-            // Tooltip.SetDefault("");
-
-            ItemID.Sets.IsLavaImmuneRegardlessOfRarity[Type] = true;
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Stone fairies become friendly";
-        }
-
         public override void SetDefaults()
         {
             // Information

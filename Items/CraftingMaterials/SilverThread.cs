@@ -8,10 +8,6 @@ namespace Kourindou.Items.CraftingMaterials
 {
     public class SilverThread : ModItem
     {
-        public override void SetStaticDefaults() {
-			// DisplayName.SetDefault("Silver Thread");
-		}
-
         public override void SetDefaults()
         {
             Item.CloneDefaults(ItemID.BlackThread);

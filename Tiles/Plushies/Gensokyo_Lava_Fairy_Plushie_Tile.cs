@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Lava Fairy Plushie");
             AddMapEntry(new Color(253, 32, 3), name);
 
             plushieItem = ItemType<Gensokyo_Lava_Fairy_Plushie_Item>();

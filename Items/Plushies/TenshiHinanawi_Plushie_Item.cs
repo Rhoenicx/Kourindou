@@ -14,18 +14,6 @@ namespace Kourindou.Items.Plushies
 {
     public class TenshiHinanawi_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Tenshi Hinanawi Plushie");
-            // Tooltip.SetDefault("The unruly celestial. She's bored of Heaven, it seems");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Whenever you get hit, increase your next attack by 5 times received damage\r\n" +
-                    "+20% damage, +50% life regen, doubles mana";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -100,7 +88,7 @@ namespace Kourindou.Items.Plushies
             player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = true;
         }
 
-        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, ref NPC.HitModifiers modifiers, int amountEquipped)
         {
             if (player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge)
             {
@@ -109,21 +97,12 @@ namespace Kourindou.Items.Plushies
             }
         }
 
-        public override void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        public override void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers, int amountEquipped)
         {
             if (player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge)
             {
                 modifiers.SourceDamage += player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage * 5;
                 player.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = false;
-            }
-        }
-
-        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
-        {
-            if (sourcePlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge)
-            {
-                info.SourceDamage += sourcePlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Damage * 5;
-                sourcePlayer.GetModPlayer<KourindouPlayer>().TenshiPlushie_Revenge = false;
             }
         }
     }

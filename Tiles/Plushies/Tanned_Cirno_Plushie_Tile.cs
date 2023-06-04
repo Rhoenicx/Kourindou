@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Tanned Cirno Plushie");
             AddMapEntry(new Color(8, 49, 128), name);
 
             plushieItem = ItemType<Tanned_Cirno_Plushie_Item>();

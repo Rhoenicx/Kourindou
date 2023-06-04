@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class LilyWhite_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Lily White Plushie");
-            // Tooltip.SetDefault("Spring is here!");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "In forest biome gain permanent sunflower buff and greatly increased life regen";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -92,7 +81,7 @@ namespace Kourindou.Items.Plushies
                 && !player.ZoneSnow
                 && (player.ZoneSkyHeight || player.ZoneOverworldHeight))
             {
-                player.AddBuff(BuffID.Sunflower, 20);
+                player.AddBuff(BuffID.Sunflower, 60);
                 Main.buffNoTimeDisplay[146] = true;
 
                 player.lifeRegen += 10;

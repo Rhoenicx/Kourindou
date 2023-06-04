@@ -13,18 +13,6 @@ namespace Kourindou.Items.Plushies
 {
     public class YoumuKonpaku_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Youmu Konpaku Plushie");
-            // Tooltip.SetDefault("Hakugyokurou's gardener, and Yuyuko's servant");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Summon myon to fight for you!\r\n" +
-                    "+25% damage, +50% melee speed, +15% melee crit, +15 melee penetration";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -101,7 +89,7 @@ namespace Kourindou.Items.Plushies
                     player.Center,
                     Vector2.Zero,
                     ProjectileType<YoumuKonpaku_Plushie_HalfPhantom>(),
-                    player.statLifeMax2 / 2,
+                    10,
                     5f,
                     Main.myPlayer,
                     0,

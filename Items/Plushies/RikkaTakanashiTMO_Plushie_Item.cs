@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class RikkaTakanashiTMO_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Rikka Takanashi Plushie Take me on! ver.");
-            // Tooltip.SetDefault("Reality rejected... synapses shattered... be vanished from this world!");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -67,11 +61,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Satori Komeiji Plushie");
             AddMapEntry(new Color(193, 109, 160), name);
 
             plushieItem = ItemType<SatoriKomeiji_Plushie_Item>();

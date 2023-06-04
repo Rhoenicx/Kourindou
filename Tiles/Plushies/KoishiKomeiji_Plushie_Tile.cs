@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Koishi Komeiji Plushie");
             AddMapEntry(new Color(255, 192, 41), name);
 
             plushieItem = ItemType<KoishiKomeiji_Plushie_Item>();

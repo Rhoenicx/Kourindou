@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Tenshi Hinanawi Plushie");
             AddMapEntry(new Color(22, 47, 178), name);
 
             plushieItem = ItemType<TenshiHinanawi_Plushie_Item>();

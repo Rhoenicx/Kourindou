@@ -8,12 +8,6 @@ namespace Kourindou.Items.Seeds
 {
     public class CottonSeeds : ModItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Cotton Seeds");
-            // Tooltip.SetDefault("");
-        }
-
         public override void SetDefaults()
         {
             // Information

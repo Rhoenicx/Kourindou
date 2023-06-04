@@ -8,11 +8,6 @@ namespace Kourindou.Items.Furniture
 {
     public class SewingMachine : ModItem
     {
-        public override void SetStaticDefaults() 
-        {
-			// DisplayName.SetDefault("Sewing Machine");
-		}
-
         public override void SetDefaults()
         {
             // Information

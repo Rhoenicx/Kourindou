@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class UtsuhoReiuji_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Utsuho Reiuji Plushie");
-            // Tooltip.SetDefault("The hell raven that holds Yatagarasu's power. She controls the heat of the flames of hell");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -67,11 +61,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

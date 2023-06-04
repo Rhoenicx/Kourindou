@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Neko OwO Plushie");
             AddMapEntry(new Color(34, 34, 34), name);
 
             plushieItem = ItemType<NekoOwO_Plushie_Item>();

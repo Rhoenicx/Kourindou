@@ -8,10 +8,6 @@ namespace Kourindou.Items.CraftingMaterials
 {
     public class SkyBlueThread : ModItem
     {
-        public override void SetStaticDefaults() {
-			// DisplayName.SetDefault("Sky Blue Thread");
-		}
-
         public override void SetDefaults()
         {
             Item.CloneDefaults(ItemID.BlackThread);

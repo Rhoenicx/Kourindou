@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class AliceMargatroid_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Alice Margatroid Plushie");
-            // Tooltip.SetDefault("The seven-colored magician. Ironically, she's a doll now");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "+15% magic crit, +10% magic & summon damage, +1 minion slots";
-        }
-
         public override void SetDefaults()
         {
             // Information

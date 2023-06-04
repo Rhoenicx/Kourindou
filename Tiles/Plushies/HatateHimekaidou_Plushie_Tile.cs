@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Hatate Himekaidou Plushie");
             AddMapEntry(new Color(125, 43, 208), name);
 
             plushieItem = ItemType<HatateHimekaidou_Plushie_Item>();

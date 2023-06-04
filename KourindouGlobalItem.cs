@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Items.Plushies;
 using Kourindou.Projectiles.Plushies.PlushieEffects;
+using Terraria.Localization;
 
 namespace Kourindou
 {
@@ -20,12 +21,12 @@ namespace Kourindou
         {
 			if (item.type == ItemID.SilkRope)
 			{
-				item.SetNameOverride("White Fabric Rope");
+				item.SetNameOverride(Language.GetTextValue("Mods.Kourindou.Items.WhiteFabricRope.DisplayName"));
 			}
 
 			if (item.type == ItemID.SilkRopeCoil)
 			{
-				item.SetNameOverride("White Fabric Rope Coil");
+				item.SetNameOverride(Language.GetTextValue("Mods.Kourindou.Items.WhiteFabricRopeCoil.DisplayName"));
 			}
         }
 

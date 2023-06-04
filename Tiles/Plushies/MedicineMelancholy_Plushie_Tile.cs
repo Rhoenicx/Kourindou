@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Medicine Melancholy Plushie");
             AddMapEntry(new Color(182, 21, 21), name);
 
             plushieItem = ItemType<MedicineMelancholy_Plushie_Item>();

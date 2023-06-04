@@ -10,9 +10,6 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.RepeatRandom, Type);
-            
-            // DisplayName.SetDefault("Repeat Random");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class EirinYagokoro_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Eirin Yagokoro Plushie");
-            // Tooltip.SetDefault("The genius of the Moon");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "+10 HP regen, +50 max HP, +10% arrow damage, +25% damage, reduced potion cooldown";
-        }
-
         public override void SetDefaults()
         {
             // Information

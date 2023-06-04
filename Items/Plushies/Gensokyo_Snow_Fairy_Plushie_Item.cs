@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Gensokyo_Snow_Fairy_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Snow Fairy Plushie");
-            // Tooltip.SetDefault("");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Snow fairies become friendly";
-        }
-
         public override void SetDefaults()
         {
             // Information

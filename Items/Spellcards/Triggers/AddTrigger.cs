@@ -10,9 +10,6 @@ namespace Kourindou.Items.Spellcards.Triggers
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trigger, (byte)Trigger.Trigger, Type);
-            
-            // DisplayName.SetDefault("Trigger");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

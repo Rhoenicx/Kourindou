@@ -13,9 +13,6 @@ namespace Kourindou.Items.Plushies
     {
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Neko OwO Plushie");
-            // Tooltip.SetDefault("");
-
             ItemID.Sets.IsLavaImmuneRegardlessOfRarity[Type] = true;
         }
 

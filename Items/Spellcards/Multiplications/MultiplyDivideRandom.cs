@@ -11,9 +11,6 @@ namespace Kourindou.Items.Spellcards.Multiplications
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Multiplication, (byte)Multiplication.MultiplyDivideRandom, Type);
-            
-            // DisplayName.SetDefault("Multiply Divide Random");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

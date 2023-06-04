@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Junko_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Junko Plushie");
-            // Tooltip.SetDefault("A divine spirit, and the sworn enemy of the Lunarians. She can purify anything");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -68,11 +62,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

@@ -55,7 +55,6 @@ namespace Kourindou.Tiles.Plants
             TileObjectData.addTile(Type);
 
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Flax Plant");
             AddMapEntry(new Color(1, 128, 201), name);
 
             HitSound = SoundID.Grass;

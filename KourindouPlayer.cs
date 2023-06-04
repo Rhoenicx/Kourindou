@@ -362,7 +362,7 @@ namespace Kourindou
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                plushie.Key.PlushieModifyHitNPCWithItem(Player, item, target, modifiers, plushie.Value);
+                plushie.Key.PlushieModifyHitNPCWithItem(Player, item, target, ref modifiers, plushie.Value);
             }
         }
 
@@ -370,7 +370,7 @@ namespace Kourindou
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                plushie.Key.PlushieModifyHitNPCWithProj(Player, proj, target, modifiers, plushie.Value);
+                plushie.Key.PlushieModifyHitNPCWithProj(Player, proj, target, ref modifiers, plushie.Value);
             }
         }
 
@@ -390,20 +390,19 @@ namespace Kourindou
             }
         }
 
+        public override void ModifyHurt(ref Player.HurtModifiers modifiers)
+        {
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
+            {
+                plushie.Key.PlushieModifyHurt(Player, ref modifiers, plushie.Value);
+            }
+        }
+
         public override void OnHurt(Player.HurtInfo info)
         {
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
                 plushie.Key.PlushieOnHurt(Player, info, plushie.Value);
-            }
-
-            if (info.PvP && info.DamageSource.SourcePlayerIndex > -1 && info.DamageSource.SourcePlayerIndex == Main.myPlayer)
-            {
-                Player sourcePlayer = Main.player[info.DamageSource.SourcePlayerIndex];
-                foreach (KeyValuePair<PlushieItem, int> plushie in sourcePlayer.GetModPlayer<KourindouPlayer>().EquippedPlushies)
-                {
-                    plushie.Key.PlushieOnHurtPvp(Player, sourcePlayer, info, plushie.Value);
-                }
             }
         }
 
@@ -438,15 +437,6 @@ namespace Kourindou
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
                 plushie.Key.PlushieKill(Player, damage, hitDirection, pvp, damageSource, plushie.Value);
-            }
-
-            if (pvp && damageSource.SourcePlayerIndex > -1 && damageSource.SourcePlayerIndex == Main.myPlayer)
-            {
-                Player sourcePlayer = Main.player[damageSource.SourcePlayerIndex];
-                foreach (KeyValuePair<PlushieItem, int> plushie in sourcePlayer.GetModPlayer<KourindouPlayer>().EquippedPlushies)
-                {
-                    plushie.Key.PlushieKillPvp(Player, sourcePlayer, damage, hitDirection, pvp, damageSource, plushie.Value);
-                }
             }
         }
 

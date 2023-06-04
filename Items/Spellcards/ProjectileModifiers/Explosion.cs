@@ -11,9 +11,6 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.Explosion, Type);
-            
-            // DisplayName.SetDefault("Explosion");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

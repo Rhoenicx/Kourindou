@@ -12,17 +12,6 @@ namespace Kourindou.Items.Plushies
 {
     public class MedicineMelancholy_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Medicine Melancholy Plushie");
-            // Tooltip.SetDefault("A young doll youkai that lives on the Nameless Hill. She can harness the poison of anything");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Every hit has a 12% chance to inflict a stackable poison debuff. Also gain poison immunity";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -84,6 +73,9 @@ namespace Kourindou.Items.Plushies
 
             // Immunity to poison debuff
             player.buffImmune[BuffID.Poisoned] = true;
+            player.buffImmune[BuffID.Venom] = true;
+            player.buffImmune[BuffID.WeaponImbuePoison] = true;
+            player.buffImmune[BuffType<DeBuff_MedicineMelancholy>()] = true;
         }
 
         public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
@@ -102,15 +94,6 @@ namespace Kourindou.Items.Plushies
                 target.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 600);
             }
             target.AddBuff(BuffID.Poisoned, 600);
-        }
-
-        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
-        {
-            if ((int)Main.rand.Next(0, 100) < 12)
-            {
-                targetPlayer.AddBuff(BuffType<DeBuff_MedicineMelancholy>(), 300);
-            }
-            targetPlayer.AddBuff(BuffID.Poisoned, 300);
         }
     }
 }

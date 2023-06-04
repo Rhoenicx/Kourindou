@@ -11,9 +11,6 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.RandomCooldownPercent, Type);
-            
-            // DisplayName.SetDefault("Random Cooldown Percent");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

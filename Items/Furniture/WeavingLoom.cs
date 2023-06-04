@@ -8,11 +8,6 @@ namespace Kourindou.Items.Furniture
 {
     public class WeavingLoom : ModItem
     {
-        public override void SetStaticDefaults() 
-        {
-			// DisplayName.SetDefault("Weaving Loom");
-		}
-
         public override void SetDefaults()
         {
             // Information

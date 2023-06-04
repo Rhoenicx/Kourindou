@@ -11,18 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class YuukaKazami_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Yuuka Kazami Plushie");
-            // Tooltip.SetDefault("The flower youkai. She's not actually a flower youkai, but she really likes flowers");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "When Happy!: gain +7 defense, +50 max HP, +20 penetration and doubled movement speed!\r\n" +
-                    "+25% damage, ability to dash";
-        }
-
         public override void SetDefaults()
         {
             // Information

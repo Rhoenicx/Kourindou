@@ -11,9 +11,6 @@ namespace Kourindou.Items.Spellcards.Multiplications
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Multiplication, (byte)Multiplication.DivideBy3, Type);
-            
-            // DisplayName.SetDefault("Divide by 3");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

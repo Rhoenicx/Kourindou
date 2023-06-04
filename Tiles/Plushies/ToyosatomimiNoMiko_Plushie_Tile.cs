@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Toyosatomimi no Miko Plushie");
             AddMapEntry(new Color(67, 12, 133), name);
 
             plushieItem = ItemType<ToyosatomimiNoMiko_Plushie_Item>();

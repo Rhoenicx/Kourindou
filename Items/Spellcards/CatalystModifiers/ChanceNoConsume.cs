@@ -11,9 +11,6 @@ namespace Kourindou.Items.Spellcards.CatalystModifiers
         {
             // When loading this card, register it!
 			RegisterCardItem((byte)Groups.CatalystModifier, (byte)CatalystModifier.ChanceNoConsume, Type);
-            
-			// DisplayName.SetDefault("Chance No Consume");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

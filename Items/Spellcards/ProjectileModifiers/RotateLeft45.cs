@@ -10,9 +10,6 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.ProjectileModifier, (byte)ProjectileModifier.RotateLeft45, Type);
-            
-            // DisplayName.SetDefault("Rotate Left 45");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

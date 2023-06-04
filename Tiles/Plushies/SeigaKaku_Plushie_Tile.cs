@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Seiga Kaku Plushie");
             AddMapEntry(new Color(21, 46, 96), name);
 
             plushieItem = ItemType<SeigaKaku_Plushie_Item>();

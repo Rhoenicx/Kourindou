@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Lily White Plushie");
             AddMapEntry(new Color(236, 145, 173), name);
 
             plushieItem = ItemType<LilyWhite_Plushie_Item>();

@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class InuSakuyaIzayoi_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Inu Sakuya Izayoi Plushie");
-            // Tooltip.SetDefault("Does the real Sakuya like this? Probably. It's adorable, why wouldn't she?");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -68,11 +62,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

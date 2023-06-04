@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Kisume_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Kisume Plushie");
-            // Tooltip.SetDefault("A Tsurube-otoshi who spends her time in buckets in the dark instead of trees. Watch your head");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -64,11 +58,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

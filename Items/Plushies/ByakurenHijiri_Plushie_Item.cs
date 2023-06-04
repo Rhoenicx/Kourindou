@@ -12,18 +12,6 @@ namespace Kourindou.Items.Plushies
 {
     public class ByakurenHijiri_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Byakuren Hijiri Plushie");
-            // Tooltip.SetDefault("A Buddhist nun and magician. Currently, she's then Myouren Temple's head priest"); 
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Increases HP by 25%. Increases melee damage by 100%, but decrease all other damage by 50% \r\n"
-                    + "Multiply knockback by 3. Doubles melee crit damage, but can no longer receive critrate buffs";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -102,10 +90,22 @@ namespace Kourindou.Items.Plushies
             player.GetCritChance(DamageClass.SummonMeleeSpeed) = 0f;
         }
 
-        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        public override void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, ref NPC.HitModifiers modifiers, int amountEquipped)
         {
-            modifiers.CritDamage *= 2f;
-            modifiers.Knockback *= 3f;
+            if (item.CountsAsClass(DamageClass.Melee))
+            {
+                modifiers.CritDamage *= 2f;
+                modifiers.Knockback *= 3f;
+            }
+        }
+
+        public override void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers, int amountEquipped)
+        {
+            if (proj.CountsAsClass(DamageClass.Melee))
+            {
+                modifiers.CritDamage *= 2f;
+                modifiers.Knockback *= 3f;
+            }
         }
 
         public override void PlushieModifyWeaponCrit(Player myPlayer, Item item, ref float crit, int amountEquipped)

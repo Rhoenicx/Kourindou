@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Nagato Yuki Plushie");
             AddMapEntry(new Color(105, 73, 102), name);
 
             plushieItem = ItemType<NagatoYuki_Plushie_Item>();

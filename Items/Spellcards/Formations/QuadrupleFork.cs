@@ -10,9 +10,6 @@ namespace Kourindou.Items.Spellcards.Formations
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Formation, (byte)Formation.QuadrupleFork, Type);
-            
-            // DisplayName.SetDefault("Quadruple Fork");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

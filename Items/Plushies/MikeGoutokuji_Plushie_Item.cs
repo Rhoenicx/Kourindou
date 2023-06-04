@@ -11,18 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class MikeGoutokuji_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Mike Goutokuji Plushie");
-            // Tooltip.SetDefault("A maneki-neko whose powers do not fully work. She can attract money or people, but not both");
-        }
-
-
-        public override string AddEffectTooltip()
-        {
-            return "Increases pickup range of coins and hitting enemies sometimes drop coins!";
-        }
-
         public override void SetDefaults()
         {
             // Information

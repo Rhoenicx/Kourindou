@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Aya Shameimaru Plushie");
             AddMapEntry(new Color(17, 17, 17), name);
 
             plushieItem = ItemType<AyaShameimaru_Plushie_Item>();

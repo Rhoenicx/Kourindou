@@ -53,7 +53,6 @@ namespace Kourindou.Tiles.Furniture
             AnimationFrameHeight = 56;
 
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Weaving Loom");
             AddMapEntry(new Color(114, 114, 114), name);
         }
 

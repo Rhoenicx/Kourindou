@@ -12,6 +12,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace Kourindou.Items
 {
@@ -60,49 +61,23 @@ namespace Kourindou.Items
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            base.ModifyTooltips(tooltips);
-
-            // Remove "Equipable" line if the power mode is not 2
+            // Remove "Equipable" line if the power mode is not enabled
             if (!Kourindou.KourindouConfigClient.plushiePower)
             {
-                TooltipLine equipmentLine = tooltips.Find(x => x.Text.Contains("Equipable"));
+                TooltipLine equipmentLine = tooltips.Find(x => x.Name == "Equipable");
                 tooltips.Remove(equipmentLine);
             }
-            else
+            
+            TooltipLine plushieEffectLine = tooltips.Find(x => x.Text.Contains("{PlushieEquipEffectLine}"));
+            if (plushieEffectLine != null)
             {
-                TooltipLine EffectLine = new(Mod, "PlushieEffect", "Effect: " + AddEffectTooltip());
-                EffectLine.OverrideColor = new Color(255, 255, 0);
-
-                // Add Custom line "Can be Thrown using Right mouse button"
-                TooltipLine line = new(Mod, "CanBeThrown", "Right Click: Throw plushie");
-                line.OverrideColor = new Color(255, 255, 0);
-
-                for (int index = 0; index < tooltips.Count; ++index)
-                {
-                    if (tooltips[index].Name == "SpecialPrice")
-                    {
-                        tooltips.Insert(index, EffectLine);
-                        break;
-                    }
-
-                    if (tooltips[index].Name == "Price")
-                    {
-                        tooltips.Insert(index, EffectLine);
-                        break;
-                    }
-
-                    if (index == tooltips.Count - 1)
-                    {
-                        tooltips.Insert(tooltips.Count, EffectLine);
-                        break;
-                    }
-                }
+                plushieEffectLine.Text =
+                    Kourindou.KourindouConfigClient.plushiePower ?
+                        Language.GetTextValue("Mods.Kourindou.PlushieEffectLines.WhenEquipped")
+                            + Language.GetTextValue("Mods.Kourindou.Items." + Name + ".PlushieEquipEffect")
+                        : "";
             }
-        }
-
-        public virtual string AddEffectTooltip()
-        {
-            return "None... :(";
+            base.ModifyTooltips(tooltips);
         }
 
         // Execute custom equip effects
@@ -270,23 +245,23 @@ namespace Kourindou.Items
 
         }
 
-        public virtual void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        public virtual void PlushieModifyHitNPCWithItem(Player player, Item item, NPC target, ref NPC.HitModifiers modifiers, int amountEquipped)
         { 
         
         }
 
-        public virtual void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitModifiers modifiers, int amountEquipped)
+        public virtual void PlushieModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers, int amountEquipped)
+        {
+
+        }
+
+        public virtual void PlushieModifyHurt(Player player, ref Player.HurtModifiers modifiers, int amountEquipped)
         {
 
         }
 
         public virtual void PlushieOnHurt(Player player, Player.HurtInfo info, int amountEquipped)
         { 
-
-        }
-
-        public virtual void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
-        {
 
         }
 
@@ -308,11 +283,6 @@ namespace Kourindou.Items
         public virtual void PlushieKill(Player player, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource, int amountEquipped)
         {
         
-        }
-
-        public virtual void PlushieKillPvp(Player targetPlayer, Player sourcePlayer, double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource, int amountEquipped)
-        {
-
         }
 
         public virtual void PlushieUpdateBadLifeRegen(Player player, int amountEquipped)

@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Sunflower Fairy Plushie");
             AddMapEntry(new Color(227, 122, 164), name);
 
             plushieItem = ItemType<Gensokyo_Sunflower_Fairy_Plushie_Item>();

@@ -14,17 +14,6 @@ namespace Kourindou.Items.Plushies
 {
     public class ToyosatomimiNoMiko_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Toyosatomimi no Miko Plushie");
-            // Tooltip.SetDefault("");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Call a beam of light upon those you've damaged!";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -90,29 +79,21 @@ namespace Kourindou.Items.Plushies
 
         public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
-            SpawnBeam(target.Center, hit.SourceDamage, hit.Knockback, hit.Crit);
+            SpawnBeam(target, target.Center, hit.SourceDamage, hit.Knockback, hit.Crit);
         }
 
         public override void PlushieOnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)
         {
             if (proj.type != ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
             {
-                SpawnBeam(target.Center, hit.SourceDamage, hit.Knockback, hit.Crit);
+                SpawnBeam(target, target.Center, hit.SourceDamage, hit.Knockback, hit.Crit);
             }
         }
 
-        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
-        {
-            if (info.DamageSource.SourceProjectileType != ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>())
-            {
-                SpawnBeam(targetPlayer.Center, info.SourceDamage, info.Knockback, false);
-            }
-        }
-
-        public void SpawnBeam(Vector2 position, int damage, float knockback, bool crit = false)
+        public void SpawnBeam(Entity victim, Vector2 position, int damage, float knockback, bool crit = false)
         {
             Projectile.NewProjectile(
-                Item.GetSource_Accessory(Item),
+                Item.GetSource_OnHit(victim),
                 position,
                 Vector2.Zero,
                 ProjectileType<ToyosatomimiNoMiko_Plushie_LaserBeam>(),

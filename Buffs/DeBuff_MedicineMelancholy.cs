@@ -8,8 +8,6 @@ namespace Kourindou.Buffs
     {
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Manipulation of Poison");
-            // Description.SetDefault("Inflicted by strong poison which increases damage taken");
             Main.debuff[Type] = true;
             Main.pvpBuff[Type] = true;
             Main.buffNoSave[Type] = false;

@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class SatoriKomeiji_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Satori Komeiji Plushie");
-            // Tooltip.SetDefault("The mistress of the Earth Palace in Former Hell. You can't talk to animals with this, sadly");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "All hits inflict cursed flames, ichor and confusion!";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -98,13 +87,6 @@ namespace Kourindou.Items.Plushies
             target.AddBuff(BuffID.CursedInferno, 600);
             target.AddBuff(BuffID.Confused, 600);
             target.AddBuff(BuffID.Ichor, 600);
-        }
-
-        public override void PlushieOnHurtPvp(Player targetPlayer, Player sourcePlayer, Player.HurtInfo info, int amountEquipped)
-        {
-            targetPlayer.AddBuff(BuffID.CursedInferno, 600);
-            targetPlayer.AddBuff(BuffID.Confused, 600);
-            targetPlayer.AddBuff(BuffID.Ichor, 600);
         }
     }
 }

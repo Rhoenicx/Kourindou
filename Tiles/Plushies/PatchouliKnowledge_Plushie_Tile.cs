@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Patchouli Knowledge Plushie");
             AddMapEntry(new Color(242, 132, 255), name);
 
             plushieItem = ItemType<PatchouliKnowledge_Plushie_Item>();

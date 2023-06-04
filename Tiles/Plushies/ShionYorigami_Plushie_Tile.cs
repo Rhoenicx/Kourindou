@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Shion Yorigami Plushie");
             AddMapEntry(new Color(21, 34, 49), name);
 
             plushieItem = ItemType<ShionYorigami_Plushie_Item>();

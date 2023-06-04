@@ -12,18 +12,6 @@ namespace Kourindou.Items.Plushies
 {
     public class SuikaIbuki_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Suika Ibuki Plushie");
-            // Tooltip.SetDefault("The alcoholic oni. Her appearance makes you question her age, and whether she should be drinking alcohol");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Melee weapons are twice as big and deal double damage! Also increased falling speed!\r\n" +
-                    "When tipsy: +16 defense, +10% melee crit, -10% damage taken";
-        }
-
         public override void SetDefaults()
         {
             // Information

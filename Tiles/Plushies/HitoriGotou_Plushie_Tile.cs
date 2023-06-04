@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Hitori 'the rock' Gotou Plushie");
             AddMapEntry(new Color(232, 51, 96), name);
 
             plushieItem = ItemType<HitoriGotou_Plushie_Item>();

@@ -11,9 +11,6 @@ namespace Kourindou.Items.Spellcards.Trajectories
         {
             // When loading this card, register it!
             RegisterCardItem((byte)Groups.Trajectory, (byte)Trajectory.Aiming, Type);
-            
-            // DisplayName.SetDefault("Aiming");
-            // Tooltip.SetDefault("");
         }
 
         public override void SetCardDefaults()

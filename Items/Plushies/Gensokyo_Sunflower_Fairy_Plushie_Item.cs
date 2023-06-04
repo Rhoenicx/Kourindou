@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class Gensokyo_Sunflower_Fairy_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Sunflower Fairy Plushie");
-            // Tooltip.SetDefault("");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Sunflower fairies become friendly";
-        }
-
         public override void SetDefaults()
         {
             // Information

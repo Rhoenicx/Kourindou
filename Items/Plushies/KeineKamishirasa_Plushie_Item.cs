@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class KeineKamishirasawa_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Keine Kamishirasa Plushie");
-            // Tooltip.SetDefault("The Guardian of the Human Village. She is a school teacher there, and is also its guardian in times of peril");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -66,11 +60,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

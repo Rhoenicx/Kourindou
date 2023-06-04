@@ -11,17 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class TewiInaba_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Tewi Inaba Plushie");
-            // Tooltip.SetDefault("A very old rabbit youkai. Despite this, she's childish");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Chance for enemies killed to drop double loot! +20% crit";
-        }
-
         public override void SetDefaults()
         {
             // Information

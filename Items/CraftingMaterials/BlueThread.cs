@@ -3,15 +3,12 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Furniture;
+using Terraria.Localization;
 
 namespace Kourindou.Items.CraftingMaterials
 {
     public class BlueThread : ModItem
     {
-        public override void SetStaticDefaults() {
-			// DisplayName.SetDefault("Blue Thread");
-		}
-
         public override void SetDefaults()
         {
             Item.CloneDefaults(ItemID.BlackThread);

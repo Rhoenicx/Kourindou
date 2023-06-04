@@ -8,10 +8,6 @@ namespace Kourindou.Items.CraftingMaterials
 {
     public class RainbowThread : ModItem
     {
-        public override void SetStaticDefaults() {
-			// DisplayName.SetDefault("Rainbow Thread");
-		}
-
         public override void SetDefaults()
         {
             Item.CloneDefaults(ItemID.BlackThread);

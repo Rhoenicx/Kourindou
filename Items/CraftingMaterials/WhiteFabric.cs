@@ -4,6 +4,7 @@ using Terraria.Audio;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Furniture;
+using Terraria.Localization;
 
 namespace Kourindou.Items.CraftingMaterials
 {
@@ -15,7 +16,7 @@ namespace Kourindou.Items.CraftingMaterials
             {
                 item.width = 32;
                 item.height = 26;
-                item.SetNameOverride("White Fabric");
+                item.SetNameOverride(Language.GetTextValue("Mods.Kourindou.Items." + Name + ".DisplayName"));
             }
         }
 

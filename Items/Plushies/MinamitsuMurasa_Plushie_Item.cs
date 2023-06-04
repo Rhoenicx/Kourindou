@@ -11,18 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class MinamitsuMurasa_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Minamitsu Murasa Plushie");
-            // Tooltip.SetDefault("A phantom, and the Palanquin Ship's captain");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "Ability to swim, doubled breath and permanent fishron mount speed buff\r\n" +
-                    "+10% damage, when in water: +10% damage, +5% crit and increased hp regen";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -98,13 +86,10 @@ namespace Kourindou.Items.Plushies
             if ((player.wet || player.honeyWet) && !player.lavaWet)
             {
                 // Additional 10 percent damage
-                player.GetDamage(DamageClass.Generic) += 0.10f;
+                player.GetDamage(DamageClass.Generic) += 0.20f;
 
                 // Increase all crit by 5 points
-                player.GetCritChance(DamageClass.Melee) += 5;
-                player.GetCritChance(DamageClass.Magic) += 5;
-                player.GetCritChance(DamageClass.Throwing) += 5;
-                player.GetCritChance(DamageClass.Ranged) += 5;
+                player.GetCritChance(DamageClass.Generic) += 5;
 
                 //Increase life regen by 5 points
                 player.lifeRegen += 5;

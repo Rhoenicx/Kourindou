@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Star Sapphire Plushie");
             AddMapEntry(new Color(48, 34, 92), name);
 
             plushieItem = ItemType<StarSapphire_Plushie_Item>();

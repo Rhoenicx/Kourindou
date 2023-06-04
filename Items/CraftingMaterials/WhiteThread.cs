@@ -8,10 +8,6 @@ namespace Kourindou.Items.CraftingMaterials
 {
     public class WhiteThread : ModItem
     {
-        public override void SetStaticDefaults() {
-			// DisplayName.SetDefault("White Thread");
-		}
-
         public override void SetDefaults()
         {
             Item.CloneDefaults(ItemID.BlackThread);

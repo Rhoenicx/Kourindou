@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Alice Margatroid Plushie");
             AddMapEntry(new Color(43, 19, 103), name);
 
             plushieItem = ItemType<AliceMargatroid_Plushie_Item>();

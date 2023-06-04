@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class HecatiaLapislazuli_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Hecatia Lapislazuli Plushie");
-            // Tooltip.SetDefault("The Goddess of Hell. She has a questionable fashion sense");
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -67,11 +61,6 @@ namespace Kourindou.Items.Plushies
                 .AddRecipeGroup("Kourindou:Stuffing", 5)
                 .AddTile(TileType<SewingMachine_Tile>())
                 .Register();
-        }
-
-        public override void PlushieUpdateEquips(Player player, int amountEquipped)
-        {
-
         }
     }
 }

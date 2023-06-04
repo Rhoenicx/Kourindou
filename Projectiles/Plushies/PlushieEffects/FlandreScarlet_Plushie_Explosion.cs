@@ -17,11 +17,6 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
         private const int TimeAlive = 30;
 
         private int Timer = 0;
-
-		public override void SetStaticDefaults()
-		{
-			// DisplayName.SetDefault("Flandre's Explosive Crit");
-		}
 		
         public override void SetDefaults()
         {

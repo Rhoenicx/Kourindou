@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Kasen Ibaraki Plushie");
             AddMapEntry(new Color(255, 152, 143), name);
 
             plushieItem = ItemType<KasenIbaraki_Plushie_Item>();

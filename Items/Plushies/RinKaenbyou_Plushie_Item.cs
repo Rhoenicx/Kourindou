@@ -11,12 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class RinKaenbyou_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Rin Kaenbyou Plushie");
-            // Tooltip.SetDefault("One of Satori's pets. She hauls corpses into the flames of hell to maintain it");
-        }
-
         public override void SetDefaults()
         {
             // Information

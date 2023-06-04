@@ -49,7 +49,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Keine Kamishirasawa Plushie");
             AddMapEntry(new Color(5, 0, 84), name);
 
             plushieItem = ItemType<KeineKamishirasawa_Plushie_Item>();

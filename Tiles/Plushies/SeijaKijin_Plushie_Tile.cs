@@ -60,7 +60,6 @@ namespace Kourindou.Tiles.Plushies
 
             // Map Entry
             LocalizedText name = CreateMapEntryName();
-            // name.SetDefault("Seija Kijin Plushie");
             AddMapEntry(new Color(0, 0, 0), name);
 
             plushieItem = ItemType<SeijaKijin_Plushie_Item>();

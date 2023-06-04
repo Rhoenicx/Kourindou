@@ -11,13 +11,6 @@ namespace Kourindou.Items.Plushies
 {
     public class HatsuneMiku_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Hatsune Miku Plushie");
-            /* Tooltip.SetDefault("The voice of the future, in pixel plushie form!\n"
-									+ "Fires leeks from the heavens if powered"); */
-        }
-
         public override void SetDefaults()
         {
             // Information

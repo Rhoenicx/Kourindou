@@ -13,18 +13,6 @@ namespace Kourindou.Items.Plushies
 {
     public class FujiwaraNoMokou_Plushie_Item : PlushieItem
     {
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Fujiwara No Mokou Plushie");
-            // Tooltip.SetDefault("The bamboo forest's guide. Rumor has it that she runs a yakitori stand");
-        }
-
-        public override string AddEffectTooltip()
-        {
-            return "When killed heal all your HP and gain inferno and wrath, 60 second cooldown \r\n" +
-                    "+25% damage, +25% melee damage, +10% melee crit, -15% damage taken";
-        }
-
         public override void SetDefaults()
         {
             // Information
@@ -100,11 +88,10 @@ namespace Kourindou.Items.Plushies
                 return true;
             }
 
-            myPlayer.AddBuff(BuffType<DeBuff_Mortality>(), 3600, true);
-            myPlayer.statLife += myPlayer.statLifeMax2;
-            myPlayer.HealEffect(myPlayer.statLifeMax2, true);
-            myPlayer.AddBuff(BuffID.Wrath, 4140);
-            myPlayer.AddBuff(BuffID.Inferno, 4140);
+            myPlayer.AddBuff(BuffType<DeBuff_Mortality>(), 18000, true);
+            myPlayer.Heal(myPlayer.statLifeMax2);
+            myPlayer.AddBuff(BuffID.Wrath, 3600);
+            myPlayer.AddBuff(BuffID.Inferno, 3600);
 
             return false;
         }

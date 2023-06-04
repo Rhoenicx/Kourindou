@@ -8,10 +8,6 @@ namespace Kourindou.Items.CraftingMaterials
 {
     public class OrangeThread : ModItem
     {
-        public override void SetStaticDefaults() {
-			// DisplayName.SetDefault("Orange Thread");
-		}
-
         public override void SetDefaults()
         {
             Item.CloneDefaults(ItemID.BlackThread);
