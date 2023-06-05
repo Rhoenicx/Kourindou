@@ -2174,12 +2174,12 @@ Mods: {
 			KourindouConfigClient: {
 				UseOldTextures: {
 					Tooltip: ""
-					Label: Use Old Textures
+					Label: Use Old FumoMod Textures (Where available)
 				}
 
 				plushiePower: {
 					Tooltip: ""
-					Label: Enabled Plushie Special Effects
+					Label: Enable Plushie Special Effects
 				}
 
 				DisplayName: Kourindou Config Client
