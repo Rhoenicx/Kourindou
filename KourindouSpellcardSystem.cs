@@ -689,7 +689,7 @@ namespace Kourindou
                         break;
 
 
-                    case Groups.Trajectory:
+                    case Groups.Formation:
                         {
                             CurrentBlock.AddCard(Cards[Index]);
                             CurrentBlock.ProjectileCounter *= GetFlooredValue(Cards[Index].GetValue(), 1);
@@ -898,21 +898,29 @@ namespace Kourindou
             float Spread,
             int Crit)
         {
-            int Type = -999;
-
-            if (Block.Cards.Any(x => x.Group == (byte)Groups.Projectile))
+            // Check if the given castblock has a projectile card on it
+            if (!Block.Cards.Any(x => x.Group == (byte)Groups.Projectile))
             {
-                Type = GetFlooredValue(Block.Cards.First(x => x.Group == (byte)Groups.Projectile).GetValue(), 0);
-            }
-
-            if (Type < 0)
-            {
+                // No projectile card found on given castblock
                 return;
             }
 
-            int NewID = SpawnSpellCardProjectile(
+            // Projectile card found, grab the projectile card
+            CardItem projCard = Block.Cards.First(x => x.Group == (byte)Groups.Projectile);
+
+            // Create ID variable to save the projectile ID of the first projectile that is
+            // going to be used as base
+            SpellCardProjectile SPproj = null;
+            int ID = -1;
+
+            // Check the projectile card type
+            // The projectile card found is not own instance
+            if (projCard.Spell != (byte)Projectile.MyOwnProjectileInstance)
+            {
+                // Create a new projectile with the card projectile type
+                ID = SpawnSpellCardProjectile(
                 owner.GetSource_FromThis(),
-                Type,
+                GetFlooredValue(projCard.GetValue(), 0),
                 Position,
                 Direction,
                 DamageMultiplier,
@@ -921,17 +929,43 @@ namespace Kourindou
                 Crit,
                 Main.myPlayer);
 
-            if (Main.projectile[NewID].ModProjectile is not SpellCardProjectile)
+                // Check if the new projectile is a spellcardprojectile
+                if (Main.projectile[ID].ModProjectile is not SpellCardProjectile)
+                {
+                    return;
+                }
+
+                if (Main.projectile[ID].ModProjectile is SpellCardProjectile proj)
+                {
+                    SPproj = proj;
+                    SPproj.SpawnSpread = Spread;
+                    SPproj.SpawnDirection = Main.rand.NextBool();
+                }
+            }
+
+            // The projectile card is own instance
+            else
+            {
+                if (owner.ModProjectile is not SpellCardProjectile)
+                {
+                    return;
+                }
+
+                if (owner.ModProjectile is SpellCardProjectile proj)
+                {
+                    SPproj = proj;
+                    SPproj.Timer = 0;
+                    SPproj.SpawnSpread = Spread;
+                }
+            }
+
+            // Final check if we have a projectile
+            if (SPproj == null)
             {
                 return;
             }
 
-            if (Main.projectile[NewID].ModProjectile is SpellCardProjectile SPproj)
-            {
-                SPproj.SpawnSpread = Spread;
-            }
-
-            List<int> Projectiles = new() { NewID };
+            List<int> Projectiles = new() { SPproj.Projectile.whoAmI };
             bool EncounteredProjectile = false;
             bool NoSpread = false;
 
@@ -1176,6 +1210,8 @@ namespace Kourindou
                 {
                     // Apply spawnoffset
                     proj.Projectile.position += proj.SpawnOffset;
+                    proj.SpawnOffset = Vector2.Zero;
+
                     if (!NoSpread)
                     {
                         proj.Projectile.velocity.RotateRandom(MathHelper.ToRadians(proj.SpawnSpread));
@@ -1197,12 +1233,16 @@ namespace Kourindou
                         }
                     }
 
-                    // Apply stats
+                    // Apply trigger stats
                     proj.DamageMultiplier = DamageMultiplier;
                     proj.KnockbackMultiplier = KnockbackMultiplier;
                     proj.VelocityMultiplier = VelocityMultiplier;
                     proj.Spread = Spread;
                     proj.Crit = Crit;
+
+                    // Apply Spawn variables
+                    proj.SpawnVelocity = proj.Projectile.velocity;
+                    proj.SpawnCenter = proj.Projectile.Center;
 
                     // Manually send the net update for this projectile
                     if (Main.netMode != NetmodeID.SinglePlayer)
@@ -1812,6 +1852,7 @@ namespace Kourindou
         }
         public enum ProjectileStats : byte
         {
+            // Trajectories
             Arc,
             ZigZag,
             PingPong,
@@ -1821,6 +1862,8 @@ namespace Kourindou
             Spiral,
             Boomerang,
             Aiming,
+
+            // Modifiers
             Acceleration,
             AccelerationMultiplier,
             Bounce,
@@ -1845,7 +1888,12 @@ namespace Kourindou
             Light,
             CritChance,
             ArmorPenetration,
-            Element
+            Element,
+
+            // Other
+            SpawnVelocity,
+            SpawnCenter,
+            OrbitOwner
         }
 
         #endregion

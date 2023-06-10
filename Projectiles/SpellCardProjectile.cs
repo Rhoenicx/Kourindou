@@ -18,8 +18,11 @@ namespace Kourindou.Projectiles
 {
     public abstract class SpellCardProjectile : ModProjectile
     {
-        // Spawn
+        // Projectile just spawned in, high only on the start of the first AI tick
         private bool _JustSpawned = true;
+        private Vector2 _OldVelocity = Vector2.Zero;
+
+        // Spawn code used in ExecuteCards()
         public Vector2 SpawnOffset = Vector2.Zero;
         public float SpawnSpread;
 
@@ -862,6 +865,61 @@ namespace Kourindou.Projectiles
                 }
             }
         }
+
+        // Other: Save spawn velocity for acceleration cards
+        public Vector2 _SpawnVelocity = Vector2.Zero;
+
+        public Vector2 SpawnVelocity
+        { 
+            get => _SpawnVelocity;
+            set
+            {
+                if (Main.netMode != NetmodeID.SinglePlayer && Projectile.owner == Main.myPlayer)
+                {
+                    if (_SpawnVelocity != value)
+                    {
+                        if (!NetModifiers.Contains(ProjectileStats.SpawnVelocity))
+                        {
+                            NetModifiers.Add(ProjectileStats.SpawnVelocity);
+                        }
+                        Projectile.netUpdate = true;
+                        _SpawnVelocity = value;
+                    }
+                }
+                else
+                {
+                    _SpawnVelocity = value;
+                }
+            }
+        }
+
+        // Other: Save spawn center
+        public Vector2 _SpawnCenter = Vector2.Zero;
+
+        public Vector2 SpawnCenter
+        { 
+            get => _SpawnCenter;
+            set
+            {
+                if (Main.netMode != NetmodeID.SinglePlayer && Projectile.owner == Main.myPlayer)
+                {
+                    if (_SpawnCenter != value)
+                    {
+                        if (!NetModifiers.Contains(ProjectileStats.SpawnCenter))
+                        {
+                            NetModifiers.Add(ProjectileStats.SpawnCenter);
+                        }
+                        Projectile.netUpdate = true;
+                        _SpawnCenter = value;
+                    }
+                }
+                else
+                {
+                    _SpawnCenter = value;
+                }
+            }
+        }
+
         #endregion
 
         #region AI_Fields
@@ -870,6 +928,22 @@ namespace Kourindou.Projectiles
             get => (int)Projectile.ai[0];
             set => Projectile.ai[0] = value;
         }
+
+        public uint ExtraModifierBits
+        {
+            get => BitConverter.SingleToUInt32Bits(Projectile.ai[1]);
+            set => Projectile.ai[1] = BitConverter.UInt32BitsToSingle(value);
+        }
+
+        public bool SpawnDirection
+        {
+            get => ExtraModifierBits == 1;
+            set
+            {
+                ExtraModifierBits = (ExtraModifierBits & 0xFFFFFFFE) | ((uint)(value ? 1 : 0) & 0x00000001);
+            }
+        }
+
         #endregion
 
         public override bool PreDraw(ref Color lightColor)
@@ -886,6 +960,7 @@ namespace Kourindou.Projectiles
                 Projectile.scale,
                 SpriteEffects.None,
                 0);
+
             return false;
         }
 
@@ -1001,37 +1076,42 @@ namespace Kourindou.Projectiles
 
             // ----- Triggers ----- //
             #region Trigger
-            for (int i = TriggerCards.Count - 1; i >= 0; i--)
+            if (Projectile.owner == Main.myPlayer)
             {
-                if (TriggerCards[i] == null || TriggerCards[i].Group != (byte)Groups.Trigger)
+                for (int i = TriggerCards.Count - 1; i >= 0; i--)
                 {
-                    continue;
-                }
+                    if (TriggerCards[i] == null || TriggerCards[i].Group != (byte)Groups.Trigger)
+                    {
+                        continue;
+                    }
 
-                switch ((Trigger)TriggerCards[i].Spell)
-                {
-                    case Trigger.Timer1:
-                    case Trigger.Timer2:
-                    case Trigger.Timer3:
-                    case Trigger.Timer4:
-                    case Trigger.Timer5:
-                        {
-                            // Trigger Condition
-                            if (Timer >= GetFlooredValue(TriggerCards[i].GetValue(), 1))
+                    switch ((Trigger)TriggerCards[i].Spell)
+                    {
+                        case Trigger.Timer1:
+                        case Trigger.Timer2:
+                        case Trigger.Timer3:
+                        case Trigger.Timer4:
+                        case Trigger.Timer5:
                             {
-                                // Execute the payload blocks
-                                ActivateTrigger(i);
+                                // Trigger Condition
+                                if (Timer >= GetFlooredValue(TriggerCards[i].GetValue(), 1))
+                                {
+                                    // Execute the payload blocks
+                                    ActivateTrigger(i);
 
-                                // Remove this Trigger
-                                TriggerCards.RemoveAt(i);
+                                    // Remove this Trigger
+                                    TriggerCards.RemoveAt(i);
+                                }
                             }
-                        }
-                        break;
+                            break;
+                    }
                 }
-            }
 
-            ExecutePayload();
+                ExecutePayload();
+            }
             #endregion
+
+            // ----- Modifiers ----- //
 
             // ----- End ----- //
 
@@ -1044,22 +1124,70 @@ namespace Kourindou.Projectiles
             base.AI();
         }
 
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            // When the projectile is spawned they can freely bounce on a tile
+            if (_JustSpawned || Timer <= 1)
+            {
+                if (Projectile.velocity.X != oldVelocity.X)
+                {
+                    Projectile.velocity.X = -oldVelocity.X;
+                }
+
+                if (Projectile.velocity.Y != oldVelocity.Y)
+                {
+                    Projectile.velocity.Y = -oldVelocity.Y;
+                }
+
+                return false;
+            }
+
+            // Bounce modifier
+            if (Bounce > 0)
+            {
+                if (Projectile.velocity.X != oldVelocity.X)
+                {
+                    Projectile.velocity.X = -oldVelocity.X;
+                }
+
+                if (Projectile.velocity.Y != oldVelocity.Y)
+                {
+                    Projectile.velocity.Y = -oldVelocity.Y;
+                }
+
+                Bounce--;
+
+                return false;
+            }
+
+            _OldVelocity = oldVelocity;
+
+            return base.OnTileCollide(oldVelocity);
+        }
+
         public override void Kill(int timeLeft)
         {
-            // Execute remaining triggers when the projectile is killed
-            foreach (CastBlock block in Payload)
+            if (Projectile.owner == Main.myPlayer)
             {
-                if (block.IsDisabled)
-                {
-                    continue;
-                }
+                // Revert timeleft
+                LifeTime = timeLeft;
+                Projectile.velocity = _OldVelocity;
 
-                for (int j = 0; j <= block.RepeatAmount; j++)
+                // Execute remaining triggers when the projectile is killed
+                foreach (CastBlock block in Payload)
                 {
-                    HandleCards(block);
-                }
+                    if (block.IsDisabled)
+                    {
+                        continue;
+                    }
 
-                block.IsDisabled = true;
+                    for (int j = 0; j <= block.RepeatAmount; j++)
+                    {
+                        HandleCards(block);
+                    }
+
+                    block.IsDisabled = true;
+                }
             }
 
             base.Kill(timeLeft);
@@ -1075,6 +1203,7 @@ namespace Kourindou.Projectiles
                 }
             }
         }
+
         private void ExecutePayload()
         {
             foreach (CastBlock block in Payload)
@@ -1249,6 +1378,8 @@ namespace Kourindou.Projectiles
                     case ProjectileStats.CritChance: { writer.Write(CritChance); } break;
                     case ProjectileStats.ArmorPenetration: { writer.Write(ArmorPenetration); } break;
                     case ProjectileStats.Element: { writer.Write((byte)Element); } break;
+                    case ProjectileStats.SpawnVelocity: { writer.Write(SpawnVelocity.X); writer.Write(SpawnVelocity.Y); } break;
+                    case ProjectileStats.SpawnCenter: { writer.Write(SpawnCenter.X); writer.Write(SpawnCenter.Y); } break;
                 }
             }
         }
@@ -1293,6 +1424,8 @@ namespace Kourindou.Projectiles
                     case ProjectileStats.CritChance: { CritChance = reader.ReadInt32(); } break;
                     case ProjectileStats.ArmorPenetration: { ArmorPenetration = reader.ReadInt32(); } break;
                     case ProjectileStats.Element: { Element = (Element)reader.ReadByte(); } break;
+                    case ProjectileStats.SpawnVelocity: { SpawnVelocity = new Vector2(reader.ReadSingle(), reader.ReadSingle()); } break;
+                    case ProjectileStats.SpawnCenter: { SpawnCenter = new Vector2(reader.ReadSingle(), reader.ReadSingle()); } break;
                 }
             }
         }

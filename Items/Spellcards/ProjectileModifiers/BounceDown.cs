@@ -20,7 +20,7 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             Spell = (byte)ProjectileModifier.BounceDown;
             Variant = 0;
             Amount = 1f;
-            Value = 3f;
+            Value = 1f;
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;

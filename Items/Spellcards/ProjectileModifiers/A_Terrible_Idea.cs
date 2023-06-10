@@ -20,7 +20,7 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
             Spell = (byte)ProjectileModifier.A_Terrible_Idea;
             Variant = 0;
             Amount = 1f;
-            Value = -3600;
+            Value = 1000f;
             AddUseTime = 0;
             AddCooldown = 0;
             AddRecharge = 0;
@@ -44,7 +44,7 @@ namespace Kourindou.Items.Spellcards.ProjectileModifiers
 
         public override void ExecuteCard(ref SpellCardProjectile proj)
         {
-            proj.Bounce = short.MaxValue;
+            proj.Bounce = (short)GetFlooredValue(GetValue(), 1);
         }
     }
 }
