@@ -45,6 +45,7 @@ namespace Kourindou
             block.Timer = this.Timer;
             block.IsPayload = this.IsPayload;
             block.TriggerID = this.TriggerID;
+            block.IsDisabled = this.IsDisabled;
 
             for (int i = 0; i < TriggerCards.Count; i++)
             {
@@ -58,6 +59,11 @@ namespace Kourindou
                 {
                     block.Cards[^1].IsMulticasted = true;
                 }
+            }
+
+            for (int i = 0; i < FormationProjCounter.Count; i++)
+            {
+                block.FormationProjCounter.Add(FormationProjCounter[i]);
             }
 
             if (this.HasChildren)
@@ -163,6 +169,7 @@ namespace Kourindou
         public bool SkipCounting = true;
         public bool UsedForCounting = false;
         public bool ExecutedCalculation = false;
+        public List<int> FormationProjCounter = new(); 
 
         // Disabled
         public bool IsDisabled = false;
@@ -489,20 +496,31 @@ namespace Kourindou
 
                             if (!CurrentBlock.ExecutedCalculation)
                             {
-                                if (CurrentBlock.RepeatAmount > 0)
+                                int FormationProjAmount = 1;
+                                if (CurrentBlock.FormationProjCounter.Count > 0)
                                 {
-                                    CurrentBlock.ProjectileCounter *= CurrentBlock.RepeatAmount + 1;
-                                }
-
-                                if (CurrentBlock.TriggerAmount > 0)
-                                {
-                                    for (int i = 0; i < CurrentBlock.TriggerAmount; i++)
-                                    {
-                                        CurrentBlock.AddChild(new CastBlock() { ProjectileCounter = CurrentBlock.ProjectileCounter, TriggerID = i }, true);
+                                    for (int i = 0; i < CurrentBlock.FormationProjCounter.Count; i++)
+                                    {                                        
+                                        FormationProjAmount *= CurrentBlock.FormationProjCounter[i];
                                     }
                                 }
 
+                                CurrentBlock.ProjectileCounter *= FormationProjAmount;
+
+                                if (CurrentBlock.RepeatAmount > 0)
+                                {
+                                    CurrentBlock.ProjectileCounter *= (CurrentBlock.RepeatAmount + 1);
+                                }
+                                
                                 CurrentBlock.ExecutedCalculation = true;
+                            }
+
+                            if (CurrentBlock.TriggerAmount > 0)
+                            {
+                                for (int i = 0; i < CurrentBlock.TriggerAmount; i++)
+                                {
+                                    CurrentBlock.AddChild(new CastBlock() { ProjectileCounter = CurrentBlock.ProjectileCounter, TriggerID = i }, true);
+                                }
                             }
 
                             // Flag as non-skip
@@ -558,9 +576,9 @@ namespace Kourindou
                             {
                                 if (Cards[Index].Spell == (byte)Trigger.Trigger)
                                 {
-                                    CurrentBlock.TriggerAmount += GetFlooredValue(Cards[Index].GetValue(), 1);
                                     for (int i = 0; i < GetFlooredValue(Cards[Index].GetValue(), 1); i++)
                                     {
+                                        CurrentBlock.TriggerAmount += 1;
                                         CurrentBlock.TriggerCards.Add(Cards[Index]);
                                     }
                                 }
@@ -692,7 +710,7 @@ namespace Kourindou
                     case Groups.Formation:
                         {
                             CurrentBlock.AddCard(Cards[Index]);
-                            CurrentBlock.ProjectileCounter *= GetFlooredValue(Cards[Index].GetValue(), 1);
+                            CurrentBlock.FormationProjCounter.Add(GetFlooredValue(Cards[Index].GetValue(), 1));
                         }
                         break;
 
@@ -1220,12 +1238,21 @@ namespace Kourindou
                     // Apply triggers
                     if (Block.HasChildren && Block.TriggerCards != null && Block.TriggerCards.Count > 0 && Block.TriggerAmount > 0)
                     {
-                        foreach (CastBlock child in Block.Children)
+                        int ExistingPayloadAmount = 0;
+
+                        if (owner.ModProjectile is SpellCardProjectile)
                         {
-                            proj.Payload.Add(child.Clone());
+                            ExistingPayloadAmount += proj.Payload.Count;
                         }
 
-                        proj.TriggerAmount = Block.TriggerAmount;
+                        foreach (CastBlock child in Block.Children)
+                        {
+                            CastBlock clone = child.Clone();
+                            clone.TriggerID += ExistingPayloadAmount;
+                            proj.Payload.Add(clone);
+                        }
+
+                        proj.TriggerAmount += Block.TriggerAmount;
 
                         for (int y = 0; y < Block.TriggerCards.Count; y++)
                         {

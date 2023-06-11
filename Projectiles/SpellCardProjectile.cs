@@ -1099,8 +1099,9 @@ namespace Kourindou.Projectiles
                                     // Execute the payload blocks
                                     ActivateTrigger(i);
 
-                                    // Remove this Trigger
-                                    TriggerCards.RemoveAt(i);
+                                    // Remove this Trigger card and retain the index positions
+                                    // Setting it to null retains the positions of the cards
+                                    TriggerCards[i] = null;
                                 }
                             }
                             break;
@@ -1174,19 +1175,24 @@ namespace Kourindou.Projectiles
                 Projectile.velocity = _OldVelocity;
 
                 // Execute remaining triggers when the projectile is killed
-                foreach (CastBlock block in Payload)
+                for (int i = 0; i < Payload.Count; i++)
                 {
-                    if (block.IsDisabled)
+                    if (Payload[i] == null)
                     {
                         continue;
                     }
 
-                    for (int j = 0; j <= block.RepeatAmount; j++)
+                    if (Payload[i].IsDisabled)
                     {
-                        HandleCards(block);
+                        continue;
                     }
 
-                    block.IsDisabled = true;
+                    Payload[i].IsDisabled = true;
+
+                    for (int j = 0; j <= Payload[i].RepeatAmount; j++)
+                    {
+                        HandleCards(Payload[i]);
+                    }
                 }
             }
 
@@ -1195,21 +1201,33 @@ namespace Kourindou.Projectiles
 
         private void ActivateTrigger(int ID)
         {
-            foreach (CastBlock block in Payload)
+            for (int i = 0; i < Payload.Count; i++)
             {
-                if (block.TriggerID == ID)
-                { 
-                    block.TriggerActivated = true;
+                if (Payload[i] == null)
+                {
+                    continue;
+                }
+
+                if (Payload[i].TriggerID == ID)
+                {
+                    Payload[i].TriggerActivated = true;
                 }
             }
         }
 
         private void ExecutePayload()
         {
-            foreach (CastBlock block in Payload)
+            for (int i = 0; i < Payload.Count; i++)
             {
+                if (Payload[i] == null)
+                {
+                    continue;
+                }
+
+                CastBlock block = Payload[i];
+
                 // If this cast block is disabled => continue
-                if (block.IsDisabled || !block.TriggerActivated)
+                if (block == null || block.IsDisabled || !block.TriggerActivated)
                 {
                     continue;
                 }
@@ -1225,28 +1243,29 @@ namespace Kourindou.Projectiles
                     // Block has repeats and no delay, fire all at once
                     if (block.RepeatAmount > 0 && block.Delay <= 0)
                     {
+                        block.IsDisabled = true;
+
                         for (int j = 0; j <= block.RepeatAmount; j++)
                         {
                             HandleCards(block);
                         }
-
-                        block.IsDisabled = true;
                     }
 
                     // Block has repeats and a delay set
                     else if (block.RepeatAmount > 0 && block.Delay > 0)
                     {
-                        HandleCards(block);
                         block.Timer = block.Delay;
-
                         block.RepeatAmount--;
+
+                        HandleCards(block);
                     }
 
                     // No repeat or delay
                     else
                     {
-                        HandleCards(block);
                         block.IsDisabled = true;
+
+                        HandleCards(block);
                     }
                 }
             }
@@ -1330,6 +1349,21 @@ namespace Kourindou.Projectiles
                 SPproj.Forcefield = Forcefield;
                 SPproj.Explosion = Explosion;
                 SPproj.Element = Element;
+
+                // Payload cards
+                for (int i = 0; i < Payload.Count; i++)
+                {
+                    SPproj.Payload.Add(Payload[i].Clone());
+                }
+
+                // Trigger Cards
+                for (int i = 0; i < TriggerCards.Count; i++)
+                {
+                    SPproj.TriggerCards.Add(TriggerCards[i]);
+                }
+
+                // Trigger amount
+                SPproj.TriggerAmount = TriggerAmount;
 
                 return SPproj;
             }
