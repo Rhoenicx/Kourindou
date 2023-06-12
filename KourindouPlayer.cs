@@ -530,6 +530,12 @@ namespace Kourindou
 
         public override bool IsEnabled()
         {
+            if (Player == null
+                || !Player.TryGetModPlayer<KourindouPlayer>(out _))
+            {
+                return false;
+            }
+
             return Player.GetModPlayer<KourindouPlayer>().plushiePower;
         }
 

@@ -149,11 +149,14 @@ namespace Kourindou.Projectiles
             // Loop through the cast blocks
             if (ShootBlock.HasChildren)
             {
-                foreach (CastBlock block in ShootBlock.Children)
+                for (int i = ShootBlock.Children.Count - 1; i >= 0; i--) 
                 {
+                    CastBlock block = ShootBlock.Children[i];
+
                     // If this cast block is disabled => continue
                     if (block.IsDisabled)
                     {
+                        ShootBlock.Children.RemoveAt(i);
                         continue;
                     }
 
@@ -168,12 +171,14 @@ namespace Kourindou.Projectiles
                         // Block has repeats and no delay, fire all at once
                         if (block.RepeatAmount > 0 && block.Delay <= 0)
                         {
-                            for (int i = 0; i <= block.RepeatAmount; i++)
+                            block.IsDisabled = true;
+
+                            for (int j = 0; j <= block.RepeatAmount; j++)
                             {
                                 HandleCards(block);
                             }
 
-                            block.IsDisabled = true;
+                            ShootBlock.Children.RemoveAt(i);
                         }
 
                         // Block has repeats and a delay set
@@ -188,8 +193,10 @@ namespace Kourindou.Projectiles
                         // No repeat or delay
                         else
                         {
-                            HandleCards(block);
                             block.IsDisabled = true;
+                            HandleCards(block);
+
+                            ShootBlock.Children.RemoveAt(i);
                         }
                     }
                 }

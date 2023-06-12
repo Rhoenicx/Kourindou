@@ -26,10 +26,6 @@ namespace Kourindou.Projectiles
         public Vector2 SpawnOffset = Vector2.Zero;
         public float SpawnSpread;
 
-        // Triggers
-        public List<CardItem> TriggerCards = new();
-        public int TriggerAmount = 0;
-
         // Trigger Stats
         public float DamageMultiplier = 1f;
         public float KnockbackMultiplier = 1f;
@@ -973,7 +969,6 @@ namespace Kourindou.Projectiles
 
         public override ModProjectile Clone(Terraria.Projectile newEntity)
         {
-            TriggerCards = new List<CardItem>();
             return base.Clone(newEntity);
         }
 
@@ -1078,14 +1073,16 @@ namespace Kourindou.Projectiles
             #region Trigger
             if (Projectile.owner == Main.myPlayer)
             {
-                for (int i = TriggerCards.Count - 1; i >= 0; i--)
+                for (int i = 0; i < Payload.Count; i++)
                 {
-                    if (TriggerCards[i] == null || TriggerCards[i].Group != (byte)Groups.Trigger)
+                    if (Payload[i] == null
+                        || Payload[i].TriggerCard == null 
+                        || Payload[i].TriggerCard.Group != (byte)Groups.Trigger)
                     {
                         continue;
                     }
 
-                    switch ((Trigger)TriggerCards[i].Spell)
+                    switch ((Trigger)Payload[i].TriggerCard.Spell)
                     {
                         case Trigger.Timer1:
                         case Trigger.Timer2:
@@ -1094,14 +1091,14 @@ namespace Kourindou.Projectiles
                         case Trigger.Timer5:
                             {
                                 // Trigger Condition
-                                if (Timer >= GetFlooredValue(TriggerCards[i].GetValue(), 1))
+                                if (Timer >= GetFlooredValue(Payload[i].TriggerCard.GetValue(), 1))
                                 {
                                     // Execute the payload blocks
-                                    ActivateTrigger(i);
+                                    Payload[i].TriggerActivated = true;
 
                                     // Remove this Trigger card and retain the index positions
                                     // Setting it to null retains the positions of the cards
-                                    TriggerCards[i] = null;
+                                    Payload[i].TriggerCard = null;
                                 }
                             }
                             break;
@@ -1175,15 +1172,12 @@ namespace Kourindou.Projectiles
                 Projectile.velocity = _OldVelocity;
 
                 // Execute remaining triggers when the projectile is killed
-                for (int i = 0; i < Payload.Count; i++)
+                for (int i = Payload.Count - 1; i >= 0; i--)
                 {
-                    if (Payload[i] == null)
+                    if (Payload[i] == null
+                        || Payload[i].IsDisabled)
                     {
-                        continue;
-                    }
-
-                    if (Payload[i].IsDisabled)
-                    {
+                        Payload.RemoveAt(i);
                         continue;
                     }
 
@@ -1193,79 +1187,75 @@ namespace Kourindou.Projectiles
                     {
                         HandleCards(Payload[i]);
                     }
+
+                    Payload.RemoveAt(i);
                 }
             }
 
             base.Kill(timeLeft);
         }
 
-        private void ActivateTrigger(int ID)
-        {
-            for (int i = 0; i < Payload.Count; i++)
-            {
-                if (Payload[i] == null)
-                {
-                    continue;
-                }
-
-                if (Payload[i].TriggerID == ID)
-                {
-                    Payload[i].TriggerActivated = true;
-                }
-            }
-        }
-
         private void ExecutePayload()
         {
-            for (int i = 0; i < Payload.Count; i++)
+            // This code is only allowed to execute on the projectile owner's client
+            if (Projectile.owner != Main.myPlayer)
             {
-                if (Payload[i] == null)
+                return;
+            }
+
+            for (int i = Payload.Count - 1; i >= 0 ; i--)
+            {
+                // If this payload does not exist or has been fired, Dispose the castblock
+                if (Payload[i] == null || Payload[i].IsDisabled)
                 {
+                    Payload.RemoveAt(i);
                     continue;
                 }
-
-                CastBlock block = Payload[i];
-
-                // If this cast block is disabled => continue
-                if (block == null || block.IsDisabled || !block.TriggerActivated)
+                
+                // block has not been triggered yet => continue
+                if (!Payload[i].TriggerActivated)
                 {
                     continue;
                 }
 
                 // This block has a timer running
-                if (block.Timer > 0)
+                if (Payload[i].Timer > 0)
                 {
-                    block.Timer--;
+                    Payload[i].Timer--;
                 }
 
-                if (block.Timer <= 0)
+                if (Payload[i].Timer <= 0)
                 {
                     // Block has repeats and no delay, fire all at once
-                    if (block.RepeatAmount > 0 && block.Delay <= 0)
+                    if (Payload[i].RepeatAmount > 0 && Payload[i].Delay <= 0)
                     {
-                        block.IsDisabled = true;
+                        Payload[i].IsDisabled = true;
 
-                        for (int j = 0; j <= block.RepeatAmount; j++)
+                        for (int j = 0; j <= Payload[i].RepeatAmount; j++)
                         {
-                            HandleCards(block);
+                            HandleCards(Payload[i]);
                         }
+
+                        Payload.RemoveAt(i);
                     }
 
                     // Block has repeats and a delay set
-                    else if (block.RepeatAmount > 0 && block.Delay > 0)
+                    else if (Payload[i].RepeatAmount > 0 && Payload[i].Delay > 0)
                     {
-                        block.Timer = block.Delay;
-                        block.RepeatAmount--;
+                        Payload[i].Timer = Payload[i].Delay;
+                        Payload[i].RepeatAmount--;
 
-                        HandleCards(block);
+                        HandleCards(Payload[i]);
                     }
 
                     // No repeat or delay
                     else
                     {
-                        block.IsDisabled = true;
+                        Payload[i].IsDisabled = true;
 
-                        HandleCards(block);
+                        HandleCards(Payload[i]);
+
+                        Payload.RemoveAt(i);
                     }
                 }
             }
@@ -1349,21 +1339,6 @@ namespace Kourindou.Projectiles
                 SPproj.Forcefield = Forcefield;
                 SPproj.Explosion = Explosion;
                 SPproj.Element = Element;
-
-                // Payload cards
-                for (int i = 0; i < Payload.Count; i++)
-                {
-                    SPproj.Payload.Add(Payload[i].Clone());
-                }
-
-                // Trigger Cards
-                for (int i = 0; i < TriggerCards.Count; i++)
-                {
-                    SPproj.TriggerCards.Add(TriggerCards[i]);
-                }
-
-                // Trigger amount
-                SPproj.TriggerAmount = TriggerAmount;
 
                 return SPproj;
             }
