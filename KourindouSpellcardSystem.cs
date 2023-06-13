@@ -60,6 +60,11 @@ namespace Kourindou
                 block.FormationProjCounter.Add(FormationProjCounter[i]);
             }
 
+            for (int i = 0; i < TriggerCards.Count; i++)
+            {
+                block.TriggerCards.Add(TriggerCards[i]);
+            }
+
             if (this.HasChildren)
             {
                 foreach (CastBlock child in this.Children)
@@ -136,6 +141,8 @@ namespace Kourindou
 
         // Trigger
         public List<CardItem> TriggerCards = new List<CardItem>();
+        public CardItem TriggerCard = null;
+        public bool TriggerActivated = false;
 
         // Projectile Counter
         private int _ProjectileCounter = 1;
@@ -165,8 +172,6 @@ namespace Kourindou
         public int Delay = 0;
         public int Timer = 0;
         public bool IsRoot = false;
-        public CardItem TriggerCard = null;
-        public bool TriggerActivated = false;
     }
 
     // Cast Properties
@@ -507,7 +512,7 @@ namespace Kourindou
                                 CurrentBlock.ExecutedCalculation = true;
                             }
 
-                            if (CurrentBlock.TriggerCards.Count > 0)
+                            if (CurrentBlock.TriggerCards != null && CurrentBlock.TriggerCards.Count > 0)
                             {
                                 if (!IsWrappingAround)
                                 {
