@@ -33,6 +33,10 @@ namespace Kourindou.Projectiles.Spellcards
             Projectile.scale = 1f;
             Projectile.Opacity = 1f;
 
+            // Hits
+            Projectile.idStaticNPCHitCooldown = 1;
+            Projectile.usesIDStaticNPCImmunity = true;
+
             // Default Custom Modifiers
         }
     }

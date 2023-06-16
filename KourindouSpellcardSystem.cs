@@ -55,14 +55,17 @@ namespace Kourindou
                 }
             }
 
-            for (int i = 0; i < FormationProjCounter.Count; i++)
+            for (int i = 0; i < this.FormationProjCounter.Count; i++)
             {
                 block.FormationProjCounter.Add(FormationProjCounter[i]);
             }
 
-            for (int i = 0; i < TriggerCards.Count; i++)
+            if (this.TriggerCards != null)
             {
-                block.TriggerCards.Add(TriggerCards[i]);
+                for (int i = 0; i < this.TriggerCards.Count; i++)
+                {
+                    block.TriggerCards.Add(this.TriggerCards[i]);
+                }
             }
 
             if (this.HasChildren)

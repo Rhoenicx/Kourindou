@@ -967,11 +967,6 @@ namespace Kourindou.Projectiles
             SetProjectileDefaults();
         }
 
-        public override ModProjectile Clone(Terraria.Projectile newEntity)
-        {
-            return base.Clone(newEntity);
-        }
-
         public override void AI()
         {
             // ----- Spawn ----- //
@@ -1163,13 +1158,17 @@ namespace Kourindou.Projectiles
             return base.OnTileCollide(oldVelocity);
         }
 
-        public override void Kill(int timeLeft)
+        public override bool PreKill(int timeLeft)
         {
             if (Projectile.owner == Main.myPlayer)
             {
                 // Revert timeleft
                 LifeTime = timeLeft;
-                Projectile.velocity = _OldVelocity;
+
+                if (_OldVelocity != Vector2.Zero)
+                {
+                    Projectile.velocity = _OldVelocity;
+                }
 
                 // Execute remaining triggers when the projectile is killed
                 for (int i = Payload.Count - 1; i >= 0; i--)
@@ -1192,7 +1191,7 @@ namespace Kourindou.Projectiles
                 }
             }
 
-            base.Kill(timeLeft);
+            return base.PreKill(timeLeft);
         }
 
         private void ExecutePayload()
@@ -1266,7 +1265,7 @@ namespace Kourindou.Projectiles
             ExecuteCards(
                 this.Projectile,
                 block,
-                Projectile.Center,
+                this.Projectile.Center,
                 Vector2.Zero,
                 Vector2.Normalize(Projectile.velocity),
                 DamageMultiplier,
