@@ -35,7 +35,7 @@ namespace Kourindou
 
         public CastBlock Clone(bool MultiCast = false)
         { 
-            CastBlock block = new CastBlock();
+            CastBlock block = new();
             block.Parent = this.Parent;
             block.RepeatAmount = this.RepeatAmount;
             block.ProjectileCounter = this.ProjectileCounter;
@@ -125,7 +125,7 @@ namespace Kourindou
         public bool HasChildren => Children != null && Children.Count > 0;
 
         // Cards
-        public List<CardItem> Cards { get; set; } = new List<CardItem>();
+        public List<CardItem> Cards = new();
 
         // Flags
         public bool IsPayload = false;
@@ -143,7 +143,7 @@ namespace Kourindou
         }
 
         // Trigger
-        public List<CardItem> TriggerCards = new List<CardItem>();
+        public List<CardItem> TriggerCards = new();
         public CardItem TriggerCard = null;
         public bool TriggerActivated = false;
 
@@ -210,7 +210,7 @@ namespace Kourindou
 
         // The actual cast info
         public CastBlock RootBlock = new(true);
-        public List<int> ConsumedCards = new List<int>();
+        public List<int> ConsumedCards = new();
     }
     #endregion
 
@@ -525,7 +525,7 @@ namespace Kourindou
                                     }
                                 }
 
-                                CurrentBlock.TriggerCards = null;
+                                CurrentBlock.TriggerCards.Clear();
                             }
 
                             // Flag as non-skip

@@ -8,6 +8,7 @@ using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
 using Terraria.Map;
 using Terraria.DataStructures;
+using Kourindou.Buffs;
 
 namespace Kourindou.Items.Plushies
 {
@@ -81,7 +82,7 @@ namespace Kourindou.Items.Plushies
 
         public override void PlushieOnHurt(Player player, Player.HurtInfo info, int amountEquipped)
         {
-            player.AddBuff(BuffID.ShadowDodge, 180);
+            player.AddBuff(BuffType<Buff_ChenDodge>(), 180);
         }
 
         public override void PlushieOnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, int amountEquipped)

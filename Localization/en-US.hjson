@@ -20,6 +20,11 @@ Mods: {
 				DisplayName: Mortality
 				Description: You can die
 			}
+
+			Buff_ChenDodge: {
+				DisplayName: Shadow Dodge
+				Description: ""
+			}
 		}
 
 		Items: {
@@ -1998,7 +2003,7 @@ Mods: {
 			Daiyousei_Plushie_Projectile.DisplayName: Daiyousei Plushie
 			EirinYagokoro_Plushie_Projectile.DisplayName: Eirin Yagokoro Plushie
 			FlandreScarlet_Plushie_Projectile.DisplayName: Flandre Scarlet Plushie
-			FujiwaraNoMokou_Plushie_Projectile.DisplayName: Fujiwara No Mokou Plushie
+			FujiwaraNoMokou_Plushie_Projectile.DisplayName: Fujiwara no Mokou Plushie
 			Gensokyo_Bone_Fairy_Plushie_Projectile.DisplayName: Bone Fairy Plushie
 			Gensokyo_Flower_Fairy_Plushie_Projectile.DisplayName: Flower Fairy Plushie
 			Gensokyo_Lava_Fairy_Plushie_Projectile.DisplayName: Lava Fairy Plushie
@@ -2095,7 +2100,7 @@ Mods: {
 			Daiyousei_Plushie_Tile.MapEntry: Daiyousei Plushie
 			EirinYagokoro_Plushie_Tile.MapEntry: Eirin Yagokoro Plushie
 			FlandreScarlet_Plushie_Tile.MapEntry: Flandre Scarlet Plushie
-			FujiwaraNoMokou_Plushie_Tile.MapEntry: Fujiwara No Mokou Plushie
+			FujiwaraNoMokou_Plushie_Tile.MapEntry: Fujiwara no Mokou Plushie
 			Gensokyo_Bone_Fairy_Plushie_Tile.MapEntry: Bone Fairy Plushie
 			Gensokyo_Flower_Fairy_Plushie_Tile.MapEntry: Flower Fairy Plushie
 			Gensokyo_Lava_Fairy_Plushie_Tile.MapEntry: Lava Fairy Plushie
