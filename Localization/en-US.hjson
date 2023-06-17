@@ -354,7 +354,7 @@ Mods: {
 			}
 
 			FujiwaraNoMokou_Plushie_Item: {
-				DisplayName: Fujiwara No Mokou Plushie
+				DisplayName: Fujiwara no Mokou Plushie
 				Tooltip:
 					'''
 					"The bamboo forest's guide. Rumor has it that she runs a yakitori stand"
