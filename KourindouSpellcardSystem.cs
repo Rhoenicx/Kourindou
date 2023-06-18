@@ -486,14 +486,16 @@ namespace Kourindou
                             // Cast generation
                             CurrentBlock.AddCard(Cards[Index]);
 
+                            // Counting variables
+                            int ProjectileCounter = CurrentBlock.ProjectileCounter;
+                            int OriginProjectiles = 0;
+
                             if (!CurrentBlock.ExecutedCalculation)
                             {
+                                // Save the amount of projectile to remove if the spell is own instance
                                 if (Cards[Index].Spell == (byte)Projectile.MyOwnProjectileInstance)
-                                { 
-                                    if (CurrentBlock.Parent.UsedForCounting) 
-                                    {
-                                        CurrentBlock.Parent.ProjectileCounter -= CurrentBlock.ProjectileCounter;
-                                    }
+                                {
+                                    OriginProjectiles = ProjectileCounter;
                                 }
 
                                 int FormationProjAmount = 1;
@@ -505,13 +507,38 @@ namespace Kourindou
                                     }
                                 }
 
-                                CurrentBlock.ProjectileCounter *= FormationProjAmount;
-
                                 if (CurrentBlock.RepeatAmount > 0)
                                 {
-                                    CurrentBlock.ProjectileCounter *= (CurrentBlock.RepeatAmount + 1);
+                                    if (Cards[Index].Spell == (byte)Projectile.MyOwnProjectileInstance)
+                                    {
+                                        if (FormationProjAmount > 1)
+                                        {
+                                            ProjectileCounter *= (CurrentBlock.RepeatAmount + 1) * FormationProjAmount;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ProjectileCounter *= (CurrentBlock.RepeatAmount + 1) * FormationProjAmount;
+                                    }
                                 }
-                                
+                                else
+                                {
+                                    ProjectileCounter *= FormationProjAmount;
+                                }
+
+                                CurrentBlock.ProjectileCounter = ProjectileCounter;
+
+                                if (CurrentBlock.TriggerCard != null
+                                    && CurrentBlock.TriggerCard.Group == (byte)Groups.Trigger
+                                    && CurrentBlock.TriggerCard.Spell != (byte)Trigger.Trigger
+                                    && Cards[Index].Spell == (byte)Projectile.MyOwnProjectileInstance)
+                                {
+                                    CurrentBlock.ProjectileCounter -= OriginProjectiles;
+                                    CurrentBlock.ProjectileCounter -= CurrentBlock.RepeatAmount;
+                                }
+
+                                // End of calculation => Cleanup
+                                CurrentBlock.FormationProjCounter.Clear();
                                 CurrentBlock.ExecutedCalculation = true;
                             }
 
@@ -521,7 +548,7 @@ namespace Kourindou
                                 {
                                     for (int i = 0; i < CurrentBlock.TriggerCards.Count; i++)
                                     {
-                                        CurrentBlock.AddChild(new CastBlock() { ProjectileCounter = CurrentBlock.ProjectileCounter, TriggerCard = CurrentBlock.TriggerCards[i] }, true);
+                                        CurrentBlock.AddChild(new CastBlock() { ProjectileCounter = ProjectileCounter, TriggerCard = CurrentBlock.TriggerCards[i] }, true);
                                     }
                                 }
 
