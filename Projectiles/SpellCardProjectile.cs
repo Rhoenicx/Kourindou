@@ -933,10 +933,19 @@ namespace Kourindou.Projectiles
 
         public bool SpawnDirection
         {
-            get => ExtraModifierBits == 1;
+            get => (ExtraModifierBits & 1) == 1;
             set
             {
-                ExtraModifierBits = (ExtraModifierBits & 0xFFFFFFFE) | ((uint)(value ? 1 : 0) & 0x00000001);
+                ExtraModifierBits = (ExtraModifierBits & 0xFFFFFFFE) | ((uint)(value ? 1 : 0));
+            }
+        }
+
+        public bool ShouldMove
+        { 
+            get => (ExtraModifierBits & 2) == 2;
+            set
+            {
+                ExtraModifierBits = (ExtraModifierBits & 0xFFFFFFFD) | ((uint)(value ? 2 : 0));
             }
         }
 
