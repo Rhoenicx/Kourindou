@@ -646,8 +646,8 @@ namespace Kourindou
             {
                 PlushieTileTextures.Add(tile, new PlushieTileTexture 
                 {
-                    TileTexture = Assets.Request<Texture2D>("Tiles/Plushies/" + itemName + "_Plushie_Tile"),
-                    OldTileTexture = Assets.Request<Texture2D>("Tiles/Plushies/" + itemName + "_Plushie_Tile_Old") 
+                    TileTexture = Request<Texture2D>("Kourindou/Tiles/Plushies/" + itemName + "_Plushie_Tile"),
+                    OldTileTexture = Request<Texture2D>("Kourindou/Tiles/Plushies/" + itemName + "_Plushie_Tile_Old") 
                 });
             }
 
@@ -655,8 +655,8 @@ namespace Kourindou
             {
                 PlushieItemTextures.Add(item, new PlushieItemTexture 
                 { 
-                    ItemTexture = Assets.Request<Texture2D>("Items/Plushies/" + itemName + "_Plushie_Item"), 
-                    OldItemTexture = Assets.Request<Texture2D>("Items/Plushies/" + itemName + "_Plushie_Item_Old") 
+                    ItemTexture = Request<Texture2D>("Kourindou/Items/Plushies/" + itemName + "_Plushie_Item"), 
+                    OldItemTexture = Request<Texture2D>("Kourindou/Items/Plushies/" + itemName + "_Plushie_Item_Old") 
                 });
             }
 
@@ -664,8 +664,8 @@ namespace Kourindou
             {
                 PlushieProjectileTextures.Add(projectile, new PlushieProjectileTexture
                 {
-                    ProjectileTexture = Assets.Request<Texture2D>("Projectiles/Plushies/" + itemName + "_Plushie_Projectile"),
-                    OldProjectileTexture = Assets.Request<Texture2D>("Projectiles/Plushies/" + itemName + "_Plushie_Projectile_Old")
+                    ProjectileTexture = Request<Texture2D>("Kourindou/Projectiles/Plushies/" + itemName + "_Plushie_Projectile"),
+                    OldProjectileTexture = Request<Texture2D>("Kourindou/Projectiles/Plushies/" + itemName + "_Plushie_Projectile_Old")
                 });
             }
         }
@@ -691,20 +691,20 @@ namespace Kourindou
         public void SwitchModTextures(bool loading)
         {
             // Thread
-            TextureAssets.Item[ItemID.BlackThread] = loading ? Assets.Request<Texture2D>("Items/CraftingMaterials/BlackThread") : Main.Assets.Request<Texture2D>("Images\\Item_254", 0);
-            TextureAssets.Item[ItemID.GreenThread] = loading ? Assets.Request<Texture2D>("Items/CraftingMaterials/GreenThread") : Main.Assets.Request<Texture2D>("Images\\Item_255", 0);
-            TextureAssets.Item[ItemID.PinkThread] = loading ? Assets.Request<Texture2D>("Items/CraftingMaterials/PinkThread") : Main.Assets.Request<Texture2D>("Images\\Item_981", 0);
+            TextureAssets.Item[ItemID.BlackThread] = loading ? Request<Texture2D>("Kourindou/Items/CraftingMaterials/BlackThread") : Main.Assets.Request<Texture2D>("Images\\Item_254", 0);
+            TextureAssets.Item[ItemID.GreenThread] = loading ? Request<Texture2D>("Kourindou/Items/CraftingMaterials/GreenThread") : Main.Assets.Request<Texture2D>("Images\\Item_255", 0);
+            TextureAssets.Item[ItemID.PinkThread] = loading ? Request<Texture2D>("Kourindou/Items/CraftingMaterials/PinkThread") : Main.Assets.Request<Texture2D>("Images\\Item_981", 0);
 
             // Silk
-            TextureAssets.Item[ItemID.Silk] = loading ? Assets.Request<Texture2D>("Items/CraftingMaterials/WhiteFabric") : Main.Assets.Request<Texture2D>("Images\\Item_225", 0);
-            TextureAssets.Item[ItemID.SilkRope] = loading ? Assets.Request<Texture2D>("Items/Blocks/WhiteFabric_Item_Rope") : Main.Assets.Request<Texture2D>("Images\\Item_3077", 0);
-            TextureAssets.Item[ItemID.SilkRopeCoil] = loading ? Assets.Request<Texture2D>("Items/Consumables/WhiteFabric_Item_RopeCoil") : Main.Assets.Request<Texture2D>("Images\\Item_3079", 0);
+            TextureAssets.Item[ItemID.Silk] = loading ? Request<Texture2D>("Kourindou/Items/CraftingMaterials/WhiteFabric") : Main.Assets.Request<Texture2D>("Images\\Item_225", 0);
+            TextureAssets.Item[ItemID.SilkRope] = loading ? Request<Texture2D>("Kourindou/Items/Blocks/WhiteFabric_Item_Rope") : Main.Assets.Request<Texture2D>("Images\\Item_3077", 0);
+            TextureAssets.Item[ItemID.SilkRopeCoil] = loading ? Request<Texture2D>("Kourindou/Items/Consumables/WhiteFabric_Item_RopeCoil") : Main.Assets.Request<Texture2D>("Images\\Item_3079", 0);
 
             // Other
-            TextureAssets.Tile[TileID.SilkRope] = loading ? Assets.Request<Texture2D>("Tiles/Blocks/WhiteFabric_Tile") : Main.Assets.Request<Texture2D>("Images\\Tiles_365", 0);
-            TextureAssets.Projectile[ProjectileID.SilkRopeCoil] = loading ? Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile") : Main.Assets.Request<Texture2D>("Images\\Projectile_505", 0);
-            TextureAssets.Chains[4] = loading ? Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain1") : Main.Assets.Request<Texture2D>("Images\\Chains_4", 0);
-            TextureAssets.Chains[5] = loading ? Assets.Request<Texture2D>("Projectiles/Fabric/WhiteFabric_Projectile_Chain2") : Main.Assets.Request<Texture2D>("Images\\Chains_5", 0);
+            TextureAssets.Tile[TileID.SilkRope] = loading ? Request<Texture2D>("Kourindou/Tiles/Blocks/WhiteFabric_Tile") : Main.Assets.Request<Texture2D>("Images\\Tiles_365", 0);
+            TextureAssets.Projectile[ProjectileID.SilkRopeCoil] = loading ? Request<Texture2D>("Kourindou/Projectiles/Fabric/WhiteFabric_Projectile") : Main.Assets.Request<Texture2D>("Images\\Projectile_505", 0);
+            TextureAssets.Chains[4] = loading ? Request<Texture2D>("Kourindou/Projectiles/Fabric/WhiteFabric_Projectile_Chain1") : Main.Assets.Request<Texture2D>("Images\\Chains_4", 0);
+            TextureAssets.Chains[5] = loading ? Request<Texture2D>("Kourindou/Projectiles/Fabric/WhiteFabric_Projectile_Chain2") : Main.Assets.Request<Texture2D>("Images\\Chains_5", 0);
         }
 
         public static void FabricSetup()
