@@ -13,27 +13,6 @@ using Kourindou.Items.CraftingMaterials;
 
 namespace Kourindou.Tiles.Furniture
 {
-    public enum ThreadStyle : byte
-    {
-        White,
-        Silver,
-        Black,
-        Red,
-        Pink,
-        Violet,
-        Purple,
-        Blue,
-        SkyBlue,
-        Cyan,
-        Teal,
-        Green,
-        Lime,
-        Yellow,
-        Orange,
-        Brown,
-		Rainbow
-    }
-
     public class Thread_Tile : ModTile
     {
         public override void SetStaticDefaults()
@@ -69,11 +48,5 @@ namespace Kourindou.Tiles.Furniture
 		public override void NumDust(int i, int j, bool fail, ref int num) {
 			num = 0;
 		}
-
-        private ThreadStyle GetStyle(int i, int j)
-        {
-            Tile tile = Framing.GetTileSafely(i, j);
-            return (ThreadStyle)(int)Math.Floor((double)tile.TileFrameX / 34);
-        }
     }
 }
