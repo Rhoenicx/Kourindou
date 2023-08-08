@@ -5,54 +5,49 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Furniture;
 using Terraria.Localization;
+using System.Collections.Generic;
 
 namespace Kourindou.Items.CraftingMaterials
 {
-    public class WhiteFabric : GlobalItem
+    public class WhiteFabric : ModItem
     {
-        public override void SetDefaults(Item item)
+        public override void SetDefaults()
         {
-            if (item.type == ItemID.Silk)
-            {
-                item.width = 32;
-                item.height = 26;
-                item.SetNameOverride(Language.GetTextValue("Mods.Kourindou.Items." + Name + ".DisplayName"));
-            }
-        }
+            Item.CloneDefaults(ItemID.Silk);
+            Item.width = 32;
+            Item.height = 26;
+        }   
 
         public override void AddRecipes()
         {
-            // Remove existing recipes
-            foreach (Recipe recipe in Main.recipe)
-            {
-                if (recipe.TryGetResult(ItemID.Silk, out _))
-                {
-                    Main.recipe[recipe.RecipeIndex].DisableRecipe();
-                }
-            }
+            // Craft white fabric with thread
+            CreateRecipe(1)
+                .AddIngredient(ItemType<WhiteThread>(), 4)
+                .AddTile(TileType<WeavingLoom_Tile>())
+                .Register();
 
-            // Add new recipe
-            Recipe newRecipe = Recipe.Create(ItemID.Silk, 1);
-            newRecipe.AddIngredient(ItemType<WhiteThread>(), 4);
-            newRecipe.AddTile(TileType<WeavingLoom_Tile>());
-            newRecipe.Register();
+            // Craft white fabric by converting silk
+            CreateRecipe(1)
+                .AddIngredient(ItemID.Silk, 1)
+                .AddTile(TileID.Loom)
+                .Register();
 
-            
+            // Remove colors
             foreach (int i in Kourindou.FabricItems)
             {
-                if (i != ItemID.Silk)
+                if (i != this.Type)
                 {
                     // Remove colors on water
-                    Recipe newRecipe2 = Recipe.Create(ItemID.Silk, 1);
-                    newRecipe2.AddIngredient(i, 1);
-                    newRecipe2.AddCondition(Condition.NearWater);
-                    newRecipe2.Register();
+                    CreateRecipe(1)
+                        .AddIngredient(i, 1)
+                        .AddCondition(Condition.NearWater)
+                        .Register();
 
                     // Remove colors on dye vat
-                    Recipe newRecipe3 = Recipe.Create(ItemID.Silk, 1);
-                    newRecipe3.AddIngredient(i, 1);
-                    newRecipe3.AddTile(TileID.DyeVat);
-                    newRecipe3.Register();
+                    CreateRecipe(1)
+                        .AddIngredient(i, 1)
+                        .AddTile(TileID.DyeVat)
+                        .Register();
                 }
             }
         }

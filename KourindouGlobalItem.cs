@@ -17,19 +17,6 @@ namespace Kourindou
 
 		private static Rectangle syncHitbox = new Rectangle();
 
-        public override void SetDefaults(Item item)
-        {
-			if (item.type == ItemID.SilkRope)
-			{
-				item.SetNameOverride(Language.GetTextValue("Mods.Kourindou.Items.WhiteFabricRope.DisplayName"));
-			}
-
-			if (item.type == ItemID.SilkRopeCoil)
-			{
-				item.SetNameOverride(Language.GetTextValue("Mods.Kourindou.Items.WhiteFabricRopeCoil.DisplayName"));
-			}
-        }
-
         public override void UseItemHitbox(Item item, Player player, ref Rectangle hitbox, ref bool noHitbox)
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)

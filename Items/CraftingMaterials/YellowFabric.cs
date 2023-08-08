@@ -14,7 +14,6 @@ namespace Kourindou.Items.CraftingMaterials
             Item.CloneDefaults(ItemID.Silk);
             Item.width = 32;
             Item.height = 26;
-            Item.SetNameOverride(Language.GetTextValue("Mods.Kourindou.Items." + Name + ".DisplayName"));
         }
 
         public override void AddRecipes()
@@ -27,7 +26,7 @@ namespace Kourindou.Items.CraftingMaterials
 
             // Recolor any fabric to this color 
             CreateRecipe(2)
-                .AddIngredient(ItemID.Silk, 2)
+                .AddIngredient(ItemType<WhiteFabric>(), 2)
                 .AddIngredient(ItemID.YellowDye)
                 .AddTile(TileID.DyeVat)
                 .Register();
