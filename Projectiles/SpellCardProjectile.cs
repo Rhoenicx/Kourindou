@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -26,15 +26,21 @@ namespace Kourindou.Projectiles
         public Vector2 SpawnOffset = Vector2.Zero;
         public float SpawnSpread;
 
-        // Trigger Stats
-        public float DamageMultiplier = 1f;
-        public float KnockbackMultiplier = 1f;
-        public float VelocityMultiplier = 1f;
-        public float Spread = 0f;
-        public int Crit = 0;
+        // Catalyst Stats
+        public float CatalystDamageMultiplier = 1f;
+        public float CatalystKnockbackMultiplier = 1f;
+        public float CatalystVelocityMultiplier = 1f;
+        public float CatalystSpread = 0f;
+        public int CatalystCrit = 0;
+		public int CatalystArmorPenetration = 0;
 
         // Castblock payload
         public List<CastBlock> Payload = new();
+
+		// Saved default values
+		private int _defaultWidth;
+		private int _defaultHeight;
+		private float _defaultScale;
 
         #region Modifiers
         public HashSet<ProjectileStats> NetModifiers = new();
@@ -424,32 +430,6 @@ namespace Kourindou.Projectiles
                 else
                 {
                     _Homing = value;
-                }
-            }
-        }
-
-        // [Modifier: RotateToEnemy]
-        public float _RotateToEnemy = 0f;
-        public float RotateToEnemy
-        {
-            get => _RotateToEnemy;
-            set
-            {
-                if (Main.netMode != NetmodeID.SinglePlayer && Projectile.owner == Main.myPlayer)
-                {
-                    if (_RotateToEnemy != value)
-                    {
-                        if (!NetModifiers.Contains(ProjectileStats.RotateToEnemy))
-                        {
-                            NetModifiers.Add(ProjectileStats.RotateToEnemy);
-                        }
-                        Projectile.netUpdate = true;
-                        _RotateToEnemy = value;
-                    }
-                }
-                else
-                {
-                    _RotateToEnemy = value;
                 }
             }
         }
@@ -931,6 +911,7 @@ namespace Kourindou.Projectiles
             set => Projectile.ai[1] = BitConverter.UInt32BitsToSingle(value);
         }
 
+		public int Direction => SpawnDirection ? 1 : -1;
         public bool SpawnDirection
         {
             get => (ExtraModifierBits & 1) == 1;
@@ -973,7 +954,13 @@ namespace Kourindou.Projectiles
 
         public override void SetDefaults()
         {
+			// Run custom defaults hook
             SetProjectileDefaults();
+			
+			// setup
+			_defaultWidth = Projectile.width;
+			_defaultHeight = Projectile.height;
+			_defaultScale = Projectile.scale;
         }
 
         public override void AI()
@@ -1015,8 +1002,6 @@ namespace Kourindou.Projectiles
             // PingPong
             if (PingPong != 0f)
             {
-                int Direction = Math.Sign(PingPong);
-
                 int Flip1 = (int)(120f / Math.Abs(PingPong));
                 int Flip2 = (int)(Flip1 / 2);
 
@@ -1038,8 +1023,6 @@ namespace Kourindou.Projectiles
             // Snake
             if (Snake != 0f)
             {
-                int Direction = Math.Sign(Snake);
-
                 float WaveLength = 180f / Math.Abs(Snake);
                 float Amplitude = 2f * Math.Abs(Snake);
 
@@ -1061,6 +1044,37 @@ namespace Kourindou.Projectiles
                 }
             }
 
+			// Spiral
+			if (Spiral != 0f)
+			{
+				float TurnRate = Spiral * (float)Math.Pow(0.99f, Timer) * Direction;
+				
+				NextVelocity.Add(Vector2.Normalize(Projectile.velocity.RotatedBy(MathHelper.ToRadians(TurnRate))) * Math.Abs(Spiral));
+			}
+			
+			// Aiming
+			if (Aiming != 0f)
+			{
+				if (Projectile.owner == Main.myPlayer)
+				{
+					NextVelocity.Add(Vector2.Lerp(Projectile.velocity, Vector2.Normalize(Projectile.Center.DirectionTo(Main.MouseWorld)), Math.Abs(Aiming) * 0.01f));
+					
+					// Netsync projectile 5 times per second
+					if (Timer % 12 == 0)
+					{
+						Projectile.netUpdate = true;
+					}
+					
+					// Distance between projectile and cursor is too small, stop aiming
+					if (Vector2.Distance(Projectile.Center, Main.MouseWorld) < Projectile.velocity.Length())
+					{
+						Aiming = 0f;
+						Projectile.netUpdate = true;
+					}
+				}
+			}
+			
+			// Apply new velocity!
             if (NextVelocity.Count > 0)
             {
                 Vector2 newVelocity = Vector2.Zero;
@@ -1070,7 +1084,8 @@ namespace Kourindou.Projectiles
                 }
 
                 Projectile.velocity = Vector2.Normalize(newVelocity / NextVelocity.Count) * Projectile.velocity.Length();
-            }
+            }	
+
             #endregion
 
             // ----- Triggers ----- //
@@ -1114,7 +1129,153 @@ namespace Kourindou.Projectiles
             #endregion
 
             // ----- Modifiers ----- //
-
+			#region Modifiers
+			// Acceleration
+			if (Acceleration != 1f)
+			{
+                Projectile.velocity += Vector2.Normalize(Projectile.velocity) * ((SpawnVelocity.Length() * Acceleration) - (SpawnVelocity.Length()));
+            }
+				
+			// AccelerationMultiplier
+			if (AccelerationMultiplier != 1f)
+			{
+                Projectile.velocity *= AccelerationMultiplier;
+            }
+			
+			// Gravity
+			if (Gravity != 0f)
+			{
+				Projectile.velocity = Vector2.Normalize(Vector2.Lerp(Projectile.velocity, new Vector2(0f, Projectile.velocity.Length() * Math.Sign(Gravity)), Math.Abs(Gravity) * 0.01f)) * Projectile.velocity.Length();
+			}
+			
+			// Homing
+			if (Homing > 0f)
+			{ 
+				int npcTarget = -1;
+				float targetDistance = float.MaxValue;
+				
+				// Try to get the closest target
+				foreach (NPC potentialTarget in Main.npc)
+				{
+					if (potentialTarget.active
+						&& potentialTarget.chaseable
+						&& (potentialTarget.lifeMax > 5 
+						&& !potentialTarget.dontTakeDamage)
+						&& potentialTarget.friendly != Friendly
+						&& !potentialTarget.immortal)
+					{
+						float distance = Vector2.Distance(potentialTarget.Center, Projectile.Center);
+						if ((distance < targetDistance) 
+							&& Collision.CanHitLine(
+								Projectile.position,
+								Projectile.width,
+								Projectile.height,
+								potentialTarget.position,
+								potentialTarget.width,
+								potentialTarget.height))
+						{
+							npcTarget = potentialTarget.whoAmI;
+							targetDistance = distance;
+						}
+					}
+				}
+				
+				if (npcTarget > -1)
+				{
+					NPC selectedTarget = Main.npc[npcTarget];
+					Projectile.velocity = Vector2.Normalize(Vector2.Lerp(Vector2.Normalize(Projectile.velocity), Projectile.Center.DirectionTo(selectedTarget.Center), Homing * 0.05f)) * Projectile.velocity.Length();
+				}
+				
+				// No NPC found to home towards, when this is a hostile
+				// projectile try players instead
+				else if (!Friendly && Hostile)
+				{
+					int plrTarget = -1;
+					float targetDistance2 = float.MaxValue;
+					
+					foreach (Player potentialTarget in Main.player)
+					{
+						if (potentialTarget.active
+							&& !potentialTarget.dead
+							&& !potentialTarget.immune
+							&& !potentialTarget.immuneNoBlink
+							&& !potentialTarget.invis)
+						{
+							float distance = Vector2.Distance(potentialTarget.Center, Projectile.Center);
+							if ((distance < targetDistance2) 
+								&& Collision.CanHitLine(
+									Projectile.position,
+									Projectile.width,
+									Projectile.height,
+									potentialTarget.position,
+									potentialTarget.width,
+									potentialTarget.height))
+							{
+								plrTarget = potentialTarget.whoAmI;
+								targetDistance2 = distance;
+							}
+						}
+					}
+					
+					if (plrTarget > -1)
+					{
+						Player selectedTarget = Main.player[plrTarget];
+						Projectile.velocity = Vector2.Normalize(Vector2.Lerp(Vector2.Normalize(Projectile.velocity), Projectile.Center.DirectionTo(selectedTarget.Center), Homing * 0.05f)) * Projectile.velocity.Length();
+					}
+				}
+			}
+			
+			// Snowball
+			if (Snowball > 0f)
+			{
+				Projectile.scale *= 1f + (Snowball * 0.01f);
+			}
+			
+			// Scale
+			if (Scale != _defaultScale)
+			{
+				Vector2 center = Projectile.Center;
+				Projectile.width = (int)((float)_defaultWidth / Math.Max(_defaultScale, 0.01f) * Scale);
+				Projectile.height = (int)((float)_defaultHeight / Math.Max(_defaultScale, 0.01f) * Scale);
+				Projectile.Center = center;
+			}
+			
+			// Shimmer
+			if (Shimmer && Projectile.velocity != Vector2.Zero)
+			{
+				// When Shimmer is active this projectile should not collide with tiles
+				Collide = false;
+				
+				// When this projectile collides with tiles, try to skip over the tiles.
+				bool executeOnTileCollide = true;
+				while (Collision.SolidTiles(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height))
+				{
+					// Execute OnTileCollide hook
+					if (executeOnTileCollide)
+					{
+						OnTileCollide(Projectile.velocity);
+						executeOnTileCollide = false;
+					}
+					
+					// TODO: EdgeType Compatibility
+					// TODO: Dust Effects
+					
+					// Move the projectile until there are no tiles
+					Projectile.position += Projectile.velocity;
+					
+					// Just in case check if the projectile is outside the world
+					if (Projectile.position.X <= (double) Main.leftWorld 
+						|| Projectile.position.X + (double) Projectile.width >= (double) Main.rightWorld 
+						|| (Projectile.position.Y <= (double) Main.topWorld 
+						|| Projectile.position.Y + (double) Projectile.height >= (double) Main.bottomWorld))
+					{
+						break;
+					}
+				}
+			}
+			
+			#endregion
+			
             // ----- End ----- //
 
             // Rotation of the projectile
@@ -1128,6 +1289,12 @@ namespace Kourindou.Projectiles
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
+			// Shimmer modifier
+			if (Shimmer)
+			{
+				return false;
+			}
+			
             // When the projectile is spawned they can freely bounce on a tile
             if (_JustSpawned || Timer <= 1)
             {
@@ -1277,11 +1444,12 @@ namespace Kourindou.Projectiles
                 this.Projectile.Center,
                 Vector2.Zero,
                 Vector2.Normalize(Projectile.velocity),
-                DamageMultiplier,
-                KnockbackMultiplier,
-                VelocityMultiplier,
-                Spread,
-                Crit
+                CatalystDamageMultiplier,
+                CatalystKnockbackMultiplier,
+                CatalystVelocityMultiplier,
+                CatalystSpread,
+                CatalystCrit,
+                CatalystArmorPenetration
             );
         }
 
@@ -1293,13 +1461,15 @@ namespace Kourindou.Projectiles
                 Projectile.type,
                 Projectile.position,
                 Projectile.velocity,
-                1f,
-                1f,
-                1f,
-                0,
+                CatalystDamageMultiplier,
+                CatalystKnockbackMultiplier,
+                CatalystVelocityMultiplier,
+                CatalystCrit,
+                CatalystArmorPenetration,
                 Main.myPlayer,
                 Projectile.ai[0],
-                Projectile.ai[1]);
+                Projectile.ai[1],
+				Projectile.ai[2]);
 
             // Apply vanilla stats
             Terraria.Projectile proj = Main.projectile[newID];
@@ -1309,15 +1479,6 @@ namespace Kourindou.Projectiles
             proj.type = Projectile.type;
             proj.damage = Projectile.damage;
             proj.knockBack = Projectile.knockBack;
-            proj.CritChance = Projectile.CritChance;
-            proj.timeLeft = Projectile.timeLeft;
-            proj.penetrate = Projectile.penetrate;
-            proj.ArmorPenetration = Projectile.ArmorPenetration;
-            proj.tileCollide = Projectile.tileCollide;
-            proj.scale = Projectile.scale;
-            proj.hostile = Projectile.hostile;
-            proj.friendly = Projectile.friendly;
-            proj.light = Projectile.light;
 
             // Apply custom stats
             if (proj.ModProjectile is SpellCardProjectile SPproj)
@@ -1336,16 +1497,24 @@ namespace Kourindou.Projectiles
                 SPproj.Acceleration = Acceleration;
                 SPproj.AccelerationMultiplier = AccelerationMultiplier;
                 SPproj.Bounce = Bounce;
+				SPproj.Penetrate = Penetrate;
                 SPproj.Gravity = Gravity;
                 SPproj.Homing = Homing;
-                SPproj.RotateToEnemy = RotateToEnemy;
+				SPproj.Collide = Collide;
                 SPproj.Shimmer = Shimmer;
+				SPproj.LifeTime = LifeTime;
                 SPproj.Snowball = Snowball;
+				SPproj.Scale = Scale;
                 SPproj.EdgeType = EdgeType;
                 SPproj.Shatter = Shatter;
                 SPproj.Eater = Eater;
                 SPproj.Forcefield = Forcefield;
                 SPproj.Explosion = Explosion;
+				SPproj.Friendly = Friendly;
+				SPproj.Hostile = Hostile;
+				SPproj.Light = Light;
+				SPproj.CritChance = CritChance;
+				SPproj.ArmorPenetration = ArmorPenetration;
                 SPproj.Element = Element;
 
                 return SPproj;
@@ -1378,7 +1547,6 @@ namespace Kourindou.Projectiles
                     case ProjectileStats.Penetrate: { writer.Write(Penetrate); } break;
                     case ProjectileStats.Gravity: { writer.Write(Gravity); } break;
                     case ProjectileStats.Homing: { writer.Write(Homing); } break;
-                    case ProjectileStats.RotateToEnemy: { writer.Write(RotateToEnemy); } break;
                     case ProjectileStats.Collide: { writer.Write(Collide); } break;
                     case ProjectileStats.Shimmer: { writer.Write(Shimmer); } break;
                     case ProjectileStats.LifeTime: { writer.Write(LifeTime); } break;
@@ -1424,7 +1592,6 @@ namespace Kourindou.Projectiles
                     case ProjectileStats.Penetrate: { Penetrate = reader.ReadInt32(); } break;
                     case ProjectileStats.Gravity: { Gravity = reader.ReadSingle(); } break;
                     case ProjectileStats.Homing: { Homing = reader.ReadSingle(); } break;
-                    case ProjectileStats.RotateToEnemy: { RotateToEnemy = reader.ReadSingle(); } break;
                     case ProjectileStats.Collide: { Collide = reader.ReadBoolean(); } break;
                     case ProjectileStats.Shimmer: { Shimmer = reader.ReadBoolean(); } break;
                     case ProjectileStats.LifeTime: { LifeTime = reader.ReadInt32(); } break;

@@ -1,4 +1,4 @@
-﻿// TODO
+// TODO
 // => DiggingBolt nullify cooldown effect when last projectile => Move to actual cast code, keep track which projectile card has fired last
 
 using System;
@@ -51,15 +51,15 @@ namespace Kourindou
                 block.BlockID = BlockID;
             }
 
-            block.Parent = this.Parent;
-            block.RepeatAmount = this.RepeatAmount;
-            block.ProjectileCounter = this.ProjectileCounter;
-            block.SkipCounting = this.SkipCounting;
-            block.Delay = this.Delay;
-            block.Timer = this.Timer;
-            block.IsPayload = this.IsPayload;
-            block.TriggerCard = this.TriggerCard;
-            block.IsDisabled = this.IsDisabled;
+            block.Parent = Parent;
+            block.RepeatAmount = RepeatAmount;
+            block.ProjectileCounter = ProjectileCounter;
+            block.SkipCounting = SkipCounting;
+            block.Delay = Delay;
+            block.Timer = Timer;
+            block.IsPayload = IsPayload;
+            block.TriggerCard = TriggerCard;
+            block.IsDisabled = IsDisabled;
 
             for (int i = 0; i < Cards.Count; i++)
             {
@@ -70,28 +70,24 @@ namespace Kourindou
                 }
             }
 
-            for (int i = 0; i < this.FormationProjCounter.Count; i++)
+            for (int i = 0; i < FormationProjCounter.Count; i++)
             {
                 block.FormationProjCounter.Add(FormationProjCounter[i]);
             }
 
-            if (this.TriggerCards != null)
+            if (TriggerCards != null)
             {
-                for (int i = 0; i < this.TriggerCards.Count; i++)
+                for (int i = 0; i < TriggerCards.Count; i++)
                 {
-                    block.TriggerCards.Add(this.TriggerCards[i]);
+                    block.TriggerCards.Add(TriggerCards[i]);
                 }
             }
 
-            if (this.HasChildren)
+            if (HasChildren)
             {
-                foreach (CastBlock child in this.Children)
+                foreach (CastBlock child in Children)
                 {
-                    if (block.Children == null)
-                    {
-                        block.Children = new();
-                    }
-
+                    block.Children ??= new();
                     block.Children.Add(child.Clone());
                 }
             }
@@ -101,11 +97,7 @@ namespace Kourindou
 
         public void AddChild(CastBlock block, bool Payload = false)
         {
-            if (Children == null)
-            {
-                Children = new();
-            }
-
+            Children ??= new();
             block.Parent = this;
 
             if (Payload)
@@ -309,7 +301,7 @@ namespace Kourindou
             }
 
             // Create list of the keys that we can shuffle
-            List<int> Keys = new List<int>(ShuffleCardList.Keys);
+            List<int> Keys = new(ShuffleCardList.Keys);
 
             // Now shuffle the dictionary values using the list with keys
             int c = Keys.Count;
@@ -317,9 +309,7 @@ namespace Kourindou
             {
                 c--;
                 int r = Main.rand.Next(0, c + 1);
-                CardItem value = ShuffleCardList[Keys[r]];
-                ShuffleCardList[Keys[r]] = ShuffleCardList[Keys[c]];
-                ShuffleCardList[Keys[c]] = value;
+                (ShuffleCardList[Keys[c]], ShuffleCardList[Keys[r]]) = (ShuffleCardList[Keys[r]], ShuffleCardList[Keys[c]]);
             }
 
             // put the shuffled values back into the Card list
@@ -960,11 +950,12 @@ namespace Kourindou
             Vector2 Position,
             Vector2 HeldOffset,
             Vector2 Direction,
-            float DamageMultiplier,
-            float KnockbackMultiplier,
-            float VelocityMultiplier,
-            float Spread,
-            int Crit)
+            float CatalystDamageMultiplier,
+            float CatalystKnockbackMultiplier,
+            float CatalystVelocityMultiplier,
+            float CatalystSpread,
+            int CatalystCrit,
+			int CatalystArmorPenetration)
         {
             // Check if the given castblock has a projectile card on it
             if (!Block.Cards.Any(x => x.Group == (byte)Groups.Projectile))
@@ -987,15 +978,16 @@ namespace Kourindou
             {
                 // Create a new projectile with the card projectile type
                 ID = SpawnSpellCardProjectile(
-                owner.GetSource_FromThis(),
-                GetFlooredValue(projCard.GetValue(), 0),
-                Position,
-                Direction,
-                DamageMultiplier,
-                KnockbackMultiplier,
-                VelocityMultiplier,
-                Crit,
-                Main.myPlayer);
+					owner.GetSource_FromThis(),
+					GetFlooredValue(projCard.GetValue(), 0),
+					Position,
+					Direction,
+					CatalystDamageMultiplier,
+					CatalystKnockbackMultiplier,
+					CatalystVelocityMultiplier,
+					CatalystCrit,
+					CatalystArmorPenetration,
+					Main.myPlayer);
 
                 // Check if the new projectile is a spellcardprojectile
                 if (Main.projectile[ID].ModProjectile is not SpellCardProjectile)
@@ -1006,7 +998,7 @@ namespace Kourindou
                 if (Main.projectile[ID].ModProjectile is SpellCardProjectile proj)
                 {
                     SPproj = proj;
-                    SPproj.SpawnSpread = Spread;
+                    SPproj.SpawnSpread = CatalystSpread;
                     SPproj.SpawnDirection = Main.rand.NextBool();
                 }
             }
@@ -1023,7 +1015,7 @@ namespace Kourindou
                 {
                     SPproj = proj;
                     SPproj.Timer = 0;
-                    SPproj.SpawnSpread = Spread;
+                    SPproj.SpawnSpread = CatalystSpread;
                 }
             }
 
@@ -1297,12 +1289,13 @@ namespace Kourindou
                         }
                     }
 
-                    // Apply trigger stats
-                    proj.DamageMultiplier = DamageMultiplier;
-                    proj.KnockbackMultiplier = KnockbackMultiplier;
-                    proj.VelocityMultiplier = VelocityMultiplier;
-                    proj.Spread = Spread;
-                    proj.Crit = Crit;
+                    // Apply Catalyst stats
+                    proj.CatalystDamageMultiplier = CatalystDamageMultiplier;
+                    proj.CatalystKnockbackMultiplier = CatalystKnockbackMultiplier;
+                    proj.CatalystVelocityMultiplier = CatalystVelocityMultiplier;
+                    proj.CatalystSpread = CatalystSpread;
+                    proj.CatalystCrit = CatalystCrit;
+					proj.CatalystArmorPenetration = CatalystArmorPenetration;
 
                     // Apply Spawn variables
                     proj.SpawnVelocity = proj.Projectile.velocity;
@@ -1322,13 +1315,15 @@ namespace Kourindou
             int Type,
             Vector2 position,
             Vector2 direction,
-            float DamageMultiplier,
-            float KnockBackMultiplier,
-            float VelocityMultiplier,
-            int CritChance,
+            float CatalystDamageMultiplier,
+            float CatalystKnockBackMultiplier,
+            float CatalystVelocityMultiplier,
+            int CatalystCrit,
+			int CatalystArmorPenetration,
             int Owner = 255,
             float ai0 = 0.0f,
-            float ai1 = 0.0f)
+            float ai1 = 0.0f,
+			float ai2 = 0.0f)
         {
             // ----- Mimic vanilla code -----//
 
@@ -1351,17 +1346,19 @@ namespace Kourindou
 
             // Grab the projectile instance
             Terraria.Projectile projectile = Main.projectile[FreeSlot];
+			Terraria.Player player = Main.player[Owner];
 
             // Reset Defaults
             projectile.SetDefaults(Type);
 
             // Setup projectile - Apply catalyst modifiers directly
             projectile.position = position - new Vector2(projectile.width, projectile.height) * 0.5f;
-            projectile.velocity = direction * projectile.velocity.Length() * VelocityMultiplier;
+            projectile.velocity = direction * projectile.velocity.Length() * CatalystVelocityMultiplier;
             projectile.owner = Owner;
-            projectile.damage = (int)(projectile.damage * DamageMultiplier);
-            projectile.knockBack *= KnockBackMultiplier;
-            projectile.CritChance += CritChance;
+            projectile.damage = (int)(projectile.damage * CatalystDamageMultiplier);
+            projectile.knockBack *= CatalystKnockBackMultiplier;
+            projectile.CritChance += CatalystCrit;
+			projectile.ArmorPenetration += CatalystArmorPenetration;
             projectile.identity = FreeSlot;
             projectile.gfxOffY = 0f;
             projectile.stepSpeed = 1f;
@@ -1369,15 +1366,13 @@ namespace Kourindou
             projectile.honeyWet = Collision.honey;
             projectile.ai[0] = ai0;
             projectile.ai[1] = ai1;
+            projectile.ai[2] = ai2;
 
             // Set Identity
             Main.projectileIdentity[Owner, FreeSlot] = FreeSlot;
 
             // Banner
             FindBannerToAssociateTo(spawnSource, projectile);
-
-            // Player stats
-            HandlePlayerStatModifiers(spawnSource, projectile);
 
             // Call ProjectileLoader OnSpawn()
             typeof(ProjectileLoader).GetMethod("OnSpawn", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { projectile, spawnSource });
@@ -1399,21 +1394,6 @@ namespace Kourindou
                 if (!(entitySourceParent.Entity is NPC entity3))
                     return;
                 next.bannerIdToRespondTo = Item.NPCtoBanner(entity3.BannerID());
-            }
-        }
-
-        private static void HandlePlayerStatModifiers(IEntitySource spawnSource, Terraria.Projectile projectile)
-        {
-            switch (spawnSource)
-            {
-                case EntitySource_ItemUse entitySourceItemUse when entitySourceItemUse.Entity is Player entity1:
-                    projectile.CritChance += entity1.GetWeaponCrit(entitySourceItemUse.Item);
-                    projectile.ArmorPenetration += entity1.GetWeaponArmorPenetration(entitySourceItemUse.Item);
-                    break;
-                case EntitySource_Parent entitySourceParent when entitySourceParent.Entity is Terraria.Projectile entity2:
-                    projectile.CritChance += entity2.CritChance;
-                    projectile.ArmorPenetration += entity2.ArmorPenetration;
-                    break;
             }
         }
 
@@ -1744,7 +1724,6 @@ namespace Kourindou
                                                                                                         // 
                                                                                                         // Homing                                                                                   // 
             Homing,                                                                                     // 
-            RotateToEnemy,                                                                              // 
                                                                                                         // 
                                                                                                         // Tile collision                                                                           // 
             Ghosting,                                                                                   // 
@@ -1900,12 +1879,15 @@ namespace Kourindou
                                                                                                         // 
         public enum Trigger : byte                                                                      // 
         {                                                                                               // 
-            Trigger,                                                                                    // 
-            Timer1,                                                                                     // 1f
-            Timer2,                                                                                     // 2f
-            Timer3,                                                                                     // 3f
-            Timer4,                                                                                     // 4f
-            Timer5                                                                                      // 5f
+            Trigger,                                                                                    // Projectile is killed
+            Timer1,                                                                                     // Projectile Time or killed
+            Timer2,                                                                                     // Projectile Time or killed
+            Timer3,                                                                                     // Projectile Time or killed
+            Timer4,                                                                                     // Projectile Time or killed
+            Timer5,                                                                                     // Projectile Time or killed
+			OnTileCollision, // TODO: NEW CARD IDEA
+			OnHitCollision, // TODO: NEW CARD IDEA
+			Remote // TODO: NEW CARD IDEA
         }                                                                                               // 
                                                                                                         // 
         public enum Special : byte                                                                      // 
@@ -1947,41 +1929,41 @@ namespace Kourindou
         public enum ProjectileStats : byte
         {
             // Trajectories
-            Arc,
-            ZigZag,
-            PingPong,
-            Snake,
-            Uncontrolled,
+            Arc,					// DONE
+            ZigZag,					// SEMIDONE => SPAWNANGLE
+            PingPong,				// SEMIDONE => SPAWNANGLE
+            Snake,					// SEMIDONE => SPAWNANGLE
+            Uncontrolled,			// DONE
             Orbit,
-            Spiral,
+            Spiral,					// DONE
             Boomerang,
-            Aiming,
+            Aiming,					// DONE
 
             // Modifiers
-            Acceleration,
-            AccelerationMultiplier,
-            Bounce,
-            Penetrate,
-            Gravity,
-            Homing,
-            RotateToEnemy,
-            Collide,
-            Shimmer,
-            LifeTime,
+            Acceleration,			// DONE
+            AccelerationMultiplier, // DONE
+            Bounce,					// DONE
+            Penetrate,				// DONE
+            Gravity,				// DONE
+            Homing,					// DONE
+            //RotateToEnemy, // TODO: REMOVED DUPLICATE HOMING
+            Collide,				// DONE
+            Shimmer,				// DONE
+            LifeTime,				// DONE
             //KnockBack, => Auto-synched if != 0
             //Damage, => Auto-synched if != 0
-            Snowball,
-            Scale,
+            Snowball,				// DONE
+            Scale,					// DONE
             EdgeType,
             Shatter,
             Eater,
             Forcefield,
             Explosion,
-            Hostile,
-            Friendly,
-            Light,
-            CritChance,
-            ArmorPenetration,
+            Hostile,				// DONE
+            Friendly,				// DONE
+            Light,					// SEMIDONE => COLORS?
+            CritChance,				// DONE
+            ArmorPenetration,		// DONE
             Element,
 
             // Other

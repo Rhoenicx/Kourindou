@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -17,11 +17,12 @@ namespace Kourindou.Projectiles
     public abstract class CatalystProjectile : ModProjectile
     {
         public CastBlock ShootBlock;
-        public float DamageMultiplier = 1f;
-        public float KnockbackMultiplier = 1f;
-        public float VelocityMultiplier = 1f;
-        public float Spread = 0f;
-        public int Crit = 0;
+        public float CatalystDamageMultiplier = 1f;
+        public float CatalystKnockbackMultiplier = 1f;
+        public float CatalystVelocityMultiplier = 1f;
+        public float CatalystSpread = 0f;
+        public int CatalystCrit = 0;
+        public int CatalystArmorPenetration = 0;
 
         private bool _justSpawned = true;
 
@@ -211,11 +212,12 @@ namespace Kourindou.Projectiles
                 _owner.RotatedRelativePoint(_owner.MountedCenter),
                 HeldProjectileOffset.RotatedBy(Projectile.velocity.ToRotation()),
                 Vector2.Normalize(Projectile.velocity),
-                DamageMultiplier,
-                KnockbackMultiplier,
-                VelocityMultiplier,
-                Spread,
-                Crit
+                CatalystDamageMultiplier,
+                CatalystKnockbackMultiplier,
+                CatalystVelocityMultiplier,
+                CatalystSpread,
+                CatalystCrit,
+				CatalystArmorPenetration
             );
         }
     }

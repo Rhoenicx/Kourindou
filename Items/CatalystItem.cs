@@ -59,11 +59,15 @@ namespace Kourindou.Items.Catalysts
         public int BaseCrit = 0;
         public int AddedCrit = 0;
 
+		public int ArmorPenetration => BaseArmorPenetration + AddedArmorPenetration;
+		public int BaseArmorPenetration = 0;
+		public int AddedArmorPenetration = 0;
+
         // Other
         public float HeldCatalystOffset = 0f;
 
         // Cards
-        public List<CardItem> CardItemsOnCatalyst = new List<CardItem>();
+        public List<CardItem> CardItemsOnCatalyst = new();
         public CardItem AlwaysCastCard;
         #endregion
 
@@ -84,6 +88,7 @@ namespace Kourindou.Items.Catalysts
                 newCatalyst.AddedVelocityMultiplier = AddedVelocityMultiplier;
                 newCatalyst.AddedKnockbackMultiplier = AddedKnockbackMultiplier;
                 newCatalyst.AddedCrit = AddedCrit;
+				newCatalyst.AddedArmorPenetration = AddedArmorPenetration;
 
                 newCatalyst.CardItemsOnCatalyst = new List<CardItem>(CardItemsOnCatalyst);
                 newCatalyst.AlwaysCastCard = AlwaysCastCard;
@@ -107,6 +112,7 @@ namespace Kourindou.Items.Catalysts
             tag.Add("AddedVelocityMultiplier", AddedVelocityMultiplier);
             tag.Add("AddedKnockbackMultiplier", AddedKnockbackMultiplier);
             tag.Add("AddedCrit", AddedCrit);
+            tag.Add("AddedArmorPenetration", AddedArmorPenetration);
 
             if (HasAlwaysCastCard)
             {
@@ -139,6 +145,7 @@ namespace Kourindou.Items.Catalysts
             AddedVelocityMultiplier = tag.GetFloat("AddedVelocityMultiplier");
             AddedKnockbackMultiplier = tag.GetFloat("AddedKnockbackMultiplier");
             AddedCrit = tag.GetInt("AddedCrit");
+			AddedArmorPenetration = tag.GetInt("AddedArmorPenetration");
 
             if (HasAlwaysCastCard)
             {
@@ -179,6 +186,7 @@ namespace Kourindou.Items.Catalysts
             writer.Write(AddedVelocityMultiplier);
             writer.Write(AddedKnockbackMultiplier);
             writer.Write(AddedCrit);
+            writer.Write(AddedArmorPenetration);
 
             if (HasAlwaysCastCard)
             {
@@ -210,6 +218,7 @@ namespace Kourindou.Items.Catalysts
             AddedVelocityMultiplier = reader.ReadSingle();
             AddedKnockbackMultiplier = reader.ReadSingle();
             AddedCrit = reader.ReadInt32();
+            AddedArmorPenetration = reader.ReadInt32();
 
             if (HasAlwaysCastCard)
             {
@@ -262,7 +271,7 @@ namespace Kourindou.Items.Catalysts
                 text += CardItemsOnCatalyst[i].Item.Name + "\r\n";
             }
 
-            TooltipLine line1 = new TooltipLine(Mod, "CatalystText", text);
+            TooltipLine line1 = new(Mod, "CatalystText", text);
 
             tooltips.Add(line1);
         }
@@ -541,11 +550,12 @@ namespace Kourindou.Items.Catalysts
             if (Main.projectile[CatalystProjID].ModProjectile is CatalystProjectile catalyst)
             {
                 catalyst.ShootBlock = cast.RootBlock;
-                catalyst.DamageMultiplier = DamageMultiplier;
-                catalyst.KnockbackMultiplier = KnockbackMultiplier;
-                catalyst.VelocityMultiplier = VelocityMultiplier;
-                catalyst.Spread = Spread;
-                catalyst.Crit = Crit;
+                catalyst.CatalystDamageMultiplier = DamageMultiplier;
+                catalyst.CatalystKnockbackMultiplier = KnockbackMultiplier;
+                catalyst.CatalystVelocityMultiplier = VelocityMultiplier;
+                catalyst.CatalystSpread = Spread;
+                catalyst.CatalystCrit = Crit;
+                catalyst.CatalystArmorPenetration = ArmorPenetration;
             }
 
             // Calculate Cooldown and recharge
