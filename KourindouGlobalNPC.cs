@@ -89,21 +89,21 @@ namespace Kourindou
             // Here we remove Pink and Black Thread items from the Clothier's shop
             if (npc.type == NPCID.Clothier)
             {
-                // Remove Item form shopinventory
+                // Remove Item from shopinventory
                 for (int i = 0; i < items.Length; i++)
                 {
-                    if (items[i].type == ItemID.BlackThread || items[i].type == ItemID.PinkThread)
+                    if (items[i] != null && (items[i].type == ItemID.BlackThread || items[i].type == ItemID.PinkThread))
                     {
-                        items[i] = new Item();
+                        items[i].TurnToAir();
                     }
                 }
 
                 // Remove empty slots from shopinventory
-                for (int i = items.Length; i >= 0 ; i--)
+                for (int i = items.Length - 1; i >= 0 ; i--)
                 {
-                    if (items[i].type == ItemID.None)
+                    if (items[i] == null || items[i].type == ItemID.None)
                     {
-                        for (int a = i; a < items.Length; a++)
+                        for (int a = i; a < items.Length - 2; a++)
                         {
                             items[a] = items[a + 1];
                         }
