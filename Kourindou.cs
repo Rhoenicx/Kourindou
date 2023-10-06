@@ -306,6 +306,25 @@ namespace Kourindou
 
             switch(msg)
             {
+                // Sync right click button between in multiplayer
+                case KourindouMessageType.RightClick:
+                { 
+                    int playerID = reader.ReadInt32();
+
+                    // Set altFuntionUse (right click) to 2
+                    Main.player[playerID].altFunctionUse = 2;
+
+                    // Resend packet to other clients if we're the server
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        ModPacket packet = GetPacket();
+                        packet.Write((byte)KourindouMessageType.RightClick);
+                        packet.Write(playerID);
+                        packet.Send(-1, whoAmI);
+                    }
+                }
+                break;
+
                 // Update other players Config for Multiplayer
                 case KourindouMessageType.ClientConfig:
                 {
@@ -526,37 +545,6 @@ namespace Kourindou
                         packet.Write((int) j);
                         packet.Write((int) PlushieDirtWater);
                         packet.Send(-1, whoAmI);
-                    }
-                    break;
-                }
-
-                // Server => Client
-                case KourindouMessageType.RandomPlacePlantTile:
-                {
-                    int i = reader.ReadInt32();
-                    int j = reader.ReadInt32();
-                    int tile = reader.ReadInt32();
-
-                    WorldGen.PlaceObject(i, j, tile);
-
-                    break;
-                }
-
-                case KourindouMessageType.PlayerPlacePlantTile:
-                {
-                    int tile = reader.ReadInt32();
-
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        if (tile == ModContent.TileType<Cotton_Tile>())
-                        { 
-                            KourindouWorld.CottonPlants++;
-                        }
-
-                        if (tile == ModContent.TileType<Flax_Tile>())
-                        {
-                            KourindouWorld.FlaxPlants++;
-                        }
                     }
                     break;
                 }

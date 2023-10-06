@@ -57,30 +57,17 @@ namespace Kourindou.Tiles.Plants
 				TileID.PlanterBox
 			};
 
+            TileObjectData.newTile.WaterPlacement = LiquidPlacement.NotAllowed;
+            TileObjectData.newTile.LavaPlacement = LiquidPlacement.NotAllowed;
+            TileObjectData.newTile.WaterDeath = true;
+            TileObjectData.newTile.LavaDeath = true;
+
             TileObjectData.addTile(Type);
 
             LocalizedText name = CreateMapEntryName();
             AddMapEntry(new Color(155, 155, 155), name);
 
             HitSound = SoundID.Dig;
-        }
-
-        public override void PlaceInWorld(int i, int j, Item item) //Runs only on SinglePlayer and MultiplayerClient!
-        {
-            if (item.type == ItemType<CottonSeeds>())
-            {
-                if (Main.netMode == NetmodeID.MultiplayerClient)
-                {
-                    ModPacket packet = Mod.GetPacket();
-                    packet.Write((byte) KourindouMessageType.PlayerPlacePlantTile);
-                    packet.Write((int) TileType<Cotton_Tile>());
-                    packet.Send(-1, Main.myPlayer);
-                }
-                else if (Main.netMode == NetmodeID.SinglePlayer)
-                {
-                    KourindouWorld.CottonPlants++;
-                }
-            }
         }
 
         public override void MouseOver(int i, int j)
@@ -138,8 +125,6 @@ namespace Kourindou.Tiles.Plants
                         Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ItemType<CottonSeeds>());
                     }
                 }
-
-                KourindouWorld.CottonPlants--;
             }
 		}
 
@@ -400,6 +385,56 @@ namespace Kourindou.Tiles.Plants
                     }
                 }
             }
+        }
+
+        public static bool TileValidForCotton(int i, int j)
+        {
+            if ((Main.tile[i, j].TileType == TileID.Dirt
+                || Main.tile[i, j].TileType == TileID.Grass
+                || Main.tile[i, j].TileType == TileID.JungleGrass
+                || Main.tile[i, j].TileType == TileID.CorruptGrass
+                || Main.tile[i, j].TileType == TileID.CrimsonGrass
+                || Main.tile[i, j].TileType == TileID.MushroomGrass
+                || Main.tile[i, j].TileType == TileID.HallowedGrass)
+                && !Main.tile[i, j - 1].HasTile
+                && !Main.tile[i, j - 2].HasTile
+                && !Main.tile[i, j - 3].HasTile
+                && Main.tile[i, j].Slope == 0
+                && !Main.tile[i, j - 1].CheckingLiquid
+                && !Main.tile[i, j - 2].CheckingLiquid
+                && !Main.tile[i, j - 3].CheckingLiquid
+                && Main.tile[i, j - 1].WallType == 0
+                && Main.tile[i, j - 2].WallType == 0
+                && Main.tile[i, j - 3].WallType == 0
+                && j < Main.worldSurface)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool CheckCottonLimits(int i, int j)
+        {
+            int scanDiameter = 64;
+
+            for (int x = i - scanDiameter; x < i + scanDiameter; x++)
+            {
+                for (int y = j - scanDiameter; y < j + scanDiameter; y++)
+                {
+                    if (x < 0 || y < 0 || x > Main.maxTilesX || y > Main.maxTilesY)
+                    {
+                        continue;
+                    }
+
+                    if (Main.tile[x, y].TileType == TileType<Cotton_Tile>())
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

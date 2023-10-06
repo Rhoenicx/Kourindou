@@ -12,9 +12,8 @@ namespace Kourindou
         PlushieItemNetUpdate,
         PlacePlushieTile,
         SetPlushieDirtWater,
-        RandomPlacePlantTile,
-        PlayerPlacePlantTile,
         FumoCola,
-        RanPlushieStacks
+        RanPlushieStacks,
+        RightClick
     }
 }

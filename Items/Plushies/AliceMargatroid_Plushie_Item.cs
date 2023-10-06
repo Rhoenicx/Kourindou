@@ -35,7 +35,7 @@ namespace Kourindou.Items.Plushies
             // Register as accessory, can only be equipped when plushie power mode setting is 2
             Item.accessory = true;           
         }
-        
+
         public override bool? UseItem(Player player)
         {
             if (player.altFunctionUse == 2)
@@ -43,6 +43,7 @@ namespace Kourindou.Items.Plushies
                 shootSpeed = 8f;
                 projectileType = ProjectileType<AliceMargatroid_Plushie_Projectile>();
             }
+
             return base.UseItem(player);
         }
 

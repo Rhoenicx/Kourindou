@@ -29,6 +29,7 @@ namespace Kourindou.Items
 
         public float shootSpeed = 8f;
         public int projectileType = 0;
+        public int tileType = -1;
 
         public override void SaveData(TagCompound tag)
         {
@@ -134,9 +135,39 @@ namespace Kourindou.Items
             return true;
         }
 
+        public override bool CanUseItem(Player player)
+        {
+            // Save the Tile that should be created in a new field
+            tileType = Item.createTile;
+
+            // Check if the item is used with the right mouse button
+            if (player.altFunctionUse == 2)
+            {
+                // Prevent tile creation when throwing the plushie
+                // with the right mouse button.
+                Item.createTile = -1;
+
+                // A projectile will be created, send right click
+                if (Main.netMode == NetmodeID.MultiplayerClient
+                    && player.whoAmI == Main.myPlayer)
+                {
+                    // Send right click sync packet
+                    ModPacket packet = Mod.GetPacket();
+                    packet.Write((byte)KourindouMessageType.RightClick);
+                    packet.Write(player.whoAmI);
+                    packet.Send();
+
+                    // Send player controls packet
+                    NetMessage.SendData(MessageID.PlayerControls, number: player.whoAmI);
+                }
+            }
+
+            return base.CanUseItem(player);
+        }
+
         public override bool? UseItem(Player player)
         {
-            if (player.altFunctionUse == 2)
+            if (player.altFunctionUse == 2 && player.whoAmI == Main.myPlayer)
             {
                 Item.noUseGraphic = true;
                 Vector2 speed = player.velocity + Vector2.Normalize(Main.MouseWorld - player.Center) * shootSpeed;
@@ -169,10 +200,10 @@ namespace Kourindou.Items
                 }
                 return true;
             }
-            else
-            {
-                Item.noUseGraphic = false;
-            }
+
+            Item.noUseGraphic = false;
+
+            Item.createTile = tileType;
 
             player.lastVisualizedSelectedItem = Item;
 
