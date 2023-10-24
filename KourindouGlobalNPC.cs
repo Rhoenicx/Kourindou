@@ -120,62 +120,74 @@ namespace Kourindou
                 if (npc.type == Kourindou.Gensokyo_AliceMargatroid_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<AliceMargatroid_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_Cirno_Type)
                 {
                     npcLoot.Add(ItemDropRule.ByCondition(new IsNotInHellBiome(), ItemType<Cirno_Plushie_Item>()));
                     npcLoot.Add(ItemDropRule.ByCondition(new IsInHellBiome(), ItemType<Tanned_Cirno_Plushie_Item>()));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_EternityLarva_Type)
                 {
                     //npcLoot.Add(ItemDropRule.Common(ItemType<>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_HinaKagiyama_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<HinaKagiyama_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_KaguyaHouraisan_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<KaguyaHouraisan_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_Kisume_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Kisume_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_LilyWhite_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<LilyWhite_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_MayumiJoutouguu_Type)
                 {
                     //npcLoot.Add(ItemDropRule.Common(ItemType<>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_MedicineMelancholy_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<MedicineMelancholy_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_MinamitsuMurasa_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<MinamitsuMurasa_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_NitoriKawashiro_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<NitoriKawashiro_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_Rumia_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Rumia_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_SakuyaIzayoi_Type)
@@ -183,31 +195,43 @@ namespace Kourindou
                     npcLoot.Add(ItemDropRule.OneFromOptions(
                         ItemType<Kourindou_SakuyaIzayoi_Plushie_Item>(),
                         ItemType<InuSakuyaIzayoi_Plushie_Item>()));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_SeijaKijin_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<SeijaKijin_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_Sekibanki_Type)
                 {
                     //npcLoot.Add(ItemDropRule.Common(ItemType<>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_TenshiHinanawi_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<TenshiHinanawi_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_ToyosatomimiNoMiko_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<ToyosatomimiNoMiko_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_UtsuhoReiuji_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<UtsuhoReiuji_Plushie_Item>(), 1));
+                    return;
+                }
+
+                if (npc.type == Kourindou.Gensokyo_Seiran_Type)
+                {
+                    npcLoot.Add(ItemDropRule.Common(ItemType<Seiran_Plushie_Item>(), 1));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_CasterDoll_Type)
@@ -216,6 +240,7 @@ namespace Kourindou
                         100,
                         ItemType<BombDoll_Plushie_Item>(),
                         ItemType<ShanghaiDoll_Plushie_Item>()));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_LancerDoll_Type)
@@ -224,41 +249,49 @@ namespace Kourindou
                         100,
                         ItemType<BombDoll_Plushie_Item>(),
                         ItemType<ShanghaiDoll_Plushie_Item>()));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_Fairy_Bone_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Bone_Fairy_Plushie_Item>(), 200));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_Fairy_Flower_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Flower_Fairy_Plushie_Item>(), 200));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_Fairy_Lava_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Lava_Fairy_Plushie_Item>(), 200));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_Fairy_Snow_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Snow_Fairy_Plushie_Item>(), 200));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_Fairy_Stone_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Stone_Fairy_Plushie_Item>(), 200));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_Fairy_Sunflower_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Sunflower_Fairy_Plushie_Item>(), 200));
+                    return;
                 }
 
                 if (npc.type == Kourindou.Gensokyo_Fairy_Thorn_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Thorn_Fairy_Plushie_Item>(), 200));
+                    return;
                 }
             }
         }

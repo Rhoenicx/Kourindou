@@ -95,6 +95,7 @@ namespace Kourindou
         public static int Gensokyo_TenshiHinanawi_Type;
         public static int Gensokyo_ToyosatomimiNoMiko_Type;
         public static int Gensokyo_UtsuhoReiuji_Type;
+        public static int Gensokyo_Seiran_Type;
         public static int Gensokyo_CasterDoll_Type;
         public static int Gensokyo_LancerDoll_Type;
         public static int Gensokyo_Fairy_Bone_Type;

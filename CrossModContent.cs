@@ -126,6 +126,12 @@ namespace Kourindou
                 Kourindou.Gensokyo_UtsuhoReiuji_Type = Utsuho.Type;
             }
 
+            Gensokyo.TryFind<ModNPC>("Seiran", out ModNPC Seiran);
+            if (Seiran != null)
+            { 
+                Kourindou.Gensokyo_Seiran_Type = Seiran.Type;
+            }
+
             Gensokyo.TryFind<ModNPC>("CasterDoll", out ModNPC Caster);
             if (Caster != null)
             {
