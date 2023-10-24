@@ -1,13 +1,13 @@
-Welcome to Kourindou Mod! 
-
-This mod adds Touhou inspired plushies to terraria as collectable items, usually called Fumo's.
-You're able to craft the plushies using our own unique crafting materials and crafting stations.
-
-Besides the plushies we also aim to add a couple of other Touhou related items.
+Welcome to Kourindou Mod!
 
 This mod is the spiritual successor of the old 1.3 FumoMod.
-It is fully compatible with Gensokyo mod and even adds plushies as drops to their bosses and enemies.
 
-For more information join our Discord server with the following link:
-https://discord.gg/q6S69rv8Gw
+The mod mainly adds Touhou inspired plushies to Terraria as collectable items, usually they're called Fumo's. You're able to craft the plushies using our own unique crafting materials and crafting stations.
 
+Besides the Touhou cast we also added some characters from a couple of other popular anime/franchises.
+
+It is fully compatible with Gensokyo mod and adds plushies as drops to the corresponding bosses and enemies.
+
+You can play around with an in-development spell-crafting system using cheats. Keep in mind this is heavily experimental and only a tech-demo for now!
+
+Join our discord for suggestions and/or support.

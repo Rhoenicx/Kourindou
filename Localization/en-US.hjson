@@ -1058,7 +1058,7 @@ Mods: {
 					'''
 				PlushieEquipEffect:
 					'''
-					Melee weapons twice as big and deal double damage! Increases falling speed
+					Melee weapons are twice as big and deal double damage! Increases falling speed
 					When tripsy gain 16 points of defence, increases melee critrate by 10% and reduce damage taken by 10%
 					'''
 			}
