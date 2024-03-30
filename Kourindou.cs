@@ -92,6 +92,7 @@ namespace Kourindou
         public static int Gensokyo_SakuyaIzayoi_Type;
         public static int Gensokyo_SeijaKijin_Type;
         public static int Gensokyo_Sekibanki_Type;
+        public static int Gensokyo_KoishiKomeiji_Type;
         public static int Gensokyo_TenshiHinanawi_Type;
         public static int Gensokyo_ToyosatomimiNoMiko_Type;
         public static int Gensokyo_UtsuhoReiuji_Type;
@@ -105,13 +106,14 @@ namespace Kourindou
         public static int Gensokyo_Fairy_Stone_Type;
         public static int Gensokyo_Fairy_Sunflower_Type;
         public static int Gensokyo_Fairy_Thorn_Type;
+        public static int Gensokyo_Fairy_Crystal_Type;
+        public static int Gensokyo_Fairy_Spore_Type;
+        public static int Gensokyo_Fairy_Sand_Type;
+        public static int Gensokyo_Fairy_Water_Type;
+        public static int Gensokyo_Fairy_Blood_Type;
+        public static int Gensokyo_Fairy_Metal_Type;
         #endregion
 
-        #region HairLoader
-        // Hairloader Mod Instance
-        public static Mod HairLoader;
-        public static bool HairLoaderLoaded;
-        #endregion
         // Load
         public override void Load()
         {
@@ -146,7 +148,6 @@ namespace Kourindou
 
             Instance = null;
             Gensokyo = null;
-            HairLoader = null;
 
             SoundDictionary = null;
 
@@ -221,18 +222,11 @@ namespace Kourindou
         {
             // Check loaded mods
             GensokyoLoaded = ModLoader.TryGetMod("Gensokyo", out Gensokyo);
-            HairLoaderLoaded = ModLoader.TryGetMod("HairLoader", out HairLoader);
 
             // Support for Gensokyo Mod
             if (Gensokyo != null)
             {
                 CrossModContent.SetupGensokyo(Gensokyo, this);
-            }
-
-            // Support for HairLoader Mod
-            if (HairLoader != null)
-            {
-                CrossModContent.SetupHairLoader(HairLoader, this);
             }
 
             // Swap vanilla textures

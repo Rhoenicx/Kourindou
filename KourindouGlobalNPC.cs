@@ -234,6 +234,12 @@ namespace Kourindou
                     return;
                 }
 
+                if (npc.type == Kourindou.Gensokyo_KoishiKomeiji_Type)
+                {
+                    npcLoot.Add(ItemDropRule.Common(ItemType<KoishiKomeiji_Plushie_Item>(), 1));
+                    return;
+                }
+
                 if (npc.type == Kourindou.Gensokyo_CasterDoll_Type)
                 {
                     npcLoot.Add(ItemDropRule.OneFromOptions(
@@ -291,6 +297,42 @@ namespace Kourindou
                 if (npc.type == Kourindou.Gensokyo_Fairy_Thorn_Type)
                 {
                     npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Thorn_Fairy_Plushie_Item>(), 200));
+                    return;
+                }
+
+                if (npc.type == Kourindou.Gensokyo_Fairy_Crystal_Type)
+                {
+                    npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Crystal_Fairy_Plushie_Item>(), 200));
+                    return;
+                }
+
+                if (npc.type == Kourindou.Gensokyo_Fairy_Spore_Type)
+                {
+                    npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Spore_Fairy_Plushie_Item>(), 200));
+                    return;
+                }
+
+                if (npc.type == Kourindou.Gensokyo_Fairy_Water_Type)
+                {
+                    npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Water_Fairy_Plushie_Item>(), 200));
+                    return;
+                }
+
+                if (npc.type == Kourindou.Gensokyo_Fairy_Metal_Type)
+                {
+                    npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Metal_Fairy_Plushie_Item>(), 200));
+                    return;
+                }
+
+                if (npc.type == Kourindou.Gensokyo_Fairy_Blood_Type)
+                {
+                    npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Blood_Fairy_Plushie_Item>(), 200));
+                    return;
+                }
+
+                if (npc.type == Kourindou.Gensokyo_Fairy_Sand_Type)
+                {
+                    npcLoot.Add(ItemDropRule.Common(ItemType<Gensokyo_Sand_Fairy_Plushie_Item>(), 200));
                     return;
                 }
             }

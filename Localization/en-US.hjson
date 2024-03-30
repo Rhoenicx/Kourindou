@@ -445,6 +445,66 @@ Mods: {
 				PlushieEquipEffect: Thorn fairies become friendly
 			}
 
+			Gensokyo_Blood_Fairy_Plushie_Item: {
+				DisplayName: Blood Fairy Plushie
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Blood fairies become friendly
+			}
+
+			Gensokyo_Crystal_Fairy_Plushie_Item: {
+				DisplayName: Crystal Fairy Plushie
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Crystal fairies become friendly
+			}
+
+			Gensokyo_Metal_Fairy_Plushie_Item: {
+				DisplayName: Metal Fairy Plushie
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Metal fairies become friendly
+			}
+
+			Gensokyo_Sand_Fairy_Plushie_Item: {
+				DisplayName: Sand Fairy Plushie
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Sand fairies become friendly
+			}
+
+			Gensokyo_Spore_Fairy_Plushie_Item: {
+				DisplayName: Spore Fairy Plushie
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Spore fairies become friendly
+			}
+
+			Gensokyo_Water_Fairy_Plushie_Item: {
+				DisplayName: Water Fairy Plushie
+				Tooltip:
+					'''
+					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
+					{PlushieEquipEffectLine}
+					'''
+				PlushieEquipEffect: Water fairies become friendly
+			}
+
 			HataNoKokoro_Plushie_Item: {
 				DisplayName: Hata No Kokoro Plushie
 				Tooltip:
@@ -2081,6 +2141,12 @@ Mods: {
 			YuukaKazami_Plushie_Projectile.DisplayName: Yuuka Kazami Plushie
 			YuyukoSaigyouji_Plushie_Projectile.DisplayName: Yuyuko Saigyouji Plushie
 			ShotBlueProj.DisplayName: Shot Blue Proj
+			Gensokyo_Blood_Fairy_Plushie_Projectile.DisplayName: Gensokyo_ Blood_ Fairy_ Plushie_ Projectile
+			Gensokyo_Crystal_Fairy_Plushie_Projectile.DisplayName: Gensokyo_ Crystal_ Fairy_ Plushie_ Projectile
+			Gensokyo_Metal_Fairy_Plushie_Projectile.DisplayName: Gensokyo_ Metal_ Fairy_ Plushie_ Projectile
+			Gensokyo_Sand_Fairy_Plushie_Projectile.DisplayName: Gensokyo_ Sand_ Fairy_ Plushie_ Projectile
+			Gensokyo_Spore_Fairy_Plushie_Projectile.DisplayName: Gensokyo_ Spore_ Fairy_ Plushie_ Projectile
+			Gensokyo_Water_Fairy_Plushie_Projectile.DisplayName: Gensokyo_ Water_ Fairy_ Plushie_ Projectile
 		}
 
 		Tiles: {
@@ -2173,6 +2239,12 @@ Mods: {
 			YukariYakumo_Plushie_Tile.MapEntry: Yukari Yakumo Plushie
 			YuukaKazami_Plushie_Tile.MapEntry: Yuuka Kazami Plushie
 			YuyukoSaigyouji_Plushie_Tile.MapEntry: Yuyuko Saigyouji Plushie
+			Gensokyo_Blood_Fairy_Plushie_Tile.MapEntry: Gensokyo_ Blood_ Fairy_ Plushie_ Tile
+			Gensokyo_Crystal_Fairy_Plushie_Tile.MapEntry: Gensokyo_ Crystal_ Fairy_ Plushie_ Tile
+			Gensokyo_Metal_Fairy_Plushie_Tile.MapEntry: Gensokyo_ Metal_ Fairy_ Plushie_ Tile
+			Gensokyo_Sand_Fairy_Plushie_Tile.MapEntry: Gensokyo_ Sand_ Fairy_ Plushie_ Tile
+			Gensokyo_Spore_Fairy_Plushie_Tile.MapEntry: Gensokyo_ Spore_ Fairy_ Plushie_ Tile
+			Gensokyo_Water_Fairy_Plushie_Tile.MapEntry: Gensokyo_ Water_ Fairy_ Plushie_ Tile
 		}
 
 		Configs: {

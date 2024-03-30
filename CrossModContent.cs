@@ -128,8 +128,14 @@ namespace Kourindou
 
             Gensokyo.TryFind<ModNPC>("Seiran", out ModNPC Seiran);
             if (Seiran != null)
-            { 
+            {
                 Kourindou.Gensokyo_Seiran_Type = Seiran.Type;
+            }
+
+            Gensokyo.TryFind<ModNPC>("KoishiKomeiji", out ModNPC Koishi);
+            if (Seiran != null)
+            {
+                Kourindou.Gensokyo_KoishiKomeiji_Type = Koishi.Type;
             }
 
             Gensokyo.TryFind<ModNPC>("CasterDoll", out ModNPC Caster);
@@ -185,11 +191,42 @@ namespace Kourindou
             {
                 Kourindou.Gensokyo_Fairy_Thorn_Type = Fairy_Thorn.Type;
             }
-        }
 
-        public static void SetupHairLoader(Mod HairLoader, Mod Kourindou)
-        {
+            Gensokyo.TryFind<ModNPC>("Fairy_Crystal", out ModNPC Fairy_Crystal);
+            if (Fairy_Crystal != null)
+            {
+                Kourindou.Gensokyo_Fairy_Crystal_Type = Fairy_Crystal.Type;
+            }
 
+            Gensokyo.TryFind<ModNPC>("Fairy_Spore", out ModNPC Fairy_Spore);
+            if (Fairy_Spore != null)
+            {
+                Kourindou.Gensokyo_Fairy_Spore_Type = Fairy_Spore.Type;
+            }
+
+            Gensokyo.TryFind<ModNPC>("Fairy_Sand", out ModNPC Fairy_Sand);
+            if (Fairy_Sand != null)
+            {
+                Kourindou.Gensokyo_Fairy_Sand_Type = Fairy_Sand.Type;
+            }
+
+            Gensokyo.TryFind<ModNPC>("Fairy_Water", out ModNPC Fairy_Water);
+            if (Fairy_Water != null)
+            {
+                Kourindou.Gensokyo_Fairy_Water_Type = Fairy_Water.Type;
+            }
+
+            Gensokyo.TryFind<ModNPC>("Fairy_Blood", out ModNPC Fairy_Blood);
+            if (Fairy_Blood != null)
+            {
+                Kourindou.Gensokyo_Fairy_Blood_Type = Fairy_Blood.Type;
+            }
+
+            Gensokyo.TryFind<ModNPC>("Fairy_Metal", out ModNPC Fairy_Metal);
+            if (Fairy_Metal != null)
+            {
+                Kourindou.Gensokyo_Fairy_Metal_Type = Fairy_Metal.Type;
+            }
         }
     }
 }
