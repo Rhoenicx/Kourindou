@@ -133,7 +133,7 @@ namespace Kourindou
             }
 
             Gensokyo.TryFind<ModNPC>("KoishiKomeiji", out ModNPC Koishi);
-            if (Seiran != null)
+            if (Koishi != null)
             {
                 Kourindou.Gensokyo_KoishiKomeiji_Type = Koishi.Type;
             }
