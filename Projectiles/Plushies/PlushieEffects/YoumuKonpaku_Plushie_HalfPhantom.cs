@@ -66,7 +66,6 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
 			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
-			Lighting.AddLight(Projectile.Center, 1f, 1f, 1f);
 		}
 
         public override void SetDefaults()
@@ -194,7 +193,9 @@ namespace Kourindou.Projectiles.Plushies.PlushieEffects
 			}
 
 			Animations();
-		}
+
+            Lighting.AddLight(Projectile.Center, 1f, 1f, 1f);
+        }
 
 		private void CheckIfOwnerActive()
 		{
