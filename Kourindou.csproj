@@ -27,8 +27,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Gores\" />
-    <Folder Include="Items\Placables\" />
     <Folder Include="Items\Spellcards\Projectiles\" />
   </ItemGroup>
 </Project>

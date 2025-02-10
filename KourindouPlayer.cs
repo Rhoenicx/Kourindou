@@ -621,63 +621,6 @@ namespace Kourindou
             return FunctionalItem.type != ItemID.None;
         }
 
-        public override Vector2? CustomLocation
-        { 
-            get
-            {
-                int posX = 0;
-                int posY = 0;
-                int VanillaSlots = 5 + (Player.CanDemonHeartAccessoryBeShown() ? 1 : 0) + (Player.CanMasterModeAccessoryBeShown() ? 1 : 0);
-                SetDrawLocation(GetInstance<PlushieEquipSlot>().Type + VanillaSlots, 0, ref posX, ref posY);
-                return new Vector2(posX - 47, posY);    
-            }
-        }
-
-        internal bool SetDrawLocation(int trueSlot, int skip, ref int xLoc, ref int yLoc)
-        {
-            int accessorySlotPerColumn = GetAccessorySlotPerColumn();
-            int num1 = trueSlot / accessorySlotPerColumn;
-            int num2 = trueSlot % accessorySlotPerColumn;
-
-            FieldInfo fi = typeof(ModAccessorySlotPlayer).GetField("scrollSlots", BindingFlags.NonPublic | BindingFlags.Instance);
-            bool scrollSlots = (bool)fi.GetValue(Player.GetModPlayer<ModAccessorySlotPlayer>());
-
-            FieldInfo fi2 = typeof(ModAccessorySlotPlayer).GetField("scrollbarSlotPosition", BindingFlags.NonPublic | BindingFlags.Instance);
-            int scrollbarSlotPosition = (int)fi2.GetValue(Player.GetModPlayer<ModAccessorySlotPlayer>());
-
-            if (scrollSlots)
-            {
-                int num3 = num2 + num1 * accessorySlotPerColumn - scrollbarSlotPosition - skip;
-                yLoc = (int)((double)AccessorySlotLoader.DrawVerticalAlignment + (double)((num3 + 3) * 56) * (double)Main.inventoryScale) + 4;
-                int num4 = (int)((double)AccessorySlotLoader.DrawVerticalAlignment + 168.0 * (double)Main.inventoryScale) + 4;
-                int num5 = (int)((double)AccessorySlotLoader.DrawVerticalAlignment + (double)((accessorySlotPerColumn - 1 + 3) * 56) * (double)Main.inventoryScale) + 4;
-                if (yLoc > num5 || yLoc < num4)
-                    return false;
-                xLoc = Main.screenWidth - 64 - 28;
-            }
-            else
-            {
-                int num3 = num2;
-                int num4 = trueSlot;
-                int num5 = num1;
-                if (skip > 0)
-                {
-                    int num6 = num4 - skip;
-                    num3 = num6 % accessorySlotPerColumn;
-                    num5 = num6 / accessorySlotPerColumn;
-                }
-                yLoc = (int)((double)AccessorySlotLoader.DrawVerticalAlignment + (double)((num3 + 3) * 56) * (double)Main.inventoryScale) + 4;
-                xLoc = num5 <= 0 ? Main.screenWidth - 64 - 28 - 141 * num5 : Main.screenWidth - 64 - 28 - 141 * num5 - 50;
-            }
-            return true;
-        }
-
-        internal int GetAccessorySlotPerColumn()
-        {
-            float num = (float)((double)AccessorySlotLoader.DrawVerticalAlignment + 112.0 * (double)Main.inventoryScale + 4.0);
-            return (int)(((double)Main.screenHeight - (double)num) / (56.0 * (double)Main.inventoryScale) - 1.79999995231628);
-        }
-
         public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
         {
             // cannot place an item in the slot if the power mode is not active
@@ -752,63 +695,6 @@ namespace Kourindou
         public override bool IsVisibleWhenNotEnabled()
         {
             return FunctionalItem.type != ItemID.None;
-        }
-
-        public override Vector2? CustomLocation
-        {
-            get
-            {
-                int posX = 0;
-                int posY = 0;
-                int VanillaSlots = 5 + (Player.CanDemonHeartAccessoryBeShown() ? 1 : 0) + (Player.CanMasterModeAccessoryBeShown() ? 1 : 0);
-                SetDrawLocation(GetInstance<PlushieEquipSlot>().Type + VanillaSlots, 0, ref posX, ref posY);
-                return new Vector2(posX - 94, posY);
-            }
-        }
-
-        internal bool SetDrawLocation(int trueSlot, int skip, ref int xLoc, ref int yLoc)
-        {
-            int accessorySlotPerColumn = GetAccessorySlotPerColumn();
-            int num1 = trueSlot / accessorySlotPerColumn;
-            int num2 = trueSlot % accessorySlotPerColumn;
-
-            FieldInfo fi = typeof(ModAccessorySlotPlayer).GetField("scrollSlots", BindingFlags.NonPublic | BindingFlags.Instance);
-            bool scrollSlots = (bool)fi.GetValue(Player.GetModPlayer<ModAccessorySlotPlayer>());
-
-            FieldInfo fi2 = typeof(ModAccessorySlotPlayer).GetField("scrollbarSlotPosition", BindingFlags.NonPublic | BindingFlags.Instance);
-            int scrollbarSlotPosition = (int)fi2.GetValue(Player.GetModPlayer<ModAccessorySlotPlayer>());
-
-            if (scrollSlots)
-            {
-                int num3 = num2 + num1 * accessorySlotPerColumn - scrollbarSlotPosition - skip;
-                yLoc = (int)((double)AccessorySlotLoader.DrawVerticalAlignment + (double)((num3 + 3) * 56) * (double)Main.inventoryScale) + 4;
-                int num4 = (int)((double)AccessorySlotLoader.DrawVerticalAlignment + 168.0 * (double)Main.inventoryScale) + 4;
-                int num5 = (int)((double)AccessorySlotLoader.DrawVerticalAlignment + (double)((accessorySlotPerColumn - 1 + 3) * 56) * (double)Main.inventoryScale) + 4;
-                if (yLoc > num5 || yLoc < num4)
-                    return false;
-                xLoc = Main.screenWidth - 64 - 28;
-            }
-            else
-            {
-                int num3 = num2;
-                int num4 = trueSlot;
-                int num5 = num1;
-                if (skip > 0)
-                {
-                    int num6 = num4 - skip;
-                    num3 = num6 % accessorySlotPerColumn;
-                    num5 = num6 / accessorySlotPerColumn;
-                }
-                yLoc = (int)((double)AccessorySlotLoader.DrawVerticalAlignment + (double)((num3 + 3) * 56) * (double)Main.inventoryScale) + 4;
-                xLoc = num5 <= 0 ? Main.screenWidth - 64 - 28 - 141 * num5 : Main.screenWidth - 64 - 28 - 141 * num5 - 50;
-            }
-            return true;
-        }
-
-        internal int GetAccessorySlotPerColumn()
-        {
-            float num = (float)((double)AccessorySlotLoader.DrawVerticalAlignment + 112.0 * (double)Main.inventoryScale + 4.0);
-            return (int)(((double)Main.screenHeight - (double)num) / (56.0 * (double)Main.inventoryScale) - 1.79999995231628);
         }
 
         public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
