@@ -4,11 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
-using ReLogic.Content;
-using ReLogic;
 using Terraria;
-using Terraria.Chat;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -22,10 +18,7 @@ using Kourindou.Buffs;
 using Kourindou.Items;
 using Kourindou.Items.Plushies;
 using Kourindou.Items.Consumables;
-using Kourindou.Projectiles.Plushies.PlushieEffects;
 using Kourindou.Items.Catalysts;
-using Kourindou.Items.Spellcards.ProjectileModifiers;
-//using Kourindou.Projectiles.Weapons;
 
 
 namespace Kourindou
@@ -34,7 +27,7 @@ namespace Kourindou
     {
         //--------------------------------------------------------------------------------
         // Determines the power mode of all the plushies
-        public bool plushiePower;
+        public byte plushiePower;
 
         // Item ID of the plushie slot item
         public Dictionary<PlushieItem, int> EquippedPlushies = new();
@@ -87,7 +80,7 @@ namespace Kourindou
 
         public override void LoadData(TagCompound tag)
         {
-            plushiePower = tag.GetBool("plushiePowerMode");
+            plushiePower = tag.GetByte("plushiePowerMode");
             FumoColaBuffStacks = tag.GetInt("fumoColaBuffStacks");
             RanPlushie_Stacks = tag.GetByte("ranPlushieStacks");
         }
@@ -131,7 +124,7 @@ namespace Kourindou
                 ModPacket packet = Mod.GetPacket();
                 packet.Write((byte)KourindouMessageType.ClientConfig);
                 packet.Write((byte)Main.myPlayer);
-                packet.Write((bool)Kourindou.KourindouConfigClient.plushiePower);
+                packet.Write((byte)Kourindou.KourindouConfigClient.plushiePower);
                 packet.Send(-1, Main.myPlayer);
 
                 // Send the stack amount of the Ran Plushie
@@ -151,7 +144,7 @@ namespace Kourindou
                 ModPacket packet = Mod.GetPacket();
                 packet.Write((byte)KourindouMessageType.ClientConfig);
                 packet.Write((byte)Main.myPlayer);
-                packet.Write((bool)Kourindou.KourindouConfigClient.plushiePower);
+                packet.Write((byte)Kourindou.KourindouConfigClient.plushiePower);
                 packet.Send(-1, Main.myPlayer);
 
                 // Send the stack amount of the Ran Plushie
@@ -287,7 +280,7 @@ namespace Kourindou
 
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
-                if (!plushie.Key.PlushieCanHitNPCWithProj(Player,proj, target, plushie.Value))
+                if (!plushie.Key.PlushieCanHitNPCWithProj(Player, proj, target, plushie.Value))
                 {
                     hit = false;
                 }
@@ -395,6 +388,14 @@ namespace Kourindou
             foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
             {
                 plushie.Key.PlushieModifyHurt(Player, ref modifiers, plushie.Value);
+            }
+        }
+
+        public override void ModifyWeaponDamage(Item item, ref StatModifier damage)
+        {
+            foreach (KeyValuePair<PlushieItem, int> plushie in EquippedPlushies)
+            {
+                plushie.Key.PlushieModifyWeaponDamage(Player, item, ref damage, plushie.Value);
             }
         }
 
@@ -536,7 +537,7 @@ namespace Kourindou
                 return false;
             }
 
-            return Player.GetModPlayer<KourindouPlayer>().plushiePower;
+            return Player.GetModPlayer<KourindouPlayer>().plushiePower >= 1;
         }
 
         public override bool IsVisibleWhenNotEnabled()
@@ -547,7 +548,7 @@ namespace Kourindou
         public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
         {
             // cannot place an item in the slot if the power mode is not active
-            if (!Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower)
+            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower <= 0)
             {
                 return false;
             }
@@ -567,7 +568,7 @@ namespace Kourindou
 
         public override bool ModifyDefaultSwapSlot(Item item, int accSlotToSwapTo)
         {
-            if (!Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower)
+            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower <= 0)
             {
                 return false;
             }
@@ -606,7 +607,13 @@ namespace Kourindou
 
         public override bool IsEnabled()
         {
-            return false; //Player.GetModPlayer<KourindouPlayer>().plushiePower;
+            if (Player == null
+                || !Player.TryGetModPlayer<KourindouPlayer>(out _))
+            {
+                return false;
+            }
+
+            return Player.GetModPlayer<KourindouPlayer>().plushiePower >= 2;
         }
 
         public override bool IsVisibleWhenNotEnabled()
@@ -674,7 +681,7 @@ namespace Kourindou
         public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
         {
             // cannot place an item in the slot if the power mode is not active
-            if (!Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower)
+            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower <= 0)
             {
                 return false;
             }
@@ -694,7 +701,7 @@ namespace Kourindou
 
         public override bool ModifyDefaultSwapSlot(Item item, int accSlotToSwapTo)
         {
-            if (!Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower)
+            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower <= 0)
             {
                 return false;
             }
@@ -733,7 +740,13 @@ namespace Kourindou
 
         public override bool IsEnabled()
         {
-            return false; //Player.GetModPlayer<KourindouPlayer>().plushiePower;
+            if (Player == null
+                || !Player.TryGetModPlayer<KourindouPlayer>(out _))
+            {
+                return false;
+            }
+
+            return Player.GetModPlayer<KourindouPlayer>().plushiePower >= 3;
         }
 
         public override bool IsVisibleWhenNotEnabled()
@@ -801,7 +814,7 @@ namespace Kourindou
         public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
         {
             // cannot place an item in the slot if the power mode is not active
-            if (!Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower)
+            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower <= 0)
             {
                 return false;
             }
@@ -821,7 +834,7 @@ namespace Kourindou
 
         public override bool ModifyDefaultSwapSlot(Item item, int accSlotToSwapTo)
         {
-            if (!Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower)
+            if (Main.player[Main.myPlayer].GetModPlayer<KourindouPlayer>().plushiePower <= 0)
             {
                 return false;
             }

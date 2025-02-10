@@ -45,7 +45,7 @@ namespace Kourindou.Tiles.Plushies
             if (closer)
             {
                 Player player = Main.LocalPlayer;
-                if (player.GetModPlayer<KourindouPlayer>().plushiePower && player.active && !player.dead)
+                if (player.GetModPlayer<KourindouPlayer>().plushiePower >= 1 && player.active && !player.dead)
                 {
                     player.AddBuff(BuffType<Buff_PlushieInRange>(), 60);
                 }

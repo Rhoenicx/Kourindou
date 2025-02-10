@@ -63,7 +63,7 @@ namespace Kourindou.Items
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             // Remove "Equipable" line if the power mode is not enabled
-            if (!Kourindou.KourindouConfigClient.plushiePower)
+            if (Kourindou.KourindouConfigClient.plushiePower <= 0)
             {
                 TooltipLine equipmentLine = tooltips.Find(x => x.Name == "Equipable");
                 tooltips.Remove(equipmentLine);
@@ -73,7 +73,7 @@ namespace Kourindou.Items
             if (plushieEffectLine != null)
             {
                 plushieEffectLine.Text =
-                    Kourindou.KourindouConfigClient.plushiePower ?
+                    Kourindou.KourindouConfigClient.plushiePower >= 1 ?
                         Language.GetTextValue("Mods.Kourindou.PlushieEffectLines.WhenEquipped")
                             + Language.GetTextValue("Mods.Kourindou.Items." + Name + ".PlushieEquipEffect")
                         : "";
@@ -82,9 +82,9 @@ namespace Kourindou.Items
         }
 
         // Execute custom equip effects
-        public override void UpdateAccessory(Player player, bool hideVisual)
+        public sealed override void UpdateAccessory(Player player, bool hideVisual)
         {
-            if (player.GetModPlayer<KourindouPlayer>().plushiePower)
+            if (player.GetModPlayer<KourindouPlayer>().plushiePower >= 1)
             {
                 if (!player.GetModPlayer<KourindouPlayer>().EquippedPlushies.Any(kvp => kvp.Key.Type == Item.type) && Item.ModItem is PlushieItem plushie)
                 {
@@ -121,7 +121,7 @@ namespace Kourindou.Items
                 return false;
             }
 
-            return player.GetModPlayer<KourindouPlayer>().plushiePower;
+            return player.GetModPlayer<KourindouPlayer>().plushiePower >= 1;
         }
 
         // Prevent the player from putting this accessory in the tinkerer slot
@@ -317,6 +317,11 @@ namespace Kourindou.Items
         }
 
         public virtual void PlushieUpdateBadLifeRegen(Player player, int amountEquipped)
+        { 
+        
+        }
+
+        public virtual void PlushieModifyWeaponDamage(Player player, Item item, ref StatModifier damage, int amountEquipped)
         { 
         
         }

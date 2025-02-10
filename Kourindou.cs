@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
@@ -8,9 +8,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Chat;
 using Terraria.Localization;
-using Terraria.Initializers;
 using Kourindou.Items;
 using Kourindou.Items.Consumables;
 using Kourindou.Items.Plushies;
@@ -20,7 +18,6 @@ using Kourindou.Tiles.Plants;
 using Kourindou.Projectiles.Plushies;
 using ReLogic.Content;
 using static Terraria.ModLoader.ModContent;
-using Kourindou.Items.Catalysts;
 
 namespace Kourindou
 {
@@ -64,6 +61,9 @@ namespace Kourindou
 
         // Catalyst indentifiers
         public static int NewCatalystID = 0;
+
+        // Spear item ids
+        public static HashSet<int> SpearItems;
 
         // Kourindou Mod Instance
         public Kourindou()
@@ -127,6 +127,7 @@ namespace Kourindou
 
             FabricItems = new HashSet<int>();
             ThreadItems = new HashSet<int>();
+            SpearItems = new HashSet<int>();
 
             KourindouSpellcardSystem.Load();
 
@@ -153,6 +154,7 @@ namespace Kourindou
 
             FabricItems = null;
             ThreadItems = null;
+            SpearItems = null;
 
             KourindouSpellcardSystem.Unload();
 
@@ -237,6 +239,7 @@ namespace Kourindou
 
             FabricSetup();
             ThreadSetup();
+            SpearSetup();
         }
 
         // Add Crafting recipe groups
@@ -326,7 +329,7 @@ namespace Kourindou
                     if (Main.netMode != NetmodeID.SinglePlayer)
                     {
                         byte playerID = reader.ReadByte();
-                        bool plushiePower = reader.ReadBoolean();
+                        byte plushiePower = reader.ReadByte();
 
                         Player player = Main.player[playerID];
 
@@ -338,7 +341,7 @@ namespace Kourindou
                             ModPacket packet = GetPacket();
                             packet.Write((byte)KourindouMessageType.ClientConfig);
                             packet.Write((byte)playerID);
-                            packet.Write((bool)plushiePower);
+                            packet.Write((byte)plushiePower);
                             packet.Send(-1, whoAmI);
                         }
                     }
@@ -671,7 +674,7 @@ namespace Kourindou
             }
         }
 
-        public void SwitchModTextures(bool loading)
+        public static void SwitchModTextures(bool loading)
         {
             // Thread
             TextureAssets.Item[ItemID.BlackThread] = loading ? Request<Texture2D>("Kourindou/Items/CraftingMaterials/BlackThread") : Main.Assets.Request<Texture2D>("Images\\Item_254", 0);
@@ -679,7 +682,7 @@ namespace Kourindou
             TextureAssets.Item[ItemID.PinkThread] = loading ? Request<Texture2D>("Kourindou/Items/CraftingMaterials/PinkThread") : Main.Assets.Request<Texture2D>("Images\\Item_981", 0);
         }
 
-        public static void FabricSetup()
+        private static void FabricSetup()
         {
             FabricItems.Add(ItemType<BlackFabric>());
             FabricItems.Add(ItemType<BlueFabric>());
@@ -700,7 +703,7 @@ namespace Kourindou
             FabricItems.Add(ItemType<RainbowFabric>());
         }
 
-        public static void ThreadSetup()
+        private static void ThreadSetup()
         {
             ThreadItems.Add(ItemID.BlackThread);
             ThreadItems.Add(ItemType<BlueThread>());
@@ -719,6 +722,177 @@ namespace Kourindou
             ThreadItems.Add(ItemType<WhiteThread>());
             ThreadItems.Add(ItemType<YellowThread>());
             ThreadItems.Add(ItemType<RainbowThread>());
+        }
+
+        private static void SpearSetup()
+        {
+            // Add vanilla spears
+            SpearItems.Add(ItemID.AdamantiteGlaive);
+            SpearItems.Add(ItemID.ChlorophytePartisan);
+            SpearItems.Add(ItemID.CobaltNaginata);
+            SpearItems.Add(ItemID.DarkLance);
+            SpearItems.Add(ItemID.MonkStaffT2);
+            SpearItems.Add(ItemID.Gungnir);
+            SpearItems.Add(ItemID.MushroomSpear);
+            SpearItems.Add(ItemID.MythrilHalberd);
+            SpearItems.Add(ItemID.OrichalcumHalberd);
+            SpearItems.Add(ItemID.NorthPole);
+            SpearItems.Add(ItemID.ObsidianSwordfish);
+            SpearItems.Add(ItemID.PalladiumPike);
+            SpearItems.Add(ItemID.Spear);
+            SpearItems.Add(ItemID.ThunderSpear);
+            SpearItems.Add(ItemID.Swordfish);
+            SpearItems.Add(ItemID.TheRottedFork);
+            SpearItems.Add(ItemID.TitaniumTrident);
+            SpearItems.Add(ItemID.Trident);
+            SpearItems.Add(ItemID.UnholyTrident);
+
+            // Add Calamity spears
+            if (ModLoader.TryGetMod("CalamityMod", out Mod calamityMod))
+            {
+                if (calamityMod.TryFind<ModItem>("AmidiasTrident", out ModItem AmidiasTrident)) { SpearItems.Add(AmidiasTrident.Type); }
+                if (calamityMod.TryFind<ModItem>("AstralPike", out ModItem AstralPike)) { SpearItems.Add(AstralPike.Type); }
+                if (calamityMod.TryFind<ModItem>("BansheeHook", out ModItem BansheeHook)) { SpearItems.Add(BansheeHook.Type); }
+                if (calamityMod.TryFind<ModItem>("BotanicPiercer", out ModItem BotanicPiercer)) { SpearItems.Add(BotanicPiercer.Type); }
+                if (calamityMod.TryFind<ModItem>("BrimLance", out ModItem BrimLance)) { SpearItems.Add(BrimLance.Type); }
+                if (calamityMod.TryFind<ModItem>("DiseasedPike", out ModItem DiseasedPike)) { SpearItems.Add(DiseasedPike.Type); }
+                if (calamityMod.TryFind<ModItem>("EarthenPike", out ModItem EarthenPike)) { SpearItems.Add(EarthenPike.Type); }
+                if (calamityMod.TryFind<ModItem>("ElementalLance", out ModItem ElementalLance)) { SpearItems.Add(ElementalLance.Type); }
+                if (calamityMod.TryFind<ModItem>("GalvanizingGlaive", out ModItem GalvanizingGlaive)) { SpearItems.Add(GalvanizingGlaive.Type); }
+                if (calamityMod.TryFind<ModItem>("GildedProboscis", out ModItem GildedProboscis)) { SpearItems.Add(GildedProboscis.Type); }
+                if (calamityMod.TryFind<ModItem>("GoldplumeSpear", out ModItem GoldplumeSpear)) { SpearItems.Add(GoldplumeSpear.Type); }
+                if (calamityMod.TryFind<ModItem>("HellionFlowerSpear", out ModItem HellionFlowerSpear)) { SpearItems.Add(HellionFlowerSpear.Type); }
+                if (calamityMod.TryFind<ModItem>("Nadir", out ModItem Nadir)) { SpearItems.Add(Nadir.Type); }
+                if (calamityMod.TryFind<ModItem>("RedtideSpear", out ModItem RedtideSpear)) { SpearItems.Add(RedtideSpear.Type); }
+                if (calamityMod.TryFind<ModItem>("SausageMaker", out ModItem SausageMaker)) { SpearItems.Add(SausageMaker.Type); }
+                if (calamityMod.TryFind<ModItem>("StarnightLance", out ModItem StarnightLance)) { SpearItems.Add(StarnightLance.Type); }
+                if (calamityMod.TryFind<ModItem>("TenebreusTides", out ModItem TenebreusTides)) { SpearItems.Add(TenebreusTides.Type); }
+                if (calamityMod.TryFind<ModItem>("VulcaniteLance", out ModItem VulcaniteLance)) { SpearItems.Add(VulcaniteLance.Type); }
+                if (calamityMod.TryFind<ModItem>("YateveoBloom", out ModItem YateveoBloom)) { SpearItems.Add(YateveoBloom.Type); }
+            }
+
+            // Add Thorium spears
+            if (ModLoader.TryGetMod("ThoriumMod", out Mod thoriumMod))
+            {
+                if (thoriumMod.TryFind<ModItem>("CoralPolearm", out ModItem CoralPolearm)) { SpearItems.Add(CoralPolearm.Type); }
+                if (thoriumMod.TryFind<ModItem>("DemonBloodSpear", out ModItem DemonBloodSpear)) { SpearItems.Add(DemonBloodSpear.Type); }
+                if (thoriumMod.TryFind<ModItem>("DragonTalon", out ModItem DragonTalon)) { SpearItems.Add(DragonTalon.Type); }
+                if (thoriumMod.TryFind<ModItem>("DreadFork", out ModItem DreadFork)) { SpearItems.Add(DreadFork.Type); }
+                if (thoriumMod.TryFind<ModItem>("EnergyStormPartisan", out ModItem EnergyStormPartisan)) { SpearItems.Add(EnergyStormPartisan.Type); }
+                if (thoriumMod.TryFind<ModItem>("FleshSkewer", out ModItem FleshSkewer)) { SpearItems.Add(FleshSkewer.Type); }
+                if (thoriumMod.TryFind<ModItem>("Fork", out ModItem Fork)) { SpearItems.Add(Fork.Type); }
+                if (thoriumMod.TryFind<ModItem>("HarpyTalon", out ModItem HarpyTalon)) { SpearItems.Add(HarpyTalon.Type); }
+                if (thoriumMod.TryFind<ModItem>("HellishHalberd", out ModItem HellishHalberd)) { SpearItems.Add(HellishHalberd.Type); }
+                if (thoriumMod.TryFind<ModItem>("IceLance", out ModItem IceLance)) { SpearItems.Add(IceLance.Type); }
+                if (thoriumMod.TryFind<ModItem>("IllumiteSpear", out ModItem IllumiteSpear)) { SpearItems.Add(IllumiteSpear.Type); }
+                if (thoriumMod.TryFind<ModItem>("Moonlight", out ModItem Moonlight)) { SpearItems.Add(Moonlight.Type); }
+                if (thoriumMod.TryFind<ModItem>("PearlPike", out ModItem PearlPike)) { SpearItems.Add(PearlPike.Type); }
+                if (thoriumMod.TryFind<ModItem>("PollenPike", out ModItem PollenPike)) { SpearItems.Add(PollenPike.Type); }
+                if (thoriumMod.TryFind<ModItem>("PoseidonCharge", out ModItem PoseidonCharge)) { SpearItems.Add(PoseidonCharge.Type); }
+                if (thoriumMod.TryFind<ModItem>("RifleSpear", out ModItem RifleSpear)) { SpearItems.Add(RifleSpear.Type); }
+                if (thoriumMod.TryFind<ModItem>("fSandStoneSpear", out ModItem fSandStoneSpear)) { SpearItems.Add(fSandStoneSpear.Type); }
+                if (thoriumMod.TryFind<ModItem>("TerrariumSpear", out ModItem TerrariumSpear)) { SpearItems.Add(TerrariumSpear.Type); }
+                if (thoriumMod.TryFind<ModItem>("ThoriumSpear", out ModItem ThoriumSpear)) { SpearItems.Add(ThoriumSpear.Type); }
+                if (thoriumMod.TryFind<ModItem>("ValadiumSpear", out ModItem ValadiumSpear)) { SpearItems.Add(ValadiumSpear.Type); }
+            }
+
+            // Add TOverHaul spears
+            if (ModLoader.TryGetMod("TerrariaOverhaul", out Mod terrariaOverhaul))
+            {
+                if (terrariaOverhaul.TryFind<ModItem>("Mop", out ModItem Mop)) { SpearItems.Add(Mop.Type); }
+            }
+
+            // Add Fargos spears
+            if (ModLoader.TryGetMod("FargowiltasSouls", out Mod fargowiltasSouls))
+            {
+                if (fargowiltasSouls.TryFind<ModItem>("UmbraRegalia", out ModItem UmbraRegalia)) { SpearItems.Add(UmbraRegalia.Type); }
+                if (fargowiltasSouls.TryFind<ModItem>("PrismaRegalia", out ModItem PrismaRegalia)) { SpearItems.Add(PrismaRegalia.Type); }
+            }
+
+            // Add TSA spears
+            if (ModLoader.TryGetMod("StarsAbove", out Mod starsAbove))
+            {
+                if (starsAbove.TryFind<ModItem>("RexLapis", out ModItem RexLapis)) { SpearItems.Add(RexLapis.Type); }
+                if (starsAbove.TryFind<ModItem>("Drachenlance", out ModItem Drachenlance)) { SpearItems.Add(Drachenlance.Type); }
+            }
+
+            // Add Starlight river spears
+            if (ModLoader.TryGetMod("StarlightRiver", out Mod starlightRiver))
+            {
+                if (starlightRiver.TryFind<ModItem>("CrescentQuarterstaff", out ModItem CrescentQuarterstaff)) { SpearItems.Add(CrescentQuarterstaff.Type); }
+                if (starlightRiver.TryFind<ModItem>("FacetAndLattice", out ModItem FacetAndLattice)) { SpearItems.Add(FacetAndLattice.Type); }
+                if (starlightRiver.TryFind<ModItem>("TempleSpear", out ModItem TempleSpear)) { SpearItems.Add(TempleSpear.Type); }
+                if (starlightRiver.TryFind<ModItem>("Tentalance", out ModItem Tentalance)) { SpearItems.Add(Tentalance.Type); }
+            }
+
+            // Add spirit mod spears
+            if (ModLoader.TryGetMod("SpiritMod", out Mod spiritMod))
+            {
+                if (spiritMod.TryFind<ModItem>("BismiteSpear", out ModItem BismiteSpear)) { SpearItems.Add(BismiteSpear.Type); }
+                if (spiritMod.TryFind<ModItem>("MarbleBident", out ModItem MarbleBident)) { SpearItems.Add(MarbleBident.Type); }
+                if (spiritMod.TryFind<ModItem>("ReefSpear", out ModItem ReefSpear)) { SpearItems.Add(ReefSpear.Type); }
+                if (spiritMod.TryFind<ModItem>("EowSpear", out ModItem EowSpear)) { SpearItems.Add(EowSpear.Type); }
+                if (spiritMod.TryFind<ModItem>("Talonginus", out ModItem Talonginus)) { SpearItems.Add(Talonginus.Type); }
+                if (spiritMod.TryFind<ModItem>("DuskLance", out ModItem DuskLance)) { SpearItems.Add(DuskLance.Type); }
+                if (spiritMod.TryFind<ModItem>("FearsomeFork", out ModItem FearsomeFork)) { SpearItems.Add(FearsomeFork.Type); }
+                if (spiritMod.TryFind<ModItem>("Sovereign_Talon", out ModItem Sovereign_Talon)) { SpearItems.Add(Sovereign_Talon.Type); }
+                if (spiritMod.TryFind<ModItem>("SpiritSpear", out ModItem SpiritSpear)) { SpearItems.Add(SpiritSpear.Type); }
+            }
+
+            // Add Gensokyo spears
+            if (ModLoader.TryGetMod("Gensokyo", out Mod gensokyo))
+            {
+                if (gensokyo.TryFind<ModItem>("BlessedSpear", out ModItem BlessedSpear)) { SpearItems.Add(BlessedSpear.Type); }
+                if (gensokyo.TryFind<ModItem>("ShiningNeedleSword", out ModItem ShiningNeedleSword)) { SpearItems.Add(ShiningNeedleSword.Type); }
+                if (gensokyo.TryFind<ModItem>("UncannyTrident", out ModItem UncannyTrident)) { SpearItems.Add(UncannyTrident.Type); }
+            }
+
+            // Add Vitality mod spears
+            if (ModLoader.TryGetMod("VitalityMod", out Mod vitalityMod))
+            {
+                if (vitalityMod.TryFind<ModItem>("CopperSpear", out ModItem CopperSpear)) { SpearItems.Add(CopperSpear.Type); }
+                if (vitalityMod.TryFind<ModItem>("TinSpear", out ModItem TinSpear)) { SpearItems.Add(TinSpear.Type); }
+                if (vitalityMod.TryFind<ModItem>("IronSpear", out ModItem IronSpear)) { SpearItems.Add(IronSpear.Type); }
+                if (vitalityMod.TryFind<ModItem>("LeadSpear", out ModItem LeadSpear)) { SpearItems.Add(LeadSpear.Type); }
+                if (vitalityMod.TryFind<ModItem>("SilverSpear", out ModItem SilverSpear)) { SpearItems.Add(SilverSpear.Type); }
+                if (vitalityMod.TryFind<ModItem>("TungstenSpear", out ModItem TungstenSpear)) { SpearItems.Add(TungstenSpear.Type); }
+                if (vitalityMod.TryFind<ModItem>("GoldSpear", out ModItem GoldSpear)) { SpearItems.Add(GoldSpear.Type); }
+                if (vitalityMod.TryFind<ModItem>("PlatinumSpear", out ModItem PlatinumSpear)) { SpearItems.Add(PlatinumSpear.Type); }
+                if (vitalityMod.TryFind<ModItem>("LavanitePiercer", out ModItem LavanitePiercer)) { SpearItems.Add(LavanitePiercer.Type); }
+                if (vitalityMod.TryFind<ModItem>("MarbleTrident", out ModItem MarbleTrident)) { SpearItems.Add(MarbleTrident.Type); }
+                if (vitalityMod.TryFind<ModItem>("GeraniumTrident", out ModItem GeraniumTrident)) { SpearItems.Add(GeraniumTrident.Type); }
+                if (vitalityMod.TryFind<ModItem>("MoltenWarPike", out ModItem MoltenWarPike)) { SpearItems.Add(MoltenWarPike.Type); }
+                if (vitalityMod.TryFind<ModItem>("TheDreamcatcher", out ModItem TheDreamcatcher)) { SpearItems.Add(TheDreamcatcher.Type); }
+                if (vitalityMod.TryFind<ModItem>("StarVoulge", out ModItem StarVoulge)) { SpearItems.Add(StarVoulge.Type); }
+            }
+
+            // Add DormantDawnMOD spears
+            if (ModLoader.TryGetMod("DDMod", out Mod DDMod))
+            {
+                if (DDMod.TryFind<ModItem>("ShadowSpear", out ModItem ShadowSpear)) { SpearItems.Add(ShadowSpear.Type); }
+                if (DDMod.TryFind<ModItem>("冈格尼尔", out ModItem spear1)) { SpearItems.Add(spear1.Type); }
+                if (DDMod.TryFind<ModItem>("木制投矛", out ModItem spear2)) { SpearItems.Add(spear2.Type); }
+            }
+
+            // Add Spear Overhaul spears
+            if (ModLoader.TryGetMod("SpearOverhaul", out Mod spearOverhaul))
+            {
+                if (spearOverhaul.TryFind<ModItem>("WoodenPike", out ModItem WoodenPike)) { SpearItems.Add(WoodenPike.Type); }
+                if (spearOverhaul.TryFind<ModItem>("CactusSpike", out ModItem CactusSpike)) { SpearItems.Add(CactusSpike.Type); }
+                if (spearOverhaul.TryFind<ModItem>("FrozenSpear", out ModItem FrozenSpear)) { SpearItems.Add(FrozenSpear.Type); }
+                if (spearOverhaul.TryFind<ModItem>("ReinforcedPike", out ModItem ReinforcedPike)) { SpearItems.Add(ReinforcedPike.Type); }
+                if (spearOverhaul.TryFind<ModItem>("BramblePartisan", out ModItem BramblePartisan)) { SpearItems.Add(BramblePartisan.Type); }
+                if (spearOverhaul.TryFind<ModItem>("HunterSpear", out ModItem HunterSpear)) { SpearItems.Add(HunterSpear.Type); }
+                if (spearOverhaul.TryFind<ModItem>("CrimsonSpear", out ModItem CrimsonSpear)) { SpearItems.Add(CrimsonSpear.Type); }
+                if (spearOverhaul.TryFind<ModItem>("DemonSpear", out ModItem DemonSpear)) { SpearItems.Add(DemonSpear.Type); }
+                if (spearOverhaul.TryFind<ModItem>("KingSpear", out ModItem KingSpear)) { SpearItems.Add(KingSpear.Type); }
+                if (spearOverhaul.TryFind<ModItem>("MoltenJabber", out ModItem MoltenJabber)) { SpearItems.Add(MoltenJabber.Type); }
+                if (spearOverhaul.TryFind<ModItem>("ShadowLance", out ModItem ShadowLance)) { SpearItems.Add(ShadowLance.Type); }
+                if (spearOverhaul.TryFind<ModItem>("CrystalCrusher", out ModItem CrystalCrusher)) { SpearItems.Add(CrystalCrusher.Type); }
+                if (spearOverhaul.TryFind<ModItem>("GodslayerSpear", out ModItem GodslayerSpear)) { SpearItems.Add(GodslayerSpear.Type); }
+                if (spearOverhaul.TryFind<ModItem>("ElementalSpear", out ModItem ElementalSpear)) { SpearItems.Add(ElementalSpear.Type); }
+                if (spearOverhaul.TryFind<ModItem>("PaladinSpear", out ModItem PaladinSpear)) { SpearItems.Add(PaladinSpear.Type); }
+            }
         }
     }
 }

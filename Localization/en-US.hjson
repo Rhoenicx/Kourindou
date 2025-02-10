@@ -896,7 +896,11 @@ Mods: {
 					{$Mods.Kourindou.PlushieEffectLines.PlushieCanBeThrown}
 					{PlushieEquipEffectLine}
 					'''
-				PlushieEquipEffect: "{$Mods.Kourindou.PlushieEffectLines.None}"
+				PlushieEquipEffect:
+					'''
+					Increases the damage of spears, pikes, halberds and tridents by 50%.
+					Slightly increases armor penetration and crit rate.
+					'''
 			}
 
 			PatchouliKnowledge_Plushie_Item: {

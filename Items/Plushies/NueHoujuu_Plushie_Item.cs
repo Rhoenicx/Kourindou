@@ -1,11 +1,11 @@
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Kourindou.Tiles.Plushies;
 using Kourindou.Projectiles.Plushies;
 using Kourindou.Items.CraftingMaterials;
 using Kourindou.Tiles.Furniture;
+using Terraria.ModLoader;
 
 namespace Kourindou.Items.Plushies
 {
@@ -49,6 +49,27 @@ namespace Kourindou.Items.Plushies
                 projectileType = ProjectileType<NueHoujuu_Plushie_Projectile>();
             }
             return base.UseItem(player);
+        }
+
+        public override void PlushieUpdateEquips(Player player, int amountEquipped)
+        {
+            // Increase armor penetration by 10
+            player.GetArmorPenetration(DamageClass.Generic) += 10;
+
+            // Increase crit rate by 4%
+            player.GetCritChance(DamageClass.Generic) += 4f;
+
+            // Increase Life regen by +1 
+            player.lifeRegen += 1;
+        }
+
+        public override void PlushieModifyWeaponDamage(Player player, Item item, ref StatModifier damage, int amountEquipped)
+        {
+            // Increase spear damage by 50%
+            if (Kourindou.SpearItems.Contains(item.type))
+            {
+                damage += 0.5f;
+            }
         }
 
         public override void AddRecipes()

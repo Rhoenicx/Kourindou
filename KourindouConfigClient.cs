@@ -16,13 +16,14 @@ namespace Kourindou
         //[Header("Personalization of the Kourindou mod")]
 
         // Plushie Power Mode Setting
-        [DefaultValue(false)]
-        //[Label("Plushie special effects")]
-        public bool plushiePower;
+        [Increment(1)]
+        [Range((byte)0, (byte)3)]
+        [DefaultValue(0)]
+        [Slider]
+        public byte plushiePower;
 
         //Old Textures
         [DefaultValue(false)]
-        //[Label("Use old Fumomod textures (when available)")]
         public bool UseOldTextures;
 
         public override void OnLoaded()
@@ -43,7 +44,7 @@ namespace Kourindou
                     ModPacket packet = Mod.GetPacket();
                     packet.Write((byte)KourindouMessageType.ClientConfig);
                     packet.Write((byte)Main.LocalPlayer.whoAmI);
-                    packet.Write((bool)plushiePower);
+                    packet.Write((byte)plushiePower);
                     packet.Send();
                 }
 
